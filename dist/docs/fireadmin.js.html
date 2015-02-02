@@ -156,7 +156,7 @@
   * Get count of objects in a given list
   * @memberof Fireadmin#
   * @param {string|Array} listPath - The name or path of the list of which to count.
-  * @param {function} onComplete - Function that runs on completion of gathering list count.
+  * @param {Function} onComplete - Function that runs on completion of gathering list count.
   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
   * @example
   * //String list name
@@ -175,8 +175,24 @@
     }, function(err){
       handleCb(errorCb, err);
     });
-  },
-
+  };
+  /**
+  * Get total user count
+  * @memberof Fireadmin#
+  * @param {Function} onComplete - Function that returns total user count.
+  * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
+  * @example
+  * fa.userCount("users", function(count){
+  *  console.log('There are is a total of ' + count + ' users.');
+  * });
+  */
+  Fireadmin.prototype.userCount = function(successCb, errorCb){
+    this.child('users').on('value', function(usersListSnap){
+      handleCb(successCb, usersListSnap.numChildren());
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
   /** Get user the number of users that are currently online.
   * @memberOf Fireadmin#
   * @param {Function} successCb Function that returns number of users currently online
