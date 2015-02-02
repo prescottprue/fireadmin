@@ -1,6 +1,8 @@
 # FireAdmin
 
-Library to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD and Listing)
+Library to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD and Listing).
+
+Prototypes are added to Firebase object so that all references will contain FireAdmin functionality
 
 ## Getting Started
 1. Include both the Firebase library and  `fireadmin.js` in your `index.html` :
@@ -18,7 +20,7 @@ Library to simplify implementing standard app functionality when using Firebase 
   ```
 
 ## Planning
-
+* Implement [Google Closure Library](https://github.com/google/closure-library)
 * Unit Tests
 * Multi Provider Login
 

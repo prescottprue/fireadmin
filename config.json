@@ -1,0 +1,5 @@
+{
+    "Port":"8080",
+    "devFolder":"dev",
+    "distFolder":"dist"
+}
