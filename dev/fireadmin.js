@@ -28,7 +28,7 @@
    * Creates an object provided the name of the list the object will go into and the object itself.
    * The object is created with a createdAt parameter that is a server timestamp from Firebase.
    * If a user is currently signed in, the object will contain the author's `$uid` under the author parameter. This is used for the getListByAuthor function.
-   * @function Fireadmin.createObject
+   * @memberOf Fireadmin#
    * @param {String} listName - The name of the list the object will be put into.
    * @param {Object} objectData - Data you wish to be contained within new object
    * @param {Fireadmin~createObjectCb} onComplete - Function that runs when your object has been created successfully
@@ -54,10 +54,10 @@
       }
     });
   };
-  /** Modified version of Firebase's authWithPassword that handles presense
-   * @function Fireadmin.emailAuth
+  /** Modified version of Firebase's authWithPassword that handles presence
+   * @memberOf Fireadmin#
    * @param {object} loginData Login data of new user
-   * @param {emailAuth~successCb} successCb Function that runs when you successfully log in
+   * @param {Function} successCb Function that runs when the user is successfully authenticated with presence enabled.
    * @param {Fireadmin~errorCb} errorCb Function that runs if there is an error
    * @example
    * // Signin User with email and password
@@ -73,33 +73,116 @@
       if (error === null) {
         // user authenticated with Firebase
         console.log("User ID: " + authData.uid + ", Provider: " + authData.provider);
-        // Manage presense
+        // Manage presence
         self.setupPresence(authData.uid);
         // [TODO] Check for account/Add account if it doesn't already exist
         handleCb(successCb, authData);
       } else {
         console.error("Error authenticating user:", error);
         handleCb(errorCb, error);
-
       }
     });
   };
   /**
-   * Success callback for emailAuth function
-   * @callback emailAuth~successCb
-   * @param {Object} authData Returned authentication data
-   * @param {String} authData.uid Unique Id of user
-   */
-  /** Enable presence management for a specificed user
-   * @function Firebase.setupPresence
-   * @param {string} uid Unique Id for user that presence is being setup for
+  * Get count of objects in a given list
+  * @memberof Fireadmin#
+  * @param {string|Array} listPath - The name or path of the list of which to count.
+  * @param {function} onComplete - Function that runs on completion of gathering list count.
+  * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
+  * @example
+  * //String list name
+  * fa.objectCount("users", function(count){
+  *  console.log('There are ' + count + ' users');
+  * });
+  * //Array list path
+  * fa.objectCount(['messages', messageId, 'comments'], function(commentCount){
+  *  console.log('There are ' + commentCount + ' comments on the message with id: ' + messageId);
+  * });
+  */
+  Fireadmin.prototype.objectCount = function(listPath, successCb, errorCb){
+    var self = this;
+    this.fbRef(listPath).on('value', function(usersListSnap){
+      handleCb(successCb, usersListSnap.numChildren());
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  },
+
+  /** Get user the number of users that are currently online.
+  * @memberOf Fireadmin#
+  * @param {Function} successCb Function that returns number of users currently online
+  * @param {Fireadmin~errorCb} errorCb Function that runs if there is an error
+  * @example
+  * fa.onlineUserCount(function(count){
+  *   console.log('There are ' + count + ' users currently online.');
+  * });
+  *
+  */
+  Fireadmin.prototype.onlineUserCount = function(successCb, errorCb){
+    this.child('presence').on("value", function(onlineUserSnap){
+      console.log('There are currently' + count + ' users online.');
+      handleCb(successCb, onlineUserSnap.numChildren());
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
+  /** Get account for a user given their uid.
+  * @memberOf Fireadmin#
+  * @param {String} uid Unique Id for account
+  * @param {Function} successCb Function that returns account info once it is loaded
+  * @param {Fireadmin~errorCb} errorCb Function that runs if there is an error
+  * fa.accountByUid('simplelogin:1', function(account){
+  *   console.log('Account for user with uid: ' + uid + ' is : ', account);
+  * }, function(err){
+  *    console.error('Error getting account for ' + uid + ' : ', err);
+  * });
+  *
+  */
+  Fireadmin.prototype.accountByUid = function(uid, successCb, errorCb){
+    this.child(uid).on('value', function(accountSnap){
+      handleCb(successCb, accountSnap.val());
+    }, function(err){
+      console.error('Error getting account for ' + uid + ' : ', err);
+      handleCb(errorCb, err);
+    });
+  };
+  /** Get user account that is associated to a given email.
+   * @memberOf Fireadmin#
+   * @param {String} email Email of account to retreive
+   * @param {Function} successCb Function that returns account info once it is loaded
+   * @param {Fireadmin~errorCb} errorCb Function that runs if there is an error
+   * @example
+   * fa.accountByEmail("test@test.com", function(account){
+   *   console.log('Account loaded:' + account);
+   * }, function(err){
+   *  console.error('Error getting account by email:', err);
+   * });
    *
    */
+  Fireadmin.prototype.accountByEmail = function(email, successCb, errorCb){
+    if(email && typeof email == "string"){
+      this.child('users').orderByChild('email').equalTo(email).on("value", function(querySnapshot) {
+        console.log('accountByEmail returned:', querySnapshot.val());
+        handleCb(successCb, querySnapshot.val());
+      }, function(err){
+        console.error('Error getting account by email:', err);
+        handleCb(errorCb, err);
+      });
+    } else {
+      handleCb(errorCb);
+    }
+  };
+
+  /** Start presence management for a specificed user uid. This function is used within Fireadmin login functions.
+  * @memberOf Fireadmin#
+  * @param {string} uid Unique Id for user that presence is being setup for
+  *
+  */
   Fireadmin.prototype.setupPresence = function(uid){
     console.log('setupPresence called for uid:', uid);
     var self = this;
     var amOnline = self.child('.info/connected');
-    var onlineRef = self.child('presense').child(uid);
+    var onlineRef = self.child('presence').child(uid);
     var sessionsRef = self.child('sessions');
     var userRef = self.child('users').child(uid);
     var userSessionRef = self.child('users').child(uid).child('sessions');
@@ -117,70 +200,66 @@
         var currentSesh = userSessionRef.child('current').push(session.key());
         // Remove session id from users current session folder
         currentSesh.onDisconnect().remove();
-
-        // remove from presense list
+        // remove from presence list
         onlineRef.set(true);
         onlineRef.onDisconnect().remove();
         // Add session id to past sessions on disconnect
         // pastSessionsRef.onDisconnect().push(session.key());
         // Do same on unAuth
-        self.onUnAuth(function(){
-          endedRef.set(Firebase.ServerValue.TIMESTAMP);
-          currentSesh.remove();
-          onlineRef.remove();
+        self.onAuth(function(authData){
+          if(!authData){
+            endedRef.set(Firebase.ServerValue.TIMESTAMP);
+            currentSesh.remove();
+            onlineRef.remove();
+          }
         });
       }
     });
   };
-  /** Get account information for a user given their uid
-   * @function Fireadmin.accountById
-   * @param {String} uid Unique Id for account
-   * @param {accountById~successCb} successCb Function that returns account info once it is loaded
-   * @param {Fireadmin~errorCb} errorCb Function that runs if there is an error
-   *
-   */
-  Fireadmin.prototype.accountById = function(uid, successCb, errorCb){
-    this.child(uid).on('value', function(accountSnap){
-      handleCb(successCb, accountSnap.val());
-    }, function(err){
-      console.error('Error getting account by id:', err);
-      handleCb(errorCb, err);
-    });
-  };
 
-
-  /** Get user account given email
-   * @function Fireadmin.accountByEmail
-   * @param {String} email Email of account to retreive
-   * @param {accountByEmail~successCb} successCb Function that returns account info once it is loaded
-   * @param {Fireadmin~errorCb} errorCb Function that runs if there is an error
-   *
-   */
-  Fireadmin.prototype.accountByEmail = function(email, successCb, errorCb){
-    if(email && typeof email == "string"){
-      this.child('users').orderByChild('email').equalTo(email).on("value", function(querySnapshot) {
-        console.log('accountByEmail returned:', querySnapshot.val());
-        handleCb(successCb, querySnapshot.val());
-      }, function(err){
-        console.error('Error getting account by email:', err);
-        handleCb(errorCb, err);
-      });
-    } else {
-      handleCb(errorCb);
+  /** Get a firebase reference for a path in array | string form
+  *
+  * @memberOf Fireadmin#
+  * @param {String|Array} path relative path to the root folder in Firebase instance
+  * @returns A Firebase instance
+  * @example
+  * //Array as path
+  * var userRef = fa.fbRef(['users', uid]);
+  */
+  Fireadmin.prototype.fbRef = function(path){
+    var ref = this;
+    var args = Array.prototype.slice.call(arguments);
+    if( args.length ) {
+      //[TODO] Have this return a Fireadmin object
+      ref = ref.child(pathRef(args));
     }
+    return ref;
+  }
 
-  };
-  Fireadmin.prototype.onUnAuth = function(cb){
-    this.onAuth(function(authData){
-      if(!authData){
-        handleCb(cb);
+  /** Handle Callback functions by checking for existance and returning with val if avaialble
+  * @function handleCb
+  * @param callback {function} Callback function to handle
+  * @param value {string|object|array} Value to provide to callback function
+  * @example
+  * //Handle successCb
+  *  function(uid, successCb, errorCb){
+  *     ref.on('value', function(accountSnap){
+  *      handleCb(successCb, accountSnap.val());
+  *     }, function(err){
+  *      handleCb(errorCb, err);
+  *    });
+  *  };
+  */
+  function handleCb(cb, val){
+    if(cb && typeof cb == 'function'){
+      if(val){
+        return cb(val);
+      } else {
+        return cb();
       }
-    });
-  };
-  // function User(authData){
-  //   this.auth = authData;
-  //   return this;
-  // }
+    }
+  }
+
   /** Library initialization function
    * @private
    */
@@ -198,27 +277,5 @@
   function stringifyVersion(version){
     return version.replace(".", "").replace(".", "");
   }
-  /** Handle Callback functions by checking for existance and returning with val if avaialble
-   * @function handleCb
-   * @param callback {function} Callback function to handle
-   * @param value {string|object|array} Value to provide to callback function
-   * @example
-   * //Handle successCb
-   *  function(uid, successCb, errorCb){
-   *     ref.on('value', function(accountSnap){
-   *      handleCb(successCb, accountSnap.val());
-   *     }, function(err){
-   *      handleCb(errorCb, err);
-   *    });
-   *  };
-   */
-  function handleCb(cb, val){
-    if(cb && typeof cb == 'function'){
-      if(val){
-        return cb(val);
-      } else {
-        return cb();
-      }
-    }
-  }
+
 })(window, document);

@@ -33,7 +33,7 @@ module.exports = function(grunt) {
         },
         watch: {
           js: {
-            files: ['<%= config.devFolder %>/pyro.js'],
+            files: ['<%= config.devFolder %>/fireadmin.js'],
             tasks:['jsdoc'],
             options:{
               livereload:{
@@ -81,12 +81,9 @@ module.exports = function(grunt) {
             }
           },
           dist:{
-            files:[{
-              expand: true,
-              cwd: '<%= config.devFolder %>',
-              src: '**/*.js',
-              dest: '<%= config.distFolder %>'
-            }]
+            files:{
+              '<%= config.distFolder %>/fireadmin.min.js': ['<%= config.devFolder %>/fireadmin.js']
+            }
           }
         },
         jsdoc: {
