@@ -229,7 +229,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
         <dl>
             
 <dt>
-    <h4 class="name" id="accountByEmail"><span class="type-signature"></span>accountByEmail<span class="signature">(email, successCb, errorCb)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="accountByEmail"><span class="type-signature"></span>accountByEmail<span class="signature">(email, onSuccess, onError)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -287,14 +287,14 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 
             
 
-            <td class="description last"><p>Email of account to retreive</p></td>
+            <td class="description last"><p>Email of account to retreive.</p></td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>successCb</code></td>
+                <td class="name"><code>onSuccess</code></td>
             
 
             <td class="type">
@@ -310,14 +310,14 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 
             
 
-            <td class="description last"><p>Function that returns account info once it is loaded</p></td>
+            <td class="description last"><p>Function that returns account info once it is loaded.</p></td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>errorCb</code></td>
+                <td class="name"><code>onError</code></td>
             
 
             <td class="type">
@@ -333,7 +333,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 
             
 
-            <td class="description last"><p>Function that runs if there is an error</p></td>
+            <td class="description last"><p>Function that runs if there is an error.</p></td>
         </tr>
 
 	
@@ -370,7 +370,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-178">line 178</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-232">line 232</a>
 			</li>
 		</ul>
 	</dd>
@@ -410,7 +410,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
         
             
 <dt>
-    <h4 class="name" id="accountByUid"><span class="type-signature"></span>accountByUid<span class="signature">(uid, successCb, errorCb)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="accountByUid"><span class="type-signature"></span>accountByUid<span class="signature">(uid, onSuccess, onError)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -468,14 +468,14 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 
             
 
-            <td class="description last"><p>Unique Id for account</p></td>
+            <td class="description last"><p>Unique Id for account.</p></td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>successCb</code></td>
+                <td class="name"><code>onSuccess</code></td>
             
 
             <td class="type">
@@ -491,14 +491,14 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 
             
 
-            <td class="description last"><p>Function that returns account info once it is loaded</p></td>
+            <td class="description last"><p>Function that returns account info once it is loaded.</p></td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>errorCb</code></td>
+                <td class="name"><code>onError</code></td>
             
 
             <td class="type">
@@ -514,12 +514,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 
             
 
-            <td class="description last"><p>Function that runs if there is an error
-fa.accountByUid('simplelogin:1', function(account){
-  console.log('Account for user with uid: ' + uid + ' is : ', account);
-}, function(err){
-   console.error('Error getting account for ' + uid + ' : ', err);
-});</p></td>
+            <td class="description last"><p>Function that runs if there is an error.</p></td>
         </tr>
 
 	
@@ -556,7 +551,7 @@ fa.accountByUid('simplelogin:1', function(account){
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-157">line 157</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-211">line 211</a>
 			</li>
 		</ul>
 	</dd>
@@ -581,12 +576,23 @@ fa.accountByUid('simplelogin:1', function(account){
     
     
     
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Get account for uid: simplelogin:1
+fa.accountByUid(&#x27;simplelogin:1&#x27;, function(account){
+  console.log(&#x27;Account for user with uid: &#x27; + uid + &#x27; is : &#x27;, account);
+}, function(err){
+   console.error(&#x27;Error getting account for &#x27; + uid + &#x27; : &#x27;, err);
+});</pre>
+
+
+    
 </dd>
 
         
             
 <dt>
-    <h4 class="name" id="createObject"><span class="type-signature"></span>createObject<span class="signature">(listName, objectData, onComplete)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="createObject"><span class="type-signature"></span>createObject<span class="signature">(listName, objectData, onSuccess, onError)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -596,7 +602,7 @@ fa.accountByUid('simplelogin:1', function(account){
     <div class="description">
         <p>Creates an object provided the name of the list the object will go into and the object itself.
 The object is created with a createdAt parameter that is a server timestamp from Firebase.
-If a user is currently signed in, the object will contain the author's <code>$uid</code> under the author parameter. This is used for the getListByAuthor function.</p>
+If a user is currently signed in, the object will contain the author's <code>$uid</code> under the author parameter.</p>
     </div>
     
 
@@ -676,13 +682,13 @@ If a user is currently signed in, the object will contain the author's <code>$ui
 
         <tr>
             
-                <td class="name"><code>onComplete</code></td>
+                <td class="name"><code>onSuccess</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Fireadmin~createObjectCb</span>
+<span class="param-type">function</span>
 
 
             
@@ -692,7 +698,30 @@ If a user is currently signed in, the object will contain the author's <code>$ui
 
             
 
-            <td class="description last"><p>Function that runs when your object has been created successfully</p></td>
+            <td class="description last"><p>Function that runs when your object has been created successfully and returns newly created object.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error creating the object.</p></td>
         </tr>
 
 	
@@ -729,7 +758,7 @@ If a user is currently signed in, the object will contain the author's <code>$ui
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-43">line 43</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-44">line 44</a>
 			</li>
 		</ul>
 	</dd>
@@ -757,8 +786,8 @@ If a user is currently signed in, the object will contain the author's <code>$ui
         <h5>Example</h5>
         
     <pre class="sunlight-highlight-javascript">&#x2F;&#x2F;creates new message object in message list
-fa.createObject(&#x27;messages&#x27;, {title:Example, content:&quot;Cool Message&quot;}, function(newMsgRef){
- console.log(&#x27;New Message created successfuly&#x27;);
+fa.createObject(&#x27;messages&#x27;, {title:Example, content:&quot;Cool Message&quot;}, function(newMsg){
+ console.log(&#x27;New Message created successfuly:&#x27;, newMsg);
 }, function(err){
  console.error(&#x27;Error creating new message:&#x27;, err);
 });</pre>
@@ -770,7 +799,7 @@ fa.createObject(&#x27;messages&#x27;, {title:Example, content:&quot;Cool Message
         
             
 <dt>
-    <h4 class="name" id="emailAuth"><span class="type-signature"></span>emailAuth<span class="signature">(loginData, successCb, errorCb)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="emailAuth"><span class="type-signature"></span>emailAuth<span class="signature">(loginData, onSuccess, onError)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -835,7 +864,7 @@ fa.createObject(&#x27;messages&#x27;, {title:Example, content:&quot;Cool Message
 
         <tr>
             
-                <td class="name"><code>successCb</code></td>
+                <td class="name"><code>onSuccess</code></td>
             
 
             <td class="type">
@@ -858,7 +887,7 @@ fa.createObject(&#x27;messages&#x27;, {title:Example, content:&quot;Cool Message
 
         <tr>
             
-                <td class="name"><code>errorCb</code></td>
+                <td class="name"><code>onError</code></td>
             
 
             <td class="type">
@@ -911,7 +940,7 @@ fa.createObject(&#x27;messages&#x27;, {title:Example, content:&quot;Cool Message
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-70">line 70</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-71">line 71</a>
 			</li>
 		</ul>
 	</dd>
@@ -1050,7 +1079,7 @@ fb.emailAuth({email:test@test.com, password:&#x27;testtest&#x27;}, function(auth
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-245">line 245</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-299">line 299</a>
 			</li>
 		</ul>
 	</dd>
@@ -1098,7 +1127,7 @@ var userRef = fa.fbRef([&#x27;users&#x27;, uid]);</pre>
         
             
 <dt>
-    <h4 class="name" id="objectCount"><span class="type-signature"></span>objectCount<span class="signature">(listPath, onComplete, onError)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="listByCurrentUser"><span class="type-signature"></span>listByCurrentUser<span class="signature">(listName, onSuccess, onError)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -1106,7 +1135,189 @@ var userRef = fa.fbRef([&#x27;users&#x27;, uid]);</pre>
     
     
     <div class="description">
-        <p>Get count of objects in a given list</p>
+        <p>Gets list of objects created by the currently logged in User.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>listName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The name of the list the objects will be grabbed from.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs when the list has been retrieved successfully</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-101">line 101</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Signin User with email and password
+fb.listByCurrentUser(&quot;messages&quot;, function(messageList){
+ console.log(&#x27;List of messages by currently logged in user:&#x27;, messageList);
+}, function(err){
+ console.error(&#x27;Error getting message list:&#x27;, err);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="listByUid"><span class="type-signature"></span>listByUid<span class="signature">(listPath, Uid, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Gets list of objects created by the currently logged in User.</p>
     </div>
     
 
@@ -1146,7 +1357,216 @@ var userRef = fa.fbRef([&#x27;users&#x27;, uid]);</pre>
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p><code>Required</code> The name or path of the list the objects will be grabbed from.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>Uid</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p><code>Required</code> The Uid of the user that created objects.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p><code>Not Required</code> Function that runs when the list has been retrieved successfully</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p><code>Not Required</code> Function that runs if there is an error.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-131">line 131</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Signin User with email and password
+var uid = &quot;simplelogin:1&quot;;
+fb.listByUid(&quot;messages&quot;, uid, function(messageList){
+ console.log(&#x27;List of messages by &#x27; + uid + &#x27; : &#x27;, messageList);
+}, function(err){
+ console.error(&#x27;Error getting message list:&#x27;, err);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="objectCount"><span class="type-signature"></span>objectCount<span class="signature">(listPath, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Get count of objects in a given path or list</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>listPath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
 |
 
 <span class="param-type">Array</span>
@@ -1166,7 +1586,7 @@ var userRef = fa.fbRef([&#x27;users&#x27;, uid]);</pre>
 
         <tr>
             
-                <td class="name"><code>onComplete</code></td>
+                <td class="name"><code>onSuccess</code></td>
             
 
             <td class="type">
@@ -1242,7 +1662,7 @@ var userRef = fa.fbRef([&#x27;users&#x27;, uid]);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-102">line 102</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-154">line 154</a>
 			</li>
 		</ul>
 	</dd>
@@ -1285,7 +1705,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
         
             
 <dt>
-    <h4 class="name" id="onlineUserCount"><span class="type-signature"></span>onlineUserCount<span class="signature">(successCb, errorCb)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="onlineUserCount"><span class="type-signature"></span>onlineUserCount<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -1293,7 +1713,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
     
     
     <div class="description">
-        <p>Get user the number of users that are currently online.</p>
+        <p>Get the number of users that are currently online.</p>
     </div>
     
 
@@ -1327,7 +1747,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 
         <tr>
             
-                <td class="name"><code>successCb</code></td>
+                <td class="name"><code>onSuccess</code></td>
             
 
             <td class="type">
@@ -1350,7 +1770,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 
         <tr>
             
-                <td class="name"><code>errorCb</code></td>
+                <td class="name"><code>onError</code></td>
             
 
             <td class="type">
@@ -1403,7 +1823,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-137">line 137</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-189">line 189</a>
 			</li>
 		</ul>
 	</dd>
@@ -1499,7 +1919,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 
             
 
-            <td class="description last"><p>Unique Id for user that presence is being setup for</p></td>
+            <td class="description last"><p>Unique Id for user that for which presence is being setup.</p></td>
         </tr>
 
 	
@@ -1536,7 +1956,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-197">line 197</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-251">line 251</a>
 			</li>
 		</ul>
 	</dd>
@@ -1566,7 +1986,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
         
             
 <dt>
-    <h4 class="name" id="userCount"><span class="type-signature"></span>userCount<span class="signature">(onComplete, onError)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="userCount"><span class="type-signature"></span>userCount<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -1608,7 +2028,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 
         <tr>
             
-                <td class="name"><code>onComplete</code></td>
+                <td class="name"><code>onSuccess</code></td>
             
 
             <td class="type">
@@ -1684,7 +2104,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-120">line 120</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-172">line 172</a>
 			</li>
 		</ul>
 	</dd>

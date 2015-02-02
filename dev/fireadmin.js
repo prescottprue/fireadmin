@@ -27,15 +27,16 @@
   /**
    * Creates an object provided the name of the list the object will go into and the object itself.
    * The object is created with a createdAt parameter that is a server timestamp from Firebase.
-   * If a user is currently signed in, the object will contain the author's `$uid` under the author parameter. This is used for the getListByAuthor function.
+   * If a user is currently signed in, the object will contain the author's `$uid` under the author parameter.
    * @memberOf Fireadmin#
    * @param {String} listName - The name of the list the object will be put into.
    * @param {Object} objectData - Data you wish to be contained within new object
-   * @param {Fireadmin~createObjectCb} onComplete - Function that runs when your object has been created successfully
+   * @param {Function} onSuccess - Function that runs when your object has been created successfully and returns newly created object.
+   * @param {Function} onError - Function that runs if there is an error creating the object.
    * @example
    * //creates new message object in message list
-   * fa.createObject('messages', {title:Example, content:"Cool Message"}, function(newMsgRef){
-   *  console.log('New Message created successfuly');
+   * fa.createObject('messages', {title:Example, content:"Cool Message"}, function(newMsg){
+   *  console.log('New Message created successfuly:', newMsg);
    * }, function(err){
    *  console.error('Error creating new message:', err);
    * });
@@ -48,7 +49,7 @@
     obj.createdAt = Date.now();
     var newObjRef = this.child(listName).push(obj, function(err){
       if(!err){
-        handleCb(successCb, newObjRef);
+        handleCb(successCb, obj);
       } else {
         handleCb(errorCb, err);
       }
@@ -57,8 +58,8 @@
   /** Modified version of Firebase's authWithPassword that handles presence
    * @memberOf Fireadmin#
    * @param {object} loginData Login data of new user
-   * @param {Function} successCb Function that runs when the user is successfully authenticated with presence enabled.
-   * @param {Fireadmin~errorCb} errorCb Function that runs if there is an error
+   * @param {Function} onSuccess Function that runs when the user is successfully authenticated with presence enabled.
+   * @param {Fireadmin~errorCb} onError Function that runs if there is an error
    * @example
    * // Signin User with email and password
    * fb.emailAuth({email:test@test.com, password:'testtest'}, function(auth){
@@ -84,10 +85,61 @@
     });
   };
   /**
-  * Get count of objects in a given list
+  * Gets list of objects created by the currently logged in User.
   * @memberof Fireadmin#
-  * @param {string|Array} listPath - The name or path of the list of which to count.
-  * @param {Function} onComplete - Function that runs on completion of gathering list count.
+  * @param {String} listName - The name of the list the objects will be grabbed from.
+  * @param {Function} onSuccess - Function that runs when the list has been retrieved successfully
+  * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
+  * @example
+  * // Signin User with email and password
+  * fb.listByCurrentUser("messages", function(messageList){
+  *  console.log('List of messages by currently logged in user:', messageList);
+  * }, function(err){
+  *  console.error('Error getting message list:', err);
+  * });
+  */
+  Fireadmin.prototype.listByCurrentUser = function(listName, successCb, errorCb) {
+    var auth = this.getAuth();
+    if(auth != null) {
+      this.child(listName).orderByChild('author').equalTo(auth.uid).on('value', function(listSnap){
+        handleCb(successCb, listSnap.val());
+      }, function(err){
+        handleCb(errorCb, err);
+      });
+    } else {
+      var error = {code:"INVALID_AUTH", message:'listByCurrentUser cannot load list without current user'};
+      console.error(error.message);
+      handleCb(errorCb, error);
+    }
+  };
+  /**
+  * Gets list of objects created by the currently logged in User.
+  * @memberof Fireadmin#
+  * @param {String | Array} listPath - `Required` The name or path of the list the objects will be grabbed from.
+  * @param {String} Uid - `Required` The Uid of the user that created objects.
+  * @param {Function} onSuccess - `Not Required` Function that runs when the list has been retrieved successfully
+  * @param {Fireadmin~errorCb} onError - `Not Required` Function that runs if there is an error.
+  * @example
+  * // Signin User with email and password
+  * var uid = "simplelogin:1";
+  * fb.listByUid("messages", uid, function(messageList){
+  *  console.log('List of messages by ' + uid + ' : ', messageList);
+  * }, function(err){
+  *  console.error('Error getting message list:', err);
+  * });
+  */
+  Fireadmin.prototype.listByUid = function(listPath, uid, successCb, errorCb) {
+    this.fbRef(listPath).orderByChild('author').equalTo(uid).on('value', function(listSnap){
+      handleCb(successCb, listSnap.val());
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
+  /**
+  * Get count of objects in a given path or list
+  * @memberof Fireadmin#
+  * @param {String | Array} listPath - The name or path of the list of which to count.
+  * @param {Function} onSuccess - Function that runs on completion of gathering list count.
   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
   * @example
   * //String list name
@@ -110,7 +162,7 @@
   /**
   * Get total user count
   * @memberof Fireadmin#
-  * @param {Function} onComplete - Function that returns total user count.
+  * @param {Function} onSuccess - Function that returns total user count.
   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
   * @example
   * fa.userCount("users", function(count){
@@ -124,10 +176,10 @@
       handleCb(errorCb, err);
     });
   };
-  /** Get user the number of users that are currently online.
+  /** Get the number of users that are currently online.
   * @memberOf Fireadmin#
-  * @param {Function} successCb Function that returns number of users currently online
-  * @param {Fireadmin~errorCb} errorCb Function that runs if there is an error
+  * @param {Function} onSuccess Function that returns number of users currently online
+  * @param {Fireadmin~errorCb} onError Function that runs if there is an error
   * @example
   * fa.onlineUserCount(function(count){
   *   console.log('There are ' + count + ' users currently online.');
@@ -144,9 +196,11 @@
   };
   /** Get account for a user given their uid.
   * @memberOf Fireadmin#
-  * @param {String} uid Unique Id for account
-  * @param {Function} successCb Function that returns account info once it is loaded
-  * @param {Fireadmin~errorCb} errorCb Function that runs if there is an error
+  * @param {String} uid Unique Id for account.
+  * @param {Function} onSuccess Function that returns account info once it is loaded.
+  * @param {Fireadmin~errorCb} onError Function that runs if there is an error.
+  * @example
+  * // Get account for uid: simplelogin:1
   * fa.accountByUid('simplelogin:1', function(account){
   *   console.log('Account for user with uid: ' + uid + ' is : ', account);
   * }, function(err){
@@ -164,9 +218,9 @@
   };
   /** Get user account that is associated to a given email.
    * @memberOf Fireadmin#
-   * @param {String} email Email of account to retreive
-   * @param {Function} successCb Function that returns account info once it is loaded
-   * @param {Fireadmin~errorCb} errorCb Function that runs if there is an error
+   * @param {String} email Email of account to retreive.
+   * @param {Function} onSuccess Function that returns account info once it is loaded.
+   * @param {Fireadmin~errorCb} onError Function that runs if there is an error.
    * @example
    * fa.accountByEmail("test@test.com", function(account){
    *   console.log('Account loaded:' + account);
@@ -191,7 +245,7 @@
 
   /** Start presence management for a specificed user uid. This function is used within Fireadmin login functions.
   * @memberOf Fireadmin#
-  * @param {string} uid Unique Id for user that presence is being setup for
+  * @param {string} uid Unique Id for user that for which presence is being setup.
   *
   */
   Fireadmin.prototype.setupPresence = function(uid){
@@ -254,7 +308,7 @@
 
   /** Handle Callback functions by checking for existance and returning with val if avaialble
   * @function handleCb
-  * @param callback {function} Callback function to handle
+  * @param callback {Function} Callback function to handle
   * @param value {string|object|array} Value to provide to callback function
   * @example
   * //Handle successCb
