@@ -1,7 +1,5 @@
 module.exports = function(grunt) {
-    grunt.registerTask('watch', ['watch']);
-    grunt.registerTask('stage', ['jsdoc', 'uglify', 'aws_s3:staging', 'aws_s3:stageDocs'])
-
+    require('load-grunt-tasks')(grunt);
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -53,7 +51,8 @@ module.exports = function(grunt) {
               uploadConcurrency: 30
             },
             files:[
-          {'action': 'upload', expand: true, cwd: '<%= config.distFolder %>/docs', src: ['**'], dest: '<%= env.BucketFolder %>/<%= pkg.version %>/docs', differential:true}
+          {'action': 'upload', expand: true, cwd: '<%= config.distFolder %>', src: ['**'], dest: '<%= env.BucketFolder %>/<%= pkg.version %>', differential:true},
+              {'action': 'upload', expand: true, cwd: '<%= config.distFolder %>', src: ['**'], dest: '<%= env.BucketFolder %>/current', differential:true}
             ]
           },
           stageDocs:{
@@ -92,11 +91,11 @@ module.exports = function(grunt) {
         },
         jsdoc: {
           dev:{
-            src: ['<%= config.devFolder %>'],
+            src: ['<%= config.devFolder %>/fireadmin.js'],
             options: {
-              destination: '<%= config.devFolder %>/docs',
-              template:'node_modules/grunt-jsdoc/template',
-              configure : "node_modules/grunt-jsdoc/template/jsdoc.conf.json"
+              destination: '<%= config.distFolder %>/docs',
+              template:'node_modules/grunt-jsdoc/node_modules/ink-docstrap/template',
+              configure : "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template/jsdoc.conf.json"
             }
           }
         },

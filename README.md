@@ -19,6 +19,11 @@ Prototypes are added to Firebase object so that all references will contain Fire
   var fa = new Fireadmin("https://<your-app>.firebaseio.com");
   ```
 
+## Documentation
+Documentation is automatically generated with JSDoc and is included in this repo under `dist/docs`.
+
+There is also a hosted version available: [Docs Page](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)
+
 ## Planning
 * Implement [Google Closure Library](https://github.com/google/closure-library)
 * Unit Tests
