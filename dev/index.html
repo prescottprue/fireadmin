@@ -3,4 +3,7 @@
 <script>
 	var fa = new Fireadmin("https://pruvit.firebaseio.com");
 	console.log('Fireadmin:', fa);
+	fa.userCount(function(count){
+		console.log('count:', count);
+	});
 </script>
