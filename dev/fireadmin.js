@@ -1,3 +1,4 @@
+(function(window, document){
 
   //Initialize Library
   init();
@@ -9,7 +10,7 @@
    * //Create new Fireadmin Object
    * var fa = new Fireadmin("https://<your-app>.firebaseio.com");
    */
-
+  window.Fireadmin = Fireadmin;
   function Fireadmin(url, optionsObj) {
     if(typeof url == "undefined" || typeof url != "string"){
       throw new Error('Url is required to use FireAdmin');
@@ -47,7 +48,7 @@
       obj.author = auth.uid;
     }
     obj.createdAt = Date.now();
-    var newObjRef = this.ref.child(listName).push(obj, function(err){
+    this.ref.child(listName).push(obj, function(err){
       if(!err){
         handleCb(successCb, obj);
       } else {
@@ -83,6 +84,84 @@
         handleCb(errorCb, error);
       }
     });
+  };
+  /** Modified version of Firebase's authWithOAuthPopup function that handles presence
+   * @memberOf Fireadmin#
+   * @param {String} provider `Required` Login data of new user
+   * @param {Function} onSuccess `Not Required` Function that runs when the user is successfully authenticated with presence enabled.
+   * @param {Fireadmin~errorCb} onError `Not Required` Function that runs if there is an error
+   * @example
+   * // Signin User with email and password
+   * fb.authWithOAuthPopup("google", function(auth){
+   *  console.log('Login Successful for user:', auth.uid);
+   * }, function(err){
+   *  console.error('Error logging in:', err);
+   * });
+   */
+  Fireadmin.prototype.authWithOAuthPopup = function(provider, successCb, errorCb){
+    var self = this.ref;
+    //[TODO] Check enabled login types
+    self.authWithOAuthPopup(provider, function(error, authData) {
+      if (error === null) {
+        // user authenticated with Firebase
+        console.log("User ID: " + authData.uid + ", Provider: " + authData.provider);
+        // Manage presence
+        self.setupPresence(authData.uid);
+        // [TODO] Check for account/Add account if it doesn't already exist
+        handleCb(successCb, authData);
+      } else {
+        console.error("Error authenticating user:", error);
+        handleCb(errorCb, error);
+      }
+    });
+  };
+    /** Log in with Github through OAuth
+   * @memberOf Fireadmin#
+   * @param {Function} onSuccess `Not Required` Function that runs when the user is successfully authenticated with presence enabled.
+   * @param {Fireadmin~errorCb} onError `Not Required` Function that runs if there is an error
+   * @example
+   * // Signin User with email and password
+   * fb.githubAuth(function(auth){
+   *  console.log('Login Successful for user:', auth.uid);
+   * }, function(err){
+   *  console.error('Error logging in:', err);
+   * });
+   */
+  Fireadmin.prototype.githubAuth = function(successCb, errorCb){
+    var self = this.ref;
+    return this.authWithOAuthPopup("github", successCb, errorCb);
+  };
+  /** Modified version of Firebase's authWithPassword that handles presence
+   * @memberOf Fireadmin#
+   * @param {Function} onSuccess Function that runs when the user is successfully authenticated with presence enabled.
+   * @param {Fireadmin~errorCb} onError Function that runs if there is an error
+   * @example
+   * // Signin User with email and password
+   * fb.githubAuth(function(auth){
+   *  console.log('Login Successful for user:', auth.uid);
+   * }, function(err){
+   *  console.error('Error logging in:', err);
+   * });
+   */
+  Fireadmin.prototype.googleAuth = function(successCb, errorCb){
+    var self = this.ref;
+    return this.authWithOAuthPopup("google", successCb, errorCb);
+  };
+  /** Modified version of Firebase's authWithPassword that handles presence
+   * @memberOf Fireadmin#
+   * @param {Function} onSuccess Function that runs when the user is successfully authenticated with presence enabled.
+   * @param {Fireadmin~errorCb} onError Function that runs if there is an error
+   * @example
+   * // Signin User with email and password
+   * fb.githubAuth(function(auth){
+   *  console.log('Login Successful for user:', auth.uid);
+   * }, function(err){
+   *  console.error('Error logging in:', err);
+   * });
+   */
+  Fireadmin.prototype.twitterAuth = function(successCb, errorCb){
+    var self = this.ref;
+    return this.authWithOAuthPopup("twitter", successCb, errorCb);
   };
   /**
   * Gets list of objects created by the currently logged in User.
@@ -346,4 +425,4 @@
   function stringifyVersion(version){
     return version.replace(".", "").replace(".", "");
   }
-
+})(window, document);
