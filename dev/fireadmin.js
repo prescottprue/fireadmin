@@ -1,5 +1,4 @@
 
-(function(window, document){
   //Initialize Library
   init();
   /**
@@ -10,13 +9,14 @@
    * //Create new Fireadmin Object
    * var fa = new Fireadmin("https://<your-app>.firebaseio.com");
    */
+
   function Fireadmin(url, optionsObj) {
     if(typeof url == "undefined" || typeof url != "string"){
       throw new Error('Url is required to use FireAdmin');
     }
-    this = new Firebase(url);
-    this.fbUrl = url;
-    return this
+    var self = new Firebase(url);
+    self.fbUrl = url;
+    return self
   }
   /**
   * This callback is displayed as part of the Requester class.
@@ -348,4 +348,3 @@
     return version.replace(".", "").replace(".", "");
   }
 
-})(window, document);
