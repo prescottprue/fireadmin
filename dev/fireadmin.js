@@ -2,6 +2,8 @@
 
   //Initialize Library
   init();
+  goog.require('goog.net.XhrIo');
+  goog.require('goog.object');
   /**
    * Creates a Fireadmin object
    * @constructor Fireadmin
@@ -27,51 +29,6 @@
     return this;
   }
 
-  function AppNameFromUrl(url){
-    //remove https:// from beginging and .firebaseio.com from the end
-    return url.replace("https://", "").replace(".firebaseio.com", "");
-  }
-  goog.require('goog.net.XhrIo');
-  
-  function apiRequest(reqLocation, reqData, successCb, errorCb) {
-    var serverUrl = "http://localhost:4000";
-    var reqUrl = serverUrl + "/"+ reqLocation;
-    console.log('apiRequest sending to '+ reqUrl + ' ...');
-    //goog.net.XhrIo.send(url, callback, method, content, headers)
-    goog.net.XhrIo.send(reqUrl, function(e){
-      if(e.target.isComplete() && e.target.isSuccess()){
-        var res = e.target.getResponse();
-        console.log('apiRequest responded:', res);
-        //Check for existance of response, that it has content, and that content contains a property "url"
-        if(res){
-          //Save image object to firebase that includes new image url
-          handleCb(successCb, res);
-        } else {
-          console.error('Server error');
-          handleCb(errorCb, {code:"SERVER_ERROR"});
-        }
-      } else {
-        handleCb(errorCb, e.target.getLastError());
-      }
-    }, "POST", reqData);
-  }
-  // Fireadmin.prototype.uploadImage = function(img, successCb, errorCb){
-  //   //Send file to server
-  //   var fa = this;
-  //   var reqData = {appName:fa.appName, image:img};
-  //   //goog.net.XhrIo.send(url, callback, method, content, headers)
-  //   apiRequest("upload", reqData, function(res){
-  //     if(res.hasOwnProperty('url')){
-  //       var imgDataObj = {url:res.url};
-  //       console.log('Image data object:', imgDataObj);
-  //       handleCb(successCb, imgDataObj);
-  //     } else {
-  //       handleCb(errorCb, {code:"SERVER_ERROR"});
-  //     }
-  //   }, function(err){
-  //     handleCb(errorCb, err);
-  //   });
-  // };
   /**
   * This callback is displayed as part of the Requester class.
   * @callback Fireadmin~errorCb
@@ -109,6 +66,80 @@
       }
     });
   };
+
+
+  /** Modified version of Firebase's authWithPassword that handles presence
+   * @memberOf Fireadmin#
+   * @param {object} loginData Login data of new user
+   * @param {Function} onSuccess Function that runs when the user is successfully authenticated with presence enabled.
+   * @param {Fireadmin~errorCb} onError Function that runs if there is an error
+   * @example
+   * // Signin User with email and password
+   * fb.userSignup({email:test@test.com, password:'testtest'}, function(auth){
+   *  console.log('Login Successful for user:', auth.uid);
+   * }, function(err){
+   *  console.error('Error logging in:', err);
+   * });
+   */
+  Fireadmin.prototype.userSignup = function(signupData, successCb, errorCb){
+    var self = this;
+    if(typeof signupData == 'object' && signupData.hasOwnProperty('email')) {
+      //Email signup
+      if(!signupData.hasOwnProperty('password') && signupData.password.length < 8){
+        return handleCb(errorCb,{message:'A valid Password is required to signup.'});
+      }
+      //Create new user in simple login
+      self.createUser(signupData, function(error) {
+        if (error === null) {
+          console.log("[emailSignup] User created successfully. Logging in as new user...");
+            // Login with new account
+            self.emailAuth(signupData, function(authData){
+              //Create new user profile
+              createUserProfile(authData, self.ref, function(userAccount){
+                handleCb(successCb, userAccount);
+              }, function(err){
+                //Error creating profile
+                handleCb(errorCb, err);
+              });
+            }, function(err){
+              //Error authing with email
+              handleCb(errorCb, err);
+            });
+        } else {
+          //Error creating new User
+          console.error("[emailSignup] Error creating user:", error.message);
+          handleCb(errorCb, error);
+        }
+      });
+      }, function(error){
+        console.error('[emailSignup] Error checking for existing account:', error);
+        handleCb(errorCb, error);
+      });
+    } else if (typeof signupData == 'string' || signupData.hasOwnProperty('type')){
+      //3rd Party Signup
+      if(typeof signupData == 'string'){
+        var provider = signupData;
+
+      } else if(signupData.hasOwnProperty('type')){
+        var provider = signupData.type;
+      }
+      // Auth using 3rd party OAuth
+      self.authWithOAuthPopup(provider, function(err, authData){
+        if(!err){
+          //Create new profile with user data
+          createUserProfile(authData, self.ref, function(userAccount){
+            handleCb(successCb, userAccount);
+          }, function(err){
+            //Error creating profile
+            handleCb(errorCb, err);
+          });
+
+        } else {
+          handleCb(errorCb, err);
+        }
+      });
+    }
+  };
   /** Modified version of Firebase's authWithPassword that handles presence
    * @memberOf Fireadmin#
    * @param {object} loginData Login data of new user
@@ -137,96 +168,6 @@
         handleCb(errorCb, error);
       }
     });
-  };
-  goog.require('goog.object');
-   function createUserProfile(authData, ref, successCb, errorCb){
-    console.log('createUserAccount called:', arguments);
-    var userRef = ref.child('users').child(authData.uid);
-    var userObj = {role:10, provider: authData.provider};
-    if(authData.provider == 'password') {
-      userObj.email = authData.password.email;
-    } else {
-      console.log('create 3rd party linked profile:', authData);
-      goog.object.extend(userObj, authData);
-    }
-    //Check if account with given email already exists
-    ref.child('users').orderByChild('email').equalTo(signupData.email).on('value', function(userQuery){
-      if(!userQuery.val()){
-        //Account with given email does not already exist
-        userRef.once('value', function(userSnap){
-          if(userSnap.val() == null || userSnap.hasChild('sessions')) {
-            userObj.createdAt = Firebase.ServerValue.TIMESTAMP;
-            // [TODO] Add check for email before using it as priority
-            userRef.setWithPriority(userObj, userObj.email, function(err){
-              if(!err){
-                console.log('New user account created:', userSnap.val());
-                handleCb(successCb, userSnap.val());
-              } else {
-                handleCb(errorCb, {message:'Error creating user profile'});
-              }
-            });
-          } else {
-            console.error('User account already exists', userSnap.val());
-            handleCb(errorCb, userSnap.val());
-          }
-        });
-      } else {
-        // console.warn('Account already exists. Session must have been added already:', JSON.stringify(userQuery.val()));
-        // successCb(userQuery.val());
-        var error = {message:'This email has already been used to create an account', account: JSON.stringify(userQuery.val()), status:'ACCOUNT_EXISTS'}
-        handleCb(errorCb, error);
-      }
-    }, function(err){
-      //Error querying for account with email
-      handleCb(errorCb, err);
-    });
-   };
-  /** Modified version of Firebase's authWithPassword that handles presence
-   * @memberOf Fireadmin#
-   * @param {object} loginData Login data of new user
-   * @param {Function} onSuccess Function that runs when the user is successfully authenticated with presence enabled.
-   * @param {Fireadmin~errorCb} onError Function that runs if there is an error
-   * @example
-   * // Signin User with email and password
-   * fb.emailSignup({email:test@test.com, password:'testtest'}, function(auth){
-   *  console.log('Login Successful for user:', auth.uid);
-   * }, function(err){
-   *  console.error('Error logging in:', err);
-   * });
-   */
-  Fireadmin.prototype.userSignup = function(signupData, successCb, errorCb){
-    var self = this;
-    if(typeof signupData == 'object' && signupData.hasOwnProperty('email')) {
-      //Email signup
-      if(!signupData.hasOwnProperty('password') && signupData.password.length < 8){
-        return handleCb(errorCb,{message:'A valid Password is required to signup.'});
-      }
-      self.createUser(signupData, function(error) {
-        if (error === null) {
-          console.log("[emailSignup] User created successfully. Logging in as new user...");
-          // Login with new account and create profile
-            self.emailAuth(signupData, function(authData){
-              //Create new user profile
-              createUserProfile(authData, self.ref, function(userAccount){
-                handleCb(successCb, userAccount);
-              }, function(err){
-                handleCb(errorCb, err);
-              });
-            }, function(err){
-              hanldeCb(errorCb, err);
-            });
-        } else {
-          console.error("[emailSignup] Error creating user:", error.message);
-          errorCb(error);
-        }
-      });
-      }, function(error){
-        console.error('[emailSignup] Error checking for existing account:', error);
-        errorCb(error);
-      });
-    } else if(typeof signupData == 'string' || signupData.hasOwnProperty('type')) {
-      //3rd Party Signup
-    }
   };
   /** Modified version of Firebase's authWithOAuthPopup function that handles presence
    * @memberOf Fireadmin#
@@ -525,8 +466,138 @@
       ref = ref.child(pathRef(args));
     }
     return ref;
+  };
+  /** Uploads image to Fireadmin and returns url
+   * @memberOf Fireadmin#
+   * @param {Object} image Image file object to upload
+   * @param {Function} onSuccess Function that runs when upload request has completed successfully
+   * @param {Fireadmin~errorCb} onError Function that runs if there is an error
+   * @example
+   * // Request to /upload with image object
+   * fa.uploadImage({img:imgObj}, function(res){
+   *  console.log('Image upload completed successfully', res);
+   * }, function(err){
+   *  console.error('Error uploading image:', err);
+   * });
+   */
+  Fireadmin.prototype.uploadImage = function(img, successCb, errorCb){
+    //Send file to server
+    var fa = this;
+    var reqData = {appName:fa.appName, image:img};
+    apiRequest("upload", reqData, function(res){
+      if(res.hasOwnProperty('url')){
+        var imgDataObj = {url:res.url};
+        console.log('Image data object:', imgDataObj);
+        handleCb(successCb, imgDataObj);
+      } else {
+        handleCb(errorCb, {code:"SERVER_ERROR"});
+      }
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
+  /** 
+   * Extracts an app name out of a Firebase url
+   * @function AppNameFromUrl
+   * @param {String} authData Login data of new user
+   * @returns {String} appName App name extracted from url
+   */
+  function AppNameFromUrl(url){
+    //remove https:// from beginging and .firebaseio.com from the end
+    return url.replace("https://", "").replace(".firebaseio.com", "");
   }
-
+  /** Makes a post request to the Fireadmin API
+   * @function apiRequest
+   * @param {String} path `Required` Path of request within api
+   * @param {Object} data Data to include in post request
+   * @param {Function} onSuccess Function that runs when request has completed successfully
+   * @param {Fireadmin~errorCb} onError Function that runs if there is an error
+   * @example
+   * // Request to /upload with image object
+   * apiRequest("upload", {img:imgObj}, function(res){
+   *  console.log('Api request to upload completed successfully', res);
+   * }, function(err){
+   *  console.error('Error requesting to upload:', err);
+   * });
+   */  
+  function apiRequest(reqLocation, reqData, successCb, errorCb) {
+    var serverUrl = "http://localhost:4000";
+    var reqUrl = serverUrl + "/"+ reqLocation;
+    console.log('apiRequest sending to '+ reqUrl + ' ...');
+    //goog.net.XhrIo.send(url, callback, method, content, headers)
+    goog.net.XhrIo.send(reqUrl, function(e){
+      if(e.target.isComplete() && e.target.isSuccess()){
+        var res = e.target.getResponse();
+        console.log('apiRequest responded:', res);
+        //Check for existance of response, that it has content, and that content contains a property "url"
+        if(res){
+          //Save image object to firebase that includes new image url
+          handleCb(successCb, res);
+        } else {
+          console.error('Server error');
+          handleCb(errorCb, {code:"SERVER_ERROR"});
+        }
+      } else {
+        handleCb(errorCb, e.target.getLastError());
+      }
+    }, "POST", reqData);
+  }
+  /** Create a new user profile under "users"
+   * @function createUserProfile
+   * @param {object} authData Login data of new user
+   * @param {reference} ref Main reference to create profile on
+   * @param {Function} onSuccess Function that runs when profile has been created sucessfully
+   * @param {Fireadmin~errorCb} onError Function that runs if there is an error
+   * @example
+   * // Create a new user profile
+   * createUserProfile({email:test@test.com, password:'testtest'}, fa.ref, function(auth){
+   *  console.log('Profile created successfully for user:', auth.uid);
+   * }, function(err){
+   *  console.error('Error creating user profile:', err);
+   * });
+   */
+  function createUserProfile(authData, ref, successCb, errorCb){
+    console.log('createUserAccount called:', arguments);
+    var userRef = ref.child('users').child(authData.uid);
+    var userObj = {role:10, provider: authData.provider};
+    if(authData.provider == 'password') {
+      userObj.email = authData.password.email;
+    } else {
+      console.log('create 3rd party linked profile:', authData);
+      goog.object.extend(userObj, authData);
+    }
+    //Check if account with given email already exists
+    ref.child('users').orderByChild('email').equalTo(signupData.email).on('value', function(userQuery){
+      if(!userQuery.val()){
+        //Account with given email does not already exist
+        userRef.once('value', function(userSnap){
+          if(userSnap.val() == null || userSnap.hasChild('sessions')) {
+            userObj.createdAt = Firebase.ServerValue.TIMESTAMP;
+            // [TODO] Add check for email before using it as priority
+            userRef.setWithPriority(userObj, userObj.email, function(err){
+              if(!err){
+                console.log('New user account created:', userSnap.val());
+                handleCb(successCb, userSnap.val());
+              } else {
+                handleCb(errorCb, {message:'Error creating user profile'});
+              }
+            });
+          } else {
+            console.error('User account already exists', userSnap.val());
+            handleCb(errorCb, userSnap.val());
+          }
+        });
+      } else {
+        // console.warn('Account already exists. Session must have been added already:', JSON.stringify(userQuery.val()));
+        // successCb(userQuery.val());
+        var error = {message:'This email has already been used to create an account', account: JSON.stringify(userQuery.val()), status:'ACCOUNT_EXISTS'}
+        handleCb(errorCb, error);
+      }
+    }, function(err){
+      //Error querying for account with email
+      handleCb(errorCb, err);
+    });
+  };
   /** Handle Callback functions by checking for existance and returning with val if avaialble
   * @function handleCb
   * @param callback {Function} Callback function to handle
