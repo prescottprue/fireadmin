@@ -1,7 +1,8 @@
 # FireAdmin
 
-Library to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD and Listing).
+FireAdmin is a all Javascript Library built to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD/ Listing/Counting).
 
+FireAdmin is especially useful when you are trying to administer a Firebase data set (hence the name). Administration dashboards are a breeze thanks to functions like `getOnlineUserCount()` that provide analytics data in simple and easy to understand calls.
 
 ## Getting Started
 1. Include both the Firebase library and  `fireadmin.js` in your `index.html` :
@@ -15,21 +16,38 @@ Library to simplify implementing standard app functionality when using Firebase 
 2. Create a new Fireadmin Object:
 
   ```javascript
-  var fa = new Fireadmin("https://<your-app>.firebaseio.com");
+var fa = new Fireadmin("https://<your-app>.firebaseio.com");
   ```
 
-## Documentation
-Documentation is automatically generated with JSDoc and is included in this repo under `dist/docs`.
+3. Start using Fireadmin!
 
-There is also a hosted version available: [Docs Page](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)
+    ```javascript
+    //Get count of users
+    fa.getUserCount(function(count){
+        console.log('Your app currently has ' + count + ' users.');
+    });
+    ```
+
+## API Documentation
+#### [Docs Page](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)
+
+API Documentation is automatically generated with JSDoc and is included in this repo under `dist/docs` if you would like to view a local version.
 
 ## Planning
+
 * Role Management
+* Automatic Rules Setup
 * Admin Parameter
-* Implement [Google Closure Library](https://github.com/google/closure-library)
+* Angular Integration
+* Seperate Structure with [Google Closure Library](https://github.com/google/closure-library)
 * Unit Tests
-* Multi Provider Login
 
 ## Contributing
 
-Fork repository and use `index.html` to test.
+1. Fork repository
+2. Run `npm install` to install dev dependencies.
+3. Run `grunt` to Serve and Open the dev environment.
+
+### Config
+
+`config.json` contains the configuration settings for Grunt. These settings include the name of the development/distribution folders and the Port on which to run the development web server.

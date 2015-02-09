@@ -66,8 +66,147 @@
       }
     });
   };
+  /**
+   * Gets list of objects created by the currently logged in User.
+   * @memberof Fireadmin#
+   * @param {String} listName - The name of the list the objects will be grabbed from.
+   * @param {Function} onSuccess - Function that runs when the list has been retrieved successfully
+   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
+   * @example
+   * // Signin User with email and password
+   * fb.listByCurrentUser("messages", function(messageList){
+   *  console.log('List of messages by currently logged in user:', messageList);
+   * }, function(err){
+   *  console.error('Error getting message list:', err);
+   * });
+   */
+  Fireadmin.prototype.listByCurrentUser = function(listName, successCb, errorCb) {
+    var auth = this.ref.getAuth();
+    if(auth != null) {
+      this.child(listName).orderByChild('author').equalTo(auth.uid).on('value', function(listSnap){
+        handleCb(successCb, listSnap.val());
+      }, function(err){
+        handleCb(errorCb, err);
+      });
+    } else {
+      var error = {code:"INVALID_AUTH", message:'listByCurrentUser cannot load list without current user'};
+      console.error(error.message);
+      handleCb(errorCb, error);
+    }
+  };
+  /**
+   * Gets list of objects created by the currently logged in User.
+   * @memberof Fireadmin#
+   * @param {String | Array} listPath - `Required` The name or path of the list the objects will be grabbed from.
+   * @param {String} Uid - `Required` The Uid of the user that created objects.
+   * @param {Function} onSuccess - `Not Required` Function that runs when the list has been retrieved successfully
+   * @param {Fireadmin~errorCb} onError - `Not Required` Function that runs if there is an error.
+   * @example
+   * // Signin User with email and password
+   * var uid = "simplelogin:1";
+   * fb.listByUid("messages", uid, function(messageList){
+   *  console.log('List of messages by ' + uid + ' : ', messageList);
+   * }, function(err){
+   *  console.error('Error getting message list:', err);
+   * });
+   */
+  Fireadmin.prototype.listByUid = function(listPath, uid, successCb, errorCb) {
+    this.fbRef(listPath).orderByChild('author').equalTo(uid).on('value', function(listSnap){
+      handleCb(successCb, listSnap.val());
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
 
 
+  /**
+  * Get count of objects in a given path or list
+  * @memberof Fireadmin#
+  * @param {String | Array} listPath - The name or path of the list of which to count.
+  * @param {Function} onSuccess - Function that runs on completion of gathering list count.
+  * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
+  * @example
+  * //String list name
+  * fa.getObjectCount("users", function(count){
+  *  console.log('There are ' + count + ' users');
+  * });
+  * //Array list path
+  * fa.getObjectCount(['messages', messageId, 'comments'], function(commentCount){
+  *  console.log('There are ' + commentCount + ' comments on the message with id: ' + messageId);
+  * });
+  */
+  Fireadmin.prototype.getObjectCount = function(listPath, successCb, errorCb){
+    this.fbRef(listPath).on('value', function(usersListSnap){
+      handleCb(successCb, usersListSnap.numChildren());
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
+  /**
+  * Get total user count
+  * @memberof Fireadmin#
+  * @param {Function} onSuccess - Function that returns total user count.
+  * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
+  * @example
+  * fa.getUserCount("users", function(count){
+  *  console.log('There are is a total of ' + count + ' users.');
+  * });
+  */
+  Fireadmin.prototype.getUserCount = function(successCb, errorCb){
+    this.ref.child('users').on('value', function(usersListSnap){
+      handleCb(successCb, usersListSnap.numChildren());
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
+  /** Get the number of users that are currently online.
+  * @memberOf Fireadmin#
+  * @param {Function} onSuccess Function that returns number of users currently online
+  * @param {Fireadmin~errorCb} onError Function that runs if there is an error
+  * @example
+  * fa.getOnlineUserCount(function(count){
+  *   console.log('There are ' + count + ' users currently online.');
+  * });
+  *
+  */
+  Fireadmin.prototype.getOnlineUserCount = function(successCb, errorCb){
+    this.ref.child('presence').on("value", function(onlineUserSnap){
+      console.log('There are currently' + count + ' users online.');
+      handleCb(successCb, onlineUserSnap.numChildren());
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
+  /** Uploads image to Fireadmin and returns url
+   * @memberOf Fireadmin#
+   * @param {Object} image Image file object to upload
+   * @param {Function} onSuccess Function that runs when upload request has completed successfully
+   * @param {Fireadmin~errorCb} onError Function that runs if there is an error
+   * @example
+   * // Request to /upload with image object
+   * fa.uploadImage({img:imgObj}, function(res){
+   *  console.log('Image upload completed successfully', res);
+   * }, function(err){
+   *  console.error('Error uploading image:', err);
+   * });
+   */
+  Fireadmin.prototype.uploadImage = function(img, successCb, errorCb){
+    //Send file to server
+    var fa = this;
+    var reqData = {appName:fa.appName, image:img};
+    apiRequest("upload", reqData, function(res){
+      if(res.hasOwnProperty('url')){
+        var imgDataObj = {url:res.url};
+        console.log('Image data object:', imgDataObj);
+        handleCb(successCb, imgDataObj);
+      } else {
+        handleCb(errorCb, {code:"SERVER_ERROR"});
+      }
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
+  // ------------------------- User/Auth Functionality ----------------------------
   /** Modified version of Firebase's authWithPassword that handles presence
    * @memberOf Fireadmin#
    * @param {object} loginData Login data of new user
@@ -85,7 +224,7 @@
     var self = this;
     if(typeof signupData == 'object' && signupData.hasOwnProperty('email')) {
       //Email signup
-      if(!signupData.hasOwnProperty('password') && signupData.password.length < 8){
+      if(!signupData.hasOwnProperty('password') && signupData.password.length <= 8){
         return handleCb(errorCb,{message:'A valid Password is required to signup.'});
       }
       //Create new user in simple login
@@ -111,10 +250,7 @@
           handleCb(errorCb, error);
         }
       });
-      }, function(error){
-        console.error('[emailSignup] Error checking for existing account:', error);
-        handleCb(errorCb, error);
-      });
+
     } else if (typeof signupData == 'string' || signupData.hasOwnProperty('type')){
       //3rd Party Signup
       if(typeof signupData == 'string'){
@@ -142,7 +278,7 @@
   };
   /** Modified version of Firebase's authWithPassword that handles presence
    * @memberOf Fireadmin#
-   * @param {object} loginData Login data of new user
+   * @param {Object} loginData Login data of new user
    * @param {Function} onSuccess Function that runs when the user is successfully authenticated with presence enabled.
    * @param {Fireadmin~errorCb} onError Function that runs if there is an error
    * @example
@@ -247,129 +383,21 @@
     var self = this.ref;
     return this.authWithOAuthPopup("twitter", successCb, errorCb);
   };
-  /**
-  * Gets list of objects created by the currently logged in User.
-  * @memberof Fireadmin#
-  * @param {String} listName - The name of the list the objects will be grabbed from.
-  * @param {Function} onSuccess - Function that runs when the list has been retrieved successfully
-  * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
-  * @example
-  * // Signin User with email and password
-  * fb.listByCurrentUser("messages", function(messageList){
-  *  console.log('List of messages by currently logged in user:', messageList);
-  * }, function(err){
-  *  console.error('Error getting message list:', err);
-  * });
-  */
-  Fireadmin.prototype.listByCurrentUser = function(listName, successCb, errorCb) {
-    var auth = this.ref.getAuth();
-    if(auth != null) {
-      this.child(listName).orderByChild('author').equalTo(auth.uid).on('value', function(listSnap){
-        handleCb(successCb, listSnap.val());
-      }, function(err){
-        handleCb(errorCb, err);
-      });
-    } else {
-      var error = {code:"INVALID_AUTH", message:'listByCurrentUser cannot load list without current user'};
-      console.error(error.message);
-      handleCb(errorCb, error);
-    }
-  };
-  /**
-  * Gets list of objects created by the currently logged in User.
-  * @memberof Fireadmin#
-  * @param {String | Array} listPath - `Required` The name or path of the list the objects will be grabbed from.
-  * @param {String} Uid - `Required` The Uid of the user that created objects.
-  * @param {Function} onSuccess - `Not Required` Function that runs when the list has been retrieved successfully
-  * @param {Fireadmin~errorCb} onError - `Not Required` Function that runs if there is an error.
-  * @example
-  * // Signin User with email and password
-  * var uid = "simplelogin:1";
-  * fb.listByUid("messages", uid, function(messageList){
-  *  console.log('List of messages by ' + uid + ' : ', messageList);
-  * }, function(err){
-  *  console.error('Error getting message list:', err);
-  * });
-  */
-  Fireadmin.prototype.listByUid = function(listPath, uid, successCb, errorCb) {
-    this.fbRef(listPath).orderByChild('author').equalTo(uid).on('value', function(listSnap){
-      handleCb(successCb, listSnap.val());
-    }, function(err){
-      handleCb(errorCb, err);
-    });
-  };
-  /**
-  * Get count of objects in a given path or list
-  * @memberof Fireadmin#
-  * @param {String | Array} listPath - The name or path of the list of which to count.
-  * @param {Function} onSuccess - Function that runs on completion of gathering list count.
-  * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
-  * @example
-  * //String list name
-  * fa.objectCount("users", function(count){
-  *  console.log('There are ' + count + ' users');
-  * });
-  * //Array list path
-  * fa.objectCount(['messages', messageId, 'comments'], function(commentCount){
-  *  console.log('There are ' + commentCount + ' comments on the message with id: ' + messageId);
-  * });
-  */
-  Fireadmin.prototype.objectCount = function(listPath, successCb, errorCb){
-    this.fbRef(listPath).on('value', function(usersListSnap){
-      handleCb(successCb, usersListSnap.numChildren());
-    }, function(err){
-      handleCb(errorCb, err);
-    });
-  };
-  /**
-  * Get total user count
-  * @memberof Fireadmin#
-  * @param {Function} onSuccess - Function that returns total user count.
-  * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
-  * @example
-  * fa.userCount("users", function(count){
-  *  console.log('There are is a total of ' + count + ' users.');
-  * });
-  */
-  Fireadmin.prototype.userCount = function(successCb, errorCb){
-    this.ref.child('users').on('value', function(usersListSnap){
-      handleCb(successCb, usersListSnap.numChildren());
-    }, function(err){
-      handleCb(errorCb, err);
-    });
-  };
-  /** Get the number of users that are currently online.
-  * @memberOf Fireadmin#
-  * @param {Function} onSuccess Function that returns number of users currently online
-  * @param {Fireadmin~errorCb} onError Function that runs if there is an error
-  * @example
-  * fa.onlineUserCount(function(count){
-  *   console.log('There are ' + count + ' users currently online.');
-  * });
-  *
-  */
-  Fireadmin.prototype.onlineUserCount = function(successCb, errorCb){
-    this.ref.child('presence').on("value", function(onlineUserSnap){
-      console.log('There are currently' + count + ' users online.');
-      handleCb(successCb, onlineUserSnap.numChildren());
-    }, function(err){
-      handleCb(errorCb, err);
-    });
-  };
+
   /** Get account for a user given their uid.
-  * @memberOf Fireadmin#
-  * @param {String} uid Unique Id for account.
-  * @param {Function} onSuccess Function that returns account info once it is loaded.
-  * @param {Fireadmin~errorCb} onError Function that runs if there is an error.
-  * @example
-  * // Get account for uid: simplelogin:1
-  * fa.accountByUid('simplelogin:1', function(account){
-  *   console.log('Account for user with uid: ' + uid + ' is : ', account);
-  * }, function(err){
-  *    console.error('Error getting account for ' + uid + ' : ', err);
-  * });
-  *
-  */
+   * @memberOf Fireadmin#
+   * @param {String} uid Unique Id for account.
+   * @param {Function} onSuccess Function that returns account info once it is loaded.
+   * @param {Fireadmin~errorCb} onError Function that runs if there is an error.
+   * @example
+   * // Get account for uid: simplelogin:1
+   * fa.accountByUid('simplelogin:1', function(account){
+   *   console.log('Account for user with uid: ' + uid + ' is : ', account);
+   * }, function(err){
+   *    console.error('Error getting account for ' + uid + ' : ', err);
+   * });
+   *
+   */
   Fireadmin.prototype.accountByUid = function(uid, successCb, errorCb){
     this.ref.child(uid).on('value', function(accountSnap){
       handleCb(successCb, accountSnap.val());
@@ -404,12 +432,13 @@
       handleCb(errorCb);
     }
   };
-
   /** Start presence management for a specificed user uid. This function is used within Fireadmin login functions.
-  * @memberOf Fireadmin#
-  * @param {string} uid Unique Id for user that for which presence is being setup.
-  *
-  */
+   * @memberOf Fireadmin#
+   * @param {string} uid Unique Id for user that for which presence is being setup.
+   * @example
+   * fa.setupPresence("simplelogin:1");
+   *
+   */
   Fireadmin.prototype.setupPresence = function(uid){
     console.log('setupPresence called for uid:', uid);
     var self = this.ref;
@@ -448,16 +477,15 @@
       }
     });
   };
-
   /** Get a firebase reference for a path in array | string form
-  *
-  * @memberOf Fireadmin#
-  * @param {String|Array} path relative path to the root folder in Firebase instance
-  * @returns A Firebase instance
-  * @example
-  * //Array as path
-  * var userRef = fa.fbRef(['users', uid]);
-  */
+   *
+   * @memberOf Fireadmin#
+   * @param {String|Array} path relative path to the root folder in Firebase instance
+   * @returns A Firebase instance
+   * @example
+   * //Array as path
+   * var userRef = fa.fbRef(['users', uid]);
+   */
   Fireadmin.prototype.fbRef = function(path){
     var ref = this.ref;
     var args = Array.prototype.slice.call(arguments);
@@ -467,35 +495,7 @@
     }
     return ref;
   };
-  /** Uploads image to Fireadmin and returns url
-   * @memberOf Fireadmin#
-   * @param {Object} image Image file object to upload
-   * @param {Function} onSuccess Function that runs when upload request has completed successfully
-   * @param {Fireadmin~errorCb} onError Function that runs if there is an error
-   * @example
-   * // Request to /upload with image object
-   * fa.uploadImage({img:imgObj}, function(res){
-   *  console.log('Image upload completed successfully', res);
-   * }, function(err){
-   *  console.error('Error uploading image:', err);
-   * });
-   */
-  Fireadmin.prototype.uploadImage = function(img, successCb, errorCb){
-    //Send file to server
-    var fa = this;
-    var reqData = {appName:fa.appName, image:img};
-    apiRequest("upload", reqData, function(res){
-      if(res.hasOwnProperty('url')){
-        var imgDataObj = {url:res.url};
-        console.log('Image data object:', imgDataObj);
-        handleCb(successCb, imgDataObj);
-      } else {
-        handleCb(errorCb, {code:"SERVER_ERROR"});
-      }
-    }, function(err){
-      handleCb(errorCb, err);
-    });
-  };
+  // ------------------------- Utility Functions ----------------------------
   /** 
    * Extracts an app name out of a Firebase url
    * @function AppNameFromUrl

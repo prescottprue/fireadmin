@@ -42,6 +42,18 @@
 					<ul class="dropdown-menu ">
 						
 						<li>
+							<a href="global.html#apiRequest">apiRequest</a>
+						</li>
+						
+						<li>
+							<a href="global.html#AppNameFromUrl">AppNameFromUrl</a>
+						</li>
+						
+						<li>
+							<a href="global.html#createUserProfile">createUserProfile</a>
+						</li>
+						
+						<li>
 							<a href="global.html#handleCb">handleCb</a>
 						</li>
 						
@@ -174,7 +186,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-5">line 5</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-7">line 7</a>
 			</li>
 		</ul>
 	</dd>
@@ -370,7 +382,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-232">line 232</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-422">line 422</a>
 			</li>
 		</ul>
 	</dd>
@@ -551,7 +563,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-211">line 211</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-401">line 401</a>
 			</li>
 		</ul>
 	</dd>
@@ -583,6 +595,188 @@ fa.accountByUid(&#x27;simplelogin:1&#x27;, function(account){
   console.log(&#x27;Account for user with uid: &#x27; + uid + &#x27; is : &#x27;, account);
 }, function(err){
    console.error(&#x27;Error getting account for &#x27; + uid + &#x27; : &#x27;, err);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="authWithOAuthPopup"><span class="type-signature"></span>authWithOAuthPopup<span class="signature">(provider, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Modified version of Firebase's authWithOAuthPopup function that handles presence</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>provider</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p><code>Required</code> Login data of new user</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p><code>Not Required</code> Function that runs when the user is successfully authenticated with presence enabled.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p><code>Not Required</code> Function that runs if there is an error</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-321">line 321</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Signin User with email and password
+fb.authWithOAuthPopup(&quot;google&quot;, function(auth){
+ console.log(&#x27;Login Successful for user:&#x27;, auth.uid);
+}, function(err){
+ console.error(&#x27;Error logging in:&#x27;, err);
 });</pre>
 
 
@@ -758,7 +952,7 @@ If a user is currently signed in, the object will contain the author's <code>$ui
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-44">line 44</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-55">line 55</a>
 			</li>
 		</ul>
 	</dd>
@@ -847,7 +1041,7 @@ fa.createObject(&#x27;messages&#x27;, {title:Example, content:&quot;Cool Message
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">Object</span>
 
 
             
@@ -940,7 +1134,7 @@ fa.createObject(&#x27;messages&#x27;, {title:Example, content:&quot;Cool Message
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-71">line 71</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-292">line 292</a>
 			</li>
 		</ul>
 	</dd>
@@ -1079,7 +1273,7 @@ fb.emailAuth({email:test@test.com, password:&#x27;testtest&#x27;}, function(auth
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-299">line 299</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-489">line 489</a>
 			</li>
 		</ul>
 	</dd>
@@ -1119,6 +1313,823 @@ fb.emailAuth({email:test@test.com, password:&#x27;testtest&#x27;}, function(auth
         
     <pre class="sunlight-highlight-javascript">&#x2F;&#x2F;Array as path
 var userRef = fa.fbRef([&#x27;users&#x27;, uid]);</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getObjectCount"><span class="type-signature"></span>getObjectCount<span class="signature">(listPath, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Get count of objects in a given path or list</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>listPath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The name or path of the list of which to count.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs on completion of gathering list count.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-138">line 138</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F;String list name
+fa.getObjectCount(&quot;users&quot;, function(count){
+ console.log(&#x27;There are &#x27; + count + &#x27; users&#x27;);
+});
+&#x2F;&#x2F;Array list path
+fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function(commentCount){
+ console.log(&#x27;There are &#x27; + commentCount + &#x27; comments on the message with id: &#x27; + messageId);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getOnlineUserCount"><span class="type-signature"></span>getOnlineUserCount<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Get the number of users that are currently online.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that returns number of users currently online</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-172">line 172</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">fa.getOnlineUserCount(function(count){
+  console.log(&#x27;There are &#x27; + count + &#x27; users currently online.&#x27;);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getUserCount"><span class="type-signature"></span>getUserCount<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Get total user count</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that returns total user count.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-155">line 155</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">fa.getUserCount(&quot;users&quot;, function(count){
+ console.log(&#x27;There are is a total of &#x27; + count + &#x27; users.&#x27;);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="githubAuth"><span class="type-signature"></span>githubAuth<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Log in with Github through OAuth</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p><code>Not Required</code> Function that runs when the user is successfully authenticated with presence enabled.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p><code>Not Required</code> Function that runs if there is an error</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-350">line 350</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Signin User with email and password
+fb.githubAuth(function(auth){
+ console.log(&#x27;Login Successful for user:&#x27;, auth.uid);
+}, function(err){
+ console.error(&#x27;Error logging in:&#x27;, err);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="googleAuth"><span class="type-signature"></span>googleAuth<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Modified version of Firebase's authWithPassword that handles presence</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-366">line 366</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Signin User with email and password
+fb.githubAuth(function(auth){
+ console.log(&#x27;Login Successful for user:&#x27;, auth.uid);
+}, function(err){
+ console.error(&#x27;Error logging in:&#x27;, err);
+});</pre>
 
 
     
@@ -1268,7 +2279,7 @@ var userRef = fa.fbRef([&#x27;users&#x27;, uid]);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-101">line 101</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-83">line 83</a>
 			</li>
 		</ul>
 	</dd>
@@ -1476,7 +2487,7 @@ fb.listByCurrentUser(&quot;messages&quot;, function(messageList){
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-131">line 131</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-113">line 113</a>
 			</li>
 		</ul>
 	</dd>
@@ -1509,349 +2520,6 @@ fb.listByUid(&quot;messages&quot;, uid, function(messageList){
  console.log(&#x27;List of messages by &#x27; + uid + &#x27; : &#x27;, messageList);
 }, function(err){
  console.error(&#x27;Error getting message list:&#x27;, err);
-});</pre>
-
-
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="objectCount"><span class="type-signature"></span>objectCount<span class="signature">(listPath, onSuccess, onError)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Get count of objects in a given path or list</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>listPath</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-|
-
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The name or path of the list of which to count.</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>onSuccess</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Function that runs on completion of gathering list count.</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>onError</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Function that runs if there is an error.</p></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-154">line 154</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F;String list name
-fa.objectCount(&quot;users&quot;, function(count){
- console.log(&#x27;There are &#x27; + count + &#x27; users&#x27;);
-});
-&#x2F;&#x2F;Array list path
-fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function(commentCount){
- console.log(&#x27;There are &#x27; + commentCount + &#x27; comments on the message with id: &#x27; + messageId);
-});</pre>
-
-
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="onlineUserCount"><span class="type-signature"></span>onlineUserCount<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Get the number of users that are currently online.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>onSuccess</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Function that returns number of users currently online</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>onError</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Function that runs if there is an error</p></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-189">line 189</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">fa.onlineUserCount(function(count){
-  console.log(&#x27;There are &#x27; + count + &#x27; users currently online.&#x27;);
 });</pre>
 
 
@@ -1956,7 +2624,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-251">line 251</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-442">line 442</a>
 			</li>
 		</ul>
 	</dd>
@@ -1981,12 +2649,18 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
     
     
     
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">fa.setupPresence(&quot;simplelogin:1&quot;);</pre>
+
+
+    
 </dd>
 
         
             
 <dt>
-    <h4 class="name" id="userCount"><span class="type-signature"></span>userCount<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="twitterAuth"><span class="type-signature"></span>twitterAuth<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -1994,7 +2668,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
     
     
     <div class="description">
-        <p>Get total user count</p>
+        <p>Modified version of Firebase's authWithPassword that handles presence</p>
     </div>
     
 
@@ -2044,7 +2718,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 
             
 
-            <td class="description last"><p>Function that returns total user count.</p></td>
+            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled.</p></td>
         </tr>
 
 	
@@ -2067,7 +2741,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 
             
 
-            <td class="description last"><p>Function that runs if there is an error.</p></td>
+            <td class="description last"><p>Function that runs if there is an error</p></td>
         </tr>
 
 	
@@ -2104,7 +2778,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-172">line 172</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-382">line 382</a>
 			</li>
 		</ul>
 	</dd>
@@ -2131,8 +2805,375 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">fa.userCount(&quot;users&quot;, function(count){
- console.log(&#x27;There are is a total of &#x27; + count + &#x27; users.&#x27;);
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Signin User with email and password
+fb.githubAuth(function(auth){
+ console.log(&#x27;Login Successful for user:&#x27;, auth.uid);
+}, function(err){
+ console.error(&#x27;Error logging in:&#x27;, err);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="uploadImage"><span class="type-signature"></span>uploadImage<span class="signature">(image, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Uploads image to Fireadmin and returns url</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>image</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Image file object to upload</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs when upload request has completed successfully</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-193">line 193</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Request to &#x2F;upload with image object
+fa.uploadImage({img:imgObj}, function(res){
+ console.log(&#x27;Image upload completed successfully&#x27;, res);
+}, function(err){
+ console.error(&#x27;Error uploading image:&#x27;, err);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="userSignup"><span class="type-signature"></span>userSignup<span class="signature">(loginData, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Modified version of Firebase's authWithPassword that handles presence</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>loginData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Login data of new user</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-223">line 223</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Signin User with email and password
+fb.userSignup({email:test@test.com, password:&#x27;testtest&#x27;}, function(auth){
+ console.log(&#x27;Login Successful for user:&#x27;, auth.uid);
+}, function(err){
+ console.error(&#x27;Error logging in:&#x27;, err);
 });</pre>
 
 
@@ -2266,7 +3307,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-21">line 21</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-32">line 32</a>
 			</li>
 		</ul>
 	</dd>
@@ -2317,7 +3358,7 @@ fa.objectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], function
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Fri Feb 6th 2015 using the <a
+		on Sun Feb 8th 2015 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>

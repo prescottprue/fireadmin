@@ -121,10 +121,10 @@ module.exports = function(grunt) {
 
     grunt.registerTask('docs', ['jsdoc', 'aws_s3:stageDocs']);
 
-    grunt.registerTask('test', ['jsdoc', 'uglify', 'copy', 'connect:stage', 'watch']);
+    grunt.registerTask('test', ['build', 'connect:stage', 'watch']);
 
-    grunt.registerTask('stage', ['build', 'copy', 'aws_s3:stage']);
+    grunt.registerTask('stage', ['build', 'aws_s3:stage']);
 
-    grunt.registerTask('release', ['bump-only:prerelease','stage', 'bump-commit', 'aws_s3:production']);
+    grunt.registerTask('release', ['stage','bump-only:prerelease', 'bump-commit', 'aws_s3:production']);
 
 };

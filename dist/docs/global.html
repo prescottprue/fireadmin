@@ -42,6 +42,18 @@
 					<ul class="dropdown-menu ">
 						
 						<li>
+							<a href="global.html#apiRequest">apiRequest</a>
+						</li>
+						
+						<li>
+							<a href="global.html#AppNameFromUrl">AppNameFromUrl</a>
+						</li>
+						
+						<li>
+							<a href="global.html#createUserProfile">createUserProfile</a>
+						</li>
+						
+						<li>
 							<a href="global.html#handleCb">handleCb</a>
 						</li>
 						
@@ -131,6 +143,564 @@
         <h3 class="subsection-title">Methods</h3>
 
         <dl>
+            
+<dt>
+    <h4 class="name" id="apiRequest"><span class="type-signature"></span>apiRequest<span class="signature">(path, data, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Makes a post request to the Fireadmin API</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>path</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p><code>Required</code> Path of request within api</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Data to include in post request</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs when request has completed successfully</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-509">line 509</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Request to &#x2F;upload with image object
+apiRequest(&quot;upload&quot;, {img:imgObj}, function(res){
+ console.log(&#x27;Api request to upload completed successfully&#x27;, res);
+}, function(err){
+ console.error(&#x27;Error requesting to upload:&#x27;, err);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="AppNameFromUrl"><span class="type-signature"></span>AppNameFromUrl<span class="signature">(authData)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Extracts an app name out of a Firebase url</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>authData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Login data of new user</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-499">line 499</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>appName App name extracted from url</p>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="createUserProfile"><span class="type-signature"></span>createUserProfile<span class="signature">(authData, ref, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Create a new user profile under &quot;users&quot;</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>authData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Login data of new user</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>ref</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">reference</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Main reference to create profile on</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs when profile has been created sucessfully</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-545">line 545</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Create a new user profile
+createUserProfile({email:test@test.com, password:&#x27;testtest&#x27;}, fa.ref, function(auth){
+ console.log(&#x27;Profile created successfully for user:&#x27;, auth.uid);
+}, function(err){
+ console.error(&#x27;Error creating user profile:&#x27;, err);
+});</pre>
+
+
+    
+</dd>
+
+        
             
 <dt>
     <h4 class="name" id="handleCb"><span class="type-signature"></span>handleCb<span class="signature">(callback, value)</span><span class="type-signature"></span></h4>
@@ -257,7 +827,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-309">line 309</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-601">line 601</a>
 			</li>
 		</ul>
 	</dd>
@@ -323,7 +893,7 @@
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Fri Feb 6th 2015 using the <a
+		on Sun Feb 8th 2015 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
