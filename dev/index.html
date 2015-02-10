@@ -1,22 +1,48 @@
-<script src="https://cdn.firebase.com/js/client/2.1.2/firebase.js"></script>
-<script src="closure-library/closure/goog/base.js"></script>
-<script src="fireadmin.js"></script>
-<script>
-	var fa = new Fireadmin("https://pyro.firebaseio.com");
-	console.log('Fireadmin:', fa);
-	fa.getUserCount(function(count){
-		console.log('count:', count);
+<html>
+	<head>
+		<title>Fireadmin Demo</title>
+		<script src="https://cdn.firebase.com/js/client/2.1.2/firebase.js"></script>
+		<script src="closure-library/closure/goog/base.js"></script>
+		<script src="fireadmin.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.12/angular.js"></script>
+	</head>
+	<body ng-app="faApp">
+		<div ng-controller="MainCtrl">
+			Total Users: {{userCount}} <br>
+			Average Session Length: ~ {{sessionLength}} mins
+
+		</div>
+		<script>
+	angular.module('faApp', [])
+	.controller('MainCtrl', function($scope){
+			var fa = new Fireadmin("https://pyro.firebaseio.com");
+			fa.getUserCount(function(count){
+				console.log('count:', count);
+				$scope.userCount = count;
+				$scope.$apply();
+			});
+				fa.averageSessionLength(function(length){
+					console.log('average session length:', length);
+					$scope.sessionLength = length;
+					$scope.$apply();
+				}, function(err){
+					console.error('sessionlength error', err);
+				});
+			//Sessions Since A month Ago
+			// var dt = new Date();
+			// dt.setMonth(dt.getMonth()-1);
+			// fa.sessionsSince(dt.getTime(), function(sessionCount){
+			// 	console.log('sessions:', sessionCount)
+			// }, function(err){
+			// 	console.error('error', err);
+			// });
+
+			// fa.removeUserSessions("simplelogin:1");
+
 	});
-	//Sessions Since A month Ago
-	// var dt = new Date();
-	// dt.setMonth(dt.getMonth()-1);
-	// fa.sessionsSince(dt.getTime(), function(sessionCount){
-	// 	console.log('sessions:', sessionCount)
-	// }, function(err){
-	// 	console.error('error', err);
-	// });
-	fa.averageSessionLength(function(length){
-		console.log('average session length:', length);
-	});
-	// fa.removeUserSessions("simplelogin:1");
+
 </script>
+	</body>
+</html>
+
+

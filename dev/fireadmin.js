@@ -219,6 +219,7 @@
       handleCb(errorCb, err);
     });
   };
+  goog.provide('goog.math')
    /**
   * Get count of objects in a given path or list
   * @memberof Fireadmin#
@@ -234,7 +235,7 @@
   *  console.log('There are ' + count + ' sessions in the past month');
   * });
   */
-  Fireadmin.prototype.averageSessionLength = function(time, successCb, errorCb){
+  Fireadmin.prototype.averageSessionLength = function(successCb, errorCb){
     this.ref.child('sessions').on('value', function(sessionsSnap){
       var totalLength = null;
       var sessionCount = sessionsSnap.numChildren();
@@ -242,6 +243,7 @@
         var session = sessionSnap.val();
         if(session.hasOwnProperty('ended') && session.hasOwnProperty('began')){
           //Gather length of session
+          // Convert difference in ms to minutes
           totalLength = totalLength + ((session.ended - session.began)/(1000*60));
           console.log('total length is now:', totalLength);
         } else {
@@ -251,7 +253,7 @@
         }
       });
       console.log('totalLength:', totalLength);
-      var average = totalLength/sessionCount;
+      var average = Math.floor(totalLength/sessionCount);
       console.log('average in minutes:', average);
       handleCb(successCb, average);
     }, function(err){
