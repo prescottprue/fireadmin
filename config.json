@@ -1,5 +1,6 @@
 {
     "Port":"4000",
+    "docsPort":"5000",
     "devFolder":"dev",
     "distFolder":"dist"
 }

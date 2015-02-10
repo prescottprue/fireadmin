@@ -28,7 +28,6 @@
     }
     return this;
   }
-
   /**
   * This callback is displayed as part of the Requester class.
   * @callback Fireadmin~errorCb
@@ -117,24 +116,22 @@
       handleCb(errorCb, err);
     });
   };
-
-
   /**
-  * Get count of objects in a given path or list
-  * @memberof Fireadmin#
-  * @param {String | Array} listPath - The name or path of the list of which to count.
-  * @param {Function} onSuccess - Function that runs on completion of gathering list count.
-  * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
-  * @example
-  * //String list name
-  * fa.getObjectCount("users", function(count){
-  *  console.log('There are ' + count + ' users');
-  * });
-  * //Array list path
-  * fa.getObjectCount(['messages', messageId, 'comments'], function(commentCount){
-  *  console.log('There are ' + commentCount + ' comments on the message with id: ' + messageId);
-  * });
-  */
+   * Get count of objects in a given path or list
+   * @memberof Fireadmin#
+   * @param {String | Array} listPath - The name or path of the list of which to count.
+   * @param {Function} onSuccess - Function that runs on completion of gathering list count.
+   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
+   * @example
+   * //String list name
+   * fa.getObjectCount("users", function(count){
+   *  console.log('There are ' + count + ' users');
+   * });
+   * //Array list path
+   * fa.getObjectCount(['messages', messageId, 'comments'], function(commentCount){
+   *  console.log('There are ' + commentCount + ' comments on the message with id: ' + messageId);
+   * });
+   */
   Fireadmin.prototype.getObjectCount = function(listPath, successCb, errorCb){
     this.fbRef(listPath).on('value', function(usersListSnap){
       handleCb(successCb, usersListSnap.numChildren());
@@ -143,15 +140,15 @@
     });
   };
   /**
-  * Get total user count
-  * @memberof Fireadmin#
-  * @param {Function} onSuccess - Function that returns total user count.
-  * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
-  * @example
-  * fa.getUserCount("users", function(count){
-  *  console.log('There are is a total of ' + count + ' users.');
-  * });
-  */
+   * Get total user count
+   * @memberof Fireadmin#
+   * @param {Function} onSuccess - Function that returns total user count.
+   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error.
+   * @example
+   * fa.getUserCount("users", function(count){
+   *  console.log('There are is a total of ' + count + ' users.');
+   * });
+   */
   Fireadmin.prototype.getUserCount = function(successCb, errorCb){
     this.ref.child('users').on('value', function(usersListSnap){
       handleCb(successCb, usersListSnap.numChildren());
@@ -160,15 +157,15 @@
     });
   };
   /** Get the number of users that are currently online.
-  * @memberOf Fireadmin#
-  * @param {Function} onSuccess Function that returns number of users currently online
-  * @param {Fireadmin~errorCb} onError Function that runs if there is an error
-  * @example
-  * fa.getOnlineUserCount(function(count){
-  *   console.log('There are ' + count + ' users currently online.');
-  * });
-  *
-  */
+   * @memberOf Fireadmin#
+   * @param {Function} onSuccess - `optional` Function that returns number of users currently online
+   * @param {Fireadmin~errorCb} onError - `optional` Function that runs if there is an error
+   * @example
+   * fa.getOnlineUserCount(function(count){
+   *   console.log('There are ' + count + ' users currently online.');
+   * });
+   *
+   */
   Fireadmin.prototype.getOnlineUserCount = function(successCb, errorCb){
     this.ref.child('presence').on("value", function(onlineUserSnap){
       console.log('There are currently' + count + ' users online.');
@@ -177,7 +174,100 @@
       handleCb(errorCb, err);
     });
   };
-  /** Uploads image to Fireadmin and returns url
+  /**
+   * Get the number of sessions between two times
+   * @memberof Fireadmin#
+   * @param {Number} startTime - `Required` The time at which to start the between period (in UTC ms).
+   * @param {Number} endTime - `Required` The time at which to start the between period (in UTC ms).
+   * @param {Function} onSuccess - `optional` Function that runs on completion of gathering list count.
+   * @param {Fireadmin~errorCb} onError - `optional` Function that runs if there is an error.
+   * @example
+   * //String list name
+   * fa.getObjectCount("users", function(count){
+   *  console.log('There are ' + count + ' users');
+   * });
+   */
+  Fireadmin.prototype.sessionsBetween = function(time1, time2, successCb, errorCb){
+    console.log('start:' + time1 + ' end ' + time2)
+    this.ref.child('sessions').orderByChild('ended').startAt(time1).endAt(time2).on('value', function(sessionsSnap){
+      handleCb(successCb, sessionsSnap.numChildren());
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
+  /**
+   * Get the number of sessions since a specific time
+   * @memberof Fireadmin#
+   * @param {String} time - The UTC time to calculate from.
+   * @param {Function} onSuccess - `optional` Function that runs on completion of gathering list count. 
+   * @param {Fireadmin~errorCb} onError - `optional` Function that runs if there is an error. 
+   * @example
+   * var dt = new Date(); //Create a new Data object
+   * dt.setMonth(dt.getMonth()-1); //Set date back a month
+   * var monthAgo = dt.getTime(); //Convert to UTC time
+   * //Get number of sessions since a month ago
+   * fa.sessionsSince(monthAgo, function(count){
+   *  console.log('There are ' + count + ' sessions in the past month');
+   * });
+   */
+  Fireadmin.prototype.sessionsSince = function(time, successCb, errorCb){
+    this.ref.child('sessions').orderByChild('ended').startAt(time).endAt(Date.now()).on('value', function(sessionsSnap){
+      handleCb(successCb, sessionsSnap.numChildren());
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
+  /**
+   * Get count of objects in a given path or list
+   * @memberof Fireadmin#
+   * @param {Function} onSuccess - `optional` Function that runs on completion of gathering average session length. 
+   * @param {Fireadmin~errorCb} onError - `optional` Function that runs if there is an error. 
+   * @example
+   * //Get the average session length
+   * fa.averageSessionLength(function(count){
+   *  console.log('The average session length is ~' + count ' mins');
+   * });
+   */
+  Fireadmin.prototype.averageSessionLength = function(successCb, errorCb){
+    this.ref.child('sessions').on('value', function(sessionsSnap){
+      var totalLength = null;
+      var sessionCount = sessionsSnap.numChildren();
+      sessionsSnap.forEach(function(sessionSnap){
+        var session = sessionSnap.val();
+        if(session.hasOwnProperty('ended') && session.hasOwnProperty('began')){
+          //Gather length of session
+          // Convert difference in ms to minutes
+          totalLength = totalLength + ((session.ended - session.began)/(1000*60));
+          console.log('total length is now:', totalLength);
+        } else {
+          console.log('removing unfinished session:', sessionSnap.val());
+          sessionCount--;
+          console.log('session count:', sessionCount);
+        }
+      });
+      console.log('totalLength:', totalLength);
+      var average = Math.floor(totalLength/sessionCount);
+      console.log('average in minutes:', average);
+      handleCb(successCb, average);
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
+
+
+  Fireadmin.prototype.removeUserSessions = function(uid, successCb, errorCb){
+    this.ref.child('sessions').orderByChild('user').equalTo(uid).on('value', function(sessionsSnap){
+     var sessionCount = sessionsSnap.numChildren();
+      sessionsSnap.forEach(function(session){
+        session.ref().remove();
+      });  
+      console.log(sessionCount + ' Sessions sucessfully removed');
+      handleCb(successCb);
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
+  /** NOT WORKING Uploads image to Fireadmin and returns url
    * @memberOf Fireadmin#
    * @param {Object} image Image file object to upload
    * @param {Function} onSuccess Function that runs when upload request has completed successfully
@@ -197,6 +287,21 @@
     apiRequest("upload", reqData, function(res){
       if(res.hasOwnProperty('url')){
         var imgDataObj = {url:res.url};
+        console.log('Image data object:', imgDataObj);
+        handleCb(successCb, imgDataObj);
+      } else {
+        handleCb(errorCb, {code:"SERVER_ERROR"});
+      }
+    }, function(err){
+      handleCb(errorCb, err);
+    });
+  };
+  Fireadmin.prototype.customAuthToken = function(img, successCb, errorCb){
+    //Send file to server
+    var fa = this;
+    var reqData = {appName:fa.appName};
+    apiRequest("auth", reqData, function(res){
+      if(res.hasOwnProperty('token')){
         console.log('Image data object:', imgDataObj);
         handleCb(successCb, imgDataObj);
       } else {
@@ -251,6 +356,27 @@
         }
       });
 
+    } else if(signupData.hasOwnProperty('type') && signupData.type == "username") {
+      //Username signup
+      //request a signup with username as uid
+      apiRequest("signup", signupData, function(res){
+        console.log('request for token successful:', res);
+        self.authWithCustomToken(res.token, function(err, authData){
+          if(!err){
+            createUserProfile(authData, self.ref, function(userAccount){
+              handleCb(successCb, userAccount);
+            }, function(err){
+              //Error creating profile
+              handleCb(errorCb, err);
+            });
+          } else {
+            handleCb(errorCb, err);
+          }
+        });
+      }, function(err){
+        handleCb(errorCb, err);
+      });
+      //[TODO] User signup with with custom auth token with username as uid
     } else if (typeof signupData == 'string' || signupData.hasOwnProperty('type')){
       //3rd Party Signup
       if(typeof signupData == 'string'){
@@ -274,8 +400,9 @@
           handleCb(errorCb, err);
         }
       });
-    }
+    } 
   };
+
   /** Modified version of Firebase's authWithPassword that handles presence
    * @memberOf Fireadmin#
    * @param {Object} loginData Login data of new user
@@ -335,6 +462,15 @@
       }
     });
   };
+  Fireadmin.prototype.newUserFromAnonyomous = function(){
+
+  };
+  Fireadmin.prototype.newUserFromAnonyomous = function(){
+
+  };
+  function customAuthLogin(){
+    //Request for auth token containing 
+  }
     /** Log in with Github through OAuth
    * @memberOf Fireadmin#
    * @param {Function} onSuccess `Not Required` Function that runs when the user is successfully authenticated with presence enabled.
@@ -521,7 +657,7 @@
    * });
    */  
   function apiRequest(reqLocation, reqData, successCb, errorCb) {
-    var serverUrl = "http://localhost:4000";
+    var serverUrl = "http://localhost:8080";
     var reqUrl = serverUrl + "/"+ reqLocation;
     console.log('apiRequest sending to '+ reqUrl + ' ...');
     //goog.net.XhrIo.send(url, callback, method, content, headers)

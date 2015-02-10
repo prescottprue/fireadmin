@@ -28,7 +28,7 @@ var fa = new Fireadmin("https://<your-app>.firebaseio.com");
     });
     ```
 
-## API Documentation
+## [API Documentation](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)
 #### [Docs Page](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)
 
 API Documentation is automatically generated with JSDoc and is included in this repo under `dist/docs` if you would like to view a local version.

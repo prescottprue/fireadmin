@@ -29,12 +29,24 @@ module.exports = function(grunt) {
                 appName: 'Google Chrome',
               }
             }
+          },
+          docs:{
+            options: {
+              port: '<%= config.docsPort %>',
+              keepalive: true,
+              livereload:true,
+              base: '<%= config.distFolder %>/docs/',
+              open: {
+                target: 'http://localhost:<%= config.docsPort %>',
+                appName: 'Google Chrome',
+              }
+            }
           }
         },
         watch: {
           js: {
             files: ['<%= config.devFolder %>/fireadmin.js'],
-            tasks:['jsdoc'],
+            tasks:['jsdoc', 'connect:docs'],
             options:{
               livereload:{
                 port:35739
@@ -55,7 +67,7 @@ module.exports = function(grunt) {
               {'action': 'upload', expand: true, cwd: '<%= config.distFolder %>', src: ['**'], dest: '<%= env.BucketFolder %>/current', differential:true}
             ]
           },
-          stageDocs:{
+          stage:{
             options: {
               accessKeyId: '<%= env.AWSAccessKeyId %>',
               secretAccessKey: '<%= env.AWSSecretKey %>',
@@ -63,29 +75,29 @@ module.exports = function(grunt) {
               uploadConcurrency: 30
             },
             files:[
-              {'action': 'upload', expand: true, cwd: '<%= config.distFolder %>/docs', src: ['**'], dest: '<%= env.BucketFolder %>/staging/docs', differential:true}
+              {'action': 'upload', expand: true, cwd: '<%= config.distFolder %>', src: ['**'], dest: '<%= env.BucketFolder %>/staging', differential:true}
             ]
           }
         },
-        copy: {
-          dist: {
-            files: [
-              {expand: true, cwd: './<%= config.devFolder %>', src:'**', dest: '<%= config.distFolder %>'}
-            ],
-          },
-        },
-        uglify:{
-          options:{
-            compress:{
-              drop_console:true
-            }
-          },
-          dist:{
-            files:{
-              '<%= config.distFolder %>/fireadmin.min.js': ['<%= config.devFolder %>/fireadmin.js']
-            }
-          }
-        },
+        // copy: {
+        //   dist: {
+        //     files: [
+        //       {expand: true, cwd: './<%= config.devFolder %>', src:'*.js', dest: '<%= config.distFolder %>'}
+        //     ],
+        //   },
+        // },
+        // uglify:{
+        //   options:{
+        //     compress:{
+        //       drop_console:true
+        //     }
+        //   },
+        //   dist:{
+        //     files:{
+        //       '<%= config.distFolder %>/fireadmin.min.js': ['<%= config.devFolder %>/fireadmin.js']
+        //     }
+        //   }
+        // },
         jsdoc: {
           dev:{
             src: ['<%= config.devFolder %>/fireadmin.js'],
@@ -110,21 +122,45 @@ module.exports = function(grunt) {
             gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
             globalReplace: false
           }
+        },
+        'closure-compiler': {
+          Fireadmin: {
+            closurePath: '',
+            js: '<%= config.devFolder %>/fireadmin.js',
+            jsOutputFile: '<%= config.distFolder %>/fireadmin.min.js',
+            maxBuffer: 500,
+            options: {
+              compilation_level: 'ADVANCED_OPTIMIZATIONS',
+              language_in: 'ECMASCRIPT5_STRICT'
+            }
+          },
+          dev: {
+            closurePath: '',
+            js: '<%= config.devFolder %>/fireadmin.js',
+            jsOutputFile: '<%= config.devFolder %>/fireadmin.min.js',
+            maxBuffer: 500,
+            options: {
+              compilation_level: 'SIMPLE_OPTIMIZATIONS',
+              language_in: 'ECMASCRIPT5_STRICT'
+            }
+          }
         }
 
     });
 
     // Default task(s).
-    grunt.registerTask('default', [ 'connect:dev', 'watch']);
+    grunt.registerTask('default', [ 'connect:dev', 'connect:docs', 'watch']);
     //Documentation, minify js, minify html
-    grunt.registerTask('build', ['jsdoc', 'copy','uglify']);
+    grunt.registerTask('build', ['jsdoc', 'closure-compiler']);
 
-    grunt.registerTask('docs', ['jsdoc', 'aws_s3:stageDocs']);
+    grunt.registerTask('docs', ['jsdoc', 'connect:docs']);
 
     grunt.registerTask('test', ['build', 'connect:stage', 'watch']);
 
     grunt.registerTask('stage', ['build', 'aws_s3:stage']);
+    
+    grunt.registerTask('release', ['stage','aws_s3:production']);
 
-    grunt.registerTask('release', ['stage','bump-only:prerelease', 'bump-commit', 'aws_s3:production']);
+    grunt.registerTask('releaseVersion', ['stage','bump-only:prerelease', 'bump-commit', 'aws_s3:production']);
 
 };

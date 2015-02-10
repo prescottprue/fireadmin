@@ -91,7 +91,7 @@
     
         
 <dt>
-    <h4 class="name" id="Fireadmin"><span class="type-signature"></span>new Fireadmin<span class="signature">(url)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="Fireadmin"><span class="type-signature"></span>new Fireadmin<span class="signature">(url)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -241,7 +241,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
         <dl>
             
 <dt>
-    <h4 class="name" id="accountByEmail"><span class="type-signature"></span>accountByEmail<span class="signature">(email, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="accountByEmail"><span class="type-signature"></span>accountByEmail<span class="signature">(email, onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -312,7 +312,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type"><a href="Fireadmin.html#accountByEmailCb">Fireadmin~accountByEmailCb</a></span>
 
 
             
@@ -322,7 +322,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 
             
 
-            <td class="description last"><p>Function that returns account info once it is loaded.</p></td>
+            <td class="description last"><p>Function that returns account info once it is loaded. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -345,7 +345,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 
             
 
-            <td class="description last"><p>Function that runs if there is an error.</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -382,7 +382,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-468">line 468</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-559">line 559</a>
 			</li>
 		</ul>
 	</dd>
@@ -422,7 +422,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
         
             
 <dt>
-    <h4 class="name" id="accountByUid"><span class="type-signature"></span>accountByUid<span class="signature">(uid, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="accountByUid"><span class="type-signature"></span>accountByUid<span class="signature">(uid, onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -503,7 +503,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 
             
 
-            <td class="description last"><p>Function that returns account info once it is loaded.</p></td>
+            <td class="description last"><p>Function that returns account info once it is loaded. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -526,7 +526,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 
             
 
-            <td class="description last"><p>Function that runs if there is an error.</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -563,7 +563,7 @@ var fa = new Fireadmin(&quot;https:&#x2F;&#x2F;&lt;your-app&gt;.firebaseio.com&q
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-447">line 447</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-538">line 538</a>
 			</li>
 		</ul>
 	</dd>
@@ -604,7 +604,7 @@ fa.accountByUid(&#x27;simplelogin:1&#x27;, function(account){
         
             
 <dt>
-    <h4 class="name" id="authWithOAuthPopup"><span class="type-signature"></span>authWithOAuthPopup<span class="signature">(provider, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="authWithOAuthPopup"><span class="type-signature"></span>authWithOAuthPopup<span class="signature">(provider, onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -662,7 +662,7 @@ fa.accountByUid(&#x27;simplelogin:1&#x27;, function(account){
 
             
 
-            <td class="description last"><p><code>Required</code> Login data of new user</p></td>
+            <td class="description last"><p>Login data of new user. <code>Required</code></p></td>
         </tr>
 
 	
@@ -685,7 +685,7 @@ fa.accountByUid(&#x27;simplelogin:1&#x27;, function(account){
 
             
 
-            <td class="description last"><p><code>Not Required</code> Function that runs when the user is successfully authenticated with presence enabled.</p></td>
+            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -708,7 +708,7 @@ fa.accountByUid(&#x27;simplelogin:1&#x27;, function(account){
 
             
 
-            <td class="description last"><p><code>Not Required</code> Function that runs if there is an error</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -745,7 +745,7 @@ fa.accountByUid(&#x27;simplelogin:1&#x27;, function(account){
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-358">line 358</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-449">line 449</a>
 			</li>
 		</ul>
 	</dd>
@@ -786,7 +786,164 @@ fb.authWithOAuthPopup(&quot;google&quot;, function(auth){
         
             
 <dt>
-    <h4 class="name" id="createObject"><span class="type-signature"></span>createObject<span class="signature">(listName, objectData, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="averageSessionLength"><span class="type-signature"></span>averageSessionLength<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h3>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Get count of objects in a given path or list</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs on completion of gathering average session length. <code>Optional</code></p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-231">line 231</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F;Get the average session length
+fa.averageSessionLength(function(count){
+ console.log(&#x27;The average session length is ~&#x27; + count &#x27; mins&#x27;);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h3 class="name" id="createObject"><span class="type-signature"></span>createObject<span class="signature">(listName, objectData, onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -846,7 +1003,7 @@ If a user is currently signed in, the object will contain the author's <code>$ui
 
             
 
-            <td class="description last"><p>The name of the list the object will be put into.</p></td>
+            <td class="description last"><p>The name of the list the object will be put into. <code>Required</code></p></td>
         </tr>
 
 	
@@ -869,7 +1026,7 @@ If a user is currently signed in, the object will contain the author's <code>$ui
 
             
 
-            <td class="description last"><p>Data you wish to be contained within new object</p></td>
+            <td class="description last"><p>Data you wish to be contained within new object. <code>Required</code></p></td>
         </tr>
 
 	
@@ -892,7 +1049,7 @@ If a user is currently signed in, the object will contain the author's <code>$ui
 
             
 
-            <td class="description last"><p>Function that runs when your object has been created successfully and returns newly created object.</p></td>
+            <td class="description last"><p>Function that runs when your object has been created successfully and returns newly created object. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -915,7 +1072,7 @@ If a user is currently signed in, the object will contain the author's <code>$ui
 
             
 
-            <td class="description last"><p>Function that runs if there is an error creating the object.</p></td>
+            <td class="description last"><p>Function that runs if there is an error creating the object. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -952,7 +1109,7 @@ If a user is currently signed in, the object will contain the author's <code>$ui
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-55">line 55</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-54">line 54</a>
 			</li>
 		</ul>
 	</dd>
@@ -993,7 +1150,7 @@ fa.createObject(&#x27;messages&#x27;, {title:Example, content:&quot;Cool Message
         
             
 <dt>
-    <h4 class="name" id="emailAuth"><span class="type-signature"></span>emailAuth<span class="signature">(loginData, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="emailAuth"><span class="type-signature"></span>emailAuth<span class="signature">(loginData, onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -1074,7 +1231,7 @@ fa.createObject(&#x27;messages&#x27;, {title:Example, content:&quot;Cool Message
 
             
 
-            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled.</p></td>
+            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -1097,7 +1254,7 @@ fa.createObject(&#x27;messages&#x27;, {title:Example, content:&quot;Cool Message
 
             
 
-            <td class="description last"><p>Function that runs if there is an error</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -1134,7 +1291,7 @@ fa.createObject(&#x27;messages&#x27;, {title:Example, content:&quot;Cool Message
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-329">line 329</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-420">line 420</a>
 			</li>
 		</ul>
 	</dd>
@@ -1175,7 +1332,7 @@ fb.emailAuth({email:test@test.com, password:&#x27;testtest&#x27;}, function(auth
         
             
 <dt>
-    <h4 class="name" id="fbRef"><span class="type-signature"></span>fbRef<span class="signature">(path)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="fbRef"><span class="type-signature"></span>fbRef<span class="signature">(path)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -1273,7 +1430,7 @@ fb.emailAuth({email:test@test.com, password:&#x27;testtest&#x27;}, function(auth
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-535">line 535</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-634">line 634</a>
 			</li>
 		</ul>
 	</dd>
@@ -1321,7 +1478,7 @@ var userRef = fa.fbRef([&#x27;users&#x27;, uid]);</pre>
         
             
 <dt>
-    <h4 class="name" id="getObjectCount"><span class="type-signature"></span>getObjectCount<span class="signature">(listPath, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="getObjectCount"><span class="type-signature"></span>getObjectCount<span class="signature">(listPath, onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -1405,7 +1562,7 @@ var userRef = fa.fbRef([&#x27;users&#x27;, uid]);</pre>
 
             
 
-            <td class="description last"><p>Function that runs on completion of gathering list count.</p></td>
+            <td class="description last"><p>Function that runs on completion of gathering list count. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -1428,7 +1585,7 @@ var userRef = fa.fbRef([&#x27;users&#x27;, uid]);</pre>
 
             
 
-            <td class="description last"><p>Function that runs if there is an error.</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -1465,7 +1622,7 @@ var userRef = fa.fbRef([&#x27;users&#x27;, uid]);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-138">line 138</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-135">line 135</a>
 			</li>
 		</ul>
 	</dd>
@@ -1508,7 +1665,7 @@ fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], funct
         
             
 <dt>
-    <h4 class="name" id="getOnlineUserCount"><span class="type-signature"></span>getOnlineUserCount<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="getOnlineUserCount"><span class="type-signature"></span>getOnlineUserCount<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -1566,7 +1723,7 @@ fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], funct
 
             
 
-            <td class="description last"><p>Function that returns number of users currently online</p></td>
+            <td class="description last"><p>Function that returns number of users currently online. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -1589,7 +1746,7 @@ fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], funct
 
             
 
-            <td class="description last"><p>Function that runs if there is an error</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -1626,7 +1783,7 @@ fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], funct
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-172">line 172</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-169">line 169</a>
 			</li>
 		</ul>
 	</dd>
@@ -1664,7 +1821,7 @@ fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], funct
         
             
 <dt>
-    <h4 class="name" id="getUserCount"><span class="type-signature"></span>getUserCount<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="getUserCount"><span class="type-signature"></span>getUserCount<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -1722,7 +1879,7 @@ fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], funct
 
             
 
-            <td class="description last"><p>Function that returns total user count.</p></td>
+            <td class="description last"><p>Function that returns total user count. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -1745,7 +1902,7 @@ fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], funct
 
             
 
-            <td class="description last"><p>Function that runs if there is an error.</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -1782,7 +1939,7 @@ fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], funct
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-155">line 155</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-152">line 152</a>
 			</li>
 		</ul>
 	</dd>
@@ -1820,7 +1977,7 @@ fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], funct
         
             
 <dt>
-    <h4 class="name" id="githubAuth"><span class="type-signature"></span>githubAuth<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="githubAuth"><span class="type-signature"></span>githubAuth<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -1878,7 +2035,7 @@ fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], funct
 
             
 
-            <td class="description last"><p><code>Not Required</code> Function that runs when the user is successfully authenticated with presence enabled.</p></td>
+            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -1901,7 +2058,7 @@ fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], funct
 
             
 
-            <td class="description last"><p><code>Not Required</code> Function that runs if there is an error</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -1938,7 +2095,7 @@ fa.getObjectCount([&#x27;messages&#x27;, messageId, &#x27;comments&#x27;], funct
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-396">line 396</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-487">line 487</a>
 			</li>
 		</ul>
 	</dd>
@@ -1979,7 +2136,7 @@ fb.githubAuth(function(auth){
         
             
 <dt>
-    <h4 class="name" id="googleAuth"><span class="type-signature"></span>googleAuth<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="googleAuth"><span class="type-signature"></span>googleAuth<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -2037,7 +2194,7 @@ fb.githubAuth(function(auth){
 
             
 
-            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled.</p></td>
+            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -2060,7 +2217,7 @@ fb.githubAuth(function(auth){
 
             
 
-            <td class="description last"><p>Function that runs if there is an error</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -2097,7 +2254,7 @@ fb.githubAuth(function(auth){
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-412">line 412</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-503">line 503</a>
 			</li>
 		</ul>
 	</dd>
@@ -2138,7 +2295,7 @@ fb.githubAuth(function(auth){
         
             
 <dt>
-    <h4 class="name" id="listByCurrentUser"><span class="type-signature"></span>listByCurrentUser<span class="signature">(listName, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="listByCurrentUser"><span class="type-signature"></span>listByCurrentUser<span class="signature">(listName, onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -2196,7 +2353,7 @@ fb.githubAuth(function(auth){
 
             
 
-            <td class="description last"><p>The name of the list the objects will be grabbed from.</p></td>
+            <td class="description last"><p>The name of the list the objects will be grabbed from. <code>Required</code></p></td>
         </tr>
 
 	
@@ -2219,7 +2376,7 @@ fb.githubAuth(function(auth){
 
             
 
-            <td class="description last"><p>Function that runs when the list has been retrieved successfully</p></td>
+            <td class="description last"><p>Function that runs when the list has been retrieved successfully. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -2242,7 +2399,7 @@ fb.githubAuth(function(auth){
 
             
 
-            <td class="description last"><p>Function that runs if there is an error.</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -2279,7 +2436,7 @@ fb.githubAuth(function(auth){
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-83">line 83</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-82">line 82</a>
 			</li>
 		</ul>
 	</dd>
@@ -2320,7 +2477,7 @@ fb.listByCurrentUser(&quot;messages&quot;, function(messageList){
         
             
 <dt>
-    <h4 class="name" id="listByUid"><span class="type-signature"></span>listByUid<span class="signature">(listPath, Uid, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="listByUid"><span class="type-signature"></span>listByUid<span class="signature">(listPath, Uid, onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -2381,7 +2538,7 @@ fb.listByCurrentUser(&quot;messages&quot;, function(messageList){
 
             
 
-            <td class="description last"><p><code>Required</code> The name or path of the list the objects will be grabbed from.</p></td>
+            <td class="description last"><p>The name or path of the list the objects will be grabbed from. <code>Required</code></p></td>
         </tr>
 
 	
@@ -2404,7 +2561,7 @@ fb.listByCurrentUser(&quot;messages&quot;, function(messageList){
 
             
 
-            <td class="description last"><p><code>Required</code> The Uid of the user that created objects.</p></td>
+            <td class="description last"><p>The Uid of the user that created objects. <code>Required</code></p></td>
         </tr>
 
 	
@@ -2427,7 +2584,7 @@ fb.listByCurrentUser(&quot;messages&quot;, function(messageList){
 
             
 
-            <td class="description last"><p><code>Not Required</code> Function that runs when the list has been retrieved successfully</p></td>
+            <td class="description last"><p>Function that runs when the list has been retrieved successfully. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -2450,7 +2607,7 @@ fb.listByCurrentUser(&quot;messages&quot;, function(messageList){
 
             
 
-            <td class="description last"><p><code>Not Required</code> Function that runs if there is an error.</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -2487,7 +2644,7 @@ fb.listByCurrentUser(&quot;messages&quot;, function(messageList){
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-113">line 113</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-112">line 112</a>
 			</li>
 		</ul>
 	</dd>
@@ -2529,7 +2686,393 @@ fb.listByUid(&quot;messages&quot;, uid, function(messageList){
         
             
 <dt>
-    <h4 class="name" id="setupPresence"><span class="type-signature"></span>setupPresence<span class="signature">(uid)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="sessionsBetween"><span class="type-signature"></span>sessionsBetween<span class="signature">(startTime, endTime, onSuccess, onError)</span><span class="type-signature"></span></h3>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Get the number of sessions between two times</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>startTime</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The time at which to start the between period (in UTC ms). <code>Required</code></p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>endTime</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The time at which to start the between period (in UTC ms). <code>Required</code></p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs on completion of gathering list count. <code>Optional</code></p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-190">line 190</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F;String list name
+fa.getObjectCount(&quot;users&quot;, function(count){
+ console.log(&#x27;There are &#x27; + count + &#x27; users&#x27;);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h3 class="name" id="sessionsSince"><span class="type-signature"></span>sessionsSince<span class="signature">(time, onSuccess, onError)</span><span class="type-signature"></span></h3>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Get the number of sessions since a specific time</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The UTC time to calculate from.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onSuccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs on completion of gathering list count. <code>Optional</code></p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fireadmin.html#errorCb">Fireadmin~errorCb</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-213">line 213</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">var dt = new Date(); &#x2F;&#x2F;Create a new Data object
+dt.setMonth(dt.getMonth()-1); &#x2F;&#x2F;Set date back a month
+var monthAgo = dt.getTime(); &#x2F;&#x2F;Convert to UTC time
+&#x2F;&#x2F;Get number of sessions since a month ago
+fa.sessionsSince(monthAgo, function(count){
+ console.log(&#x27;There are &#x27; + count + &#x27; sessions in the past month&#x27;);
+});</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h3 class="name" id="setupPresence"><span class="type-signature"></span>setupPresence<span class="signature">(uid)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -2577,7 +3120,7 @@ fb.listByUid(&quot;messages&quot;, uid, function(messageList){
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">String</span>
 
 
             
@@ -2624,7 +3167,7 @@ fb.listByUid(&quot;messages&quot;, uid, function(messageList){
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-488">line 488</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-587">line 587</a>
 			</li>
 		</ul>
 	</dd>
@@ -2660,7 +3203,7 @@ fb.listByUid(&quot;messages&quot;, uid, function(messageList){
         
             
 <dt>
-    <h4 class="name" id="twitterAuth"><span class="type-signature"></span>twitterAuth<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="twitterAuth"><span class="type-signature"></span>twitterAuth<span class="signature">(onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -2718,7 +3261,7 @@ fb.listByUid(&quot;messages&quot;, uid, function(messageList){
 
             
 
-            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled.</p></td>
+            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -2741,7 +3284,7 @@ fb.listByUid(&quot;messages&quot;, uid, function(messageList){
 
             
 
-            <td class="description last"><p>Function that runs if there is an error</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -2778,7 +3321,7 @@ fb.listByUid(&quot;messages&quot;, uid, function(messageList){
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-428">line 428</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-519">line 519</a>
 			</li>
 		</ul>
 	</dd>
@@ -2819,7 +3362,7 @@ fb.githubAuth(function(auth){
         
             
 <dt>
-    <h4 class="name" id="uploadImage"><span class="type-signature"></span>uploadImage<span class="signature">(image, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="uploadImage"><span class="type-signature"></span>uploadImage<span class="signature">(image, onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -2900,7 +3443,7 @@ fb.githubAuth(function(auth){
 
             
 
-            <td class="description last"><p>Function that runs when upload request has completed successfully</p></td>
+            <td class="description last"><p>Function that runs when upload request has completed successfully. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -2923,7 +3466,7 @@ fb.githubAuth(function(auth){
 
             
 
-            <td class="description last"><p>Function that runs if there is an error</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -2960,7 +3503,7 @@ fb.githubAuth(function(auth){
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-193">line 193</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-283">line 283</a>
 			</li>
 		</ul>
 	</dd>
@@ -3001,7 +3544,7 @@ fa.uploadImage({img:imgObj}, function(res){
         
             
 <dt>
-    <h4 class="name" id="userSignup"><span class="type-signature"></span>userSignup<span class="signature">(loginData, onSuccess, onError)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="userSignup"><span class="type-signature"></span>userSignup<span class="signature">(loginData, onSuccess, onError)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -3049,7 +3592,10 @@ fa.uploadImage({img:imgObj}, function(res){
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">String</span>
 
 
             
@@ -3059,7 +3605,56 @@ fa.uploadImage({img:imgObj}, function(res){
 
             
 
-            <td class="description last"><p>Login data of new user</p></td>
+            <td class="description last"><p>Login data object or string for 3rd Party Signup (Twitter, Github, Google) <code>Required</code></p>
+                <h6>Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>email</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Email of new user (<code>Required</code> only for email signup).</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+            </td>
         </tr>
 
 	
@@ -3082,7 +3677,7 @@ fa.uploadImage({img:imgObj}, function(res){
 
             
 
-            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled.</p></td>
+            <td class="description last"><p>Function that runs when the user is successfully authenticated with presence enabled. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -3105,7 +3700,7 @@ fa.uploadImage({img:imgObj}, function(res){
 
             
 
-            <td class="description last"><p>Function that runs if there is an error</p></td>
+            <td class="description last"><p>Function that runs if there is an error. <code>Optional</code></p></td>
         </tr>
 
 	
@@ -3142,7 +3737,7 @@ fa.uploadImage({img:imgObj}, function(res){
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-238">line 238</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-329">line 329</a>
 			</li>
 		</ul>
 	</dd>
@@ -3189,7 +3784,204 @@ fb.userSignup({email:test@test.com, password:&#x27;testtest&#x27;}, function(aut
         <dl>
                 
 <dt>
-    <h4 class="name" id="errorCb"><span class="type-signature"></span>errorCb<span class="signature">(code, message)</span><span class="type-signature"></span></h4>
+    <h3 class="name" id="accountByEmailCb"><span class="type-signature"></span>accountByEmailCb<span class="signature">(account)</span><span class="type-signature"></span></h3>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Success callback for accountByEmail function that returns the account associated with a provided email.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>account</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Account associated with provided email.</p>
+                <h6>Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>email</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Email associated with account.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>createdAt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>UTC Time when the account was created.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+            </td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="fireadmin.js.html">fireadmin.js</a>,
+				 <a href="fireadmin.js.html#sunlight-1-line-572">line 572</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+            
+                
+<dt>
+    <h3 class="name" id="errorCb"><span class="type-signature"></span>errorCb<span class="signature">(code, message)</span><span class="type-signature"></span></h3>
     
     
 </dt>
@@ -3237,7 +4029,7 @@ fb.userSignup({email:test@test.com, password:&#x27;testtest&#x27;}, function(aut
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">String</span>
 
 
             
@@ -3260,7 +4052,7 @@ fb.userSignup({email:test@test.com, password:&#x27;testtest&#x27;}, function(aut
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">String</span>
 
 
             
@@ -3307,7 +4099,7 @@ fb.userSignup({email:test@test.com, password:&#x27;testtest&#x27;}, function(aut
 		<ul class="dummy">
 			<li>
 				<a href="fireadmin.js.html">fireadmin.js</a>,
-				 <a href="fireadmin.js.html#sunlight-1-line-32">line 32</a>
+				 <a href="fireadmin.js.html#sunlight-1-line-31">line 31</a>
 			</li>
 		</ul>
 	</dd>
@@ -3358,7 +4150,7 @@ fb.userSignup({email:test@test.com, password:&#x27;testtest&#x27;}, function(aut
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Mon Feb 9th 2015 using the <a
+		on Tue Feb 10th 2015 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
