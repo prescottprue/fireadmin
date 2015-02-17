@@ -3,7 +3,7 @@
 		<title>Fireadmin Demo</title>
 		<script src="https://cdn.firebase.com/js/client/2.1.2/firebase.js"></script>
 		<script src="closure-library/closure/goog/base.js"></script>
-		<script src="fireadmin.min.js"></script>
+		<script src="fireadmin.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.12/angular.js"></script>
 	</head>
 	<body ng-app="faApp">
@@ -15,7 +15,7 @@
 		<script>
 	angular.module('faApp', [])
 	.controller('MainCtrl', function($scope){
-			var fa = new Fireadmin("https://pyro.firebaseio.com");
+			var fa = new Fireadmin("https://pyro-vcguy.firebaseio.com");
 			fa.getUserCount(function(count){
 				console.log('count:', count);
 				$scope.userCount = count;
@@ -28,6 +28,15 @@
 				}, function(err){
 					console.error('sessionlength error', err);
 				});
+			var fb = new Firebase("https://pyro-vcguy.firebaseio.com");
+
+				fb.authWithCustomToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2IjowLCJkIjp7InVpZCI6IjEifSwiaWF0IjoxNDI0MDc0MjAxfQ.1ogEkitEHtE9SUZGaitKYepKbaPGCBrnh5g1Nqyfu6U", function(error, authData){
+					  if (error) {
+					    console.log("Login Failed!", error);
+					  } else {
+					    console.log("Login Succeeded!", authData);
+					  }
+				})
 			//Sessions Since A month Ago
 			// var dt = new Date();
 			// dt.setMonth(dt.getMonth()-1);
