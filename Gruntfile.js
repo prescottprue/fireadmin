@@ -123,26 +123,29 @@ module.exports = function(grunt) {
             globalReplace: false
           }
         },
-        'closure-compiler': {
-          Fireadmin: {
-            closurePath: '',
-            js: '<%= config.devFolder %>/fireadmin.js',
-            jsOutputFile: '<%= config.distFolder %>/fireadmin.min.js',
-            maxBuffer: 500,
-            options: {
-              compilation_level: 'ADVANCED_OPTIMIZATIONS',
-              language_in: 'ECMASCRIPT5_STRICT'
-            }
-          },
-          dev: {
-            closurePath: '',
-            js: '<%= config.devFolder %>/fireadmin.js',
-            jsOutputFile: '<%= config.devFolder %>/fireadmin.min.js',
-            maxBuffer: 500,
-            options: {
-              compilation_level: 'SIMPLE_OPTIMIZATIONS',
-              language_in: 'ECMASCRIPT5_STRICT'
-            }
+        // 'closure-compiler': {
+        //   Fireadmin: {
+        //     js: '<%= config.devFolder %>/fireadmin.js',
+        //     jsOutputFile: '<%= config.distFolder %>/fireadmin.min.js',
+        //     maxBuffer: 500,
+        //     options: {
+        //       compilation_level: 'SIMPLE_OPTIMIZATIONS',
+        //       language_in: 'ECMASCRIPT5_STRICT',
+        //     }
+        //   },
+        //   dev: {
+        //     js: '<%= config.devFolder %>/fireadmin.js',
+        //     jsOutputFile: '<%= config.devFolder %>/fireadmin.min.js',
+        //     maxBuffer: 500,
+        //     options: {
+        //       compilation_level: 'SIMPLE_OPTIMIZATIONS',
+        //       language_in: 'ECMASCRIPT5_STRICT',
+        //     }
+        //   }
+        // },
+        shell:{
+          compile:{
+            command:'java -jar $CLOSURE_PATH/build/compiler.jar --js_output_file=dist/fireadmin.min.js dev/fireadmin.js --define="DEBUG=false" --only_closure_dependencies --closure_entry_point=Fireadmin closure-library/** --warning_level=VERBOSE --compilation_level=SIMPLE_OPTIMIZATIONS'
           }
         }
 
@@ -151,14 +154,15 @@ module.exports = function(grunt) {
     // Default task(s).
     grunt.registerTask('default', [ 'connect:dev', 'connect:docs', 'watch']);
     //Documentation, minify js, minify html
-    grunt.registerTask('build', ['jsdoc', 'closure-compiler']);
+    // grunt.registerTask('build', ['jsdoc', 'closure-compiler']);
+    grunt.registerTask('build', ['jsdoc', 'shell:compile']);
 
     grunt.registerTask('docs', ['jsdoc', 'connect:docs']);
 
     grunt.registerTask('test', ['build', 'connect:stage', 'watch']);
 
     grunt.registerTask('stage', ['build', 'aws_s3:stage']);
-    
+
     grunt.registerTask('release', ['stage','aws_s3:production']);
 
     grunt.registerTask('releaseVersion', ['stage','bump-only:prerelease', 'bump-commit', 'aws_s3:production']);

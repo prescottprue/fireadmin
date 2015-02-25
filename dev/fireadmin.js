@@ -1,9 +1,7 @@
-(function(window, document, goog){
 
   //Initialize Library
-  init();
-  window.goog.require('goog.net.XhrIo');
-  window.goog.require('goog.object');
+
+  goog.provide('Fireadmin')
   /**
    * Creates a Fireadmin object
    * @constructor Fireadmin
@@ -12,8 +10,13 @@
    * //Create new Fireadmin Object
    * var fa = new Fireadmin("https://<your-app>.firebaseio.com");
    */
-  window.Fireadmin = Fireadmin;
-  function Fireadmin(url, optionsObj) {
+   var Firebase = window.Firebase;
+  var Fireadmin = function(url, optionsObj) {
+    init();
+    
+    goog.require('goog.net.XhrIo');
+
+    goog.require('goog.object');
     if(typeof url == "undefined" || typeof url != "string"){
       throw new Error('Url is required to use FireAdmin');
     }
@@ -168,7 +171,7 @@
    */
   Fireadmin.prototype.getOnlineUserCount = function(successCb, errorCb){
     this.ref.child('presence').on("value", function(onlineUserSnap){
-      console.log('There are currently' + count + ' users online.');
+      console.log('There are currently' + onlineUserSnap.numChildren() + ' users online.');
       handleCb(successCb, onlineUserSnap.numChildren());
     }, function(err){
       handleCb(errorCb, err);
@@ -177,9 +180,9 @@
   /**
    * Get the number of sessions between two times
    * @memberof Fireadmin#
-   * @param {Number} startTime - The time at which to start the between period (in UTC ms). `Required` 
-   * @param {Number} endTime - The time at which to start the between period (in UTC ms). `Required` 
-   * @param {Function} onSuccess - Function that runs on completion of gathering list count. `Optional` 
+   * @param {Number} startTime - The time at which to start the between period (in UTC ms). `Required`
+   * @param {Number} endTime - The time at which to start the between period (in UTC ms). `Required`
+   * @param {Function} onSuccess - Function that runs on completion of gathering list count. `Optional`
    * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
    * @example
    * //String list name
@@ -260,7 +263,7 @@
      var sessionCount = sessionsSnap.numChildren();
       sessionsSnap.forEach(function(session){
         session.ref().remove();
-      });  
+      });
       console.log(sessionCount + ' Sessions sucessfully removed');
       handleCb(successCb);
     }, function(err){
@@ -302,8 +305,8 @@
     var reqData = {appName:fa.appName};
     apiRequest("auth", reqData, function(res){
       if(res.hasOwnProperty('token')){
-        console.log('Image data object:', imgDataObj);
-        handleCb(successCb, imgDataObj);
+        console.log('auth request response:', res);
+        handleCb(successCb, res);
       } else {
         handleCb(errorCb, {code:"SERVER_ERROR"});
       }
@@ -401,7 +404,7 @@
           handleCb(errorCb, err);
         }
       });
-    } 
+    }
   };
 
   /** Modified version of Firebase's authWithPassword that handles presence
@@ -435,7 +438,7 @@
   };
   /** Modified version of Firebase's authWithOAuthPopup function that handles presence
    * @memberOf Fireadmin#
-   * @param {String} provider - Login data of new user. `Required` 
+   * @param {String} provider - Login data of new user. `Required`
    * @param {Function} onSuccess - Function that runs when the user is successfully authenticated with presence enabled. `Optional`
    * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
    * @example
@@ -470,7 +473,7 @@
 
   };
   function customAuthLogin(){
-    //Request for auth token containing 
+    //Request for auth token containing
   }
     /** Log in with Github through OAuth
    * @memberOf Fireadmin#
@@ -640,8 +643,27 @@
     }
     return ref;
   };
+  /** Path utility function from https://github.com/firebase/angularfire-seed/blob/master/app/js/firebase.utils.js
+ * Example:
+ *
+ * @function
+ * @name pathRef
+ * @param {Array} args Array of reference children
+ * @return {string} pathUrl Url of path in string form
+ */
+function pathRef(args) {
+  for (var i = 0; i < args.length; i++) {
+    if (typeof args[i] == 'array') {
+      args[i] = pathRef(args[i]);
+    }
+    else if( typeof args[i] !== 'string' ) {
+      throw new Error('Argument '+i+' to firebaseRef is not a string: '+args[i]);
+    }
+  }
+  return args.join('/');
+}
   // ------------------------- Utility Functions ----------------------------
-  /** 
+  /**
    * Extracts an app name out of a Firebase url
    * @function AppNameFromUrl
    * @param {String} authData Login data of new user
@@ -664,7 +686,7 @@
    * }, function(err){
    *  console.error('Error requesting to upload:', err);
    * });
-   */  
+   */
   function apiRequest(reqLocation, reqData, successCb, errorCb) {
     var serverUrl = "http://localhost:8080";
     var reqUrl = serverUrl + "/"+ reqLocation;
@@ -712,7 +734,7 @@
       goog.object.extend(userObj, authData);
     }
     //Check if account with given email already exists
-    ref.child('users').orderByChild('email').equalTo(signupData.email).on('value', function(userQuery){
+    ref.child('users').orderByChild('email').equalTo(userObj.email).on('value', function(userQuery){
       if(!userQuery.val()){
         //Account with given email does not already exist
         userRef.once('value', function(userSnap){
@@ -784,4 +806,3 @@
   function stringifyVersion(version){
     return version.replace(".", "").replace(".", "");
   }
-})(window, document, goog);
