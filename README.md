@@ -9,7 +9,7 @@ FireAdmin is especially useful when you are trying to administer a Firebase data
 
   ```html
   <script src="https://cdn.firebase.com/js/client/2.1.2/firebase.js"></script>
-  <script src="http://d1lxebzlcdgkt.cloudfront.net/current/fireadmin.min.js"></script>
+  <script src="https://s3.amazonaws.com/prescottprue/Fireadmin/current/fireadmin.min.js"></script>
 
   ```
 
@@ -27,6 +27,45 @@ var fa = new Fireadmin("https://<your-app>.firebaseio.com");
         console.log('Your app currently has ' + count + ' users.');
     });
     ```
+
+## Example Controllers
+
+```
+.controller('AccountCtrl', ['$scope','sessionService', function($scope, sessionService){
+  console.log('AccountCtrl');
+  sessionService.getCurrentUser().then(function(account){
+    console.log('Account retreived:', account);
+    $scope.account = account;
+  });
+  $scope.updateAccount = function() {
+    //[TODO] Handle update of account
+  };
+}])
+.controller('LoginCtrl', ['$scope','sessionService', function($scope, sessionService){
+  console.log('AccountCtrl');
+
+  $scope.loginData = {};
+  $scope.emailLogin = function(){
+    sessionService.emailLogin($scope.loginData).then(function(){
+
+    });
+  }
+}])
+.controller('SignupCtrl', ['$scope','$state','sessionService', function($scope, $state, sessionService){
+  console.log('SignupCtrl');
+
+  $scope.signupData = {};
+  $scope.err = null;
+  $scope.signup = function(){
+    sessionService.signup($scope.signupData).then(function(account){
+       $state.go('home');
+    }, function(err){
+      $scope.err = err;
+    });
+  }
+}])
+```
+
 
 ## [API Documentation](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)
 #### [Docs Page](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)

@@ -14,10 +14,9 @@
 
 		</div>
 		<script>
-		console.log('$fa', $fa)
 	angular.module('faApp', ['fireadmin'])
-	.controller('MainCtrl', function($scope, accountService){
-		console.log('accountService:', accountService);
+	.controller('MainCtrl', function($scope, $fa){
+		console.log('auth:',$fa("https://pyro-vcguy.firebaseio.com"));
 			var fa = new Fireadmin("https://pyro-vcguy.firebaseio.com");
 			fa.getUserCount(function(count){
 				console.log('count:', count);
