@@ -88,9 +88,41 @@
 	<article>
 		<pre
 			class="sunlight-highlight-javascript linenums">
-  //Initialize Library
 
-  goog.provide('Fireadmin')
+  goog.provide('Fireadmin');
+  goog.require('goog.net.XhrIo');
+  goog.require('goog.object');
+  /** Angular module
+  */
+
+  goog.provide('$fa.auth');
+  goog.provide('$fa.account');
+
+  /**
+   * Session.Account module.
+   *
+   * @export
+   */
+  $fa.account = angular.module('session.account',[])
+  .factory('accountService', ['$q', function($q){
+    return {
+      exists: true
+    }
+  }])
+  /**
+   * Session module.
+   *
+   * @export
+   */
+
+  $fa.auth = angular.module('auth', [$fa.account.name])
+  /**
+   * Module.
+   */
+  angular.module('fireadmin', [$fa.auth.name]);
+
+
+  var Firebase = window.Firebase;
   /**
    * Creates a Fireadmin object
    * @constructor Fireadmin
@@ -99,13 +131,9 @@
    * //Create new Fireadmin Object
    * var fa = new Fireadmin("https://&lt;your-app>.firebaseio.com");
    */
-   var Firebase = window.Firebase;
   var Fireadmin = function(url, optionsObj) {
+    //Initialize Library
     init();
-    
-    goog.require('goog.net.XhrIo');
-
-    goog.require('goog.object');
     if(typeof url == "undefined" || typeof url != "string"){
       throw new Error('Url is required to use FireAdmin');
     }

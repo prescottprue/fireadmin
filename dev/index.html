@@ -2,9 +2,10 @@
 	<head>
 		<title>Fireadmin Demo</title>
 		<script src="https://cdn.firebase.com/js/client/2.1.2/firebase.js"></script>
-		<script src="closure-library/closure/goog/base.js"></script>
-		<script src="fireadmin.js"></script>
+		<script src="../closure-library/closure/goog/base.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.12/angular.js"></script>
+		<script src="fireadmin.js"></script>
+
 	</head>
 	<body ng-app="faApp">
 		<div ng-controller="MainCtrl">
@@ -13,8 +14,10 @@
 
 		</div>
 		<script>
-	angular.module('faApp', [])
-	.controller('MainCtrl', function($scope){
+		console.log('$fa', $fa)
+	angular.module('faApp', ['fireadmin'])
+	.controller('MainCtrl', function($scope, accountService){
+		console.log('accountService:', accountService);
 			var fa = new Fireadmin("https://pyro-vcguy.firebaseio.com");
 			fa.getUserCount(function(count){
 				console.log('count:', count);
@@ -53,5 +56,3 @@
 </script>
 	</body>
 </html>
-
-
