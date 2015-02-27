@@ -144,12 +144,19 @@ module.exports = function(grunt) {
         //   }
         // },
         shell:{
-          compile:{
+          compileFireadmin:{
             command:'java -jar <%= env.CLOSURE_PATH %>/build/compiler.jar ' +
-            '--js_output_file=dist/fireadmin.min.js dev/fireadmin.js --define="DEBUG=false" '+
-            '--only_closure_dependencies --closure_entry_point=Fireadmin closure-library/** ' +
+            '--js_output_file=dist/fireadmin.min.js <%= config.devFolder %>/fireadmin/fireadmin.js  --define="DEBUG=false" '+
+            '--only_closure_dependencies --closure_entry_point=Fireadmin <%= config.devFolder %>/closure-library/** ' +
             '--warning_level=VERBOSE --compilation_level=SIMPLE_OPTIMIZATIONS '+
-            ' --angular_pass --externs <%= env.CLOSURE_PATH %>/externs/angular.js --generate_exports ' //Angular
+            ' --angular_pass --externs <%= env.CLOSURE_PATH %>/externs/angular.js --generate_exports '+ //Angular
+            '--externs <%= config.devFolder %>/fa/session.js'
+          },
+          builder:{
+            command:'python <%= config.devFolder %>/closure-library/closure/bin/build/closurebuilder.py --root="../../fireadmin fireadmin" --output_file="fireadmin-deps.js"'
+          },
+          deps:{
+            command:'python <%= config.devFolder %>/closure-library/closure/bin/build/depswriter.py --root_with_prefix="../../fireadmin fireadmin" --output_file="fireadmin-deps.js"'
           }
         }
 
