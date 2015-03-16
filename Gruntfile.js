@@ -33,7 +33,6 @@ module.exports = function(grunt) {
           docs:{
             options: {
               port: '<%= config.docsPort %>',
-              keepalive: true,
               livereload:true,
               base: '<%= config.distFolder %>/docs/',
               open: {
@@ -46,7 +45,16 @@ module.exports = function(grunt) {
         watch: {
           js: {
             files: ['<%= config.devFolder %>/fireadmin.js'],
-            tasks:['jsdoc', 'connect:docs'],
+            tasks:['jsdoc'],
+            options:{
+              livereload:{
+                port:35739
+              },
+            }
+          },
+          html: {
+            files: ['<%= config.devFolder %>/index.html'],
+            tasks:[],
             options:{
               livereload:{
                 port:35739
