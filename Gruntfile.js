@@ -62,6 +62,16 @@ module.exports = function(grunt) {
             }
           }
         },
+        concat: {
+          bundle: {
+            // options: { banner: '<%= meta.banner %>' },
+            src: [
+              '<%= config.distFolder %>/lib/firebase/firebase.js',
+              '<%= config.distFolder %>/fireadmin.js'
+            ],
+            dest: '<%= config.distFolder %>/fireadmin-bundle.js'
+          }
+        },
         aws_s3:{
           production:{
             options: {
@@ -87,25 +97,6 @@ module.exports = function(grunt) {
             ]
           }
         },
-        // copy: {
-        //   dist: {
-        //     files: [
-        //       {expand: true, cwd: './<%= config.devFolder %>', src:'*.js', dest: '<%= config.distFolder %>'}
-        //     ],
-        //   },
-        // },
-        // uglify:{
-        //   options:{
-        //     compress:{
-        //       drop_console:true
-        //     }
-        //   },
-        //   dist:{
-        //     files:{
-        //       '<%= config.distFolder %>/fireadmin.min.js': ['<%= config.devFolder %>/fireadmin.js']
-        //     }
-        //   }
-        // },
         jsdoc: {
           dev:{
             src: ['<%= config.devFolder %>/fireadmin.js'],
@@ -118,7 +109,7 @@ module.exports = function(grunt) {
         },
         bump:{
           options:{
-            files:['package.json'],
+            files:['package.json','bower.json'],
             updateConfigs:['pkg'],
             commit:true,
             commitMessage:'[RELEASE] Release v%VERSION%',
@@ -131,35 +122,31 @@ module.exports = function(grunt) {
             globalReplace: false
           }
         },
-        // 'closure-compiler': {
-        //   Fireadmin: {
-        //     js: '<%= config.devFolder %>/fireadmin.js',
-        //     jsOutputFile: '<%= config.distFolder %>/fireadmin.min.js',
-        //     maxBuffer: 500,
-        //     options: {
-        //       compilation_level: 'SIMPLE_OPTIMIZATIONS',
-        //       language_in: 'ECMASCRIPT5_STRICT',
-        //     }
-        //   },
-        //   dev: {
-        //     js: '<%= config.devFolder %>/fireadmin.js',
-        //     jsOutputFile: '<%= config.devFolder %>/fireadmin.min.js',
-        //     maxBuffer: 500,
-        //     options: {
-        //       compilation_level: 'SIMPLE_OPTIMIZATIONS',
-        //       language_in: 'ECMASCRIPT5_STRICT',
-        //     }
-        //   }
-        // },
         shell:{
           compile:{
             command:'java -jar <%= env.CLOSURE_PATH %>/build/compiler.jar ' +
-            '--js_output_file=dist/fireadmin.min.js <%= config.devFolder %>/fireadmin.js  --define="DEBUG=false" '+
+            '--js_output_file=dist/fireadmin.js <%= config.devFolder %>/fireadmin.js  --define="DEBUG=false" '+
             '--only_closure_dependencies --closure_entry_point=Fireadmin <%= config.devFolder %>/closure-library/** ' +
-            '--warning_level=VERBOSE --compilation_level=SIMPLE_OPTIMIZATIONS '
+            '--warning_level=VERBOSE --compilation_level=SIMPLE_OPTIMIZATIONS'
             // ' --angular_pass --externs <%= env.CLOSURE_PATH %>/externs/angular.js --generate_exports '+ //Angular
             // '--externs <%= config.devFolder %>/fa/session.js'
           },
+          compileDebug:{
+            command:'java -jar <%= env.CLOSURE_PATH %>/build/compiler.jar ' +
+            '--js_output_file=dist/fireadmin-debug.js <%= config.devFolder %>/fireadmin.js  --define="DEBUG=false" '+
+            '--only_closure_dependencies --closure_entry_point=Fireadmin <%= config.devFolder %>/closure-library/** ' +
+            '--warning_level=VERBOSE --compilation_level=WHITESPACE_ONLY '
+            // ' --angular_pass --externs <%= env.CLOSURE_PATH %>/externs/angular.js --generate_exports '+ //Angular
+            // '--externs <%= config.devFolder %>/fa/session.js'
+          },
+          // compileBundle:{
+          //   command:'java -jar <%= env.CLOSURE_PATH %>/build/compiler.jar ' +
+          //   '--js_output_file=dist/fireadmin-bundle.js <%= config.devFolder %>/fireadmin.js  --define="DEBUG=false" '+
+          //   '--only_closure_dependencies --closure_entry_point=Fireadmin <%= config.devFolder %>/closure-library/** ' +
+          //   '--warning_level=VERBOSE --compilation_level=SIMPLE_OPTIMIZATIONS --js_externs=dev/lib/firebase/firebase.js'
+          //   // ' --angular_pass --externs <%= env.CLOSURE_PATH %>/externs/angular.js --generate_exports '+ //Angular
+          //   // '--externs <%= config.devFolder %>/fa/session.js'
+          // },
           builder:{
             command:'python <%= config.devFolder %>/closure-library/closure/bin/build/closurebuilder.py --root="../../fireadmin fireadmin" --output_file="fireadmin-deps.js"'
           },
@@ -174,7 +161,7 @@ module.exports = function(grunt) {
     grunt.registerTask('default', [ 'connect:dev', 'watch']);
     //Documentation, minify js, minify html
     // grunt.registerTask('build', ['jsdoc', 'closure-compiler']);
-    grunt.registerTask('build', ['jsdoc', 'shell:compile']);
+    grunt.registerTask('build', ['jsdoc','shell:compile', 'shell:compileDebug', 'concat']);
 
     grunt.registerTask('docs', ['jsdoc', 'connect:docs']);
 
@@ -182,8 +169,9 @@ module.exports = function(grunt) {
 
     grunt.registerTask('stage', ['build', 'aws_s3:stage']);
 
-    grunt.registerTask('release', ['stage','aws_s3:production']);
+    grunt.registerTask('version', ['stage','bump-only','aws_s3:stage']);
+    grunt.registerTask('release', ['bump-commit', 'aws_s3:production']);
 
-    grunt.registerTask('releaseVersion', ['stage','bump-only:prerelease', 'bump-commit', 'aws_s3:production']);
+    grunt.registerTask('releaseVersion', ['stage','bump-only', 'bump-commit', 'aws_s3:production']);
 
 };
