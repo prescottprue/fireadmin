@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/prescottprue/FireAdmin",
   "repository":{
     "type":"git",
@@ -27,7 +27,8 @@
     "bower_components",
     "test",
     "tests",
-    "env.json"
+    "env.json",
+    "dev/lib"
   ],
   "dependencies": {
     "firebase": "~2.2.2"
