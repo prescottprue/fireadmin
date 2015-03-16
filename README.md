@@ -1,19 +1,32 @@
 # FireAdmin
 
 [![GitHub version](https://badge.fury.io/gh/prescottprue%2Ffireadmin.svg)](http://badge.fury.io/gh/prescottprue%2Ffireadmin)
+
 FireAdmin is a all Javascript Library built to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD/ Listing/Counting).
 
 FireAdmin is especially useful when you are trying to administer a Firebase data set (hence the name). Administration dashboards are a breeze thanks to functions like `getOnlineUserCount()` that provide analytics data in simple and easy to understand calls.
 
-[AngularJS](http://angularjs.org) factories are built in to make building even easier.
+### [API Documentation](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)
 
-## Getting Started (Vanilla JS)
+### [Angular Integration](https://github.com/prescottprue/AngularFireadmin)
 
-1. Include both the Firebase library and  `fireadmin.js` in your `index.html` :
+## Getting Started
+
+1. Include script reference to fireadmin in your `index.html` :
 
   ```html
-  <script src="https://cdn.firebase.com/js/client/2.1.2/firebase.js"></script>
-  <script src="https://s3.amazonaws.com/prescottprue/Fireadmin/current/fireadmin.min.js"></script>
+  <script src="https://s3.amazonaws.com/prescottprue/fireadmin/current/fireadmin-bundle.js"></script>
+
+  ```
+
+
+  **or** 
+
+  Include both the Firebase library (`firebase.js`) and Fireadmin (`fireadmin.js` or `fireadmin.min.js` if you prefer the minified version).
+
+  ```html
+  <script src="https://cdn.firebase.com/js/client/2.2.2/firebase.js"></script>
+  <script src="https://s3.amazonaws.com/prescottprue/fireadmin/current/fireadmin.min.js"></script>
 
   ```
 
@@ -30,20 +43,28 @@ var fa = new Fireadmin("https://<your-app>.firebaseio.com");
         console.log('Your app currently has ' + count + ' users.');
     });
     ```
-## [API Documentation](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)
+
+## Documentation
+
 #### [Docs Page](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)
 
 API Documentation is automatically generated with JSDoc and is included in this repo under `dist/docs` if you would like to view a local version.
 
 ## Using With Angular
-The is Angularjs integration for FireAdmin named [AngularFireAdmin](https://github.com/prescottprue/AngularFireAdmin)
+Usage of [AngularJS](http://angularjs.org) with FireAdmin is *strongly suggested* and is included just as easily as including the standard version of FireAdmin :
+
+```html
+  <!-- Add AngularJS, Firebase, AngularFire, FireAdmin, and AngularFireAdmin -->
+  <script src="https://s3.amazonaws.com/prescottprue/angularfireadmin/current/angularfireadmin-bundle.js"></script>
+```
+
+This script tag is the bundle file from the AngularJS integration for FireAdmin which is named [**AngularFireAdmin**](https://github.com/prescottprue/AngularFireAdmin).
 
 ## Planning
 * Complete Angular Integration
 * Role Management
 * Automatic Rules Setup
 * Admin Parameter
-* Separate Structure with [Google Closure Library](https://github.com/google/closure-library)
 * Unit Tests
 
 ## Contributing

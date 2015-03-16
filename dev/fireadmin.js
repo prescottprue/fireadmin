@@ -1,9 +1,10 @@
-  
+(function(exports){
+  var goog = exports.goog;
+  var Firebase = exports.Firebase;
   goog.provide('Fireadmin');
   goog.require('goog.net.XhrIo');
   goog.require('goog.object');
   goog.require('goog.array');
-  var Firebase = window.Firebase;
   /**
    * Creates a Fireadmin object
    * @constructor Fireadmin
@@ -801,3 +802,5 @@ function pathRef(args) {
   function stringifyVersion(version){
     return version.replace(".", "").replace(".", "");
   }
+  })(window);
+

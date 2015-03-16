@@ -32,8 +32,9 @@
 			//Set values in view
 			document.getElementById("appName").innerHTML = fa.appName;
 			document.getElementById("appUrl").innerHTML = fa.fbUrl;
-			//Get user count then set it in view
+			//User fireadmin to get count of users of app
 			fa.getUserCount(function(userCount){
+				//set value to view
 				document.getElementById("userCount").innerHTML = userCount;
 			});
 		</script>
