@@ -15,7 +15,7 @@ FireAdmin is especially useful when you are trying to administer a Firebase data
 1. Include script reference to fireadmin in your `index.html` :
 
   ```html
-  <script src="https://s3.amazonaws.com/prescottprue/fireadmin/current/fireadmin-bundle.js"></script>
+  <script src="http://cdn.prescottprue.com/fireadmin/0.0.1/fireadmin-bundle.js"></script>
 
   ```
 
@@ -26,9 +26,15 @@ FireAdmin is especially useful when you are trying to administer a Firebase data
 
   ```html
   <script src="https://cdn.firebase.com/js/client/2.2.2/firebase.js"></script>
-  <script src="https://s3.amazonaws.com/prescottprue/fireadmin/current/fireadmin.min.js"></script>
+  <script src="https://cdn.prescottprue.com/fireadmin/0.0.1/fireadmin.js"></script>
 
   ```
+
+  **or**
+
+  If you are using [bower](bower.io) to manage your dependencies run:
+
+   `bower install --save fireadmin`
 
 2. Create a new FireAdmin Object:
 
@@ -55,7 +61,7 @@ Usage of [AngularJS](http://angularjs.org) with FireAdmin is *strongly suggested
 
 ```html
   <!-- Add AngularJS, Firebase, AngularFire, FireAdmin, and AngularFireAdmin -->
-  <script src="https://s3.amazonaws.com/prescottprue/angularfireadmin/current/angularfireadmin-bundle.js"></script>
+  <script src="https://cdn.prescottprue.com/angularfireadmin/0.0.1/angularfireadmin-bundle.js"></script>
 ```
 
 This script tag is the bundle file from the AngularJS integration for FireAdmin which is named [**AngularFireAdmin**](https://github.com/prescottprue/AngularFireAdmin).

@@ -148,10 +148,10 @@ module.exports = function(grunt) {
           //   // '--externs <%= config.devFolder %>/fa/session.js'
           // },
           builder:{
-            command:'python <%= config.devFolder %>/closure-library/closure/bin/build/closurebuilder.py --root="../../fireadmin fireadmin" --output_file="fireadmin-deps.js"'
+            command:'python <%= config.devFolder %>/lib/google-closure-library/closure/bin/build/closurebuilder.py --root="../../fireadmin fireadmin" --output_file="fireadmin-deps.js"'
           },
           deps:{
-            command:'python <%= config.devFolder %>/closure-library/closure/bin/build/depswriter.py --root_with_prefix="../../fireadmin fireadmin" --output_file="fireadmin-deps.js"'
+            command:'python <%= config.devFolder %>/lib/google-closure-library/closure/bin/build/depswriter.py --root_with_prefix="../../fireadmin fireadmin" --output_file="fireadmin-deps.js"'
           }
         }
 

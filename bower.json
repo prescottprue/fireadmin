@@ -1,0 +1,38 @@
+{
+  "name": "fireadmin",
+  "version": "0.0.1",
+  "homepage": "https://github.com/prescottprue/FireAdmin",
+  "repository":{
+    "type":"git",
+    "url":"git://github.com/prescottprue/FireAdmin.git"
+  },
+  "authors": [
+    "Scott Prue <sprue.dev@gmail.com> (http://prescottprue.com)"
+  ],
+  "description": "Library to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD and Listing)",
+  "main": "dist/fireadmin.js",
+  "keywords": [
+    "firebase",
+    "administration",
+    "users",
+    "user",
+    "management",
+    "javascript",
+    "realtime"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "env.json"
+  ],
+  "dependencies": {
+    "firebase": "~2.2.2"
+  },
+  "devDependencies": {
+    "google-closure-library": "*"
+  }
+}
