@@ -144,13 +144,13 @@ module.exports = function(grunt) {
         //   }
         // },
         shell:{
-          compileFireadmin:{
+          compile:{
             command:'java -jar <%= env.CLOSURE_PATH %>/build/compiler.jar ' +
-            '--js_output_file=dist/fireadmin.min.js <%= config.devFolder %>/fireadmin/fireadmin.js  --define="DEBUG=false" '+
+            '--js_output_file=dist/fireadmin.min.js <%= config.devFolder %>/fireadmin.js  --define="DEBUG=false" '+
             '--only_closure_dependencies --closure_entry_point=Fireadmin <%= config.devFolder %>/closure-library/** ' +
-            '--warning_level=VERBOSE --compilation_level=SIMPLE_OPTIMIZATIONS '+
-            ' --angular_pass --externs <%= env.CLOSURE_PATH %>/externs/angular.js --generate_exports '+ //Angular
-            '--externs <%= config.devFolder %>/fa/session.js'
+            '--warning_level=VERBOSE --compilation_level=SIMPLE_OPTIMIZATIONS '
+            // ' --angular_pass --externs <%= env.CLOSURE_PATH %>/externs/angular.js --generate_exports '+ //Angular
+            // '--externs <%= config.devFolder %>/fa/session.js'
           },
           builder:{
             command:'python <%= config.devFolder %>/closure-library/closure/bin/build/closurebuilder.py --root="../../fireadmin fireadmin" --output_file="fireadmin-deps.js"'
@@ -163,7 +163,7 @@ module.exports = function(grunt) {
     });
 
     // Default task(s).
-    grunt.registerTask('default', [ 'connect:dev', 'connect:docs', 'watch']);
+    grunt.registerTask('default', [ 'connect:dev', 'watch']);
     //Documentation, minify js, minify html
     // grunt.registerTask('build', ['jsdoc', 'closure-compiler']);
     grunt.registerTask('build', ['jsdoc', 'shell:compile']);

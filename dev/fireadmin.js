@@ -1,8 +1,8 @@
+  
   goog.provide('Fireadmin');
   goog.require('goog.net.XhrIo');
   goog.require('goog.object');
   goog.require('goog.array');
-
   var Firebase = window.Firebase;
   /**
    * Creates a Fireadmin object
@@ -12,7 +12,7 @@
    * //Create new Fireadmin Object
    * var fa = new Fireadmin("https://<your-app>.firebaseio.com");
    */
-  var Fireadmin = function(url, optionsObj) {
+  Fireadmin = function(url, optionsObj) {
     //Initialize Library
     init();
     if(typeof url == "undefined" || typeof url != "string"){
@@ -463,9 +463,6 @@
         handleCb(errorCb, error);
       }
     });
-  };
-  Fireadmin.prototype.newUserFromAnonyomous = function(){
-
   };
   Fireadmin.prototype.newUserFromAnonyomous = function(){
 
