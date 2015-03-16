@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Library to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD and Listing)",
   "author": "Prescott Prue (prescottprue)",
   "repository": "https://github.com/prescottprue/FireAdmin",
