@@ -1,3 +1,4 @@
+/** @define {boolean} */
 (function(exports){
   var goog = exports.goog;
   var Firebase = exports.Firebase;

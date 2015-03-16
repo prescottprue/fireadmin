@@ -125,17 +125,15 @@ module.exports = function(grunt) {
         shell:{
           compile:{
             command:'java -jar <%= env.CLOSURE_PATH %>/build/compiler.jar ' +
-            '--js_output_file=dist/fireadmin.js <%= config.devFolder %>/fireadmin.js  --define="DEBUG=false" '+
-            '--only_closure_dependencies --closure_entry_point=Fireadmin <%= config.devFolder %>/closure-library/** ' +
-            '--warning_level=VERBOSE --compilation_level=SIMPLE_OPTIMIZATIONS'
-            // ' --angular_pass --externs <%= env.CLOSURE_PATH %>/externs/angular.js --generate_exports '+ //Angular
-            // '--externs <%= config.devFolder %>/fa/session.js'
+            '--js_output_file=dist/fireadmin.js <%= config.devFolder %>/fireadmin.js '+
+            '--only_closure_dependencies --closure_entry_point=Fireadmin <%= config.devFolder %>/lib/google-closure-library/closure/**  --define="goog.DEBUG=false" ' +
+            '--warning_level=VERBOSE --compilation_level=WHITESPACE_ONLY'
           },
           compileDebug:{
             command:'java -jar <%= env.CLOSURE_PATH %>/build/compiler.jar ' +
-            '--js_output_file=dist/fireadmin-debug.js <%= config.devFolder %>/fireadmin.js  --define="DEBUG=false" '+
-            '--only_closure_dependencies --closure_entry_point=Fireadmin <%= config.devFolder %>/closure-library/** ' +
-            '--warning_level=VERBOSE --compilation_level=WHITESPACE_ONLY '
+            '--js_output_file=dist/fireadmin-debug.js <%= config.devFolder %>/fireadmin.js '+
+            '--only_closure_dependencies --closure_entry_point=Fireadmin <%= config.devFolder %>/lib/google-closure-library/closure/goog/**/*.js ' +
+            '--warning_level=VERBOSE --compilation_level=WHITESPACE_ONLY'
             // ' --angular_pass --externs <%= env.CLOSURE_PATH %>/externs/angular.js --generate_exports '+ //Angular
             // '--externs <%= config.devFolder %>/fa/session.js'
           },
