@@ -3,10 +3,11 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash')) : typeof define === 'function' && define.amd ? define(['lodash'], factory) : global.Fireadmin = factory(global._);
-})(this, function (_) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('firebase'), require('lodash')) : typeof define === 'function' && define.amd ? define(['firebase', 'lodash'], factory) : global.Fireadmin = factory(global.Firebase, global._);
+})(this, function (Firebase, _) {
 	'use strict';
 
+	Firebase = 'default' in Firebase ? Firebase['default'] : Firebase;
 	_ = 'default' in _ ? _['default'] : _;
 
 	var config = {};
@@ -160,17 +161,21 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     * });
     */
 			value: function createObject(listName, obj) {
+				var _this = this;
+
 				var auth = this.ref.getAuth();
 				if (auth) {
 					obj.author = auth.uid;
 				}
 				obj.createdAt = Date.now();
-				return this.ref.child(listName).push(obj, function (err) {
-					if (!err) {
-						return Promise.resolve(obj);
-					} else {
-						return Promise.reject(err);
-					}
+				return new Promise(function (resolve, reject) {
+					_this.ref.child(listName).push(obj, function (err) {
+						if (!err) {
+							return resolve(obj);
+						} else {
+							return reject(err);
+						}
+					});
 				});
 			}
 
@@ -192,15 +197,19 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: 'listByCurrentUser',
 			value: function listByCurrentUser(listName) {
+				var _this2 = this;
+
 				if (!listName) {
 					return Promise.reject({ message: 'Listname required to list objects.' });
 				}
 				if (this.isAuthorized) {
-					var authorObjQuery = this.ref.child(listName).orderByChild('author').equalTo(auth.uid);
-					return authorObjQuery.on('value', function (listSnap) {
-						return Promise.resolve(listSnap.val());
-					}, function (err) {
-						return Promise.reject(err);
+					return new Promise(function (resolve, reject) {
+						var authorObjQuery = _this2.ref.child(listName).orderByChild('author').equalTo(auth.uid);
+						authorObjQuery.on('value', function (listSnap) {
+							return resolve(listSnap.val());
+						}, function (err) {
+							return reject(err);
+						});
 					});
 				} else {
 					var error = { code: 'INVALID_AUTH', message: 'listByCurrentUser cannot load list without current user' };
@@ -226,11 +235,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     */
 		}, {
 			key: 'listByUid',
-			value: function listByUid(uid) {
-				return this.fbRef(listPath).orderByChild('author').equalTo(uid).on('value', function (listSnap) {
-					return Promise.resolve(listSnap.val());
-				}, function (err) {
-					return Promise.reject(err);
+			value: function listByUid(listPath, uid) {
+				var _this3 = this;
+
+				return new Promise(function (resolve, reject) {
+					_this3.fbRef(listPath).orderByChild('author').equalTo(uid).on('value', function (listSnap) {
+						return Promise.resolve(listSnap.val());
+					}, function (err) {
+						return Promise.reject(err);
+					});
 				});
 			}
 
@@ -246,11 +259,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: 'getUserCount',
 			value: function getUserCount() {
-				return this.ref.child('users').on('value', function (usersListSnap) {
-					return Promise.resolve(usersListSnap.numChildren());
-				}, function (err) {
-					logger.error({ description: 'Error getting user count.', func: 'getUserCount', obj: 'Fireadmin' });
-					return Promise.reject(err);
+				var _this4 = this;
+
+				return new Promise(function (resolve, reject) {
+					_this4.ref.child('users').on('value', function (usersListSnap) {
+						resolve(usersListSnap.numChildren());
+					}, function (err) {
+						logger.error({ description: 'Error getting user count.', func: 'getUserCount', obj: 'Fireadmin' });
+						reject(err);
+					});
 				});
 			}
 
@@ -267,11 +284,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: 'getOnlineUserCount',
 			value: function getOnlineUserCount() {
-				return this.ref.child('presence').on('value', function (onlineUserSnap) {
-					logger.log('There are currently' + onlineUserSnap.numChildren() + ' users online.');
-					return Promise.resolve(onlineUserSnap.numChildren());
-				}, function (err) {
-					return Promise.reject(err);
+				var _this5 = this;
+
+				return new Promise(function (resolve, reject) {
+					_this5.ref.child('presence').on('value', function (onlineUserSnap) {
+						logger.log('There are currently' + onlineUserSnap.numChildren() + ' users online.');
+						resolve(onlineUserSnap.numChildren());
+					}, function (err) {
+						reject(err);
+					});
 				});
 			}
 
@@ -290,12 +311,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: 'sessionsBetween',
 			value: function sessionsBetween(time1, time2) {
+				var _this6 = this;
+
 				logger.log({ description: 'Sessions between called.', startTime: time1, endTime: time2, func: 'sessionsBetween', obj: 'Fireadmin' });
-				return this.ref.child('sessions').orderByChild('ended').startAt(time1).endAt(time2).on('value', function (sessionsSnap) {
-					return Promise.resolve(sessionsSnap.numChildren());
-				}, function (err) {
-					logger.error({ description: 'Error getting sessions between specified times.', error: err, func: 'sessionsBetween', obj: 'Fireadmin' });
-					return Promise.reject({ message: 'Error getting sessions.' });
+				return new Promise(function (resolve, reject) {
+					_this6.ref.child('sessions').orderByChild('ended').startAt(time1).endAt(time2).on('value', function (sessionsSnap) {
+						resolve(sessionsSnap.numChildren());
+					}, function (err) {
+						logger.error({ description: 'Error getting sessions between specified times.', error: err, func: 'sessionsBetween', obj: 'Fireadmin' });
+						reject({ message: 'Error getting sessions.' });
+					});
 				});
 			}
 
@@ -316,11 +341,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: 'sessionsSince',
 			value: function sessionsSince(time) {
-				return this.ref.child('sessions').orderByChild('ended').startAt(time).endAt(Date.now()).on('value', function (sessionsSnap) {
-					return Promise.resolve(sessionsSnap.numChildren());
-				}, function (err) {
-					logger.error({ description: 'Error getting sessions between specified times.', error: err, func: 'sessionsSince', obj: 'Fireadmin' });
-					return Promise.reject(err);
+				var _this7 = this;
+
+				return new Promise(function (resolve, reject) {
+					_this7.ref.child('sessions').orderByChild('ended').startAt(time).endAt(Date.now()).on('value', function (sessionsSnap) {
+						return resolve(sessionsSnap.numChildren());
+					}, function (err) {
+						logger.error({ description: 'Error getting sessions between specified times.', error: err, func: 'sessionsSince', obj: 'Fireadmin' });
+						return reject(err);
+					});
 				});
 			}
 
@@ -337,43 +366,51 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: 'averageSessionLength',
 			value: function averageSessionLength() {
-				return this.ref.child('sessions').on('value', function (sessionsSnap) {
-					var totalLength = null;
-					var sessionCount = sessionsSnap.numChildren();
-					sessionsSnap.forEach(function (sessionSnap) {
-						var session = sessionSnap.val();
-						if (session.hasOwnProperty('ended') && session.hasOwnProperty('began')) {
-							//Gather length of session
-							// Convert difference in ms to minutes
-							var conversion = (session.ended - session.began) / (1000 * 60);
-							totalLength = totalLength + conversion;
-							logger.log('total length is now:', totalLength);
-						} else {
-							logger.log('removing unfinished session:', sessionSnap.val());
-							sessionCount--;
-							logger.log('session count:', sessionCount);
-						}
+				var _this8 = this;
+
+				return new Promise(function (resolve, reject) {
+					_this8.ref.child('sessions').on('value', function (sessionsSnap) {
+						var totalLength = null;
+						var sessionCount = sessionsSnap.numChildren();
+						sessionsSnap.forEach(function (sessionSnap) {
+							var session = sessionSnap.val();
+							if (session.hasOwnProperty('ended') && session.hasOwnProperty('began')) {
+								//Gather length of session
+								// Convert difference in ms to minutes
+								var conversion = (session.ended - session.began) / (1000 * 60);
+								totalLength = totalLength + conversion;
+								logger.log('total length is now:', totalLength);
+							} else {
+								logger.log('removing unfinished session:', sessionSnap.val());
+								sessionCount--;
+								logger.log('session count:', sessionCount);
+							}
+						});
+						logger.log('totalLength:', totalLength);
+						var average = Math.floor(totalLength / sessionCount);
+						logger.log('average in minutes:', average);
+						return resolve(average);
+					}, function (err) {
+						return reject(err);
 					});
-					logger.log('totalLength:', totalLength);
-					var average = Math.floor(totalLength / sessionCount);
-					logger.log('average in minutes:', average);
-					return Promise.resolve(average);
-				}, function (err) {
-					return Promise.reject(err);
 				});
 			}
 		}, {
 			key: 'removeUserSessions',
 			value: function removeUserSessions(uid) {
-				return this.ref.child('sessions').orderByChild('user').equalTo(uid).on('value', function (sessionsSnap) {
-					var sessionCount = sessionsSnap.numChildren();
-					sessionsSnap.forEach(function (session) {
-						session.ref().remove();
+				var _this9 = this;
+
+				return new Promise(function (resolve, reject) {
+					_this9.ref.child('sessions').orderByChild('user').equalTo(uid).on('value', function (sessionsSnap) {
+						var sessionCount = sessionsSnap.numChildren();
+						sessionsSnap.forEach(function (session) {
+							session.ref().remove();
+						});
+						logger.log(sessionCount + ' Sessions sucessfully removed');
+						return resolve();
+					}, function (err) {
+						return reject(err);
 					});
-					logger.log(sessionCount + ' Sessions sucessfully removed');
-					return Promise.resolve();
-				}, function (err) {
-					return Promise.reject(err);
 				});
 			}
 		}, {
@@ -411,7 +448,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: 'userSignup',
 			value: function userSignup(signupData) {
-				var _this = this;
+				var _this10 = this;
 
 				if (typeof signupData === 'object' && signupData.hasOwnProperty('email')) {
 					//Email signup
@@ -419,27 +456,29 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 						return handleCb(errorCb, { message: 'A valid Password is required to signup.' });
 					}
 					//Create new user in simple login
-					return this.createUser(signupData, function (error) {
-						if (error === null) {
-							logger.log('[emailSignup] User created successfully. Logging in as new user...');
-							// Login with new account
-							_this.emailAuth(signupData, function (authData) {
-								//Create new user profile
-								return createUserProfile(authData, _this.ref, function (userAccount) {
-									return Promise.resolve(userAccount);
+					return new Promise(function (resolve, reject) {
+						_this10.createUser(signupData, function (error) {
+							if (error === null) {
+								logger.log('[emailSignup] User created successfully. Logging in as new user...');
+								// Login with new account
+								_this10.emailAuth(signupData, function (authData) {
+									//Create new user profile
+									createUserProfile(authData, _this10.ref, function (userAccount) {
+										resolve(userAccount);
+									}, function (err) {
+										//Error creating profile
+										reject(err);
+									});
 								}, function (err) {
-									//Error creating profile
-									return Promise.reject(err);
+									//Error authing with email
+									reject(err);
 								});
-							}, function (err) {
-								//Error authing with email
-								return Promise.reject(err);
-							});
-						} else {
-							//Error creating new User
-							logger.error('[emailSignup] Error creating user:', error.message);
-							return Promise.reject(error);
-						}
+							} else {
+								//Error creating new User
+								logger.error('[emailSignup] Error creating user:', error.message);
+								reject(error);
+							}
+						});
 					});
 				} else if (signupData.hasOwnProperty('type') && signupData.type == 'username') {
 					//[TODO] User signup with with custom auth token with username as uid
@@ -447,11 +486,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 					//request a signup with username as uid
 					apiRequest('signup', signupData, function (res) {
 						logger.log('request for token successful:', res);
-						return _this.authWithCustomToken(res.token, function (err, authData) {
+						return _this10.authWithCustomToken(res.token, function (err, authData) {
 							if (err) {
 								return Promise.reject(err);
 							}
-							return createUserProfile(authData, _this.ref, function (userAccount) {
+							return createUserProfile(authData, _this10.ref, function (userAccount) {
 								return Promise.resolve(userAccount);
 							}, function (err) {
 								//Error creating profile
@@ -470,7 +509,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 							return Promise.reject(err);
 						}
 						//Create new profile with user data
-						return createUserProfile(authData, _this.ref, function (userAccount) {
+						return createUserProfile(authData, _this10.ref, function (userAccount) {
 							return Promise.resolve(userAccount);
 						}, function (err) {
 							//Error creating profile
@@ -496,20 +535,22 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: 'emailAuth',
 			value: function emailAuth(loginData) {
-				var _this2 = this;
+				var _this11 = this;
 
-				return this.ref.authWithPassword(loginData, function (error, authData) {
-					if (error === null) {
-						// user authenticated with Firebase
-						logger.log('User ID: ' + authData.uid + ', Provider: ' + authData.provider);
-						// Manage presence
-						_this2.setupPresence(authData.uid);
-						// [TODO] Check for account/Add account if it doesn't already exist
-						return Promise.resolve(authData);
-					} else {
-						logger.error('Error authenticating user:', error);
-						return Promise.reject(err);
-					}
+				return new Promise(function (resolve, reject) {
+					_this11.ref.authWithPassword(loginData, function (error, authData) {
+						if (error === null) {
+							// user authenticated with Firebase
+							logger.log({ description: 'Successfully authed.', authData: authData, userId: authData.uid, provider: authData.provider, func: 'emailAuth', obj: 'Fireadmin' });
+							// Manage presence
+							_this11.setupPresence(authData.uid);
+							// [TODO] Check for account/Add account if it doesn't already exist
+							return resolve(authData);
+						} else {
+							logger.error('Error authenticating user:', error);
+							return reject(err);
+						}
+					});
 				});
 			}
 
@@ -529,21 +570,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: 'authWithOAuthPopup',
 			value: function authWithOAuthPopup(provider) {
-				var _this3 = this;
+				var _this12 = this;
 
 				//[TODO] Check enabled login types
-				return this.ref.authWithOAuthPopup(provider, function (error, authData) {
-					if (error === null) {
-						// user authenticated with Firebase
-						logger.log({ description: 'Auth popup responded.', authData: authData, id: authData.uid, provider: authData.provider, func: 'authWithOAuthPopup', obj: 'Fireadmin' });
-						// Manage presence
-						_this3.setupPresence(authData.uid);
-						// [TODO] Check for account/Add account if it doesn't already exist
-						return Promise.resolve(authData);
-					} else {
-						logger.error('Error authenticating user:', error);
-						return Promise.reject(error);
-					}
+				return new Promise(function (resolve, reject) {
+					_this12.ref.authWithOAuthPopup(provider, function (error, authData) {
+						if (error === null) {
+							// user authenticated with Firebase
+							logger.log({ description: 'Auth popup responded.', authData: authData, id: authData.uid, provider: authData.provider, func: 'authWithOAuthPopup', obj: 'Fireadmin' });
+							// Manage presence
+							_this12.setupPresence(authData.uid);
+							// [TODO] Check for account/Add account if it doesn't already exist
+							return resolve(authData);
+						} else {
+							logger.error('Error authenticating user:', error);
+							return reject(error);
+						}
+					});
 				});
 			}
 		}, {
@@ -621,11 +664,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: 'accountByUid',
 			value: function accountByUid(uid) {
-				return this.ref.child(uid).on('value', function (accountSnap) {
-					handleCb(successCb, accountSnap.val());
-				}, function (err) {
-					logger.error('Error getting account for ' + uid + ' : ', err);
-					return Promise.reject(err);
+				var _this13 = this;
+
+				return new Promise(function (resolve, reject) {
+					_this13.ref.child(uid).on('value', function (accountSnap) {
+						resolve(accountSnap.val());
+					}, function (err) {
+						logger.error({ description: 'Error getting account by UID.', uid: uid, error: err, func: 'accountByUid', obj: 'Fireadmin' });
+						reject(err);
+					});
 				});
 			}
 
@@ -676,7 +723,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 		}, {
 			key: 'setupPresence',
 			value: function setupPresence(uid) {
-				var _this4 = this;
+				var _this14 = this;
 
 				logger.log({ description: 'setupPresence called', uid: uid, func: 'setupPresense', obj: 'Fireadmin' });
 				var amOnline = this.ref.child('.info/connected');
@@ -688,7 +735,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 				return amOnline.on('value', function (snapShot) {
 					if (snapShot.val()) {
 						//user is online
-						var onDisconnectRef = _this4.ref.onDisconnect();
+						var onDisconnectRef = _this14.ref.onDisconnect();
 						// add session and set disconnect
 						var session = sessionsRef.push({ began: Firebase.ServerValue.TIMESTAMP, user: uid });
 						var endedRef = session.child('ended');
@@ -704,7 +751,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 						// Add session id to past sessions on disconnect
 						// pastSessionsRef.onDisconnect().push(session.key());
 						// Do same on unAuth
-						_this4.onAuth(function (authData) {
+						_this14.onAuth(function (authData) {
 							if (!authData) {
 								endedRef.set(Firebase.ServerValue.TIMESTAMP);
 								currentSesh.remove();
@@ -751,6 +798,106 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 	})();
 
 	;
+	/**
+ 	* Extracts an app name out of a Firebase url
+ 	* @function AppNameFromUrl
+ 	* @param {String} authData Login data of new user
+ 	* @returns {String} appName App name extracted from url
+ 	*/
+	function AppNameFromUrl(url) {
+		//remove https:// from beginging and .firebaseio.com from the end
+		return url.match(/^(?:https?|ftp)?:\/\/([A-Za-z0-9\-]{0,61}[A-Za-z0-9])?/)[1];
+	}
+	/** Makes a post request to the Fireadmin API
+ * @function apiRequest
+ * @param {String} path - Path of request within api. `Required`
+ * @param {Object} data - Data to include in post request. `Required`
+ * @param {Function} onSuccess Function that runs when request has completed successfully. `Optional`
+ * @param {Fireadmin~errorCb} onError Function that runs if there is an error. `Optional`
+ * @example
+ * // Request to /upload with image object
+ * apiRequest('upload', {img:imgObj}, function(res){
+ *  console.log('Api request to upload completed successfully', res);
+ * }, function(err){
+ *  console.error('Error requesting to upload:', err);
+ * });
+ */
+	function apiRequest(reqLocation, reqData, successCb, errorCb) {
+		console.log('apiRequest sending to ' + reqUrl + ' ...');
+		//goog.net.XhrIo.send(url, callback, method, content, headers)
+		//  goog.net.XhrIo.send(reqUrl, function(e){
+		// 	 if(e.target.isComplete() && e.target.isSuccess()){
+		// 		 var res = e.target.getResponse();
+		// 		 console.log('apiRequest responded:', res);
+		// 		 //Check for existance of response, that it has content, and that content contains a property 'url'
+		// 		 if(res){
+		// 			 //Save image object to firebase that includes new image url
+		// 			 handleCb(successCb, res);
+		// 		 } else {
+		// 			 console.error('Server error');
+		// 			 handleCb(errorCb, {code:'SERVER_ERROR'});
+		// 		 }
+		// 	 } else {
+		// 		 handleCb(errorCb, e.target.getLastError());
+		// 	 }
+		//  }, 'POST', reqData);
+	}
+	/** Create a new user profile under 'users'
+ * @function createUserProfile
+ * @param {Object} authData - Login data of new user. `Required`
+ * @param {Reference} ref - Main reference to create profile on. `Required`
+ * @param {Function} onSuccess - Function that runs when profile has been created sucessfully. `Optional`
+ * @param {Fireadmin~errorCb} - onError Function that runs if there is an error. `Optional`
+ * @example
+ * // Create a new user profile
+ * createUserProfile({email:test@test.com, password:'testtest'}, fa.ref, function(auth){
+ *  console.log('Profile created successfully for user:', auth.uid);
+ * }, function(err){
+ *  console.error('Error creating user profile:', err);
+ * });
+ */
+	function createUserProfile(authData, ref) {
+		console.log('createUserAccount called:', arguments);
+		var userRef = ref.child('users').child(authData.uid);
+		var userObj = { role: 10, provider: authData.provider };
+		if (authData.provider == 'password') {
+			userObj.email = authData.password.email;
+		} else {
+			console.log('create 3rd party linked profile:', authData);
+			_.extend(userObj, authData);
+		}
+		//Check if account with given email already exists
+		return ref.child('users').orderByChild('email').equalTo(userObj.email).on('value', function (userQuery) {
+			if (!userQuery.val()) {
+				//Account with given email does not already exist
+				userRef.once('value', function (userSnap) {
+					if (userSnap.val() == null || userSnap.hasChild('sessions')) {
+						userObj.createdAt = Firebase.ServerValue.TIMESTAMP;
+						// [TODO] Add check for email before using it as priority
+						return userRef.setWithPriority(userObj, userObj.email, function (err) {
+							if (!err) {
+								console.log('New user account created:', userSnap.val());
+								return Promise.resolve(userSnap.val());
+							} else {
+								return Promise.reject({ message: 'Error creating user profile' });
+							}
+						});
+					} else {
+						console.error('User account already exists', userSnap.val());
+						return Promise.reject(userSnap.val());
+					}
+				});
+			} else {
+				// console.warn('Account already exists. Session must have been added already:', JSON.stringify(userQuery.val()));
+				// successCb(userQuery.val());
+				var error = { message: 'This email has already been used to create an account', account: JSON.stringify(userQuery.val()), status: 'ACCOUNT_EXISTS' };
+				return Promise.reject(error);
+			}
+		}, function (err) {
+			//Error querying for account with email
+			return Promise.reject(err);
+		});
+	};
 
 	return Fireadmin;
 });

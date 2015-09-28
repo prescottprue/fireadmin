@@ -3,9 +3,10 @@
   "version": "0.0.2",
   "description": "Library to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD and Listing)",
   "author": "Prescott Prue (prescottprue)",
-  "repo": "https://github.com/prescottprue/fireadmin",
+  "repo": "https://github.com/prescottprue/FireAdmin",
   "license": "ISC",
   "main": "dist/fireadmin.js",
+  "jsnext:main": "src/fireadmin.js",
   "scripts": {
     "test": "gulp",
     "build": "gulp build",

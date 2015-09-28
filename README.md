@@ -5,20 +5,20 @@
     <img src="https://img.shields.io/npm/v/fireadmin.svg" alt="npm version">
   </a>
   <!-- Build Status -->
-  <a href="https://travis-ci.org/KyperTech/fireadmin">
-    <img src="http://img.shields.io/travis/KyperTech/fireadmin.svg" alt="build status">
+  <a href="https://travis-ci.org/prescottprue/fireadmin">
+    <img src="http://img.shields.io/travis/prescottprue/FireAdmin.svg" alt="build status">
   </a>
   <!-- Dependency Status -->
-  <a href="https://david-dm.org/KyperTech/fireadmin">
-    <img src="https://david-dm.org/KyperTech/fireadmin.svg" alt="dependency status">
+  <a href="https://david-dm.org/prescottprue/fireadmin">
+    <img src="https://david-dm.org/prescottprue/fireadmin.svg" alt="dependency status">
   </a>
   <!-- Codeclimate -->
-  <a href="https://codeclimate.com/github/kypertech/FireAdmin">
-    <img src="https://codeclimate.com/github/KyperTech/FireAdmin/badges/gpa.svg" alt="codeclimate">
+  <a href="https://codeclimate.com/github/prescottprue/FireAdmin">
+    <img src="https://codeclimate.com/github/prescottprue/FireAdmin/badges/gpa.svg" alt="codeclimate">
   </a>
   <!-- Coverage -->
-  <a href="https://codeclimate.com/github/KyperTech/FireAdmin">
-    <img src="https://codeclimate.com/github/KyperTech/FireAdmin/badges/coverage.svg" alt="coverage">
+  <a href="https://codeclimate.com/github/prescottprue/FireAdmin">
+    <img src="https://codeclimate.com/github/prescottprue/FireAdmin/badges/coverage.svg" alt="coverage">
   </a>
   <!-- License -->
   <a href="https://github.com/KyperTech/FireAdmin/blob/master/LICENSE.md">

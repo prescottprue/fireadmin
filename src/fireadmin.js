@@ -54,13 +54,15 @@ class Fireadmin {
       obj.author = auth.uid;
     }
     obj.createdAt = Date.now();
-    return this.ref.child(listName).push(obj, (err) => {
-      if (!err) {
-				return Promise.resolve(obj);
-      } else {
-				return Promise.reject(err);
-      }
-    });
+		return new Promise((resolve, reject) => {
+			this.ref.child(listName).push(obj, (err) => {
+	      if (!err) {
+					return resolve(obj);
+	      } else {
+					return reject(err);
+	      }
+	    });
+		});
   }
 	/**
 	 * Gets list of objects created by the currently logged in User.
@@ -82,12 +84,14 @@ class Fireadmin {
 			return Promise.reject({message: 'Listname required to list objects.'});
 		}
     if (this.isAuthorized) {
-      let authorObjQuery = this.ref.child(listName).orderByChild('author').equalTo(auth.uid);
-			return authorObjQuery.on('value', (listSnap) => {
-				return Promise.resolve(listSnap.val());
-      }, (err) => {
-				return Promise.reject(err);
-      });
+			return new Promise((resolve, reject) => {
+				let authorObjQuery = this.ref.child(listName).orderByChild('author').equalTo(auth.uid);
+				authorObjQuery.on('value', (listSnap) => {
+					return resolve(listSnap.val());
+				}, (err) => {
+					return reject(err);
+				});
+			});
     } else {
       var error = {code: 'INVALID_AUTH', message: 'listByCurrentUser cannot load list without current user'};
       logger.error(error.message);
@@ -109,12 +113,14 @@ class Fireadmin {
 	 *  logger.error('Error getting message list:', err);
 	 * });
 	 */
-	listByUid(uid) {
-		return this.fbRef(listPath).orderByChild('author').equalTo(uid).on('value', (listSnap) => {
-			return Promise.resolve(listSnap.val());
-    }, (err) => {
-			return Promise.reject(err);
-    });
+	listByUid(listPath, uid) {
+		return new Promise((resolve, reject) => {
+			this.fbRef(listPath).orderByChild('author').equalTo(uid).on('value', (listSnap) => {
+				return Promise.resolve(listSnap.val());
+			}, (err) => {
+				return Promise.reject(err);
+			});
+		});
 	}
 	/**
    * Get total user count
@@ -126,12 +132,14 @@ class Fireadmin {
    * });
    */
   getUserCount() {
-    return this.ref.child('users').on('value', (usersListSnap) => {
-			return Promise.resolve(usersListSnap.numChildren());
-    }, (err) => {
-			logger.error({description: 'Error getting user count.', func: 'getUserCount', obj: 'Fireadmin'});
-			return Promise.reject(err);
-    });
+    return new Promise((resolve, reject) => {
+			this.ref.child('users').on('value', (usersListSnap) => {
+				resolve(usersListSnap.numChildren());
+	    }, (err) => {
+				logger.error({description: 'Error getting user count.', func: 'getUserCount', obj: 'Fireadmin'});
+				reject(err);
+	    });
+		});
   }
   /** Get the number of users that are currently online.
    * @memberOf Fireadmin#
@@ -144,12 +152,14 @@ class Fireadmin {
    *
    */
   getOnlineUserCount() {
-    return this.ref.child('presence').on('value', (onlineUserSnap) => {
-      logger.log('There are currently' + onlineUserSnap.numChildren() + ' users online.');
-			return Promise.resolve(onlineUserSnap.numChildren());
-    }, (err) => {
-			return Promise.reject(err);
-    });
+    return new Promise((resolve, reject) => {
+			this.ref.child('presence').on('value', (onlineUserSnap) => {
+				logger.log('There are currently' + onlineUserSnap.numChildren() + ' users online.');
+				resolve(onlineUserSnap.numChildren());
+			}, (err) => {
+				reject(err);
+			});
+		});
   }
   /**
    * Get the number of sessions between two times
@@ -165,12 +175,15 @@ class Fireadmin {
    */
   sessionsBetween(time1, time2) {
     logger.log({description: 'Sessions between called.', startTime: time1, endTime: time2, func: 'sessionsBetween', obj: 'Fireadmin'});
-    return this.ref.child('sessions').orderByChild('ended').startAt(time1).endAt(time2).on('value', (sessionsSnap) => {
-			return Promise.resolve(sessionsSnap.numChildren());
-    }, (err) => {
-			logger.error({description: 'Error getting sessions between specified times.', error: err, func: 'sessionsBetween', obj: 'Fireadmin'});
-			return Promise.reject({message: 'Error getting sessions.'});
-    });
+		return new Promise((resolve, reject) => {
+			this.ref.child('sessions').orderByChild('ended').startAt(time1).endAt(time2).on('value', (sessionsSnap) => {
+				resolve(sessionsSnap.numChildren());
+			}, (err) => {
+				logger.error({description: 'Error getting sessions between specified times.', error: err, func: 'sessionsBetween', obj: 'Fireadmin'});
+				reject({message: 'Error getting sessions.'});
+			});
+		});
+
   }
   /**
    * Get the number of sessions since a specific time
@@ -187,12 +200,14 @@ class Fireadmin {
    * });
    */
   sessionsSince(time) {
-    return this.ref.child('sessions').orderByChild('ended').startAt(time).endAt(Date.now()).on('value', (sessionsSnap) => {
-			return Promise.resolve(sessionsSnap.numChildren());
-    }, (err) => {
-			logger.error({description: 'Error getting sessions between specified times.', error: err, func: 'sessionsSince', obj: 'Fireadmin'});
-			return Promise.reject(err);
-    });
+		return new Promise((resolve, reject) => {
+			this.ref.child('sessions').orderByChild('ended').startAt(time).endAt(Date.now()).on('value', (sessionsSnap) => {
+				return resolve(sessionsSnap.numChildren());
+			}, (err) => {
+				logger.error({description: 'Error getting sessions between specified times.', error: err, func: 'sessionsSince', obj: 'Fireadmin'});
+				return reject(err);
+			});
+		});
   }
   /**
    * Get count of objects in a given path or list
@@ -205,42 +220,47 @@ class Fireadmin {
    * });
    */
   averageSessionLength() {
-    return this.ref.child('sessions').on('value', (sessionsSnap) => {
-      var totalLength = null;
-      var sessionCount = sessionsSnap.numChildren();
-      sessionsSnap.forEach((sessionSnap) => {
-        var session = sessionSnap.val();
-        if (session.hasOwnProperty('ended') && session.hasOwnProperty('began')) {
-          //Gather length of session
-          // Convert difference in ms to minutes
-					var conversion = (session.ended - session.began) / (1000 * 60) ;
-          totalLength = totalLength + conversion;
-          logger.log('total length is now:', totalLength);
-        } else {
-          logger.log('removing unfinished session:', sessionSnap.val());
-          sessionCount--;
-          logger.log('session count:', sessionCount);
-        }
-      });
-      logger.log('totalLength:', totalLength);
-      var average = Math.floor(totalLength / sessionCount);
-      logger.log('average in minutes:', average);
-			return Promise.resolve(average);
-    }, (err) => {
-			return Promise.reject(err);
-    });
+		return new Promise((resolve, reject) => {
+			this.ref.child('sessions').on('value', (sessionsSnap) => {
+	      var totalLength = null;
+	      var sessionCount = sessionsSnap.numChildren();
+	      sessionsSnap.forEach((sessionSnap) => {
+	        var session = sessionSnap.val();
+	        if (session.hasOwnProperty('ended') && session.hasOwnProperty('began')) {
+	          //Gather length of session
+	          // Convert difference in ms to minutes
+						var conversion = (session.ended - session.began) / (1000 * 60) ;
+	          totalLength = totalLength + conversion;
+	          logger.log('total length is now:', totalLength);
+	        } else {
+	          logger.log('removing unfinished session:', sessionSnap.val());
+	          sessionCount--;
+	          logger.log('session count:', sessionCount);
+	        }
+	      });
+	      logger.log('totalLength:', totalLength);
+	      var average = Math.floor(totalLength / sessionCount);
+	      logger.log('average in minutes:', average);
+				return resolve(average);
+	    }, (err) => {
+				return reject(err);
+	    });
+		});
+
   }
   removeUserSessions(uid) {
-    return this.ref.child('sessions').orderByChild('user').equalTo(uid).on('value', (sessionsSnap) => {
-     var sessionCount = sessionsSnap.numChildren();
-      sessionsSnap.forEach((session) => {
-        session.ref().remove();
-      });
-      logger.log(sessionCount + ' Sessions sucessfully removed');
-			return Promise.resolve();
-    }, (err) => {
-			return Promise.reject(err);
-    });
+		return new Promise((resolve, reject) => {
+			this.ref.child('sessions').orderByChild('user').equalTo(uid).on('value', (sessionsSnap) => {
+	     var sessionCount = sessionsSnap.numChildren();
+	      sessionsSnap.forEach((session) => {
+	        session.ref().remove();
+	      });
+	      logger.log(sessionCount + ' Sessions sucessfully removed');
+				return resolve();
+	    }, (err) => {
+				return reject(err);
+	    });
+		});
   }
   customAuthToken(img) {
     //Send file to server
@@ -278,29 +298,30 @@ class Fireadmin {
         return handleCb(errorCb,{message: 'A valid Password is required to signup.'});
       }
       //Create new user in simple login
-      return this.createUser(signupData, (error) => {
-        if (error === null) {
-          logger.log('[emailSignup] User created successfully. Logging in as new user...');
-            // Login with new account
-            this.emailAuth(signupData, (authData) => {
-              //Create new user profile
-              return createUserProfile(authData, this.ref, (userAccount) => {
-								return Promise.resolve(userAccount);
-              }, (err) => {
-                //Error creating profile
-								return Promise.reject(err);
-              });
-            }, (err) => {
-              //Error authing with email
-							return Promise.reject(err);
-            });
-        } else {
-          //Error creating new User
-          logger.error('[emailSignup] Error creating user:', error.message);
-					return Promise.reject(error);
-        }
-      });
-
+			return new Promise((resolve, reject) => {
+				this.createUser(signupData, (error) => {
+	        if (error === null) {
+	          logger.log('[emailSignup] User created successfully. Logging in as new user...');
+	            // Login with new account
+	            this.emailAuth(signupData, (authData) => {
+	              //Create new user profile
+	              createUserProfile(authData, this.ref, (userAccount) => {
+									resolve(userAccount);
+	              }, (err) => {
+	                //Error creating profile
+									reject(err);
+	              });
+	            }, (err) => {
+	              //Error authing with email
+								reject(err);
+	            });
+	        } else {
+	          //Error creating new User
+	          logger.error('[emailSignup] Error creating user:', error.message);
+						reject(error);
+	        }
+	      });
+			});
     } else if (signupData.hasOwnProperty('type') && signupData.type == 'username') {
       //[TODO] User signup with with custom auth token with username as uid
       //Username signup
@@ -354,19 +375,21 @@ class Fireadmin {
    * });
    */
   emailAuth(loginData) {
-    return this.ref.authWithPassword(loginData, (error, authData) => {
-      if (error === null) {
-        // user authenticated with Firebase
-        logger.log('User ID: ' + authData.uid + ', Provider: ' + authData.provider);
-        // Manage presence
-        this.setupPresence(authData.uid);
-        // [TODO] Check for account/Add account if it doesn't already exist
-				return Promise.resolve(authData);
-      } else {
-        logger.error('Error authenticating user:', error);
-				return Promise.reject(err);
-      }
-    });
+		return new Promise((resolve, reject) => {
+			this.ref.authWithPassword(loginData, (error, authData) => {
+	      if (error === null) {
+	        // user authenticated with Firebase
+	        logger.log({description: 'Successfully authed.', authData: authData, userId: authData.uid, provider: authData.provider, func: 'emailAuth', obj: 'Fireadmin'});
+	        // Manage presence
+	        this.setupPresence(authData.uid);
+	        // [TODO] Check for account/Add account if it doesn't already exist
+					return resolve(authData);
+	      } else {
+	        logger.error('Error authenticating user:', error);
+					return reject(err);
+	      }
+	    });
+		});
   }
   /** Modified version of Firebase's authWithOAuthPopup function that handles presence
    * @memberOf Fireadmin#
@@ -383,19 +406,22 @@ class Fireadmin {
    */
   authWithOAuthPopup(provider) {
     //[TODO] Check enabled login types
-    return this.ref.authWithOAuthPopup(provider,(error, authData) => {
-      if (error === null) {
-        // user authenticated with Firebase
-        logger.log({description: 'Auth popup responded.', authData: authData, id: authData.uid, provider: authData.provider, func: 'authWithOAuthPopup', obj: 'Fireadmin'});
-        // Manage presence
-        this.setupPresence(authData.uid);
-        // [TODO] Check for account/Add account if it doesn't already exist
-				return Promise.resolve(authData);
-      } else {
-        logger.error('Error authenticating user:', error);
-				return Promise.reject(error);
-      }
-    });
+		return new Promise((resolve, reject) => {
+			this.ref.authWithOAuthPopup(provider, (error, authData) => {
+	      if (error === null) {
+	        // user authenticated with Firebase
+	        logger.log({description: 'Auth popup responded.', authData: authData, id: authData.uid, provider: authData.provider, func: 'authWithOAuthPopup', obj: 'Fireadmin'});
+	        // Manage presence
+	        this.setupPresence(authData.uid);
+	        // [TODO] Check for account/Add account if it doesn't already exist
+					return resolve(authData);
+	      } else {
+	        logger.error('Error authenticating user:', error);
+					return reject(error);
+	      }
+	    });
+		});
+
   }
   newUserFromAnonyomous() {
 
@@ -461,12 +487,14 @@ class Fireadmin {
    *
    */
   accountByUid(uid) {
-    return this.ref.child(uid).on('value', (accountSnap) => {
-      handleCb(successCb, accountSnap.val());
-    }, (err) => {
-      logger.error('Error getting account for ' + uid + ' : ', err);
-			return Promise.reject(err);
-    });
+		return new Promise((resolve, reject) => {
+			this.ref.child(uid).on('value', (accountSnap) => {
+	      resolve(accountSnap.val());
+	    }, (err) => {
+	      logger.error({description: 'Error getting account by UID.', uid: uid, error: err, func: 'accountByUid', obj: 'Fireadmin'});
+				reject(err);
+	    });
+		});
   }
   /** Get user account that is associated to a given email.
    * @memberOf Fireadmin#
@@ -566,3 +594,103 @@ class Fireadmin {
   }
 };
 export default Fireadmin;
+/**
+	* Extracts an app name out of a Firebase url
+	* @function AppNameFromUrl
+	* @param {String} authData Login data of new user
+	* @returns {String} appName App name extracted from url
+	*/
+ function AppNameFromUrl(url) {
+	 //remove https:// from beginging and .firebaseio.com from the end
+	 return url.match(/^(?:https?|ftp)?:\/\/([A-Za-z0-9\-]{0,61}[A-Za-z0-9])?/)[1];
+ }
+ /** Makes a post request to the Fireadmin API
+	* @function apiRequest
+	* @param {String} path - Path of request within api. `Required`
+	* @param {Object} data - Data to include in post request. `Required`
+	* @param {Function} onSuccess Function that runs when request has completed successfully. `Optional`
+	* @param {Fireadmin~errorCb} onError Function that runs if there is an error. `Optional`
+	* @example
+	* // Request to /upload with image object
+	* apiRequest('upload', {img:imgObj}, function(res){
+	*  console.log('Api request to upload completed successfully', res);
+	* }, function(err){
+	*  console.error('Error requesting to upload:', err);
+	* });
+	*/
+ function apiRequest(reqLocation, reqData, successCb, errorCb) {
+	 console.log('apiRequest sending to ' + reqUrl + ' ...');
+	 //goog.net.XhrIo.send(url, callback, method, content, headers)
+	//  goog.net.XhrIo.send(reqUrl, function(e){
+	// 	 if(e.target.isComplete() && e.target.isSuccess()){
+	// 		 var res = e.target.getResponse();
+	// 		 console.log('apiRequest responded:', res);
+	// 		 //Check for existance of response, that it has content, and that content contains a property 'url'
+	// 		 if(res){
+	// 			 //Save image object to firebase that includes new image url
+	// 			 handleCb(successCb, res);
+	// 		 } else {
+	// 			 console.error('Server error');
+	// 			 handleCb(errorCb, {code:'SERVER_ERROR'});
+	// 		 }
+	// 	 } else {
+	// 		 handleCb(errorCb, e.target.getLastError());
+	// 	 }
+	//  }, 'POST', reqData);
+ }
+ /** Create a new user profile under 'users'
+	* @function createUserProfile
+	* @param {Object} authData - Login data of new user. `Required`
+	* @param {Reference} ref - Main reference to create profile on. `Required`
+	* @param {Function} onSuccess - Function that runs when profile has been created sucessfully. `Optional`
+	* @param {Fireadmin~errorCb} - onError Function that runs if there is an error. `Optional`
+	* @example
+	* // Create a new user profile
+	* createUserProfile({email:test@test.com, password:'testtest'}, fa.ref, function(auth){
+	*  console.log('Profile created successfully for user:', auth.uid);
+	* }, function(err){
+	*  console.error('Error creating user profile:', err);
+	* });
+	*/
+ function createUserProfile(authData, ref) {
+	 console.log('createUserAccount called:', arguments);
+	 var userRef = ref.child('users').child(authData.uid);
+	 var userObj = {role: 10, provider: authData.provider};
+	 if (authData.provider == 'password') {
+		 userObj.email = authData.password.email;
+	 } else {
+		 console.log('create 3rd party linked profile:', authData);
+		 _.extend(userObj, authData);
+	 }
+	 //Check if account with given email already exists
+	 return ref.child('users').orderByChild('email').equalTo(userObj.email).on('value', (userQuery) => {
+		 if (!userQuery.val()) {
+			 //Account with given email does not already exist
+			 userRef.once('value', (userSnap) => {
+				 if (userSnap.val() == null || userSnap.hasChild('sessions')) {
+					 userObj.createdAt = Firebase.ServerValue.TIMESTAMP;
+					 // [TODO] Add check for email before using it as priority
+					 return userRef.setWithPriority(userObj, userObj.email, (err) => {
+						 if (!err) {
+							 console.log('New user account created:', userSnap.val());
+							 return Promise.resolve(userSnap.val());
+						 } else {
+							 return Promise.reject({message: 'Error creating user profile'});
+						 }
+					 });
+				 } else {
+					 console.error('User account already exists', userSnap.val());
+					 return Promise.reject(userSnap.val());
+				 }
+			 });
+		 } else {
+			 // console.warn('Account already exists. Session must have been added already:', JSON.stringify(userQuery.val()));
+			 // successCb(userQuery.val());
+			 var error = {message: 'This email has already been used to create an account', account: JSON.stringify(userQuery.val()), status: 'ACCOUNT_EXISTS'};
+			 return Promise.reject(error);
+		 }
+	 }, function(err) {
+		 //Error querying for account with email
+		 return Promise.reject(err);
+	 });
+ };

@@ -40,7 +40,7 @@ var publisher = CDNPublisher();
 gulp.task('build:main', ['lint-src', 'clean'], function(done) {
   rollup.rollup({
     entry: config.entryFileName,
-    external:['lodash'],
+    external:['lodash', 'firebase'],
   }).then(function(bundle) {
     var res = bundle.generate({
       // Don't worry about the fact that the source map is inlined at this step.
@@ -241,7 +241,7 @@ function bundle(bundler) {
 }
 function browserifyAndWatchBundler(code) {
   // Create our bundler, passing in the arguments required for watchify
-  var bundler = browserify('src/' + exportFileName + '.js', {standalone:'Grout'});
+  var bundler = browserify('src/' + exportFileName + '.js', {standalone:config.mainVarName});
 
   // Watch the bundler, and re-bundle it whenever files change
   // bundler = watchify(bundler);
