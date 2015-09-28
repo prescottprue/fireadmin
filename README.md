@@ -5,26 +5,26 @@
     <img src="https://img.shields.io/npm/v/fireadmin.svg" alt="npm version">
   </a>
   <!-- Build Status -->
-  <!-- <a href="https://travis-ci.org/KyperTech/fireadmin">
+  <a href="https://travis-ci.org/KyperTech/fireadmin">
     <img src="http://img.shields.io/travis/KyperTech/fireadmin.svg" alt="build status">
-  </a> -->
+  </a>
   <!-- Dependency Status -->
-  <!-- <a href="https://david-dm.org/KyperTech/fireadmin">
+  <a href="https://david-dm.org/KyperTech/fireadmin">
     <img src="https://david-dm.org/KyperTech/fireadmin.svg" alt="dependency status">
-  </a> -->
+  </a>
   <!-- Codeclimate -->
-  <!-- <a href="https://codeclimate.com/github/kypertech/FireAdmin">
+  <a href="https://codeclimate.com/github/kypertech/FireAdmin">
     <img src="https://codeclimate.com/github/KyperTech/FireAdmin/badges/gpa.svg" alt="codeclimate">
-  </a> -->
+  </a>
   <!-- Coverage -->
-  <!-- <a href="https://codeclimate.com/github/KyperTech/FireAdmin">
+  <a href="https://codeclimate.com/github/KyperTech/FireAdmin">
     <img src="https://codeclimate.com/github/KyperTech/FireAdmin/badges/coverage.svg" alt="coverage">
-  </a> -->
+  </a>
   <!-- License -->
-  <!-- <a href="https://github.com/KyperTech/FireAdmin/blob/master/LICENSE.md">
+  <a href="https://github.com/KyperTech/FireAdmin/blob/master/LICENSE.md">
     <img src="https://img.shields.io/npm/l/fireadmin.svg" alt="license">
   </a>
-</p> -->
+</p>
 
 FireAdmin is a all Javascript Library built to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD/ Listing/Counting).
 

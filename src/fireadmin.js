@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import config from './config';
 import logger from './utils/logger';
+import Firebase from 'firebase';
 
 class Fireadmin {
 	/* Constructor
