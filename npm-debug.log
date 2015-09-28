@@ -1,0 +1,143 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/scott/.nvm/versions/io.js/v2.4.0/bin/iojs',
+1 verbose cli   '/Users/scott/.nvm/versions/io.js/v2.4.0/bin/npm',
+1 verbose cli   'publish' ]
+2 info using npm@2.13.0
+3 info using node@v2.4.0
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec { raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/Users/scott/Dev/Code/FireAdmin',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /Users/scott/.npm/FireAdmin/0.0.2/package.tgz not in flight; packing
+9 verbose tar pack [ '/Users/scott/.npm/FireAdmin/0.0.2/package.tgz',
+9 verbose tar pack   '/Users/scott/Dev/Code/FireAdmin' ]
+10 verbose tarball /Users/scott/.npm/FireAdmin/0.0.2/package.tgz
+11 verbose folder /Users/scott/Dev/Code/FireAdmin
+12 info prepublish FireAdmin@0.0.2
+13 verbose addLocalTarball adding from inside cache /Users/scott/.npm/FireAdmin/0.0.2/package.tgz
+14 silly cache afterAdd FireAdmin@0.0.2
+15 verbose afterAdd /Users/scott/.npm/FireAdmin/0.0.2/package/package.json not in flight; writing
+16 verbose afterAdd /Users/scott/.npm/FireAdmin/0.0.2/package/package.json written
+17 silly publish { name: 'FireAdmin',
+17 silly publish   version: '0.0.2',
+17 silly publish   description: 'Library to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD and Listing)',
+17 silly publish   author: { name: 'Prescott Prue', url: 'prescottprue' },
+17 silly publish   repo: 'https://github.com/prescottprue/FireAdmin',
+17 silly publish   license: 'ISC',
+17 silly publish   main: 'dist/fireadmin.js',
+17 silly publish   scripts: { test: 'gulp', build: 'gulp build', coverage: 'gulp coverage' },
+17 silly publish   babelBoilerplateOptions:
+17 silly publish    { entryFileName: './src/fireadmin.js',
+17 silly publish      mainVarName: 'Fireadmin',
+17 silly publish      mochaGlobals: [ 'stub', 'spy', 'expect' ] },
+17 silly publish   devDependencies:
+17 silly publish    { 'babel-core': '^5.2.17',
+17 silly publish      'babel-eslint': '^4.0.5',
+17 silly publish      babelify: '^6.0.0',
+17 silly publish      'browser-sync': '^2.9.3',
+17 silly publish      browserify: '^11.0.1',
+17 silly publish      chai: '^3.3.0',
+17 silly publish      'chai-as-promised': '^5.1.0',
+17 silly publish      del: '^1.1.1',
+17 silly publish      glob: '^5.0.14',
+17 silly publish      gulp: '^3.8.10',
+17 silly publish      'gulp-awspublish': '^3.0.0',
+17 silly publish      'gulp-babel': '^5.0.0',
+17 silly publish      'gulp-bump': '^0.3.1',
+17 silly publish      'gulp-eslint': '^1.0.0',
+17 silly publish      'gulp-file': '^0.2.0',
+17 silly publish      'gulp-filter': '^3.0.0',
+17 silly publish      'gulp-istanbul': '^0.10.0',
+17 silly publish      'gulp-jscs': '^2.0.0',
+17 silly publish      'gulp-livereload': '^3.4.0',
+17 silly publish      'gulp-load-plugins': '^0.10.0',
+17 silly publish      'gulp-mocha': '^2.0.0',
+17 silly publish      'gulp-notify': '^2.1.0',
+17 silly publish      'gulp-plumber': '^1.0.1',
+17 silly publish      'gulp-rename': '^1.2.0',
+17 silly publish      'gulp-shell': '^0.4.3',
+17 silly publish      'gulp-sourcemaps': '^1.3.0',
+17 silly publish      'gulp-uglify': '^1.2.0',
+17 silly publish      isparta: '^3.0.3',
+17 silly publish      karma: '^0.13.9',
+17 silly publish      'karma-browserify': '^4.3.0',
+17 silly publish      'karma-chai-plugins': '^0.6.0',
+17 silly publish      'karma-chai-sinon': '^0.1.5',
+17 silly publish      'karma-coverage': '^0.5.2',
+17 silly publish      'karma-es6-shim': '^0.1.3',
+17 silly publish      'karma-mocha': '^0.2.0',
+17 silly publish      'karma-phantomjs-launcher': '^0.2.1',
+17 silly publish      mocha: '^2.3.3',
+17 silly publish      phantomjs: '^1.9.18',
+17 silly publish      rollup: '^0.14.1',
+17 silly publish      'run-sequence': '^1.0.2',
+17 silly publish      sinon: '^1.12.2',
+17 silly publish      'sinon-chai': '^2.7.0',
+17 silly publish      'vinyl-buffer': '^1.0.0',
+17 silly publish      'vinyl-source-stream': '^1.0.0',
+17 silly publish      watchify: '^3.3.1' },
+17 silly publish   dependencies:
+17 silly publish    { 'es5-shim': '^4.1.13',
+17 silly publish      'es6-shim': '^0.28.1',
+17 silly publish      lodash: '^3.10.1',
+17 silly publish      superagent: '^1.3.0' },
+17 silly publish   readme: '# FireAdmin\n<p align="center">\n  <!-- Npm Version -->\n  <a href="https://npmjs.org/package/fireadmin">\n    <img src="https://img.shields.io/npm/v/fireadmin.svg" alt="npm version">\n  </a>\n  <!-- Build Status -->\n  <!-- <a href="https://travis-ci.org/KyperTech/fireadmin">\n    <img src="http://img.shields.io/travis/KyperTech/fireadmin.svg" alt="build status">\n  </a> -->\n  <!-- Dependency Status -->\n  <!-- <a href="https://david-dm.org/KyperTech/fireadmin">\n    <img src="https://david-dm.org/KyperTech/fireadmin.svg" alt="dependency status">\n  </a> -->\n  <!-- Codeclimate -->\n  <!-- <a href="https://codeclimate.com/github/kypertech/FireAdmin">\n    <img src="https://codeclimate.com/github/KyperTech/FireAdmin/badges/gpa.svg" alt="codeclimate">\n  </a> -->\n  <!-- Coverage -->\n  <!-- <a href="https://codeclimate.com/github/KyperTech/FireAdmin">\n    <img src="https://codeclimate.com/github/KyperTech/FireAdmin/badges/coverage.svg" alt="coverage">\n  </a> -->\n  <!-- License -->\n  <!-- <a href="https://github.com/KyperTech/FireAdmin/blob/master/LICENSE.md">\n    <img src="https://img.shields.io/npm/l/fireadmin.svg" alt="license">\n  </a>\n</p> -->\n\nFireAdmin is a all Javascript Library built to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD/ Listing/Counting).\n\nFireAdmin is especially useful when you are trying to administer a Firebase data set (hence the name). Administration dashboards are a breeze thanks to functions like `getOnlineUserCount()` that provide analytics data in simple and easy to understand calls.\n\n[AngularJS](http://angularjs.org) factories are built in to make building even easier.\n\n## Getting Started (Vanilla JS)\n\n1. Include both the Firebase library and  `fireadmin.js` in your `index.html` :\n\n  ```html\n  <script src="https://cdn.prescottprue.com/js/0.0.2/fireadmin.min.js"></script>\n\n  ```\n\n2. Create a new FireAdmin Object:\n\n  ```javascript\nvar fa = new Fireadmin("https://<your-app>.firebaseio.com");\n  ```\n\n3. Start using Fireadmin!\n    ```javascript\n    //Get count of users\n    fa.getUserCount(function(count){\n        console.log(\'Your app currently has \' + count + \' users.\');\n    });\n    ```\n\n## [API Documentation](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)\n#### [Docs Page](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)\n\nAPI Documentation is automatically generated with JSDoc and is included in this repo under `dist/docs` if you would like to view a local version.\n\n## Planning\n* Unit Tests\n* Role Management\n* Automatic Rules Setup\n* Admin Parameter\n\n## Contributing\n\n1. Fork repository\n2. Run `npm install` to install dev dependencies.\n3. Run `grunt` to Serve and Open the dev environment.\n\n### Config\n\n`config.json` contains the configuration settings for Grunt. These settings include the name of the development/distribution folders and the Port on which to run the development web server.\n\n### Environment\n\n`env.json` contains environment configuration and is therefore not included in the commit history. **THIS IS TO KEEP YOUR KEYS SAFE!**. S3 keys/bucket, and closure path are included in this file.\n',
+17 silly publish   readmeFilename: 'README.md',
+17 silly publish   gitHead: 'b0fe18c758ef382fca5d06768b293f225592e73a',
+17 silly publish   _id: 'FireAdmin@0.0.2',
+17 silly publish   _shasum: '536db00bd302bec77fe295f4fd2486f9d0fda828',
+17 silly publish   _from: '.' }
+18 verbose getPublishConfig undefined
+19 silly mapToRegistry name FireAdmin
+20 silly mapToRegistry using default registry
+21 silly mapToRegistry registry https://registry.npmjs.org/
+22 silly mapToRegistry uri https://registry.npmjs.org/FireAdmin
+23 verbose publish registryBase https://registry.npmjs.org/
+24 silly publish uploading /Users/scott/.npm/FireAdmin/0.0.2/package.tgz
+25 verbose request uri https://registry.npmjs.org/FireAdmin
+26 verbose request sending authorization for write operation
+27 info attempt registry request try #1 at 04:39:20
+28 verbose request id f619ef3d51c7659e
+29 http request PUT https://registry.npmjs.org/FireAdmin
+30 http 400 https://registry.npmjs.org/FireAdmin
+31 verbose headers { 'content-type': 'application/json',
+31 verbose headers   'cache-control': 'max-age=60',
+31 verbose headers   'content-length': '54',
+31 verbose headers   'accept-ranges': 'bytes',
+31 verbose headers   date: 'Mon, 28 Sep 2015 08:39:21 GMT',
+31 verbose headers   via: '1.1 varnish',
+31 verbose headers   connection: 'keep-alive',
+31 verbose headers   'x-served-by': 'cache-atl6224-ATL',
+31 verbose headers   'x-cache': 'MISS',
+31 verbose headers   'x-cache-hits': '0',
+31 verbose headers   'x-timer': 'S1443429560.765832,VS0,VE1214' }
+32 verbose request invalidating /Users/scott/.npm/registry.npmjs.org/FireAdmin on PUT
+33 error publish Failed PUT 400
+34 verbose stack Error: name can no longer contain capital letters : FireAdmin
+34 verbose stack     at CachingRegistryClient.<anonymous> (/Users/scott/.nvm/versions/io.js/v2.4.0/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:247:14)
+34 verbose stack     at Request._callback (/Users/scott/.nvm/versions/io.js/v2.4.0/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:170:14)
+34 verbose stack     at Request.self.callback (/Users/scott/.nvm/versions/io.js/v2.4.0/lib/node_modules/npm/node_modules/request/request.js:197:22)
+34 verbose stack     at emitTwo (events.js:87:13)
+34 verbose stack     at Request.emit (events.js:172:7)
+34 verbose stack     at Request.<anonymous> (/Users/scott/.nvm/versions/io.js/v2.4.0/lib/node_modules/npm/node_modules/request/request.js:1050:14)
+34 verbose stack     at emitOne (events.js:82:20)
+34 verbose stack     at Request.emit (events.js:169:7)
+34 verbose stack     at IncomingMessage.<anonymous> (/Users/scott/.nvm/versions/io.js/v2.4.0/lib/node_modules/npm/node_modules/request/request.js:996:12)
+34 verbose stack     at emitNone (events.js:72:20)
+35 verbose statusCode 400
+36 verbose pkgid FireAdmin
+37 verbose cwd /Users/scott/Dev/Code/FireAdmin
+38 error Darwin 14.5.0
+39 error argv "/Users/scott/.nvm/versions/io.js/v2.4.0/bin/iojs" "/Users/scott/.nvm/versions/io.js/v2.4.0/bin/npm" "publish"
+40 error node v2.4.0
+41 error npm  v2.13.0
+42 error code E400
+43 error name can no longer contain capital letters : FireAdmin
+44 error If you need help, you may report this error at:
+44 error     <https://github.com/npm/npm/issues>
+45 verbose exit [ 1, true ]
