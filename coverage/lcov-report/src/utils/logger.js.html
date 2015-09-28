@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/utils/logger.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../prettify.css">
+    <link rel="stylesheet" href="../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">src/utils/logger.js</span></h1>
+    <h2>
+        Statements: <span class="metric">23.73% <small>(14 / 59)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">11.9% <small>(5 / 42)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">11.11% <small>(1 / 9)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">11.76% <small>(6 / 51)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric">1 branch</span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">src/utils/</a> &#187; logger.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import config from '../config';
+import _ from 'lodash';
+&nbsp;
+//Set default log level to debug
+let logLevel = 'debug';
+//Set log level from config
+<span class="missing-if-branch" title="if path not taken" >I</span>if (config.logLevel) {
+<span class="cstat-no" title="statement not covered" >	logLevel = config.logLevel;</span>
+}
+&nbsp;
+let logger = {
+	log<span class="fstat-no" title="function not covered" >(logData) {</span>
+<span class="cstat-no" title="statement not covered" >		let msgArgs = buildMessageArgs(logData);</span>
+<span class="cstat-no" title="statement not covered" >		if (config.envName == 'production') {</span>
+<span class="cstat-no" title="statement not covered" >			runConsoleMethod('log', msgArgs);</span>
+		} else {
+<span class="cstat-no" title="statement not covered" >			runConsoleMethod('log', msgArgs);</span>
+		}
+	},
+	info<span class="fstat-no" title="function not covered" >(logData) {</span>
+<span class="cstat-no" title="statement not covered" >		let msgArgs = buildMessageArgs(logData);</span>
+<span class="cstat-no" title="statement not covered" >		if (config.envName == 'production') {</span>
+<span class="cstat-no" title="statement not covered" >			runConsoleMethod('info', msgArgs);</span>
+		} else {
+<span class="cstat-no" title="statement not covered" >			runConsoleMethod('info', msgArgs);</span>
+		}
+	},
+	warn<span class="fstat-no" title="function not covered" >(logData) {</span>
+<span class="cstat-no" title="statement not covered" >		let msgArgs = buildMessageArgs(logData);</span>
+<span class="cstat-no" title="statement not covered" >		if (config.envName == 'production') {</span>
+<span class="cstat-no" title="statement not covered" >			runConsoleMethod('warn', msgArgs);</span>
+		} else {
+<span class="cstat-no" title="statement not covered" >			runConsoleMethod('warn', msgArgs);</span>
+		}
+	},
+	debug<span class="fstat-no" title="function not covered" >(logData) {</span>
+<span class="cstat-no" title="statement not covered" >		let msgArgs = buildMessageArgs(logData);</span>
+<span class="cstat-no" title="statement not covered" >		if (config.envName == 'production') {</span>
+			// runConsoleMethod('debug', msgArgs);
+			//Do not display console debugs in production
+		} else {
+<span class="cstat-no" title="statement not covered" >			runConsoleMethod('debug', msgArgs);</span>
+		}
+	},
+	error<span class="fstat-no" title="function not covered" >(logData) {</span>
+<span class="cstat-no" title="statement not covered" >		let msgArgs = buildMessageArgs(logData);</span>
+<span class="cstat-no" title="statement not covered" >		if (config.envName == 'production') {</span>
+			//TODO: Log to external logger
+<span class="cstat-no" title="statement not covered" >			runConsoleMethod('error', msgArgs);</span>
+		} else {
+<span class="cstat-no" title="statement not covered" >			runConsoleMethod('error', msgArgs);</span>
+		}
+	}
+};
+&nbsp;
+export default logger;
+<span class="fstat-no" title="function not covered" >function runConsoleMethod(methodName, methodData) {</span>
+	//Safley run console methods or use console log
+<span class="cstat-no" title="statement not covered" >	if (methodName &amp;&amp; console[methodName]) {</span>
+<span class="cstat-no" title="statement not covered" >		return console[methodName].apply(console, methodData);</span>
+	} else {
+<span class="cstat-no" title="statement not covered" >		return console.log.apply(console, methodData);</span>
+	}
+}
+<span class="fstat-no" title="function not covered" >function buildMessageArgs(logData) {</span>
+<span class="cstat-no" title="statement not covered" >	var msgStr = '';</span>
+<span class="cstat-no" title="statement not covered" >	var msgObj = {};</span>
+	//TODO: Attach time stamp
+	//Attach location information to the beginning of message
+<span class="cstat-no" title="statement not covered" >	if (_.isObject(logData)) {</span>
+<span class="cstat-no" title="statement not covered" >		if (logLevel == 'debug') {</span>
+<span class="cstat-no" title="statement not covered" >			if (_.has(logData, 'func')) {</span>
+<span class="cstat-no" title="statement not covered" >				if (_.has(logData, 'obj')) {</span>
+					//Object and function provided
+<span class="cstat-no" title="statement not covered" >					msgStr += `[${logData.obj}.${logData.func}()]\n `;</span>
+				} else <span class="cstat-no" title="statement not covered" >if (_.has(logData, 'file')) {</span>
+<span class="cstat-no" title="statement not covered" >					msgStr += `[${logData.file} &gt; ${logData.func}()]\n `;</span>
+				} else {
+<span class="cstat-no" title="statement not covered" >					msgStr += `[${logData.func}()]\n `;</span>
+				}
+			}
+		}
+		//Print each key and its value other than obj and func
+<span class="cstat-no" title="statement not covered" >		_.each(_.omit(_.keys(logData)), <span class="fstat-no" title="function not covered" >(key, ind, list) =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >			if (key != 'func' &amp;&amp; key != 'obj') {</span>
+<span class="cstat-no" title="statement not covered" >				if (key == 'description' || key == 'message') {</span>
+<span class="cstat-no" title="statement not covered" >					msgStr += logData[key];</span>
+				} else <span class="cstat-no" title="statement not covered" >if (_.isString(logData[key])) {</span>
+					// msgStr += key + ': ' + logData[key] + ', ';
+<span class="cstat-no" title="statement not covered" >					msgObj[key] = logData[key];</span>
+				} else {
+					//Print objects differently
+					// msgStr += key + ': ' + logData[key] + ', ';
+<span class="cstat-no" title="statement not covered" >					msgObj[key] = logData[key];</span>
+				}
+			}
+		});
+<span class="cstat-no" title="statement not covered" >		msgStr += '\n';</span>
+	} else <span class="cstat-no" title="statement not covered" >if (_.isString(logData)) {</span>
+<span class="cstat-no" title="statement not covered" >		msgStr = logData;</span>
+	}
+<span class="cstat-no" title="statement not covered" >	var msg = [msgStr, msgObj];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >	return msg;</span>
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Sep 28 2015 16:46:08 GMT-0400 (EDT)</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

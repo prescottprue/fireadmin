@@ -24,7 +24,7 @@ class Fireadmin {
 		return this.ref.getAuth();
 	}
 	get isAuthorized() {
-		return !this.auth || this.auth === null;
+		return this.auth || null;
 	}
 	/**
   * This callback is displayed as part of the Requester class.
@@ -116,9 +116,9 @@ class Fireadmin {
 	listByUid(listPath, uid) {
 		return new Promise((resolve, reject) => {
 			this.fbRef(listPath).orderByChild('author').equalTo(uid).on('value', (listSnap) => {
-				return Promise.resolve(listSnap.val());
+				return resolve(listSnap.val());
 			}, (err) => {
-				return Promise.reject(err);
+				return reject(err);
 			});
 		});
 	}
@@ -327,18 +327,20 @@ class Fireadmin {
       //Username signup
       //request a signup with username as uid
       apiRequest('signup', signupData, (res) => {
-        logger.log('request for token successful:', res);
-        return this.authWithCustomToken(res.token, (err, authData) => {
-          if (err) {
-						return Promise.reject(err);
-					}
-          return createUserProfile(authData, this.ref, (userAccount) => {
-						return Promise.resolve(userAccount);
-          }, (err) => {
-            //Error creating profile
-						return Promise.reject(err);
-          });
-        });
+				logger.log('request for token successful:', res);
+				return new Promise((resolve, reject) => {
+					this.authWithCustomToken(res.token, (err, authData) => {
+		          if (err) {
+								return reject(err);
+							}
+		          createUserProfile(authData, this.ref, (userAccount) => {
+								resolve(userAccount);
+		          }, (err) => {
+		            //Error creating profile
+								reject(err);
+		          });
+						});
+					});
       }, (err) => {
 				return Promise.reject(err);
       });
@@ -346,18 +348,20 @@ class Fireadmin {
       //3rd Party Signup
 			let provider = typeof signupData === 'string' ? signupData : signupData.type;
       // Auth using 3rd party OAuth
-      return this.authWithOAuthPopup(provider, (err, authData) => {
-				if (err) {
-					return Promise.reject(err);
-				}
-        //Create new profile with user data
-        return createUserProfile(authData, this.ref, (userAccount) => {
-					return Promise.resolve(userAccount);
-        }, (err) => {
-          //Error creating profile
-					return Promise.reject(err);
-        });
-      });
+			return new Promise((resolve, reject) => {
+				this.authWithOAuthPopup(provider, (err, authData) => {
+					if (err) {
+						return reject(err);
+					}
+	        //Create new profile with user data
+	        return createUserProfile(authData, this.ref, (userAccount) => {
+						return resolve(userAccount);
+	        }, (err) => {
+	          //Error creating profile
+						return reject(err);
+	        });
+	      });
+			});
     }
   }
 

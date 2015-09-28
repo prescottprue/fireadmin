@@ -279,6 +279,6 @@ function createLintTask(taskName, files) {
 
 //Run tests sepeartley with mocha (for coverage)
 function test() {
-  return gulp.src(['test/setup/node.js', 'test/unit/**/*.js'], {read: false})
+  return gulp.src(['test/setup/node.js', 'test/**/*.spec.js'], {read: false})
     .pipe($.mocha({reporter: 'dot', globals: config.mochaGlobals}));
 }
