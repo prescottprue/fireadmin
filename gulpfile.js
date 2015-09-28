@@ -15,34 +15,33 @@ const browserify = require('browserify');
 const runSequence = require('run-sequence');
 const source = require('vinyl-source-stream');
 const awspublish = require('gulp-awspublish');
+const KarmaServer = require('karma').Server;
+
 // Gather the library data from `package.json`
 const manifest = require('./package.json');
 const config = manifest.babelBoilerplateOptions;
 const mainFile = manifest.main;
 const destinationFolder = path.dirname(mainFile);
 const exportFileName = path.basename(mainFile, path.extname(mainFile));
-// const conf = require('./config.json');
-const browserSync = require('browser-sync').create();
-const KarmaServer = require('karma').Server;
-const shell = require('gulp-shell');
-const bump = require('gulp-bump');
+const conf = require('./config.json');
 const _ = require('lodash');
+const shell = require('gulp-shell');
 
 // JS files that should be watched
-const jsWatchFiles = ['src/**/*', 'test/**/*'];
+const mainFiles = ['src/**/*.js', 'src/classes/**/*.js'];
 
-// These are files other than JS files which are to be watched.
-const otherWatchFiles = ['package.json', '**/.eslintrc', '.jscsrc'];
+// Locations/Files to watch along with main files
+const watchFiles = ['package.json', '**/.eslintrc', '.jscsrc', 'test/**/*'];
+const ignoreFiles = ['dist/**/*.js', 'examples/**', 'node_modules/**'].map(function(location){return '!' + location;});
 
 //Create CDN Publisher
-// var publisher = CDNPublisher();
+var publisher = CDNPublisher();
 
-// Build main and minified versions of the library
-gulp.task('build:main', ['lint-src', 'clean'], function (done) {
+gulp.task('build:main', ['lint-src', 'clean'], function(done) {
   rollup.rollup({
     entry: config.entryFileName,
-    external:['lodash','superagent', 'jwt-decode'],
-  }).then(function (bundle) {
+    external:['lodash'],
+  }).then(function(bundle) {
     var res = bundle.generate({
       // Don't worry about the fact that the source map is inlined at this step.
       // `gulp-sourcemaps`, which comes next, will externalize them.
@@ -74,7 +73,7 @@ gulp.task('build:bundle', function (callback) {
 // Ensure that linting occurs before browserify runs. This prevents
 // the build from breaking due to poorly formatted code.
 gulp.task('build', function (callback) {
-  runSequence(['lint-src', 'lint-test'], 'test', 'build:main', 'build:bundle', 'watch', callback);
+  runSequence('lint-src', 'lint-test', 'test', 'build:main', 'build:bundle', 'watch', callback);
 });
 
 //Browserify with external modules included
@@ -84,11 +83,22 @@ gulp.task('addExternals', function() {
 
 //Run test once using Karma and exit
 gulp.task('test', function (done) {
-  require('babel-core/register');
   new KarmaServer({
     configFile: __dirname + '/karma.conf.js',
     singleRun: true
   }, done).start();
+});
+//Run test with mocha and generate code coverage with istanbul
+gulp.task('coverage', ['lint-src', 'lint-test'], function(done) {
+  require('babel-core/register');
+  gulp.src(['src/**/*.js', '!gulpfile.js', '!dist/**/*.js', '!examples/**', '!node_modules/**'])
+    .pipe($.istanbul({ instrumenter: isparta.Instrumenter }))
+    .pipe($.istanbul.hookRequire())
+    .on('finish', function() {
+      return test()
+        .pipe($.istanbul.writeReports())
+        .on('end', done);
+    });
 });
 
 // Release a new version of the package
@@ -115,34 +125,35 @@ gulp.task('bump', function(){
 
 //Watch files and trigger a rebuild on change
 gulp.task('watch', function() {
-  const watchFiles = jsWatchFiles.concat(otherWatchFiles);
-  gulp.watch(watchFiles, ['build']);
+  const watchCollection = mainFiles.concat(watchFiles).concat(ignoreFiles);
+  // console.log('watching collection:', watchCollection);
+  gulp.watch(watchCollection, ['build']);
 });
 
 //Upload to both locations of CDN
-// gulp.task('upload', function (callback) {
-//   runSequence('upload:version', 'upload:latest', callback);
-// });
+gulp.task('upload', function (callback) {
+  runSequence('upload:version', 'upload:latest', callback);
+});
 
 //Upload to CDN under version
-// gulp.task('upload:version', function() {
-//   return gulp.src('./' + conf.distFolder + '/**')
-//     .pipe($.rename(function (path) {
-//       path.dirname = conf.cdn.path + '/' + manifest.version + '/' + path.dirname;
-//     }))
-//     .pipe(publisher.publish())
-//     .pipe(awspublish.reporter());
-// });
-// //Upload to CDN under "/latest"
-// gulp.task('upload:latest', function() {
-//   return gulp.src('./' + conf.distFolder + '/**')
-//     .pipe($.rename(function (path) {
-//       path.dirname = conf.cdn.path + '/latest/' + path.dirname;
-//     }))
-//     .pipe(publisher.publish())
-//     .pipe(awspublish.reporter());
-// });
-//
+gulp.task('upload:version', function() {
+  return gulp.src('./' + conf.distFolder + '/**')
+    .pipe($.rename(function (path) {
+      path.dirname = conf.cdn.path + '/' + manifest.version + '/' + path.dirname;
+    }))
+    .pipe(publisher.publish())
+    .pipe(awspublish.reporter());
+});
+//Upload to CDN under "/latest"
+gulp.task('upload:latest', function() {
+  return gulp.src('./' + conf.distFolder + '/**')
+    .pipe($.rename(function (path) {
+      path.dirname = conf.cdn.path + '/latest/' + path.dirname;
+    }))
+    .pipe(publisher.publish())
+    .pipe(awspublish.reporter());
+});
+
 // Static server
 gulp.task('browser-sync', function() {
   browserSync.init({
@@ -169,51 +180,51 @@ createLintTask('lint-src', ['src/**/*.js']);
 createLintTask('lint-test', ['test/**/*.js', '!test/coverage/**']);
 
 //Link list of modules
-// gulp.task('link', shell.task(buildLinkCommands('link')));
+gulp.task('link', shell.task(buildLinkCommands('link')));
 
 //Unlink list of modules
-// gulp.task('unlink', shell.task(buildLinkCommands('unlink')));
+gulp.task('unlink', shell.task(buildLinkCommands('unlink')));
 
 // An alias of test
 gulp.task('default', ['coverage', 'build']);
 
 //----------------------- Utility Functions -------------------------------\\
-//Build an array of commands to link/unlink modules
-// function buildLinkCommands(linkAction){
-//   //TODO: Don't allow package types that don't follow standard link/unlink pattern
-//   // const allowedPackageLinkTypes = ['bower', 'npm'];
-//   if(!linkAction){
-//     linkAction = 'link';
-//   }
-//   const linkTypes = _.keys(conf.linkedModules);
-//   const messageCommand = 'echo ' + linkAction + 'ing local modules';
-//   var commands = [messageCommand];
-//   //Each type of packages to link
-//   _.each(linkTypes, function (type){
-//     //Check that package link patter is supported
-//     // if(!_.contains(allowedPackageLinkTypes, type)){
-//     //   console.error('Invalid package link type');
-//     //   return;
-//     // }
-//     //Each package of that type
-//     _.each(conf.linkedModules[type], function (packageName){
-//       commands.push(type + ' ' + linkAction  + ' ' + packageName);
-//     });
-//   });
-//   console.log('Returning link commands:', commands);
-//   return commands;
-// }
-
-// function CDNPublisher () {
-//   var s3Config = {
-//     accessKeyId:process.env.AWS_ACCESS_KEY_ID,
-//     secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY,
-//     params:{
-//       Bucket:conf.cdn.bucketName
-//     }
-//   };
-//   return awspublish.create(s3Config);
-// }
+function buildLinkCommands(linkAction){
+  //TODO: Don't allow package types that don't follow standard link/unlink pattern
+  // const allowedPackageLinkTypes = ['bower', 'npm'];
+  if(!linkAction){
+    linkAction = 'link';
+  }
+  const linkTypes = _.keys(conf.linkedModules);
+  const messageCommand = 'echo ' + linkAction + 'ing local modules';
+  var commands = [messageCommand];
+  //Each type of packages to link
+  _.each(linkTypes, function (packageType){
+    //Check that package link patter is supported
+    // if(!_.contains(allowedPackageLinkTypes, packageType)){
+    //   console.error('Invalid package link packageType');
+    //   return;
+    // }
+    //Each package of that packageType
+    _.each(conf.linkedModules[packageType], function (packageName){
+      commands.push(packageType + ' ' + linkAction  + ' ' + packageName);
+      if(linkAction === 'unlink'){
+        commands.push(packageType + ' install ' + packageName);
+      }
+    });
+  });
+  return commands;
+}
+function CDNPublisher () {
+  var s3Config = {
+    accessKeyId:process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY,
+    params:{
+      Bucket:conf.cdn.bucketName
+    }
+  };
+  return awspublish.create(s3Config);
+}
 
 function bundle(bundler) {
   return bundler.bundle()
@@ -230,13 +241,13 @@ function bundle(bundler) {
 }
 function browserifyAndWatchBundler(code) {
   // Create our bundler, passing in the arguments required for watchify
-  var bundler = browserify('src/' + exportFileName + '.js', {standalone:'Matter'});
+  var bundler = browserify('src/' + exportFileName + '.js', {standalone:'Grout'});
 
   // Watch the bundler, and re-bundle it whenever files change
-  bundler = watchify(bundler);
-  bundler.on('update', function() {
-    bundle(bundler);
-  });
+  // bundler = watchify(bundler);
+  // bundler.on('update', function() {
+  //   bundle(bundler);
+  // });
 
   // // Set up Babelify so that ES6 works in the tests
   bundler.transform(babelify.configure({
@@ -247,7 +258,6 @@ function browserifyAndWatchBundler(code) {
   }));
   return bundler;
 };
-
 // Send a notification when JSCS fails,
 // so that you know your changes didn't build
 function jscsNotify(file) {
@@ -265,4 +275,10 @@ function createLintTask(taskName, files) {
       .pipe($.jscs())
       .pipe($.notify(jscsNotify));
   });
+}
+
+//Run tests sepeartley with mocha (for coverage)
+function test() {
+  return gulp.src(['test/setup/node.js', 'test/unit/**/*.js'], {read: false})
+    .pipe($.mocha({reporter: 'dot', globals: config.mochaGlobals}));
 }

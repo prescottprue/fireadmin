@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import config from './config';
 import logger from './utils/logger';
-import Firebase from 'firebase';
 
 class Fireadmin {
 	/* Constructor
@@ -20,10 +19,10 @@ class Fireadmin {
 			this.options = opts;
 		}
 	}
-	get auth(){
+	get auth() {
 		return this.ref.getAuth();
 	}
-	get isAuthorized(){
+	get isAuthorized() {
 		return !this.auth || this.auth === null;
 	}
 	/**
@@ -33,17 +32,16 @@ class Fireadmin {
   * @param {String} message
   */
   /**
-   * Creates an object provided the name of the list the object will go into and the object itself.
+   * Creates an object provided the name of the list the object will go into and the object itthis.
    * The object is created with a createdAt parameter that is a server timestamp from Firebase.
    * If a user is currently signed in, the object will contain the author's `$uid` under the author parameter.
-   * @memberOf Fireadmin#
    * @param {String} listName - The name of the list the object will be put into. `Required`
    * @param {Object} objectData - Data you wish to be contained within new object. `Required`
    * @param {Function} onSuccess - Function that runs when your object has been created successfully and returns newly created object. `Optional`
    * @param {Function} onError - Function that runs if there is an error creating the object. `Optional`
    * @example
    * //creates new message object in message list
-   * fa.createObject('messages', {title:Example, content:"Cool Message"}, ).then(function(newMsg){
+   * fa.createObject('messages', {title:Example, content:'Cool Message'}, ).then(function(newMsg){
    *  logger.log('New Message created successfuly:', newMsg);
    * }, function(err){
    *  logger.error('Error creating new message:', err);
@@ -51,12 +49,12 @@ class Fireadmin {
    */
 	createObject(listName, obj) {
     var auth = this.ref.getAuth();
-    if(auth) {
+    if (auth) {
       obj.author = auth.uid;
     }
     obj.createdAt = Date.now();
     return this.ref.child(listName).push(obj, (err) => {
-      if(!err){
+      if (!err) {
 				return Promise.resolve(obj);
       } else {
 				return Promise.reject(err);
@@ -65,15 +63,14 @@ class Fireadmin {
   }
 	/**
 	 * Gets list of objects created by the currently logged in User.
-	 * @memberof Fireadmin#
 	 * @param {String | Array} listPath -  The name or path of the list the objects will be grabbed from. `Required`
 	 * @param {String} Uid - The Uid of the user that created objects. `Required`
 	 * @param {Function} onSuccess - Function that runs when the list has been retrieved successfully. `Optional`
 	 * @param {Fireadmin~errorCb} onError -  Function that runs if there is an error. `Optional`
 	 * @example
 	 * // Signin User with email and password
-	 * var uid = "simplelogin:1";
-	 * fb.listByUid("messages", uid, function(messageList){
+	 * var uid = 'simplelogin:1';
+	 * fb.listByUid('messages', uid, function(messageList){
 	 *  logger.log('List of messages by ' + uid + ' : ', messageList);
 	 * }, function(err){
 	 *  logger.error('Error getting message list:', err);
@@ -83,7 +80,7 @@ class Fireadmin {
 		if (!listName) {
 			return Promise.reject({message: 'Listname required to list objects.'});
 		}
-    if(this.isAuthorized) {
+    if (this.isAuthorized) {
       let authorObjQuery = this.ref.child(listName).orderByChild('author').equalTo(auth.uid);
 			return authorObjQuery.on('value', (listSnap) => {
 				return Promise.resolve(listSnap.val());
@@ -91,22 +88,21 @@ class Fireadmin {
 				return Promise.reject(err);
       });
     } else {
-      var error = {code:"INVALID_AUTH", message:'listByCurrentUser cannot load list without current user'};
+      var error = {code: 'INVALID_AUTH', message: 'listByCurrentUser cannot load list without current user'};
       logger.error(error.message);
 			return Promise.reject(error);
     }
 	}
 	/**
 	 * Gets list of objects created by the currently logged in User.
-	 * @memberof Fireadmin#
 	 * @param {String | Array} listPath -  The name or path of the list the objects will be grabbed from. `Required`
 	 * @param {String} Uid - The Uid of the user that created objects. `Required`
 	 * @param {Function} onSuccess - Function that runs when the list has been retrieved successfully. `Optional`
 	 * @param {Fireadmin~errorCb} onError -  Function that runs if there is an error. `Optional`
 	 * @example
 	 * // Signin User with email and password
-	 * var uid = "simplelogin:1";
-	 * fb.listByUid("messages", uid, function(messageList){
+	 * var uid = 'simplelogin:1';
+	 * fb.listByUid('messages', uid, function(messageList){
 	 *  logger.log('List of messages by ' + uid + ' : ', messageList);
 	 * }, function(err){
 	 *  logger.error('Error getting message list:', err);
@@ -121,11 +117,10 @@ class Fireadmin {
 	}
 	/**
    * Get total user count
-   * @memberof Fireadmin#
    * @param {Function} onSuccess - Function that returns total user count. `Optional`
    * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
    * @example
-   * fa.getUserCount("users", function(count){
+   * fa.getUserCount('users', function(count){
    *  logger.log('There are is a total of ' + count + ' users.');
    * });
    */
@@ -133,7 +128,7 @@ class Fireadmin {
     return this.ref.child('users').on('value', (usersListSnap) => {
 			return Promise.resolve(usersListSnap.numChildren());
     }, (err) => {
-			logger.error({description: 'Error getting user count.', func: 'getUserCount', obj: 'Fireadmin'})
+			logger.error({description: 'Error getting user count.', func: 'getUserCount', obj: 'Fireadmin'});
 			return Promise.reject(err);
     });
   }
@@ -148,7 +143,7 @@ class Fireadmin {
    *
    */
   getOnlineUserCount() {
-    return this.ref.child('presence').on("value", (onlineUserSnap) => {
+    return this.ref.child('presence').on('value', (onlineUserSnap) => {
       logger.log('There are currently' + onlineUserSnap.numChildren() + ' users online.');
 			return Promise.resolve(onlineUserSnap.numChildren());
     }, (err) => {
@@ -157,29 +152,27 @@ class Fireadmin {
   }
   /**
    * Get the number of sessions between two times
-   * @memberof Fireadmin#
    * @param {Number} startTime - The time at which to start the between period (in UTC ms). `Required`
    * @param {Number} endTime - The time at which to start the between period (in UTC ms). `Required`
    * @param {Function} onSuccess - Function that runs on completion of gathering list count. `Optional`
    * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
    * @example
    * //String list name
-   * fa.getObjectCount("users", function(count){
+   * fa.getObjectCount('users', function(count){
    *  logger.log('There are ' + count + ' users');
    * });
    */
   sessionsBetween(time1, time2) {
     logger.log({description: 'Sessions between called.', startTime: time1, endTime: time2, func: 'sessionsBetween', obj: 'Fireadmin'});
-    return this.ref.child('sessions').orderByChild('ended').startAt(time1).endAt(time2).on('value', function(sessionsSnap){
+    return this.ref.child('sessions').orderByChild('ended').startAt(time1).endAt(time2).on('value', (sessionsSnap) => {
 			return Promise.resolve(sessionsSnap.numChildren());
-    }, function(err){
+    }, (err) => {
 			logger.error({description: 'Error getting sessions between specified times.', error: err, func: 'sessionsBetween', obj: 'Fireadmin'});
 			return Promise.reject({message: 'Error getting sessions.'});
     });
   }
   /**
    * Get the number of sessions since a specific time
-   * @memberof Fireadmin#
    * @param {String} time - The UTC time to calculate from.
    * @param {Function} onSuccess - Function that runs on completion of gathering list count. `Optional`
    * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
@@ -202,7 +195,6 @@ class Fireadmin {
   }
   /**
    * Get count of objects in a given path or list
-   * @memberof Fireadmin#
    * @param {Function} onSuccess - Function that runs on completion of gathering average session length. `Optional`
    * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
    * @example
@@ -217,10 +209,11 @@ class Fireadmin {
       var sessionCount = sessionsSnap.numChildren();
       sessionsSnap.forEach((sessionSnap) => {
         var session = sessionSnap.val();
-        if(session.hasOwnProperty('ended') && session.hasOwnProperty('began')){
+        if (session.hasOwnProperty('ended') && session.hasOwnProperty('began')) {
           //Gather length of session
           // Convert difference in ms to minutes
-          totalLength = totalLength + ((session.ended - session.began)/(1000*60));
+					var conversion = (session.ended - session.began) / (1000 * 60) ;
+          totalLength = totalLength + conversion;
           logger.log('total length is now:', totalLength);
         } else {
           logger.log('removing unfinished session:', sessionSnap.val());
@@ -229,7 +222,7 @@ class Fireadmin {
         }
       });
       logger.log('totalLength:', totalLength);
-      var average = Math.floor(totalLength/sessionCount);
+      var average = Math.floor(totalLength / sessionCount);
       logger.log('average in minutes:', average);
 			return Promise.resolve(average);
     }, (err) => {
@@ -251,13 +244,13 @@ class Fireadmin {
   customAuthToken(img) {
     //Send file to server
     var fa = this;
-    var reqData = {appName:fa.appName};
-    apiRequest("auth", reqData, (res) => {
-      if(res.hasOwnProperty('token')){
+    var reqData = {appName: fa.appName};
+    apiRequest('auth', reqData, (res) => {
+      if (res.hasOwnProperty('token')) {
         logger.log('auth request response:', res);
 				return Promise.resolve(res);
       } else {
-				return Promise.reject({code:"SERVER_ERROR"});
+				return Promise.reject({code: 'SERVER_ERROR'});
       }
     }, (err) => {
 			return Promise.reject(err);
@@ -278,20 +271,19 @@ class Fireadmin {
    * });
    */
   userSignup(signupData) {
-    var self = this;
-    if(typeof signupData == 'object' && signupData.hasOwnProperty('email')) {
+    if (typeof signupData === 'object' && signupData.hasOwnProperty('email')) {
       //Email signup
-      if(!signupData.hasOwnProperty('password') && signupData.password.length <= 8){
-        return handleCb(errorCb,{message:'A valid Password is required to signup.'});
+      if (!signupData.hasOwnProperty('password') && signupData.password.length <= 8) {
+        return handleCb(errorCb,{message: 'A valid Password is required to signup.'});
       }
       //Create new user in simple login
-      return self.createUser(signupData, (error) => {
+      return this.createUser(signupData, (error) => {
         if (error === null) {
-          logger.log("[emailSignup] User created successfully. Logging in as new user...");
+          logger.log('[emailSignup] User created successfully. Logging in as new user...');
             // Login with new account
-            self.emailAuth(signupData, (authData) => {
+            this.emailAuth(signupData, (authData) => {
               //Create new user profile
-              return createUserProfile(authData, self.ref, (userAccount) => {
+              return createUserProfile(authData, this.ref, (userAccount) => {
 								return Promise.resolve(userAccount);
               }, (err) => {
                 //Error creating profile
@@ -303,48 +295,46 @@ class Fireadmin {
             });
         } else {
           //Error creating new User
-          logger.error("[emailSignup] Error creating user:", error.message);
+          logger.error('[emailSignup] Error creating user:', error.message);
 					return Promise.reject(error);
         }
       });
 
-    } else if(signupData.hasOwnProperty('type') && signupData.type == "username") {
+    } else if (signupData.hasOwnProperty('type') && signupData.type == 'username') {
       //[TODO] User signup with with custom auth token with username as uid
       //Username signup
       //request a signup with username as uid
-      apiRequest("signup", signupData, (res) => {
+      apiRequest('signup', signupData, (res) => {
         logger.log('request for token successful:', res);
-        return self.authWithCustomToken(res.token, (err, authData) => {
-          if(!err){
-            createUserProfile(authData, self.ref, (userAccount) => {
-							return Promise.resolve(userAccount);
-            }, (err) => {
-              //Error creating profile
-							return Promise.reject(err);
-            });
-          } else {
+        return this.authWithCustomToken(res.token, (err, authData) => {
+          if (err) {
 						return Promise.reject(err);
-          }
-        });
-      }, (err) => {
-				return Promise.reject(err);
-      });
-    } else if (typeof signupData == 'string' || signupData.hasOwnProperty('type')){
-      //3rd Party Signup
-			let provider = typeof signupData === 'string' ? signupData : signupData.type;
-      // Auth using 3rd party OAuth
-      return this.authWithOAuthPopup(provider, (err, authData) => {
-        if(!err){
-          //Create new profile with user data
-          return createUserProfile(authData, self.ref, (userAccount) => {
+					}
+          return createUserProfile(authData, this.ref, (userAccount) => {
 						return Promise.resolve(userAccount);
           }, (err) => {
             //Error creating profile
 						return Promise.reject(err);
           });
-        } else {
+        });
+      }, (err) => {
+				return Promise.reject(err);
+      });
+    } else if (typeof signupData == 'string' || signupData.hasOwnProperty('type')) {
+      //3rd Party Signup
+			let provider = typeof signupData === 'string' ? signupData : signupData.type;
+      // Auth using 3rd party OAuth
+      return this.authWithOAuthPopup(provider, (err, authData) => {
+				if (err) {
 					return Promise.reject(err);
-        }
+				}
+        //Create new profile with user data
+        return createUserProfile(authData, this.ref, (userAccount) => {
+					return Promise.resolve(userAccount);
+        }, (err) => {
+          //Error creating profile
+					return Promise.reject(err);
+        });
       });
     }
   }
@@ -366,13 +356,13 @@ class Fireadmin {
     return this.ref.authWithPassword(loginData, (error, authData) => {
       if (error === null) {
         // user authenticated with Firebase
-        logger.log("User ID: " + authData.uid + ", Provider: " + authData.provider);
+        logger.log('User ID: ' + authData.uid + ', Provider: ' + authData.provider);
         // Manage presence
-        self.setupPresence(authData.uid);
+        this.setupPresence(authData.uid);
         // [TODO] Check for account/Add account if it doesn't already exist
 				return Promise.resolve(authData);
       } else {
-        logger.error("Error authenticating user:", error);
+        logger.error('Error authenticating user:', error);
 				return Promise.reject(err);
       }
     });
@@ -384,7 +374,7 @@ class Fireadmin {
    * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
    * @example
    * // Signin User with email and password
-   * fb.authWithOAuthPopup("google", function(auth){
+   * fb.authWithOAuthPopup('google', function(auth){
    *  logger.log('Login Successful for user:', auth.uid);
    * }, function(err){
    *  logger.error('Error logging in:', err);
@@ -395,20 +385,20 @@ class Fireadmin {
     return this.ref.authWithOAuthPopup(provider,(error, authData) => {
       if (error === null) {
         // user authenticated with Firebase
-        logger.log("User ID: " + authData.uid + ", Provider: " + authData.provider);
+        logger.log({description: 'Auth popup responded.', authData: authData, id: authData.uid, provider: authData.provider, func: 'authWithOAuthPopup', obj: 'Fireadmin'});
         // Manage presence
-        self.setupPresence(authData.uid);
+        this.setupPresence(authData.uid);
         // [TODO] Check for account/Add account if it doesn't already exist
 				return Promise.resolve(authData);
       } else {
-        logger.error("Error authenticating user:", error);
+        logger.error('Error authenticating user:', error);
 				return Promise.reject(error);
       }
     });
   }
   newUserFromAnonyomous() {
 
-  },
+  }
   /** Log in with Github through OAuth
    * @memberOf Fireadmin#
    * @param {Function} onSuccess - Function that runs when the user is successfully authenticated with presence enabled. `Optional`
@@ -422,7 +412,7 @@ class Fireadmin {
    * });
    */
   githubAuth() {
-    return this.authWithOAuthPopup("github");
+    return this.authWithOAuthPopup('github');
   }
   /** Modified version of Firebase's authWithPassword that handles presence
    * @memberOf Fireadmin#
@@ -437,7 +427,7 @@ class Fireadmin {
    * });
    */
   googleAuth() {
-    return this.authWithOAuthPopup("google");
+    return this.authWithOAuthPopup('google');
   }
   /** Modified version of Firebase's authWithPassword that handles presence
    * @memberOf Fireadmin#
@@ -452,7 +442,7 @@ class Fireadmin {
    * });
    */
   twitterAuth() {
-    return this.authWithOAuthPopup("twitter");
+    return this.authWithOAuthPopup('twitter');
   }
 
   /** Get account for a user given their uid.
@@ -483,7 +473,7 @@ class Fireadmin {
    * @param {Fireadmin~accountByEmailCb} onSuccess - Function that returns account info once it is loaded. `Optional`
    * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
    * @example
-   * fa.accountByEmail("test@test.com", function(account){
+   * fa.accountByEmail('test@test.com', function(account){
    *   logger.log('Account loaded:' + account);
    * }, function(err){
    *  logger.error('Error getting account by email:', err);
@@ -491,8 +481,8 @@ class Fireadmin {
    *
    */
   accountByEmail(email) {
-    if(email && typeof email == "string"){
-      return this.ref.child('users').orderByChild('email').equalTo(email).on("value", (querySnapshot) => {
+    if (email && typeof email == 'string') {
+      return this.ref.child('users').orderByChild('email').equalTo(email).on('value', (querySnapshot) => {
         logger.log('accountByEmail returned:', querySnapshot.val());
 				return Promise.resolve(querySnapshot.val());
       }, (err) => {
@@ -515,24 +505,23 @@ class Fireadmin {
    * @memberOf Fireadmin#
    * @param {String} uid Unique Id for user that for which presence is being setup.
    * @example
-   * fa.setupPresence("simplelogin:1");
+   * fa.setupPresence('simplelogin:1');
    *
    */
   setupPresence(uid) {
-    logger.log('setupPresence called for uid:', uid);
-    var self = this.ref;
-    var amOnline = self.child('.info/connected');
-    var onlineRef = self.child('presence').child(uid);
-    var sessionsRef = self.child('sessions');
-    var userRef = self.child('users').child(uid);
-    var userSessionRef = self.child('users').child(uid).child('sessions');
+    logger.log({description: 'setupPresence called', uid: uid, func: 'setupPresense', obj: 'Fireadmin'});
+    var amOnline = this.ref.child('.info/connected');
+    var onlineRef = this.ref.child('presence').child(uid);
+    var sessionsRef = this.ref.child('sessions');
+    var userRef = this.ref.child('users').child(uid);
+    var userSessionRef = this.ref.child('users').child(uid).child('sessions');
     var pastSessionsRef = userSessionRef.child('past');
     return amOnline.on('value', (snapShot) => {
-      if(snapShot.val()) {
+      if (snapShot.val()) {
         //user is online
-        var onDisconnectRef = self.onDisconnect();
+        var onDisconnectRef = this.ref.onDisconnect();
         // add session and set disconnect
-        var session = sessionsRef.push({began: Firebase.ServerValue.TIMESTAMP, user:uid});
+        var session = sessionsRef.push({began: Firebase.ServerValue.TIMESTAMP, user: uid});
         var endedRef = session.child('ended');
         endedRef.onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
         //add correct session id to user
@@ -546,8 +535,8 @@ class Fireadmin {
         // Add session id to past sessions on disconnect
         // pastSessionsRef.onDisconnect().push(session.key());
         // Do same on unAuth
-        self.onAuth((authData) => {
-          if(!authData){
+        this.onAuth((authData) => {
+          if (!authData) {
             endedRef.set(Firebase.ServerValue.TIMESTAMP);
             currentSesh.remove();
             onlineRef.remove();
@@ -568,7 +557,7 @@ class Fireadmin {
   fbRef(path) {
     var ref = this.ref;
     var args = Array.prototype.slice.call(arguments);
-    if( args.length ) {
+    if (args.length) {
       //[TODO] Have this return a Fireadmin object
       ref = ref.child(pathRef(args));
     }
