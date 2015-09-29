@@ -697,4 +697,4 @@ export default Fireadmin;
 		 //Error querying for account with email
 		 return Promise.reject(err);
 	 });
- };
+ }

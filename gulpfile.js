@@ -81,24 +81,12 @@ gulp.task('addExternals', function() {
   return bundle(browserifyAndWatchBundler());
 });
 
-//Run test once using Karma and exit
+//Run test once using Karma and generate code coverage then exit
 gulp.task('test', function (done) {
   new KarmaServer({
     configFile: __dirname + '/karma.conf.js',
     singleRun: true
   }, done).start();
-});
-//Run test with mocha and generate code coverage with istanbul
-gulp.task('coverage', ['lint-src', 'lint-test'], function(done) {
-  require('babel-core/register');
-  gulp.src(['src/**/*.js', '!gulpfile.js', '!dist/**/*.js', '!examples/**', '!node_modules/**'])
-    .pipe($.istanbul({ instrumenter: isparta.Instrumenter }))
-    .pipe($.istanbul.hookRequire())
-    .on('finish', function() {
-      return test()
-        .pipe($.istanbul.writeReports())
-        .on('end', done);
-    });
 });
 
 // Release a new version of the package
@@ -275,10 +263,4 @@ function createLintTask(taskName, files) {
       .pipe($.jscs())
       .pipe($.notify(jscsNotify));
   });
-}
-
-//Run tests sepeartley with mocha (for coverage)
-function test() {
-  return gulp.src(['test/setup/node.js', 'test/**/*.spec.js'], {read: false})
-    .pipe($.mocha({reporter: 'dot', globals: config.mochaGlobals}));
 }

@@ -37,7 +37,7 @@ FireAdmin is especially useful when you are trying to administer a Firebase data
 1. Include both the Firebase library and  `fireadmin.js` in your `index.html` :
 
   ```html
-  <script src="https://cdn.prescottprue.com/js/0.0.2/fireadmin.min.js"></script>
+  <script src="https://cdn.prue.io/js/0.0.2/fireadmin.min.js"></script>
 
   ```
 

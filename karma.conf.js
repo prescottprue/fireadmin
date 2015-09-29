@@ -8,13 +8,19 @@ module.exports = function(config) {
     ],
     exclude: [],
     preprocessors: {
-      'src/**/*.js': 'browserify',
-      'test/**/*.js': 'browserify'
+      'src/**/*.js': ['browserify'],
+      'test/**/*.js': ['browserify']
+    },
+    coverageReporter: {
+      reporters: [
+        { type: 'html' }
+      ]
     },
     browserify : {
-      transform : ['babelify']
+      debug: true,
+      transform: ['babelify',['browserify-istanbul', {instrumenter: require('isparta')}]]
     },
-    reporters: ['progress'],
+    reporters: ['progress', 'dots', 'coverage'],
     port: 9876,
     colors: true,
     browsers: ['PhantomJS'],
