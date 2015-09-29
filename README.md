@@ -26,20 +26,26 @@
   </a>
 </p>
 
-FireAdmin is a all Javascript Library built to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD/ Listing/Counting).
+| Fireadmin organizes and simplifies usage of [Firebase](http://firebase.com)
+
+FireAdmin is a Javascript Library built to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD/ Listing/Counting).
 
 FireAdmin is especially useful when you are trying to administer a Firebase data set (hence the name). Administration dashboards are a breeze thanks to functions like `getOnlineUserCount()` that provide analytics data in simple and easy to understand calls.
 
 [AngularJS](http://angularjs.org) factories are built in to make building even easier.
 
-## Getting Started (Vanilla JS)
+## Getting Started
 
-1. Include both the Firebase library and  `fireadmin.js` in your `index.html` :
+1. Include the Fireadmin bundle in your `index.html` :
 
   ```html
-  <script src="https://cdn.prue.io/js/0.0.2/fireadmin.min.js"></script>
+  <script src="https://cdn.prue.io/js/0.0.3/fireadmin.min.js"></script>
 
   ```
+**or**
+Install through package managers:
+`npm install fireadmin --save`
+`bower install fireadmin --save`
 
 2. Create a new FireAdmin Object:
 

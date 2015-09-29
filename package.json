@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Library to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD and Listing)",
   "author": "Prescott Prue (prescottprue)",
   "repo": "https://github.com/prescottprue/FireAdmin",
@@ -8,9 +8,8 @@
   "main": "dist/fireadmin.js",
   "jsnext:main": "src/fireadmin.js",
   "scripts": {
-    "test": "gulp",
-    "build": "gulp build",
-    "coverage": "gulp coverage"
+    "test": "gulp test",
+    "build": "gulp build"
   },
   "babelBoilerplateOptions": {
     "entryFileName": "./src/fireadmin.js",

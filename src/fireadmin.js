@@ -596,7 +596,7 @@ class Fireadmin {
     }
     return ref;
   }
-};
+}
 export default Fireadmin;
 /**
 	* Extracts an app name out of a Firebase url
