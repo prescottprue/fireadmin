@@ -7,6 +7,6 @@ branches:
     - master
 sudo: false
 script: "gulp test"
-after_success:
-  - npm install -g codeclimate-test-reporter
-  - codeclimate-test-reporter < coverage/lcov.info
+addons:
+  code_climate:
+    repo_token: 27e0fa94176ed51872ceeeb1f4f688d6738dd51310babc44c9309201ba2d84c2
