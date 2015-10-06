@@ -5,8 +5,8 @@
     <img src="https://img.shields.io/npm/v/fireadmin.svg" alt="npm version">
   </a>
   <!-- Build Status -->
-  <a href="https://travis-ci.org/prescottprue/fireadmin">
-    <img src="http://img.shields.io/travis/prescottprue/FireAdmin.svg" alt="build status">
+  <a href="https://travis-ci.org/prescottprue/FireAdmin">
+    <img src="http://img.shields.io/travis/prescottprue/fireadmin.svg" alt="build status">
   </a>
   <!-- Dependency Status -->
   <a href="https://david-dm.org/prescottprue/fireadmin">
