@@ -144,7 +144,7 @@ gulp.task('upload:latest', function() {
 });
 //Upload to CDN under "/latest"
 gulp.task('upload:docs', function() {
-  return gulp.src('./' + conf.folders.dist + '/**')
+  return gulp.src('./' + conf.folders.docs + '/**')
     .pipe($.rename(function (path) {
       path.dirname = conf.cdn.path + '/latest/' + path.dirname + '/docs';
     }))
@@ -153,8 +153,8 @@ gulp.task('upload:docs', function() {
 });
 // Generate docs based on comments
 gulp.task('docs', function() {
-  gulp.src('./' + conf.folders.dev)
-  .pipe(esdoc({ destination: './' + conf.folders.docs }));
+  gulp.src('./src')
+  .pipe(esdoc({ destination: './docs' }));
 });
 
 // Static server

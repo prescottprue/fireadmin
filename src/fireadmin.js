@@ -94,7 +94,7 @@ class Fireadmin {
    * @example
    * // Signin User with email and password
    * var uid = 'simplelogin:1';
-   * fb.listByUid('messages', uid, function(messageList){
+   * fb.listByUid('messages', uid).then(function(messageList){
    *  logger.log('List of messages by ' + uid + ' : ', messageList);
    * }, function(err){
    *  logger.error('Error getting message list:', err);
@@ -112,7 +112,7 @@ class Fireadmin {
   /** Get total user count
    * @return {Promise}
    * @example
-   * fa.getUserCount('users', function(count){
+   * fa.getUserCount('users').then(function(count){
    *  logger.log('There are is a total of ' + count + ' users.');
    * });
    */
@@ -129,7 +129,7 @@ class Fireadmin {
   /** Get the number of users that are currently online.
    * @return {Promise}
    * @example
-   * fa.getOnlineUserCount(function(count){
+   * fa.getOnlineUserCount().then(function(count){
    *   logger.log('There are ' + count + ' users currently online.');
    * });
    *
@@ -175,7 +175,7 @@ class Fireadmin {
    * dt.setMonth(dt.getMonth()-1); //Set date back a month
    * var monthAgo = dt.getTime(); //Convert to UTC time
    * //Get number of sessions since a month ago
-   * fa.sessionsSince(monthAgo, function(count){
+   * fa.sessionsSince(monthAgo).then(function(count){
    *  logger.log('There are ' + count + ' sessions in the past month');
    * });
    */
