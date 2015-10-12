@@ -16,6 +16,7 @@ const runSequence = require('run-sequence');
 const source = require('vinyl-source-stream');
 const awspublish = require('gulp-awspublish');
 const KarmaServer = require('karma').Server;
+const esdoc = require("gulp-esdoc");
 
 // Gather the library data from `package.json`
 const manifest = require('./package.json');
@@ -125,7 +126,7 @@ gulp.task('upload', function (callback) {
 
 //Upload to CDN under version
 gulp.task('upload:version', function() {
-  return gulp.src('./' + conf.distFolder + '/**')
+  return gulp.src('./' + conf.folders.dist + '/**')
     .pipe($.rename(function (path) {
       path.dirname = conf.cdn.path + '/' + manifest.version + '/' + path.dirname;
     }))
@@ -134,23 +135,46 @@ gulp.task('upload:version', function() {
 });
 //Upload to CDN under "/latest"
 gulp.task('upload:latest', function() {
-  return gulp.src('./' + conf.distFolder + '/**')
+  return gulp.src('./' + conf.folders.dist + '/**')
     .pipe($.rename(function (path) {
       path.dirname = conf.cdn.path + '/latest/' + path.dirname;
     }))
     .pipe(publisher.publish())
     .pipe(awspublish.reporter());
 });
+//Upload to CDN under "/latest"
+gulp.task('upload:docs', function() {
+  return gulp.src('./' + conf.folders.dist + '/**')
+    .pipe($.rename(function (path) {
+      path.dirname = conf.cdn.path + '/latest/' + path.dirname + '/docs';
+    }))
+    .pipe(publisher.publish())
+    .pipe(awspublish.reporter());
+});
+// Generate docs based on comments
+gulp.task('docs', function() {
+  gulp.src('./' + conf.folders.dev)
+  .pipe(esdoc({ destination: './' + conf.folders.docs }));
+});
 
 // Static server
 gulp.task('browser-sync', function() {
   browserSync.init({
+    port: conf.Port || 4000,
     server: {
       baseDir: "./"
     }
   });
 });
-
+// Static server
+gulp.task('browser-sync:docs', function() {
+  browserSync.init({
+    port: conf.docsPort || 5000,
+    server: {
+      baseDir: "./docs/"
+    }
+  });
+});
 // Remove the built files
 gulp.task('clean', function(cb) {
   del([destinationFolder], cb);

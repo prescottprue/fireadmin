@@ -4,7 +4,7 @@ import logger from './utils/logger';
 import Firebase from 'firebase';
 
 class Fireadmin {
-	/* Constructor
+	/** Constructor
 	 * @param {string} appName Name of application
 	 */
 	constructor(url, opts) {
@@ -26,23 +26,14 @@ class Fireadmin {
 	get isAuthorized() {
 		return this.auth || null;
 	}
-	/**
-  * This callback is displayed as part of the Requester class.
-  * @callback Fireadmin~errorCb
-  * @param {String} code
-  * @param {String} message
-  */
-  /**
-   * Creates an object provided the name of the list the object will go into and the object itthis.
-   * The object is created with a createdAt parameter that is a server timestamp from Firebase.
-   * If a user is currently signed in, the object will contain the author's `$uid` under the author parameter.
+  /** Creates an object provided the name of the list the object will go into and the object it this.
+   * @description The object is created with a createdAt parameter that is a server timestamp from Firebase. If a user is currently signed in, the object will contain the author's `$uid` under the author parameter.
    * @param {String} listName - The name of the list the object will be put into. `Required`
    * @param {Object} objectData - Data you wish to be contained within new object. `Required`
-   * @param {Function} onSuccess - Function that runs when your object has been created successfully and returns newly created object. `Optional`
-   * @param {Function} onError - Function that runs if there is an error creating the object. `Optional`
+   * @return {Promise}
    * @example
    * //creates new message object in message list
-   * fa.createObject('messages', {title:Example, content:'Cool Message'}, ).then(function(newMsg){
+   * fa.createObject('messages', {title:'Example', content:'Cool Message'}).then(function(newMsg){
    *  logger.log('New Message created successfuly:', newMsg);
    * }, function(err){
    *  logger.error('Error creating new message:', err);
@@ -64,26 +55,24 @@ class Fireadmin {
 	    });
 		});
   }
-	/**
-	 * Gets list of objects created by the currently logged in User.
-	 * @param {String | Array} listPath -  The name or path of the list the objects will be grabbed from. `Required`
-	 * @param {String} Uid - The Uid of the user that created objects. `Required`
-	 * @param {Function} onSuccess - Function that runs when the list has been retrieved successfully. `Optional`
-	 * @param {Fireadmin~errorCb} onError -  Function that runs if there is an error. `Optional`
-	 * @example
-	 * // Signin User with email and password
-	 * var uid = 'simplelogin:1';
-	 * fb.listByUid('messages', uid, function(messageList){
-	 *  logger.log('List of messages by ' + uid + ' : ', messageList);
-	 * }, function(err){
-	 *  logger.error('Error getting message list:', err);
-	 * });
-	 */
+	/** Gets list of objects created by the currently logged in User.
+   * @param {String|Array} listPath -  The name or path of the list the objects will be grabbed from. `Required`
+   * @param {String} Uid - The Uid of the user that created objects. `Required`
+   * @return {Promise}
+   * @example
+   * // Signin User with email and password
+   * var uid = 'simplelogin:1'; //User id
+   * fb.listByUid('messages', uid).then(function(messageList){
+   *  logger.log('List of messages by ' + uid + ' : ', messageList);
+   * }, function(err){
+   *  logger.error('Error getting message list:', err);
+   * });
+   */
 	listByCurrentUser(listName) {
 		if (!listName) {
 			return Promise.reject({message: 'Listname required to list objects.'});
 		}
-    if (this.isAuthorized) {
+		if (this.isAuthorized) {
 			return new Promise((resolve, reject) => {
 				let authorObjQuery = this.ref.child(listName).orderByChild('author').equalTo(auth.uid);
 				authorObjQuery.on('value', (listSnap) => {
@@ -92,27 +81,25 @@ class Fireadmin {
 					return reject(err);
 				});
 			});
-    } else {
-      var error = {code: 'INVALID_AUTH', message: 'listByCurrentUser cannot load list without current user'};
-      logger.error(error.message);
+		} else {
+			var error = {code: 'INVALID_AUTH', message: 'listByCurrentUser cannot load list without current user'};
+			logger.error(error.message);
 			return Promise.reject(error);
-    }
+		}
 	}
-	/**
-	 * Gets list of objects created by the currently logged in User.
-	 * @param {String | Array} listPath -  The name or path of the list the objects will be grabbed from. `Required`
-	 * @param {String} Uid - The Uid of the user that created objects. `Required`
-	 * @param {Function} onSuccess - Function that runs when the list has been retrieved successfully. `Optional`
-	 * @param {Fireadmin~errorCb} onError -  Function that runs if there is an error. `Optional`
-	 * @example
-	 * // Signin User with email and password
-	 * var uid = 'simplelogin:1';
-	 * fb.listByUid('messages', uid, function(messageList){
-	 *  logger.log('List of messages by ' + uid + ' : ', messageList);
-	 * }, function(err){
-	 *  logger.error('Error getting message list:', err);
-	 * });
-	 */
+  /** Gets list of objects created by the currently logged in User.
+   * @param {String | Array} listPath -  The name or path of the list the objects will be grabbed from. `Required`
+   * @param {String} Uid - The Uid of the user that created objects. `Required`
+   * @return {Promise}
+   * @example
+   * // Signin User with email and password
+   * var uid = 'simplelogin:1';
+   * fb.listByUid('messages', uid, function(messageList){
+   *  logger.log('List of messages by ' + uid + ' : ', messageList);
+   * }, function(err){
+   *  logger.error('Error getting message list:', err);
+   * });
+   */
 	listByUid(listPath, uid) {
 		return new Promise((resolve, reject) => {
 			this.fbRef(listPath).orderByChild('author').equalTo(uid).on('value', (listSnap) => {
@@ -122,37 +109,33 @@ class Fireadmin {
 			});
 		});
 	}
-	/**
-   * Get total user count
-   * @param {Function} onSuccess - Function that returns total user count. `Optional`
-   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
+  /** Get total user count
+   * @return {Promise}
    * @example
    * fa.getUserCount('users', function(count){
    *  logger.log('There are is a total of ' + count + ' users.');
    * });
    */
-  getUserCount() {
+	getUserCount() {
     return new Promise((resolve, reject) => {
 			this.ref.child('users').on('value', (usersListSnap) => {
 				resolve(usersListSnap.numChildren());
-	    }, (err) => {
+			}, (err) => {
 				logger.error({description: 'Error getting user count.', func: 'getUserCount', obj: 'Fireadmin'});
 				reject(err);
-	    });
+			});
 		});
-  }
+	}
   /** Get the number of users that are currently online.
-   * @memberOf Fireadmin#
-   * @param {Function} onSuccess - Function that returns number of users currently online. `Optional`
-   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
+   * @return {Promise}
    * @example
    * fa.getOnlineUserCount(function(count){
    *   logger.log('There are ' + count + ' users currently online.');
    * });
    *
    */
-  getOnlineUserCount() {
-    return new Promise((resolve, reject) => {
+	getOnlineUserCount() {
+		return new Promise((resolve, reject) => {
 			this.ref.child('presence').on('value', (onlineUserSnap) => {
 				logger.log('There are currently' + onlineUserSnap.numChildren() + ' users online.');
 				resolve(onlineUserSnap.numChildren());
@@ -161,20 +144,20 @@ class Fireadmin {
 			});
 		});
   }
-  /**
-   * Get the number of sessions between two times
-   * @param {Number} startTime - The time at which to start the between period (in UTC ms). `Required`
-   * @param {Number} endTime - The time at which to start the between period (in UTC ms). `Required`
-   * @param {Function} onSuccess - Function that runs on completion of gathering list count. `Optional`
-   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
+  /** Get the number of sessions between two times
+   * @param {Number} startTime - The time at which to start the between period (in UTC ms).
+   * @param {Number} endTime - The time at which to start the between period (in UTC ms).
+   * @return {Promise}
    * @example
-   * //String list name
-   * fa.getObjectCount('users', function(count){
-   *  logger.log('There are ' + count + ' users');
+   * //Ten days ago
+   * var tenDaysAgo = new Date();
+   * d.setDate(d.getDate() - 10);
+   * fa.sessionsBetween(Date.now()).then(function(count){
+   *  logger.log('There are ' + count + ' messages');
    * });
    */
-  sessionsBetween(time1, time2) {
-    logger.log({description: 'Sessions between called.', startTime: time1, endTime: time2, func: 'sessionsBetween', obj: 'Fireadmin'});
+	sessionsBetween(time1, time2) {
+		logger.log({description: 'Sessions between called.', startTime: time1, endTime: time2, func: 'sessionsBetween', obj: 'Fireadmin'});
 		return new Promise((resolve, reject) => {
 			this.ref.child('sessions').orderByChild('ended').startAt(time1).endAt(time2).on('value', (sessionsSnap) => {
 				resolve(sessionsSnap.numChildren());
@@ -183,13 +166,10 @@ class Fireadmin {
 				reject({message: 'Error getting sessions.'});
 			});
 		});
-
-  }
-  /**
-   * Get the number of sessions since a specific time
+	}
+  /** Get the number of sessions since a specific time
    * @param {String} time - The UTC time to calculate from.
-   * @param {Function} onSuccess - Function that runs on completion of gathering list count. `Optional`
-   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
+   * @return {Promise}
    * @example
    * var dt = new Date(); //Create a new Data object
    * dt.setMonth(dt.getMonth()-1); //Set date back a month
@@ -208,62 +188,80 @@ class Fireadmin {
 				return reject(err);
 			});
 		});
-  }
+	}
   /**
-   * Get count of objects in a given path or list
-   * @param {Function} onSuccess - Function that runs on completion of gathering average session length. `Optional`
-   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
+   * Calculate average session length
+   * @return {Promise}
    * @example
    * //Get the average session length
    * fa.averageSessionLength(function(count){
    *  logger.log('The average session length is ~' + count ' mins');
    * });
    */
-  averageSessionLength() {
+	averageSessionLength() {
 		return new Promise((resolve, reject) => {
 			this.ref.child('sessions').on('value', (sessionsSnap) => {
-	      var totalLength = null;
-	      var sessionCount = sessionsSnap.numChildren();
-	      sessionsSnap.forEach((sessionSnap) => {
-	        var session = sessionSnap.val();
-	        if (session.hasOwnProperty('ended') && session.hasOwnProperty('began')) {
-	          //Gather length of session
-	          // Convert difference in ms to minutes
-						var conversion = (session.ended - session.began) / (1000 * 60) ;
-	          totalLength = totalLength + conversion;
-	          logger.log('total length is now:', totalLength);
-	        } else {
-	          logger.log('removing unfinished session:', sessionSnap.val());
-	          sessionCount--;
-	          logger.log('session count:', sessionCount);
-	        }
-	      });
-	      logger.log('totalLength:', totalLength);
-	      var average = Math.floor(totalLength / sessionCount);
-	      logger.log('average in minutes:', average);
-				return resolve(average);
-	    }, (err) => {
+				var totalLength = null;
+					var sessionCount = sessionsSnap.numChildren();
+					sessionsSnap.forEach((sessionSnap) => {
+					var session = sessionSnap.val();
+					if (session.hasOwnProperty('ended') && session.hasOwnProperty('began')) {
+						//Gather length of session
+					// Convert difference in ms to minutes
+					var conversion = (session.ended - session.began) / (1000 * 60) ;
+					totalLength = totalLength + conversion;
+					logger.log('total length is now:', totalLength);
+				} else {
+					logger.log('removing unfinished session:', sessionSnap.val());
+					sessionCount--;
+					logger.log('session count:', sessionCount);
+				}
+			});
+			logger.log('totalLength:', totalLength);
+			var average = Math.floor(totalLength / sessionCount);
+			logger.log('average in minutes:', average);
+			return resolve(average);
+			}, (err) => {
 				return reject(err);
-	    });
+			});
 		});
-
-  }
-  removeUserSessions(uid) {
+	}
+	/** Remove a user's sessions from the sessions record
+   * @param {String} uid - The UID of the user for which to remove sessions.
+   * @return {Promise}
+   * @example
+   * // Remove all of simplelogin:1's sessions
+   * fb.removeUserSessions('simplelogin:1').then(function() {
+   *  logger.log('Simplelogin:1 no longer has any sessions');
+   * }, function(err){
+   *  logger.error('Error removing sessions:', err);
+   * });
+   */
+	removeUserSessions(uid) {
 		return new Promise((resolve, reject) => {
 			this.ref.child('sessions').orderByChild('user').equalTo(uid).on('value', (sessionsSnap) => {
-	     var sessionCount = sessionsSnap.numChildren();
-	      sessionsSnap.forEach((session) => {
-	        session.ref().remove();
-	      });
-	      logger.log(sessionCount + ' Sessions sucessfully removed');
+				var sessionCount = sessionsSnap.numChildren();
+				sessionsSnap.forEach((session) => {
+					session.ref().remove();
+				});
+				logger.log(sessionCount + ' Sessions sucessfully removed');
 				return resolve();
-	    }, (err) => {
+			}, (err) => {
 				return reject(err);
-	    });
+			});
 		});
-  }
-  customAuthToken(img) {
-    //Send file to server
+	}
+  /** Create custom Authentication Token
+   * @return {Promise}
+   * @example
+   * // Signin User with email and password
+   * fb.customAuthToken().then(function(token) {
+   *  logger.log('Custom auth token:', token);
+   * }, function(err){
+   *  logger.error('Error creatign custom auth token:', err);
+   * });
+   */
+  customAuthToken() {
     var fa = this;
     var reqData = {appName: fa.appName};
     apiRequest('auth', reqData, (res) => {
@@ -277,15 +275,14 @@ class Fireadmin {
 			return Promise.reject(err);
     });
   }
-  /** Modified version of Firebase's authWithPassword that handles presence
-   * @memberOf Fireadmin#
+  /**
+   * Modified version of Firebase's authWithPassword that handles presence
    * @param {Object | String} loginData - Login data object or string for 3rd Party Signup (Twitter, Github, Google) `Required`
    * @param {Object} loginData.email - Email of new user (`Required` only for email signup).
-   * @param {Function} onSuccess Function that runs when the user is successfully authenticated with presence enabled. `Optional`
-   * @param {Fireadmin~errorCb} onError Function that runs if there is an error. `Optional`
+   * @return {Promise}
    * @example
    * // Signin User with email and password
-   * fb.userSignup({email:test@test.com, password:'testtest'}, function(auth){
+   * fb.userSignup({email:test@test.com, password:'testtest'}).then(function(auth){
    *  logger.log('Login Successful for user:', auth.uid);
    * }, function(err){
    *  logger.error('Error logging in:', err);
@@ -364,12 +361,9 @@ class Fireadmin {
 			});
     }
   }
-
   /** Modified version of Firebase's authWithPassword that handles presence
-   * @memberOf Fireadmin#
    * @param {Object} loginData Login data of new user
-   * @param {Function} onSuccess Function that runs when the user is successfully authenticated with presence enabled. `Optional`
-   * @param {Fireadmin~errorCb} onError Function that runs if there is an error. `Optional`
+   * @return {Promise}
    * @example
    * // Signin User with email and password
    * fb.emailAuth({email:test@test.com, password:'testtest'}, function(auth){
@@ -396,10 +390,7 @@ class Fireadmin {
 		});
   }
   /** Modified version of Firebase's authWithOAuthPopup function that handles presence
-   * @memberOf Fireadmin#
    * @param {String} provider - Login data of new user. `Required`
-   * @param {Function} onSuccess - Function that runs when the user is successfully authenticated with presence enabled. `Optional`
-   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
    * @example
    * // Signin User with email and password
    * fb.authWithOAuthPopup('google', function(auth){
@@ -431,9 +422,6 @@ class Fireadmin {
 
   }
   /** Log in with Github through OAuth
-   * @memberOf Fireadmin#
-   * @param {Function} onSuccess - Function that runs when the user is successfully authenticated with presence enabled. `Optional`
-   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
    * @example
    * // Signin User with email and password
    * fb.githubAuth(function(auth){
@@ -446,9 +434,6 @@ class Fireadmin {
     return this.authWithOAuthPopup('github');
   }
   /** Modified version of Firebase's authWithPassword that handles presence
-   * @memberOf Fireadmin#
-   * @param {Function} onSuccess Function that runs when the user is successfully authenticated with presence enabled. `Optional`
-   * @param {Fireadmin~errorCb} onError Function that runs if there is an error. `Optional`
    * @example
    * // Signin User with email and password
    * fb.githubAuth(function(auth){
@@ -461,9 +446,6 @@ class Fireadmin {
     return this.authWithOAuthPopup('google');
   }
   /** Modified version of Firebase's authWithPassword that handles presence
-   * @memberOf Fireadmin#
-   * @param {Function} onSuccess Function that runs when the user is successfully authenticated with presence enabled. `Optional`
-   * @param {Fireadmin~errorCb} onError Function that runs if there is an error. `Optional`
    * @example
    * // Signin User with email and password
    * fb.githubAuth(function(auth){
@@ -477,10 +459,7 @@ class Fireadmin {
   }
 
   /** Get account for a user given their uid.
-   * @memberOf Fireadmin#
    * @param {String} uid Unique Id for account.
-   * @param {Function} onSuccess Function that returns account info once it is loaded. `Optional`
-   * @param {Fireadmin~errorCb} onError Function that runs if there is an error. `Optional`
    * @example
    * // Get account for uid: simplelogin:1
    * fa.accountByUid('simplelogin:1', function(account){
@@ -501,10 +480,7 @@ class Fireadmin {
 		});
   }
   /** Get user account that is associated to a given email.
-   * @memberOf Fireadmin#
    * @param {String} email - Email of account to retreive.
-   * @param {Fireadmin~accountByEmailCb} onSuccess - Function that returns account info once it is loaded. `Optional`
-   * @param {Fireadmin~errorCb} onError - Function that runs if there is an error. `Optional`
    * @example
    * fa.accountByEmail('test@test.com', function(account){
    *   logger.log('Account loaded:' + account);
@@ -526,16 +502,7 @@ class Fireadmin {
 			return Promise.reject({message: 'Email is required to get account.'});
     }
   }
-  /**
-   * Success callback for accountByEmail function that returns the account associated with a provided email.
-   * @callback Fireadmin~accountByEmailCb
-   * @param {Object} account Account associated with provided email.
-   * @param {String} account.email Email associated with account.
-   * @param {String} account.createdAt UTC Time when the account was created.
-   */
-
   /** Start presence management for a specificed user uid. This function is used within Fireadmin login functions.
-   * @memberOf Fireadmin#
    * @param {String} uid Unique Id for user that for which presence is being setup.
    * @example
    * fa.setupPresence('simplelogin:1');
@@ -579,10 +546,8 @@ class Fireadmin {
     });
   }
   /** Get a firebase reference for a path in array | string form
-   *
-   * @memberOf Fireadmin#
    * @param {String|Array} path relative path to the root folder in Firebase instance
-   * @returns A Firebase instance
+   * @returns {Firebase Reference}
    * @example
    * //Array as path
    * var userRef = fa.fbRef(['users', uid]);
@@ -612,8 +577,6 @@ export default Fireadmin;
 	* @function apiRequest
 	* @param {String} path - Path of request within api. `Required`
 	* @param {Object} data - Data to include in post request. `Required`
-	* @param {Function} onSuccess Function that runs when request has completed successfully. `Optional`
-	* @param {Fireadmin~errorCb} onError Function that runs if there is an error. `Optional`
 	* @example
 	* // Request to /upload with image object
 	* apiRequest('upload', {img:imgObj}, function(res){
@@ -624,30 +587,11 @@ export default Fireadmin;
 	*/
  function apiRequest(reqLocation, reqData, successCb, errorCb) {
 	 console.log('apiRequest sending to ' + reqUrl + ' ...');
-	 //goog.net.XhrIo.send(url, callback, method, content, headers)
-	//  goog.net.XhrIo.send(reqUrl, function(e){
-	// 	 if(e.target.isComplete() && e.target.isSuccess()){
-	// 		 var res = e.target.getResponse();
-	// 		 console.log('apiRequest responded:', res);
-	// 		 //Check for existance of response, that it has content, and that content contains a property 'url'
-	// 		 if(res){
-	// 			 //Save image object to firebase that includes new image url
-	// 			 handleCb(successCb, res);
-	// 		 } else {
-	// 			 console.error('Server error');
-	// 			 handleCb(errorCb, {code:'SERVER_ERROR'});
-	// 		 }
-	// 	 } else {
-	// 		 handleCb(errorCb, e.target.getLastError());
-	// 	 }
-	//  }, 'POST', reqData);
  }
  /** Create a new user profile under 'users'
 	* @function createUserProfile
 	* @param {Object} authData - Login data of new user. `Required`
 	* @param {Reference} ref - Main reference to create profile on. `Required`
-	* @param {Function} onSuccess - Function that runs when profile has been created sucessfully. `Optional`
-	* @param {Fireadmin~errorCb} - onError Function that runs if there is an error. `Optional`
 	* @example
 	* // Create a new user profile
 	* createUserProfile({email:test@test.com, password:'testtest'}, fa.ref, function(auth){

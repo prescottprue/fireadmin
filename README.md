@@ -5,7 +5,7 @@
     <img src="https://img.shields.io/npm/v/fireadmin.svg" alt="npm version">
   </a>
   <!-- Build Status -->
-  <a href="https://travis-ci.org/prescottprue/FireAdmin">
+  <a href="https://travis-ci.org/prescottprue/fireadmin">
     <img src="http://img.shields.io/travis/prescottprue/fireadmin.svg" alt="build status">
   </a>
   <!-- Dependency Status -->
@@ -13,12 +13,12 @@
     <img src="https://david-dm.org/prescottprue/fireadmin.svg" alt="dependency status">
   </a>
   <!-- Codeclimate -->
-  <a href="https://codeclimate.com/github/prescottprue/FireAdmin">
-    <img src="https://codeclimate.com/github/prescottprue/FireAdmin/badges/gpa.svg" alt="codeclimate">
+  <a href="https://codeclimate.com/github/prescottprue/fireadmin">
+    <img src="https://codeclimate.com/github/prescottprue/fireadmin/badges/gpa.svg" alt="codeclimate">
   </a>
   <!-- Coverage -->
-  <a href="https://codeclimate.com/github/prescottprue/FireAdmin">
-    <img src="https://codeclimate.com/github/prescottprue/FireAdmin/badges/coverage.svg" alt="coverage">
+  <a href="https://codeclimate.com/github/prescottprue/fireadmin">
+    <img src="https://codeclimate.com/github/prescottprue/fireadmin/badges/coverage.svg" alt="coverage">
   </a>
   <!-- License -->
   <a href="https://github.com/KyperTech/FireAdmin/blob/master/LICENSE.md">
@@ -39,7 +39,7 @@ FireAdmin is especially useful when you are trying to administer a Firebase data
 1. Include the Fireadmin bundle in your `index.html` :
 
   ```html
-  <script src="https://cdn.prue.io/js/0.0.3/fireadmin.min.js"></script>
+  <script src="http://cdn.prue.io/fireadmin/0.0.3/fireadmin.min.js"></script>
 
   ```
 **or**
