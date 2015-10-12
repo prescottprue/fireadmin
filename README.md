@@ -40,6 +40,8 @@ FireAdmin is especially useful when you are trying to administer a Firebase data
 
   ```html
   <script src="http://cdn.prue.io/fireadmin/0.0.3/fireadmin.min.js"></script>
+  <!-- Or the following for the latest version -->
+  <!-- <script src="http://cdn.prue.io/fireadmin/latest/fireadmin.min.js"></script> -->
 
   ```
 **or**
@@ -56,18 +58,17 @@ var fa = new Fireadmin("https://<your-app>.firebaseio.com");
 3. Start using Fireadmin!
     ```javascript
     //Get count of users
-    fa.getUserCount(function(count){
+    fa.getUserCount().then(function(count){
         console.log('Your app currently has ' + count + ' users.');
     });
     ```
 
-## [API Documentation](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)
-#### [Docs Page](https://s3.amazonaws.com/prescottprue/Fireadmin/current/docs/Fireadmin.html)
+## [API Documentation](http://cdn.prue.io/fireadmin/latest/docs/class/src/fireadmin.js~Fireadmin.html)
+#### [Docs Page](http://cdn.prue.io/fireadmin/latest/docs/index.html)
 
 API Documentation is automatically generated with JSDoc and is included in this repo under `dist/docs` if you would like to view a local version.
 
 ## Planning
-* Unit Tests
 * Role Management
 * Automatic Rules Setup
 * Admin Parameter
@@ -76,7 +77,7 @@ API Documentation is automatically generated with JSDoc and is included in this 
 
 1. Fork repository
 2. Run `npm install` to install dev dependencies.
-3. Run `grunt` to Serve and Open the dev environment.
+3. Run `gulp` to Serve and Open the dev environment.
 
 ### Config
 
@@ -84,4 +85,8 @@ API Documentation is automatically generated with JSDoc and is included in this 
 
 ### Environment
 
-`env.json` contains environment configuration and is therefore not included in the commit history. **THIS IS TO KEEP YOUR KEYS SAFE!**. S3 keys/bucket, and closure path are included in this file.
+You must have the correct Environment variables set to upload to CDN.
+
+Required Variables:
+* `AWS_ACCESS_KEY_ID`
+* `AWS_SECRET_ACCESS_KEY`
