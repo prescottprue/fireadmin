@@ -4,7 +4,7 @@
   * @param {String} authData Login data of new user
   * @returns {String} appName App name extracted from url
   */
-export function AppNameFromUrl (url) {
+export function nameFromUrl (url) {
   // remove https:// from beginging and .firebaseio.com from the end
   return url.match(/^(?:https?|ftp)?:\/\/([A-Za-z0-9\-]{0,61}[A-Za-z0-9])?/)[1]
 }

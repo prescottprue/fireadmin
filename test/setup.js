@@ -1,5 +1,3 @@
-var nock = global.nock = require('nock')
-
 var chai = global.chai = require('chai')
 var expect = global.expect = chai.expect
 var should = global.should = chai.should()
@@ -15,5 +13,3 @@ var win = doc.defaultView
 global.document = doc
 global.window = win
 global.navigator = win.navigator
-
-window.sessionStorage = require('./utils/storageMock')()

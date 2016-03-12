@@ -2,7 +2,51 @@ import { extend } from 'lodash'
 import Firebase from 'firebase'
 
 export default (ref) => {
-  const methods = {
+
+  let methods = {
+
+      get auth () {
+        return ref.getAuth()
+      },
+
+      get isAuthorized () {
+        return this.auth || null
+      },
+
+      /** Modified version of Firebase's authWithPassword that handles presence
+       * @param {Object} loginData Login data of new user
+       * @return {Promise}
+       */
+      emailAuth: loginData => {
+        return ref.authWithPassword(loginData).then(authData => {
+          // user authenticated with Firebase
+          console.log({ description: 'Successfully authed.', authData })
+          // Manage presence
+          this.setupPresence(authData.uid)
+          // [TODO] Check for account/Add account if it doesn't already exist
+          return authData
+        }, error => {
+          console.error('Error authenticating user:', error)
+          return Promise.reject(error)
+        })
+      },
+
+      /** Modified version of Firebase's authWithOAuthPopup function that handles presence
+       * @param {String} provider - Login data of new user. `Required`
+       */
+      authWithOAuthPopup: provider => {
+        // [TODO] Check enabled login types
+        return ref.authWithOAuthPopup(provider).then(authData => {
+          // Manage presence
+          this.setupPresence(authData.uid)
+          // [TODO] Check for account/Add account if it doesn't already exist
+          return authData
+        }, error => {
+          console.error('Error authenticating user:', error)
+          return Promise.reject(error)
+        })
+      },
+
     /**
      * Modified version of Firebase's authWithPassword that handles presence
      * @param {Object | String} loginData - Login data object or string for 3rd Party Signup (Twitter, Github, Google) `Required`
@@ -17,39 +61,38 @@ export default (ref) => {
      * })
      */
     signup: signupData => {
-      const { email, username password } = signupData
+      const { email, username, password } = signupData
       //Email signup
       if (!password && password.length <= 8) {
         return Promise.reject({ message: 'A valid Password is required to signup.' })
       }
       //Create new user in simple login
-        this.createUser(signupData).then(() => {
-          console.log('User created successfully. Logging in as new user...')
-          // Login with new account
-          this.emailAuth(signupData, (authData) => {
-            //Create new user profile
-            createUserProfile(authData, this.ref, (userAccount) => {
-              userAccount
-            }, err => {
-              //Error creating profile
-              return Promise.reject(err)
-            })
+      return this.createProfile(signupData).then(() => {
+        console.log('User created successfully. Logging in as new user...')
+        // Login with new account
+        return this.emailAuth(signupData, authData => {
+          //Create new user profile
+          return createUserProfile(authData, this.ref, userAccount => {
+            userAccount
           }, err => {
-            //Error authing with email
+            //Error creating profile
             return Promise.reject(err)
           })
-        }, error => {
-          //Error creating new User
-          console.error('[emailSignup] Error creating user:', error)
-          return Promise.reject(error)
+        }, err => {
+          //Error authing with email
+          return Promise.reject(err)
         })
-      }
+      }, error => {
+        //Error creating new User
+        console.error('[emailSignup] Error creating user:', error)
+        return Promise.reject(error)
+      })
     },
 
     providerSignup: provider => {
       //3rd Party Signup
       // Auth using 3rd party OAuth
-      this.authWithOAuthPopup(provider).then(authData => {
+      return this.authWithOAuthPopup(provider).then(authData => {
         //Create new profile with user data
         return createUserProfile(authData, ref, (userAccount) => {
           return userAccount
@@ -94,12 +137,11 @@ export default (ref) => {
       //Check if account with given email already exists
       return usersRef.orderByChild('email').equalTo(userObj.email).on('value').then(userQuery => {
         if (userQuery.val()) {
-          // console.warn('Account already exists. Session must have been added already:', JSON.stringify(userQuery.val()))
-          var error = {message: 'This email has already been used to create an account', account: JSON.stringify(userQuery.val()), status: 'ACCOUNT_EXISTS'}
-          return Promise.reject(error)
+          // console.warn('Account already exists)
+          return Promise.reject({ message: 'This email has already been used to create an account', status: 'EXISTS' })
         }
-        //Account with given email does not already exist
-        userRef.once('value').then(userSnap => {
+        // Account with given email does not already exist
+        return userRef.once('value').then(userSnap => {
           if (userSnap.val() || userSnap.hasChild('sessions')) {
             console.error('User account already exists', userSnap.val())
             return Promise.reject(userSnap.val())
@@ -125,8 +167,7 @@ export default (ref) => {
      * fa.setupPresence('simplelogin:1')
      *
      */
-    setupPresence (uid) {
-      console.log({ description: 'setupPresence called', uid })
+    setupPresence: uid => {
       const amOnline = ref.child('.info/connected')
       const onlineRef = ref.child('presence').child(uid)
       const sessionsRef = ref.child('sessions')
@@ -140,7 +181,7 @@ export default (ref) => {
         // user is online
         const onDisconnectRef = this.ref.onDisconnect()
         // add session and set disconnect
-        const session = sessionsRef.push({began: Firebase.ServerValue.TIMESTAMP, user: uid})
+        const session = sessionsRef.push({ began: Firebase.ServerValue.TIMESTAMP, user: uid })
         const endedRef = session.child('ended')
         endedRef.onDisconnect().set(Firebase.ServerValue.TIMESTAMP)
         // add correct session id to user
@@ -164,6 +205,7 @@ export default (ref) => {
       })
     }
   }
+
   return Object.assign(
     {},
     methods
