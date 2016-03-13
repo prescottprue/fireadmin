@@ -1,30 +1,11 @@
 # FireAdmin
-<p align="center">
-  <!-- Npm Version -->
-  <a href="https://npmjs.org/package/fireadmin">
-    <img src="https://img.shields.io/npm/v/fireadmin.svg" alt="npm version">
-  </a>
-  <!-- Build Status -->
-  <a href="https://travis-ci.org/prescottprue/fireadmin">
-    <img src="http://img.shields.io/travis/prescottprue/fireadmin.svg" alt="build status">
-  </a>
-  <!-- Dependency Status -->
-  <a href="https://david-dm.org/prescottprue/fireadmin">
-    <img src="https://david-dm.org/prescottprue/fireadmin.svg" alt="dependency status">
-  </a>
-  <!-- Codeclimate -->
-  <a href="https://codeclimate.com/github/prescottprue/fireadmin">
-    <img src="https://codeclimate.com/github/prescottprue/fireadmin/badges/gpa.svg" alt="codeclimate">
-  </a>
-  <!-- Coverage -->
-  <a href="https://codeclimate.com/github/prescottprue/fireadmin">
-    <img src="https://codeclimate.com/github/prescottprue/fireadmin/badges/coverage.svg" alt="coverage">
-  </a>
-  <!-- License -->
-  <a href="https://github.com/KyperTech/FireAdmin/blob/master/LICENSE.md">
-    <img src="https://img.shields.io/npm/l/fireadmin.svg" alt="license">
-  </a>
-</p>
+[![npm version](https://img.shields.io/npm/v/fireadmin.svg?style=flat-square)](https://www.npmjs.com/package/fireadmin)
+[![npm downloads](https://img.shields.io/npm/dm/fireadmin.svg?style=flat-square)](https://www.npmjs.com/package/fireadmin)
+[![build status](https://img.shields.io/travis/prescottprue/fireadmin/master.svg?style=flat-square)](https://travis-ci.org/prescottprue/fireadmin)
+[![dependencies status](https://img.shields.io/david/prescottprue/fireadmin/master.svg?style=flat-square)](https://david-dm.org/prescottprue/fireadmin)
+[![codeclimate](https://img.shields.io/codeclimate/github/prescottprue/fireadmin.svg?style=flat-square)](https://codeclimate.com/github/prescottprue/fireadmin)
+[![coverage](https://img.shields.io/codeclimate/coverage/github/prescottprue/fireadmin.svg?style=flat-square)](https://codeclimate.com/github/prescottprue/fireadmin)
+[![license](https://img.shields.io/npm/l/fireadmin.svg?style=flat-square)](https://github.com/prescottprue/fireadmin/blob/master/LICENSE)
 
 | Fireadmin organizes and simplifies usage of [Firebase](http://firebase.com)
 
@@ -32,7 +13,13 @@ FireAdmin is a Javascript Library built to simplify implementing standard app fu
 
 FireAdmin is especially useful when you are trying to administer a Firebase data set (hence the name). Administration dashboards are a breeze thanks to functions like `getOnlineUserCount()` that provide analytics data in simple and easy to understand calls.
 
-[AngularJS](http://angularjs.org) factories are built in to make building even easier.
+## Features
+* Authentication pared to user management
+* User Profile created on signup
+* Session management
+* Descructured Population based on ID
+* Role management
+
 
 ## Getting Started
 
@@ -68,25 +55,15 @@ var fa = new Fireadmin("https://<your-app>.firebaseio.com");
 
 API Documentation is automatically generated with JSDoc and is included in this repo under `dist/docs` if you would like to view a local version.
 
-## Planning
-* Role Management
-* Automatic Rules Setup
-* Admin Parameter
+
 
 ## Contributing
 
 1. Fork repository
 2. Run `npm install` to install dev dependencies.
-3. Run `gulp` to Serve and Open the dev environment.
+3. Run `npm start` to Serve and Open the dev environment.
 
-### Config
-
-`config.json` contains the configuration settings for Grunt. These settings include the name of the development/distribution folders and the Port on which to run the development web server.
-
-### Environment
-
-You must have the correct Environment variables set to upload to CDN.
-
-Required Variables:
-* `AWS_ACCESS_KEY_ID`
-* `AWS_SECRET_ACCESS_KEY`
+## Planning
+* Role Management
+* Automatic Rules Setup
+* Admin Parameter

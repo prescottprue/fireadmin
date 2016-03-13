@@ -1,15 +1,6 @@
 {
-    "Port":"4000",
-    "docsPort":"5000",
-    "folders": {
-      "dev": "dev",
-      "dist": "dist",
-      "docs": "docs"
-    },
-    "devFolder":"dev",
-    "distFolder":"dist",
-    "cdn": {
-      "bucketName": "prue-cdn",
-      "path": "/fireadmin"
-    }
+  "cdn": {
+    "bucketName": "prue-cdn",
+    "path": "/fireadmin"
+  }
 }

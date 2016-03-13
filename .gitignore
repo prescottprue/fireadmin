@@ -4,3 +4,6 @@ node_modules
 env.json
 coverage
 docs
+olddocs
+dist
+lib
