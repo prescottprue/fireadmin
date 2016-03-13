@@ -19,9 +19,9 @@ export default (ref) => {
      * var userRef = fa.fbRef(['users', uid])
      */
     fbRef (path) {
-      var args = Array.prototype.slice.call(arguments)
+      const args = Array.prototype.slice.call(arguments)
       if (args.length) {
-        //[TODO] Have this return a Fireadmin object
+        // [TODO] Have this return a Fireadmin object
         ref = ref.child(pathRef(args))
       }
       return ref
@@ -31,4 +31,13 @@ export default (ref) => {
     {},
     methods
   )
+}
+
+function pathRef (args) {
+  for (var i = 0; i < args.length; i++) {
+    if (typeof (args[i]) === 'object') {
+      args[i] = pathRef(args[i])
+    }
+  }
+  return args.join('/')
 }

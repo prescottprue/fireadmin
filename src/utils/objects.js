@@ -1,4 +1,3 @@
-import
 export default () => {
   const methods = {
     /** Creates an object provided the name of the list the object will go into and the object it this.
@@ -28,19 +27,12 @@ export default () => {
           resolve(obj)
         })
       })
-    }
+    },
+
     /** Gets list of objects created by the currently logged in User.
      * @param {String|Array} listPath -  The name or path of the list the objects will be grabbed from. `Required`
      * @param {String} Uid - The Uid of the user that created objects. `Required`
      * @return {Promise}
-     * @example
-     * // Signin User with email and password
-     * var uid = 'simplelogin:1' //User id
-     * fb.listByUid('messages', uid).then(function(messageList){
-     *  console.log('List of messages by ' + uid + ' : ', messageList)
-     * }, function(err){
-     *  console.error('Error getting message list:', err)
-     * })
      */
     listByCurrentUser: listName => {
       if (!listName) {

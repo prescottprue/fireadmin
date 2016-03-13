@@ -7,9 +7,9 @@ chai.use(chaiAsPromised)
 var Promise = require('es6-promise').Promise
 global.Promise = Promise
 
-var jsdom = require('jsdom')
-var doc = jsdom.jsdom('<html><body></body></html>')
-var win = doc.defaultView
-global.document = doc
-global.window = win
-global.navigator = win.navigator
+// var jsdom = require('jsdom')
+// var doc = jsdom.jsdom('<html><body></body></html>')
+// var win = doc.defaultView
+// global.document = doc
+// global.window = win
+// global.navigator = win.navigator
