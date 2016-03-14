@@ -7,16 +7,16 @@ export default class Fireadmin {
    * @param {string} appName Name of application
    */
   constructor (url, opts) {
-    if (!url) {
-      throw new Error('Application name is required to use Fireadmin')
-    }
+    if (!url) throw new Error('Firebase url is required to use Fireadmin')
     this.url = url
-    this.ref = new Firebase(url)
+    this.rootRef = new Firebase(url)
     this.name = nameFromUrl(url)
     if (opts) this.options = opts
+    Object.assign(this, auth(this.rootRef))
   }
 
-  get auth () {
-    return auth(this.ref)
+  get isAuthorized () {
+    return this.rootRef.getAuth()
   }
+
 }

@@ -85,19 +85,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Fireadmin(url, opts) {
 	    _classCallCheck(this, Fireadmin);
 
-	    if (!url) {
-	      throw new Error('Application name is required to use Fireadmin');
-	    }
+	    if (!url) throw new Error('Firebase url is required to use Fireadmin');
 	    this.url = url;
-	    this.ref = new _firebase2.default(url);
+	    this.rootRef = new _firebase2.default(url);
 	    this.name = (0, _fb.nameFromUrl)(url);
 	    if (opts) this.options = opts;
+	    Object.assign(this, (0, _auth2.default)(this.rootRef));
 	  }
 
 	  _createClass(Fireadmin, [{
-	    key: 'auth',
+	    key: 'isAuthorized',
 	    get: function get() {
-	      return (0, _auth2.default)(this.ref);
+	      return this.rootRef.getAuth();
 	    }
 	  }]);
 
@@ -402,9 +401,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _extend = __webpack_require__(3);
+	var _extend2 = __webpack_require__(3);
 
-	var _extend2 = _interopRequireDefault(_extend);
+	var _extend3 = _interopRequireDefault(_extend2);
 
 	var _firebase = __webpack_require__(1);
 
@@ -413,29 +412,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = function (ref) {
-
 	  var methods = {
 
-	    get auth() {
-	      return ref.getAuth();
+	    logout: function logout() {
+	      return ref.unauth();
 	    },
-
-	    get isAuthorized() {
-	      return this.auth || null;
-	    },
-
 	    /** Modified version of Firebase's authWithPassword that handles presence
 	     * @param {Object} loginData Login data of new user
 	     * @return {Promise}
 	     */
 	    emailAuth: function emailAuth(loginData) {
+	      var _this = this;
+
+	      var username = loginData.username;
+	      var name = loginData.name;
+	      var email = loginData.email;
+
 	      return ref.authWithPassword(loginData).then(function (authData) {
 	        // user authenticated with Firebase
 	        console.log({ description: 'Successfully authed.', authData: authData });
 	        // Manage presence
-	        undefined.setupPresence(authData.uid);
+	        _this.setupPresence(authData.uid);
 	        // [TODO] Check for account/Add account if it doesn't already exist
-	        return authData;
+	        var profileData = { email: email };
+	        if (username) profileData.username = username;
+	        if (name) profileData.name = name;
+	        console.log('email auth returning:', Object.assign({}, profileData, authData));
+	        return Object.assign({}, profileData, authData);
 	      }, function (error) {
 	        console.error('Error authenticating user:', error);
 	        return Promise.reject(error);
@@ -446,14 +449,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {String} provider - Login data of new user. `Required`
 	     */
 	    authWithOAuthPopup: function authWithOAuthPopup(provider) {
+	      var _this2 = this;
+
+	      if (!provider) return Promise.reject({ message: 'Provider required to auth.', status: 'NULL_PROIVDER' });
 	      // [TODO] Check enabled login types
 	      return ref.authWithOAuthPopup(provider).then(function (authData) {
 	        // Manage presence
-	        undefined.setupPresence(authData.uid);
+	        _this2.setupPresence(authData.uid);
 	        // [TODO] Check for account/Add account if it doesn't already exist
 	        return authData;
 	      }, function (error) {
-	        console.error('Error authenticating user:', error);
+	        if (error.toString().indexOf('Error: There are no login transports') !== -1) return Promise.reject({ message: provider + ' is not enabled.', status: 'PROVIDER_NOT_ENABLED' });
 	        return Promise.reject(error);
 	      });
 	    },
@@ -472,154 +478,122 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * })
 	     */
 	    signup: function signup(signupData) {
-	      var email = signupData.email;
-	      var username = signupData.username;
-	      var password = signupData.password;
-	      //Email signup
+	      var _this3 = this;
 
-	      if (!password && password.length <= 8) {
-	        return Promise.reject({ message: 'A valid Password is required to signup.' });
-	      }
-	      //Create new user in simple login
-	      return undefined.createProfile(signupData).then(function () {
-	        console.log('User created successfully. Logging in as new user...');
-	        // Login with new account
-	        return undefined.emailAuth(signupData, function (authData) {
-	          //Create new user profile
-	          return createUserProfile(authData, undefined.ref, function (userAccount) {
-	            userAccount;
-	          }, function (err) {
-	            //Error creating profile
-	            return Promise.reject(err);
-	          });
-	        }, function (err) {
-	          //Error authing with email
-	          return Promise.reject(err);
+	      var email = signupData.email;
+	      var password = signupData.password;
+	      var provider = signupData.provider;
+	      // Handle 3rd party provider signups
+
+	      if (provider) return this.authWithOAuthPopup(provider);
+	      if (!email) return Promise.reject({ message: 'A valid email is required to signup.', status: 'INVALID_EMAIL' });
+	      // Validate password
+	      if (!password || password.length <= 8) return Promise.reject({ message: 'A password of at least 8 characters is required to signup.', status: 'INVALID_PASSWORD' });
+	      return this.createUser(signupData).then(function () {
+	        return _this3.emailAuth(signupData).then(function (authData) {
+	          return _this3.createProfile(authData);
 	        });
-	      }, function (error) {
-	        //Error creating new User
-	        console.error('[emailSignup] Error creating user:', error);
-	        return Promise.reject(error);
 	      });
 	    },
 
 	    providerSignup: function providerSignup(provider) {
-	      //3rd Party Signup
+	      var _this4 = this;
+
+	      // 3rd Party Signup
 	      // Auth using 3rd party OAuth
-	      return undefined.authWithOAuthPopup(provider).then(function (authData) {
-	        //Create new profile with user data
-	        return createUserProfile(authData, ref, function (userAccount) {
-	          return userAccount;
-	        }, function (error) {
-	          //Error creating profile
-	          return Promise.reject(error);
-	        });
-	      }, function (error) {
-	        return Promise.reject(err);
+	      // Create new profile with user data
+	      return this.authWithOAuthPopup(provider).then(function (authData) {
+	        console.log('newProfile:', authData);
+	        return _this4.createProfile(authData);
 	      });
 	    },
 
-	    usernameSignup: function usernameSignup(signupData) {
-	      // [TODO] User signup with with custom auth token with username as uid
-	      // Username signup
-	      // request a signup with username as uid
-	      return apiRequest('signup', signupData, function (res) {
-	        return ref.authWithCustomToken(res.token).then(function (authData) {
-	          return undefined.createProfile(authData, undefined.ref, function (userAccount) {
-	            return userAccount;
-	          }, function (error) {
-	            //Error creating profile
-	            return Promise.reject(error);
-	          });
-	        });
-	      }, function (error) {
-	        return Promise.reject(error);
-	      });
+	    createUser: function createUser(userData) {
+	      return ref.createUser(userData);
 	    },
 
 	    createProfile: function createProfile(authData) {
+	      console.log('create profile called', authData);
 	      var uid = authData.uid;
 	      var provider = authData.provider;
+	      var email = authData.email;
+	      var username = authData.username;
+	      var name = authData.name;
 
 	      var usersRef = ref.child('users');
 	      var userRef = usersRef.child(uid);
-	      var userObj = { role: 10, provider: provider };
-	      if (provider === 'password') {
-	        userObj.email = authData.password.email;
-	      } else {
-	        console.log('create 3rd party linked profile:', authData);
-	        (0, _extend2.default)(userObj, authData);
-	      }
-	      //Check if account with given email already exists
-	      return usersRef.orderByChild('email').equalTo(userObj.email).on('value').then(function (userQuery) {
-	        if (userQuery.val()) {
-	          // console.warn('Account already exists)
-	          return Promise.reject({ message: 'This email has already been used to create an account', status: 'EXISTS' });
-	        }
+	      var userObj = { role: 10, provider: provider, email: email, username: username, name: name };
+	      console.log('userObj:', userObj);
+	      // Check if account with given email already exists
+	      return usersRef.orderByChild('email').equalTo(email).once('value').then(function (userQuery) {
+	        // if (userQuery.val()) return Promise.reject({ message: 'This email has already been used to create an account', status: 'EXISTS' })
 	        // Account with given email does not already exist
 	        return userRef.once('value').then(function (userSnap) {
 	          if (userSnap.val() || userSnap.hasChild('sessions')) {
-	            console.error('User account already exists', userSnap.val());
+	            console.error('User account already exists.');
 	            return Promise.reject(userSnap.val());
 	          }
 	          userObj.createdAt = _firebase2.default.ServerValue.TIMESTAMP;
 	          // [TODO] Add check for email before using it as priority
-	          return userRef.setWithPriority(userObj, userObj.email).then(function (userSnap) {
-	            console.log('New user account created:', userSnap.val());
-	            return userSnap.val();
-	          }, function (error) {
-	            return Promise.reject({ message: 'Error creating user profile' });
+	          return userRef.setWithPriority(userObj, email).then(function (_) {
+	            return userObj;
 	          });
 	        });
-	      }, function (error) {
-	        //Error querying for account with email
-	        return Promise.reject(error);
 	      });
 	    },
 
 	    /** Start presence management for a specificed user uid. This function is used within Fireadmin login functions.
 	     * @param {String} uid Unique Id for user that for which presence is being setup.
-	     * @example
-	     * fa.setupPresence('simplelogin:1')
 	     *
 	     */
 	    setupPresence: function setupPresence(uid) {
+	      console.log('setupPresence', uid);
 	      var amOnline = ref.child('.info/connected');
 	      var onlineRef = ref.child('presence').child(uid);
 	      var sessionsRef = ref.child('sessions');
-	      var userRef = ref.child('users').child(uid);
 	      var userSessionRef = ref.child('users').child(uid).child('sessions');
-	      // const pastSessionsRef = userSessionRef.child('past')
-	      return amOnline.on('value').then(function (snapShot) {
-	        if (!snapShot.val()) {
-	          return;
-	        }
+	      // let pastSessionsRef = userSessionRef.child('past')
+	      return amOnline.on('value', function (snapShot) {
+	        if (!snapShot.val()) return;
 	        // user is online
-	        var onDisconnectRef = undefined.ref.onDisconnect();
+	        var onDisconnectRef = ref.onDisconnect();
 	        // add session and set disconnect
 	        var session = sessionsRef.push({ began: _firebase2.default.ServerValue.TIMESTAMP, user: uid });
+	        session.setPriority(uid);
 	        var endedRef = session.child('ended');
 	        endedRef.onDisconnect().set(_firebase2.default.ServerValue.TIMESTAMP);
 	        // add correct session id to user
-	        // adding session id to current list under user's session
-	        var currentSesh = userSessionRef.child('current').push(session.key());
-	        // Remove session id from users current session folder
-	        currentSesh.onDisconnect().remove();
 	        // remove from presence list
 	        onlineRef.set(true);
 	        onlineRef.onDisconnect().remove();
 	        // Add session id to past sessions on disconnect
 	        // pastSessionsRef.onDisconnect().push(session.key())
 	        // Do same on unAuth
-	        undefined.onAuth(function (authData) {
+	        ref.onAuth(function (authData) {
 	          if (!authData) {
 	            endedRef.set(_firebase2.default.ServerValue.TIMESTAMP);
-	            currentSesh.remove();
 	            onlineRef.remove();
 	          }
 	        });
 	      });
 	    }
+	    // usernameSignup: signupData => {
+	    //   // [TODO] User signup with with custom auth token with username as uid
+	    //   // Username signup
+	    //   // request a signup with username as uid
+	    //   return apiRequest('signup', signupData, (res) => {
+	    //     return ref.authWithCustomToken(res.token).then(authData => {
+	    //       return this.createProfile(authData, this.ref, (userAccount) => {
+	    //         return userAccount
+	    //       }, error => {
+	    //         //Error creating profile
+	    //         return Promise.reject(error)
+	    //       })
+	    //     })
+	    //   }, error => {
+	    //     return Promise.reject(error)
+	    //   })
+	    // },
 	  };
 
 	  return Object.assign({}, methods);
