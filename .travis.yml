@@ -1,15 +1,15 @@
 language: node_js
 node_js:
-  - "0.12"
-  - "io.js"
+  - "4"
+  - "5"
 branches:
   only:
     - master
 sudo: false
-script: "gulp test"
+script: "npm run test:cov"
 addons:
   code_climate:
-    repo_token: 27e0fa94176ed51872ceeeb1f4f688d6738dd51310babc44c9309201ba2d84c2
+    repo_token: $CODECLIMATE_REPO_TOKEN
 after_success:
   - npm install -g codeclimate-test-reporter
   - codeclimate-test-reporter < coverage/lcov.info

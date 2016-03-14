@@ -26,7 +26,7 @@ FireAdmin is especially useful when you are trying to administer a Firebase data
 1. Include the Fireadmin bundle in your `index.html` :
 
   ```html
-  <script src="http://cdn.prue.io/fireadmin/0.0.3/fireadmin.min.js"></script>
+  <script src="http://cdn.prue.io/fireadmin/0.0.4/fireadmin.min.js"></script>
   <!-- Or the following for the latest version -->
   <!-- <script src="http://cdn.prue.io/fireadmin/latest/fireadmin.min.js"></script> -->
 

@@ -1,6 +1,6 @@
 {
   "cdn": {
-    "bucketName": "prue-cdn",
-    "path": "/fireadmin"
+    "bucket": "prue-cdn",
+    "prefix": "fireadmin"
   }
 }

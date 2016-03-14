@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Library to simplify implementing standard app functionality when using Firebase (User/Presence Management, Object CRUD and Listing)",
   "author": "Prescott Prue (prescottprue)",
   "repo": "https://github.com/prescottprue/FireAdmin",
@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "clean": "rimraf lib dist coverage",
-    "lint": "standard src/**",
+    "lint": "standard src/**/*.js",
     "test": "mocha -R spec --compilers js:babel-core/register ./test/setup.js ./test/**/*.spec.js",
     "test:cov": "babel-node $(npm bin)/isparta cover --report lcov ./node_modules/mocha/bin/_mocha -- ./test --recursive",
     "build:lib": "babel src --out-dir lib",
@@ -48,16 +48,15 @@
     "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0",
-    "chai-properties": "^1.2.1",
     "es6-promise": "^3.0.2",
     "gitbook-cli": "^2.1.1",
     "isparta": "^4.0.0",
     "jsdom": "^8.1.0",
     "json-loader": "^0.5.4",
     "mocha": "^2.4.5",
-    "nock": "^7.2.2",
     "rimraf": "^2.5.1",
     "s3-cli": "^0.13.0",
+    "standard": "^6.0.8",
     "webpack": "^1.12.13"
   }
 }

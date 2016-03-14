@@ -1,4 +1,4 @@
-/*! fireadmin.js v0.0.3 | (c) Prescott Prue. */
+/*! fireadmin.js v0.0.4 | (c) Prescott Prue. */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
