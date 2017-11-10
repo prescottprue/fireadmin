@@ -1,6 +1,0 @@
-{
-  "cdn": {
-    "bucket": "prue-cdn",
-    "prefix": "fireadmin"
-  }
-}

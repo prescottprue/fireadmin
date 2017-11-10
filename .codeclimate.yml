@@ -1,7 +1,0 @@
-languages:
-  JavaScript: true
-exclude_paths:
-- "test/*"
-- "dist/*"
-- "gulpfile.js"
-- "examples/*"

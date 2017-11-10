@@ -1,0 +1,42 @@
+{
+  "projects": {
+    "master": "fireadmin-33d82",
+    "prod": "fireadmin-33d82"
+  },
+  "ci": {
+    "createConfig": {
+      "master": {
+        "version": "${npm_package_version}",
+        "env": "development",
+        "firebase": {
+          "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s",
+          "authDomain": "fireadmin-33d82.firebaseapp.com",
+          "databaseURL": "https://fireadmin-33d82.firebaseio.com",
+          "projectId": "fireadmin-33d82",
+          "storageBucket": "fireadmin-33d82.appspot.com"
+        },
+        "reduxFirebase": {
+          "userProfile": "users",
+          "enableLogging": false,
+          "updateProfileOnLogin": false
+        }
+      },
+      "prod": {
+        "version": "${npm_package_version}",
+        "env": "production",
+        "firebase": {
+          "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s",
+          "authDomain": "fireadmin-33d82.firebaseapp.com",
+          "databaseURL": "https://fireadmin-33d82.firebaseio.com",
+          "projectId": "fireadmin-33d82",
+          "storageBucket": "fireadmin-33d82.appspot.com"
+        },
+        "reduxFirebase": {
+          "userProfile": "users",
+          "enableLogging": false,
+          "updateProfileOnLogin": false
+        }
+      }
+    }
+  }
+}
