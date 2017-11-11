@@ -9,6 +9,7 @@ import {
   grey400,
   darkBlack
 } from 'material-ui/styles/colors'
+import blue from 'material-ui-next/colors/blue'
 import { fade } from 'material-ui/utils/colorManipulator'
 import spacing from 'material-ui/styles/spacing'
 import zIndex from 'material-ui/styles/zIndex'
@@ -18,6 +19,7 @@ export default {
   zIndex: zIndex,
   fontFamily: 'Roboto, sans-serif',
   palette: {
+    primary: blue,
     primary1Color: orange800,
     primary2Color: grey400,
     primary3Color: orange100,

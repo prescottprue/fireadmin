@@ -7,9 +7,9 @@ import FlatButton from 'material-ui/FlatButton'
 import FilesUploader from '../FilesUploader'
 import ServiceAccounts from '../ServiceAccounts'
 import { required } from 'utils/form'
-import classes from './NewInstanceDialog.scss'
+import classes from './InstanceDialog.scss'
 
-export const NewInstanceDialog = ({
+export const InstanceDialog = ({
   onFilesDrop,
   submit,
   reset,
@@ -78,7 +78,7 @@ export const NewInstanceDialog = ({
   </Dialog>
 )
 
-NewInstanceDialog.propTypes = {
+InstanceDialog.propTypes = {
   serviceAccounts: PropTypes.object,
   selectedAccounts: PropTypes.object,
   onRequestClose: PropTypes.func,
@@ -93,4 +93,4 @@ NewInstanceDialog.propTypes = {
 
 export default reduxForm({
   form: 'newInstance'
-})(NewInstanceDialog)
+})(InstanceDialog)

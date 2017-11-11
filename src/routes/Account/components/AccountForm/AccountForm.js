@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form'
-import RaisedButton from 'material-ui/RaisedButton'
+import Button from 'material-ui-next/Button'
 import { TextField } from 'redux-form-material-ui'
 import { ACCOUNT_FORM_NAME } from 'constants'
 import ProviderDataForm from '../ProviderDataForm'
@@ -28,7 +28,8 @@ export const AccountForm = ({ account, handleSubmit, submitting }) => (
           <ProviderDataForm providerData={account.providerData} />
         </div>
       )}
-    <RaisedButton
+    <Button
+      raised
       primary
       label="Save"
       type="submit"

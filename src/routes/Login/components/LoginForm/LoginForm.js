@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import { Field, reduxForm } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
-import RaisedButton from 'material-ui/RaisedButton'
+import Button from 'material-ui-next/Button'
 import Checkbox from 'material-ui/Checkbox'
 import { RECOVER_PATH, LOGIN_FORM_NAME } from 'constants'
 import { required, validateEmail } from 'utils/form'
@@ -25,7 +25,8 @@ export const LoginForm = ({ pristine, submitting, handleSubmit }) => (
       validate={required}
     />
     <div className={classes.submit}>
-      <RaisedButton
+      <Button
+        raised
         label={submitting ? 'Loading' : 'Login'}
         primary
         type="submit"

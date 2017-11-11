@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
-import RaisedButton from 'material-ui/RaisedButton'
+import Button from 'material-ui-next/Button'
 import { SIGNUP_FORM_NAME } from 'constants'
 import { required, validateEmail } from 'utils/form'
 import classes from './SignupForm.scss'
@@ -29,7 +29,8 @@ const SignupForm = ({ pristine, submitting, handleSubmit }) => (
       validate={required}
     />
     <div className={classes.submit}>
-      <RaisedButton
+      <Button
+        raised
         label="Signup"
         primary
         type="submit"

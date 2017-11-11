@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import RaisedButton from 'material-ui/RaisedButton'
+import Button from 'material-ui-next/Button'
 import { get, map, first } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -22,7 +22,9 @@ export const MigrationTile = ({
   <Paper className={classes.container}>
     <h2>Migration</h2>
     <div className={classes.button}>
-      <RaisedButton label="Run Migration" onTouchTap={runMigration} />
+      <Button raised color="primary" onTouchTap={runMigration}>
+        Run Migration
+      </Button>
     </div>
     <div className="flex-row-center">
       <div className={classes.tiles}>

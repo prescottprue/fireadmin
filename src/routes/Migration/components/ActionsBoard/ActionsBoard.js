@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { map, size } from 'lodash'
+import { map, size, invoke } from 'lodash'
 import { DropTarget } from 'react-dnd'
 import ActionCard from '../ActionCard'
 import classes from './ActionsBoard.scss'
@@ -11,7 +11,7 @@ const squareTarget = {
   },
 
   drop(props, monitor, component) {
-    props.onActionDrop(monitor.getItem())
+    invoke(props, 'onActionDrop', monitor.getItem())
     return { moved: true }
   }
 }
@@ -26,6 +26,7 @@ export default class ActionsBoard extends Component {
     isOver: PropTypes.bool.isRequired,
     canDrop: PropTypes.bool.isRequired,
     actions: PropTypes.array,
+    onActionDrop: PropTypes.func, // eslint-disable-line react/no-unused-prop-types
     connectDropTarget: PropTypes.func.isRequired
     // children: PropTypes.node,
   }

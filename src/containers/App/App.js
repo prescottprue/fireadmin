@@ -1,36 +1,34 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { browserHistory, Router } from 'react-router'
 import { Provider } from 'react-redux'
+import { withContext } from 'recompose'
+import { MuiThemeProvider, createMuiTheme } from 'material-ui-next/styles'
 
 // Themeing/Styling
 import Theme from 'theme'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
-// Tap Plugin
-import injectTapEventPlugin from 'react-tap-event-plugin'
-injectTapEventPlugin()
+const theme = createMuiTheme(Theme)
 
-export default class AppContainer extends Component {
-  static childContextTypes = {
+const App = ({ routes, store }) => (
+  <Provider store={store}>
+    <MuiThemeProvider theme={theme}>
+      <Router history={browserHistory}>{routes}</Router>
+    </MuiThemeProvider>
+  </Provider>
+)
+
+App.propTypes = {
+  routes: PropTypes.object.isRequired,
+  store: PropTypes.object.isRequired
+}
+
+export default withContext(
+  {
     muiTheme: PropTypes.object
-  }
-
-  static propTypes = {
-    routes: PropTypes.object.isRequired,
-    store: PropTypes.object.isRequired
-  }
-
-  getChildContext = () => ({
+  },
+  () => ({
     muiTheme: getMuiTheme(Theme)
   })
-
-  render() {
-    const { routes, store } = this.props
-    return (
-      <Provider store={store}>
-        <Router history={browserHistory}>{routes}</Router>
-      </Provider>
-    )
-  }
-}
+)(App)
