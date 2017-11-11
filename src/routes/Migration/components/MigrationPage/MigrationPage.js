@@ -1,14 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import MigrationMetaTile from '../MigrationMetaTile'
-import MigrationActionsTile from '../MigrationActionsTile'
+// import MigrationActionsTile from '../MigrationActionsTile'
 import migrationEnhancer from 'routes/Migration/enhancer'
 import classes from './MigrationPage.scss'
 
 export const MigrationPage = ({ migration, selectedActions, addAction }) => (
   <div className={classes.container}>
     <MigrationMetaTile />
-    <MigrationActionsTile />
+    {/* <MigrationActionsTile /> */}
   </div>
 )
 

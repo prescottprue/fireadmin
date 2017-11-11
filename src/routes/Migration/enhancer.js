@@ -14,10 +14,10 @@ export default compose(
     files: getVal(data, 'serviceAccounts/test')
   })),
   withHandlers({
-    addProject: ({ firestore, showError, showSuccess }) => newProject => {
+    addProject: ({ firestore, showError }) => newProject => {
       firestore
         .add({ collection: 'projects' }, newProject)
-        .then(res => showSuccess('Project added successfully'))
+        .then(res => showError('Project added successfully'))
         .catch(err =>
           showError('Error: ', err.message || 'Could not add project')
         )

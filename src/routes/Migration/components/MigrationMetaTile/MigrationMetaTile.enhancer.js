@@ -2,14 +2,16 @@ import { get, map, first } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withStateHandlers, withHandlers } from 'recompose'
-import { withFirebase } from 'react-redux-firebase'
+import { withFirestore, firestoreConnect } from 'react-redux-firebase'
 
 export default compose(
-  withFirebase,
+  withFirestore,
   withStateHandlers(
     ({ initialSelected = null }) => ({
       fromInstance: initialSelected,
-      toInstance: initialSelected
+      toInstance: initialSelected,
+      selectedProjectKey: '',
+      instances: null
     }),
     {
       selectFrom: ({ selectInstance }) => (e, ind, newSelected) => ({
@@ -17,21 +19,38 @@ export default compose(
       }),
       selectTo: ({ selectInstance }) => (e, ind, newSelected) => ({
         toInstance: newSelected
-      })
+      }),
+      selectProject: ({ selectInstance, projects }) => (e, newSelected) => {
+        return {
+          selectedProjectKey: e.target.value,
+          instances: get(projects, `${e.target.value}.instances`)
+        }
+      }
     }
   ),
-  connect(({ firebase: { data } }) => ({
-    serviceAccounts: data.serviceAccounts
-  })),
+  firestoreConnect(({ selectedProjectKey }) => {
+    return [{ collection: 'projects' }, { collection: 'serviceAccounts' }]
+  }),
+  connect(
+    (
+      { firebase: { data, auth }, firestore },
+      { params, selectedProjectKey }
+    ) => ({
+      auth,
+      projects: firestore.data.projects,
+      serviceAccounts: firestore.data.serviceAccounts
+    })
+  ),
   withHandlers({
-    runMigration: ({
-      firebase,
-      toInstance,
-      fromInstance,
-      instances,
-      params,
-      serviceAccounts
-    }) => () => {
+    runMigration: props => () => {
+      const {
+        firebase,
+        toInstance,
+        // fromInstance,
+        instances,
+        params,
+        serviceAccounts
+      } = props
       const instance = get(instances, `${toInstance}`)
       const serviceAccount = first(
         map(get(instance, 'serviceAccounts'), (_, key) =>

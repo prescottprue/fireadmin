@@ -31,7 +31,10 @@ export default compose(
   connect(({ firebase: { data, auth }, firebase }, { params }) => ({
     auth,
     project: populate(firebase, `projects/${params.projectId}`, populates),
-    serviceAccounts: getVal(firebase, `serviceAccounts/${params.projectId}`)
+    serviceAccounts: getVal(
+      firebase,
+      `data/serviceAccounts/${params.projectId}`
+    )
   })),
   branch(
     ({ auth, project, serviceAccounts }) => !isLoaded(project),
@@ -40,10 +43,18 @@ export default compose(
   withFirestore,
   withNotifications,
   withHandlers({
-    addInstance: ({ firestore, showError, showSuccess }) => newInstance => {
+    addInstanceToFirestore: ({ firestore, showError }) => newInstance => {
       firestore
         .add({ collection: 'projects' }, newInstance)
-        .then(res => showSuccess('Project added successfully'))
+        .then(res => showError('Project added successfully'))
+        .catch(err =>
+          showError('Error: ', err.message || 'Could not add project')
+        )
+    },
+    addInstance: ({ firebase, showError, initialValues }) => newInstance => {
+      const method = initialValues ? firebase.update : firebase.push
+      method('projects', newInstance)
+        .then(res => showError('Project added successfully'))
         .catch(err =>
           showError('Error: ', err.message || 'Could not add project')
         )
@@ -51,7 +62,7 @@ export default compose(
     uploadServiceAccount: props => files => {
       const {
         firebase,
-        showSuccess,
+        showError,
         auth: { uid },
         params: { projectId }
       } = props
@@ -59,28 +70,31 @@ export default compose(
       return firebase
         .uploadFiles(filePath, files, `serviceAccounts/${projectId}`)
         .then(res => {
-          showSuccess('Service Account Uploaded successfully')
+          showError('Service Account Uploaded successfully')
         })
     }
   }),
   withStateHandlers(
     ({ initialActions = [] }) => ({
       selectedActions: initialActions,
-      newDialogOpen: false,
+      selectedInstance: null,
+      envDialogOpen: false,
       drawerOpen: false
     }),
     {
       addAction: ({ selectedActions }) => action => ({
         selectedActions: selectedActions.concat(action)
       }),
-      toggleDialog: ({ newDialogOpen }) => action => ({
-        newDialogOpen: !newDialogOpen
+      toggleDialogWithData: ({ envDialogOpen }) => action => ({
+        envDialogOpen: !envDialogOpen,
+        selectedInstance: action
+      }),
+      toggleDialog: ({ envDialogOpen }) => () => ({
+        envDialogOpen: !envDialogOpen
       }),
       removeAction: ({ selectedActions }) => ind => ({
         selectedActions: selectedActions.filter((_, i) => i !== ind)
       }),
-      openDrawer: ({ drawerOpen }) => e => ({ drawerOpen: true }),
-      closeDrawer: ({ drawerOpen }) => e => ({ drawerOpen: false }),
       toggleDrawer: ({ drawerOpen }) => e => ({ drawerOpen: !drawerOpen })
     }
   ),

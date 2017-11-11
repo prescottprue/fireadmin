@@ -34,7 +34,7 @@ export const NewInstanceDialog = ({
       />,
       <FlatButton
         primary
-        label="Create"
+        label={'Create'}
         style={{ marginLeft: '1.5rem' }}
         disabled={pristine || submitting}
         onTouchTap={submit}

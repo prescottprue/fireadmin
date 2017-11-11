@@ -18,6 +18,7 @@ export const InstanceDialog = ({
   serviceAccounts,
   selectedAccounts,
   onRequestClose,
+  initialValues,
   onAccountClick,
   ...other
 }) => (
@@ -85,6 +86,7 @@ InstanceDialog.propTypes = {
   onAccountClick: PropTypes.func,
   onFilesDrop: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired, // captured in other
+  initialValues: PropTypes.object, // from reduxForm
   submit: PropTypes.func.isRequired, // from reduxForm
   reset: PropTypes.func.isRequired, // from reduxForm
   submitting: PropTypes.bool.isRequired, // from reduxForm
@@ -92,5 +94,6 @@ InstanceDialog.propTypes = {
 }
 
 export default reduxForm({
-  form: 'newInstance'
+  form: 'newInstance',
+  enableReinitialize: true // Handle new/edit modal: reinitialize with other env to edit
 })(InstanceDialog)
