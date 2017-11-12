@@ -2,17 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import { Field, reduxForm } from 'redux-form'
+import { Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
 import { required } from 'utils/form'
-import { NEW_PROJECT_FORM_NAME } from 'constants'
 
 import classes from './NewProjectDialog.scss'
 
 export const NewProjectDialog = ({
   open,
   onRequestClose,
-  submit,
+  createProject,
   handleSubmit
 }) => (
   <Dialog
@@ -22,7 +21,7 @@ export const NewProjectDialog = ({
     contentClassName={classes.container}
     actions={[
       <FlatButton label="Cancel" secondary onTouchTap={onRequestClose} />,
-      <FlatButton label="Create" primary onTouchTap={submit} />
+      <FlatButton label="Create" primary onTouchTap={createProject} />
     ]}>
     <form onSubmit={handleSubmit} className={classes.inputs}>
       <Field
@@ -38,11 +37,10 @@ export const NewProjectDialog = ({
 NewProjectDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onRequestClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+  createProject: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired, // added by redux-form
-  submit: PropTypes.func.isRequired // added by redux-form
+  onSubmit: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+  submit: PropTypes.func.isRequired // eslint-disable-line react/no-unused-prop-types
 }
 
-export default reduxForm({
-  form: NEW_PROJECT_FORM_NAME
-})(NewProjectDialog)
+export default NewProjectDialog

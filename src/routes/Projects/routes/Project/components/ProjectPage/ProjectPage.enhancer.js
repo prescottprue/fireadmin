@@ -17,11 +17,15 @@ import { withNotifications } from 'modules/notification'
 export default compose(
   firebaseConnect(({ params }) => [`serviceAccounts/${params.projectId}`]),
   firestoreConnect(({ params }) => [
-    { collection: 'projects', doc: params.projectId }
+    {
+      collection: 'projects',
+      doc: params.projectId,
+      subcollections: [{ collection: 'serviceAccounts' }]
+    }
   ]),
   connect(({ firebase, firestore: { data } }, { params }) => ({
     auth: firebase.auth,
-    project: data.projects && data.projects[params.projectId],
+    project: get(data, `projects.${params.projectId}`),
     serviceAccounts: getVal(
       firebase,
       `data/serviceAccounts/${params.projectId}`
@@ -101,7 +105,6 @@ export default compose(
       return firebase
         .uploadFiles(filePath, files, `serviceAccounts/${projectId}`)
         .then(res => {
-          console.log('res', res)
           props.selectServiceAccount(res)
           showError('Service Account Uploaded successfully')
         })

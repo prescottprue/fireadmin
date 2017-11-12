@@ -1,12 +1,12 @@
 import React from 'react'
-import EmptyMessage from 'components/EmptyMessage'
+import ProjectsPage from 'components/ProjectsPage'
 import { shallow } from 'enzyme'
 
-describe('(Component) EmptyMessage', () => {
+describe('(Component) ProjectsPage', () => {
   let _component
 
   beforeEach(() => {
-    _component = shallow(<EmptyMessage emptyMessage={{}} />)
+    _component = shallow(<ProjectsPage projectsPage={{}} />)
   })
 
   it('Renders div', () => {

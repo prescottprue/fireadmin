@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { pick, some, filter, every } from 'lodash'
+import { pick, some, filter } from 'lodash'
 import LoadingSpinner from 'components/LoadingSpinner'
 import { isLoaded, isEmpty } from 'react-redux-firebase'
 import {
@@ -38,6 +38,9 @@ export const logProps = propNames =>
     console.log('props:', propNames ? pick(ownerProps, propNames) : ownerProps) // eslint-disable-line no-console
     return ownerProps
   })
+//
+// export const withChildRoutes = condition =>
+//   branch(({ children }) => !!children, renderComponent(children))
 
 export const spinnerWhile = condition =>
   branch(condition, renderComponent(LoadingSpinner))

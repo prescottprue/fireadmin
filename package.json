@@ -41,7 +41,7 @@
     "react-dropzone": "^4.2.1",
     "react-google-button": "^0.3.0",
     "react-redux": "^5.0.4",
-    "react-redux-firebase": "^2.0.0-beta.16",
+    "react-redux-firebase": "next",
     "react-router": "^3.0.0",
     "react-tap-event-plugin": "^2.0.1",
     "recompose": "^0.26.0",
