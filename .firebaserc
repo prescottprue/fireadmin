@@ -1,7 +1,8 @@
 {
   "projects": {
     "master": "fireadmin-33d82",
-    "prod": "fireadmin-33d82"
+    "prod": "fireadmin-33d82",
+    "default": "fireadmin-33d82"
   },
   "ci": {
     "createConfig": {

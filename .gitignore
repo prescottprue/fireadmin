@@ -6,3 +6,4 @@
 **/node_modules
 coverage
 src/config.js
+functions/etc
