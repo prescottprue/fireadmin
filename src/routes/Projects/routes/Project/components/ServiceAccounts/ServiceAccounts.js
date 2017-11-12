@@ -1,5 +1,5 @@
 import React from 'react'
-import { map } from 'lodash'
+import { map, get } from 'lodash'
 import PropTypes from 'prop-types'
 import Paper from 'material-ui/Paper'
 import classes from './ServiceAccounts.scss'
@@ -13,9 +13,8 @@ export const ServiceAccounts = ({
     {map(serviceAccounts, (account, key) => (
       <Paper
         key={key}
-        className={`${classes.account} ${selectedAccounts[key]
-          ? classes.selected
-          : ''}`}
+        className={`${classes.account} ${get(selectedAccounts, key, '') &&
+          classes.selected}`}
         onClick={() => onAccountClick(key, account)}>
         {account.name}
       </Paper>

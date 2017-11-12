@@ -54,7 +54,7 @@ const config = {
 // ------------------------------------
 config.module.rules.push({
   test: /\.(js|jsx)$/,
-  exclude: /node_modules/,
+  exclude: [/node_modules/, /redux-firestore\//, /react-redux-firebase\//],
   use: [
     {
       loader: 'babel-loader',
