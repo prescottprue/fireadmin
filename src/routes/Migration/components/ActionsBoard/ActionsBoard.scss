@@ -1,0 +1,16 @@
+@import 'base';
+
+.container {
+  position: relative;
+  @extend .flex-column-center;
+  justify-content: center;
+  flex-grow: 1;
+  min-height: 4rem;
+}
+.new {
+  @extend .flex-column-center;
+  justify-content: center;
+  border: dotted 3px grey;
+  min-height: 4rem;
+  width: 100%;
+}

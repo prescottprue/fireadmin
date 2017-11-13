@@ -1,9 +1,9 @@
-node_modules
+*.log
+**/*.log
 .DS_Store
 **/.DS_Store
-env.json
+**/dist
+**/node_modules
 coverage
-docs
-olddocs
-dist
-lib
+src/config.js
+functions/etc
