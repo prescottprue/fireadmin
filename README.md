@@ -1,12 +1,14 @@
 # fireadmin
 
-[![NPM version][npm-image]][npm-url]
+<!-- [![NPM version][npm-image]][npm-url] -->
 [![Build Status][travis-image]][travis-url]
-[![Dependency Status][daviddm-image]][daviddm-url]
+<!-- [![Dependency Status][daviddm-image]][daviddm-url] -->
 [![Code Coverage][coverage-image]][coverage-url]
 [![Code Climate][climate-image]][climate-url]
 [![License][license-image]][license-url]
 [![Code Style][code-style-image]][code-style-url]
+
+> Application for Managing Firebase Applications. Includes support for multiple environments and data migrations
 
 ## Table of Contents
 1. [Features](#features)
@@ -20,13 +22,19 @@
 1. [Production](#production)
 1. [Deployment](#deployment)
 
-## Requirements
-* node `^5.0.0` (`6.11.0` suggested)
-* yarn `^0.23.0` or npm `^3.0.0`
+## Features
+* Multiple Environments
+* Data Migrations
 
-## Getting Started
+## Requirements
+* node `^6.0.0` (`6.11.1` suggested)
+
+## Running Your Own
+
+ Note: A Yeoman Generator is planned to automate this process
 
 1. Install dependencies: `npm install`
+1. Change settings in `src/config.js` and `.firebaserc` to match your own Firebase credentials
 2. Start Development server: `npm start`
 
 While developing, you will probably rely mostly on `npm start`; however, there are additional scripts at your disposal:
@@ -82,16 +90,6 @@ The application structure presented in this boilerplate is **fractal**, where fu
 └── tests                    # Unit tests
 ```
 
-### Routing
-We use `react-router` [route definitions](https://github.com/ReactTraining/react-router/blob/v3/docs/API.md#plainroute) (`<route>/index.js`) to define units of logic within our application. See the [application structure](#application-structure) section for more information.
-
-## Testing
-To add a unit test, create a `.spec.js` file anywhere inside of `./tests`. Karma and webpack will automatically find these files, and Mocha and Chai will be available within your test without the need to import them.
-
-## Production
-
-Build code before deployment by running `npm run build`. There are multiple options below for types of deployment, if you are unsure, checkout the Firebase section.
-
 ### Deployment
 
 1. Install Firebase Command Line Tool: `npm i -g firebase-tools`
@@ -120,6 +118,10 @@ For more options on CI settings checkout the [firebase-ci docs](https://github.c
 1. Confirm Firebase config by running locally: `firebase serve`
 1. Deploy to firebase: `firebase deploy`
 **NOTE:** You can use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
+
+## What Happened To The Old Fireadmin Library?
+
+It is now deprecated. It may come back in the future as a support library for Fireadmin.
 
 [npm-image]: https://img.shields.io/npm/v/fireadmin.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/fireadmin
