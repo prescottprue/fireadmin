@@ -19,6 +19,10 @@ export default compose(
       collection: 'projects',
       doc: params.projectId,
       subcollections: [{ collection: 'environments' }]
+    },
+    {
+      collection: 'projects',
+      doc: params.projectId
     }
   ]),
   connect(({ firebase, firestore: { data } }, { params }) => ({
@@ -62,15 +66,7 @@ export default compose(
     }
   ),
   withHandlers({
-    addInstanceToFirestore: ({ firestore, showError }) => newInstance => {
-      firestore
-        .add({ collection: 'projects' }, newInstance)
-        .then(res => showError('Project added successfully'))
-        .catch(err =>
-          showError('Error: ', err.message || 'Could not add project')
-        )
-    },
-    addInstance: props => newInstance => {
+    addInstance: props => newProjectData => {
       const {
         firestore,
         showError,
@@ -78,19 +74,18 @@ export default compose(
         selectedServiceAccount,
         serviceAccounts
       } = props
+      const locationConf = {
+        collection: 'projects',
+        doc: projectId,
+        subcollections: [{ collection: 'environments' }]
+      }
+      const newProject = {
+        ...newProjectData,
+        serviceAccount: get(serviceAccounts, selectedServiceAccount, null),
+        projectId
+      }
       return firestore
-        .add(
-          {
-            collection: 'projects',
-            doc: projectId,
-            subcollections: [{ collection: 'environments' }]
-          },
-          {
-            ...newInstance,
-            serviceAccount: get(serviceAccounts, selectedServiceAccount, null),
-            projectId
-          }
-        )
+        .add(locationConf, newProject)
         .then(res => {
           props.toggleDialog()
           showError('Project added successfully')
@@ -98,6 +93,21 @@ export default compose(
         .catch(err =>
           showError('Error: ', err.message || 'Could not add project')
         )
+    },
+    removeEnvironment: props => environmentId => {
+      const { firestore, showError, params: { projectId } } = props
+      return firestore
+        .delete({
+          collection: 'projects',
+          doc: projectId,
+          subcollections: [{ collection: 'environments', doc: environmentId }]
+        })
+        .then(res => {
+          showError('Project deleted successfully')
+        })
+        .catch(err => {
+          showError('Error: ', err.message || 'Could not add project')
+        })
     },
     uploadServiceAccount: props => files => {
       const {

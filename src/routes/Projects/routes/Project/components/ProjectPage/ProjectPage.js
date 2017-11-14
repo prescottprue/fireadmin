@@ -22,6 +22,7 @@ export const ProjectPage = ({
   toggleDialogWithData,
   envDialogOpen,
   addInstance,
+  removeEnvironment,
   uploadServiceAccount
 }) => (
   <SidebarLayout title={project.name}>
@@ -41,6 +42,7 @@ export const ProjectPage = ({
                   key={`Instance-${i}`}
                   instance={inst}
                   onEditClick={() => toggleDialogWithData(inst)}
+                  onRemoveClick={() => removeEnvironment(i)}
                 />
               ))}
             </div>
@@ -78,6 +80,7 @@ ProjectPage.propTypes = {
   addInstance: PropTypes.func,
   uploadServiceAccount: PropTypes.func,
   selectServiceAccount: PropTypes.func,
+  removeEnvironment: PropTypes.func,
   toggleDialog: PropTypes.func,
   toggleDrawer: PropTypes.func,
   classes: PropTypes.object, // added by withStyles
