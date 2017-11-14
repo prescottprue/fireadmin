@@ -5,9 +5,14 @@ import { withHandlers, withStateHandlers } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
 import { LIST_PATH } from 'constants'
 import { withNotifications } from 'modules/notification'
-import { withRouter, spinnerWhileLoading } from 'utils/components'
+import {
+  withRouter,
+  spinnerWhileLoading,
+  childRoutesWithProps
+} from 'utils/components'
 
 export default compose(
+  childRoutesWithProps(['params']),
   firestoreConnect(({ params, auth }) => [
     {
       collection: 'projects'
@@ -35,21 +40,21 @@ export default compose(
     }
   ),
   withHandlers({
-    addProject: ({ firestore, uid, showError }) => newInstance => {
+    addProject: ({ firestore, uid, showError, showSuccess }) => newInstance => {
       if (!uid) {
         return showError('You must be logged in to create a project')
       }
       firestore
         .add({ collection: 'projects' }, { ...newInstance, createdBy: uid })
-        .then(res => showError('Project added successfully'))
+        .then(res => showSuccess('Project added successfully'))
         .catch(err =>
           showError('Error: ', err.message || 'Could not add project')
         )
     },
-    deleteProject: ({ firestore, showError }) => projectId => {
+    deleteProject: ({ firestore, showError, showSuccess }) => projectId => {
       firestore
         .delete({ collection: 'projects', doc: projectId })
-        .then(res => showError('Project deleted successfully'))
+        .then(res => showSuccess('Project deleted successfully'))
         .catch(err =>
           showError('Error: ', err.message || 'Could not add project')
         )

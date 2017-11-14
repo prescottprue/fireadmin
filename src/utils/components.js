@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { cloneElement } from 'react'
 import PropTypes from 'prop-types'
 import { pick, some, filter } from 'lodash'
 import LoadingSpinner from 'components/LoadingSpinner'
@@ -38,9 +38,29 @@ export const logProps = propNames =>
     console.log('props:', propNames ? pick(ownerProps, propNames) : ownerProps) // eslint-disable-line no-console
     return ownerProps
   })
-//
-// export const withChildRoutes = condition =>
-//   branch(({ children }) => !!children, renderComponent(children))
+
+const renderChildrenWithProps = preserveProps => ({ children, ...other }) =>
+  cloneElement(children, preserveProps ? pick(preserveProps, other) : other)
+
+/**
+ * Render children if they exist. Useful for the enhancers of routes that have
+ * child routessdfkljdssadfasdfasdfsdafsf
+ * @type {[type]}
+ */
+export const withChildRoutes = branch(
+  ({ children }) => !!children,
+  renderComponent(renderChildrenWithProps())
+)
+
+/**
+ * Render children if they exist. Useful for
+ * @type {[type]}
+ */
+export const childRoutesWithProps = preserveProps =>
+  branch(
+    ({ children }) => !!children,
+    renderComponent(renderChildrenWithProps(preserveProps))
+  )
 
 export const spinnerWhile = condition =>
   branch(condition, renderComponent(LoadingSpinner))

@@ -6,7 +6,7 @@ import MigrationInstanceTile from '../MigrationInstanceTile'
 import classes from './MigrationMetaTile.scss'
 
 export const MigrationMetaTile = ({
-  instances,
+  environments,
   runMigration,
   selectFrom,
   fromInstance,
@@ -24,13 +24,13 @@ export const MigrationMetaTile = ({
       <div className={classes.tiles}>
         <MigrationInstanceTile
           title="From"
-          instances={instances}
+          environments={environments}
           selectedInstance={fromInstance}
           selectInstance={selectFrom}
         />
         <MigrationInstanceTile
           title="To"
-          instances={instances}
+          environments={environments}
           selectedInstance={toInstance}
           selectInstance={selectTo}
         />
@@ -40,7 +40,7 @@ export const MigrationMetaTile = ({
 }
 
 MigrationMetaTile.propTypes = {
-  instances: PropTypes.object,
+  environments: PropTypes.object,
   runMigration: PropTypes.func,
   selectFrom: PropTypes.func,
   fromInstance: PropTypes.string,

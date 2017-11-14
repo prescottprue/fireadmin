@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import Dialog from 'material-ui/Dialog'
 import { reduxForm, Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
-import FlatButton from 'material-ui/FlatButton'
+import Button from 'material-ui-next/Button'
 import FilesUploader from '../FilesUploader'
 import ServiceAccounts from '../ServiceAccounts'
 import { required } from 'utils/form'
-import classes from './NewInstanceDialog.scss'
+import classes from './AddEnvironmentDialog.scss'
 
-export const NewInstanceDialog = ({
+export const AddEnvironmentDialog = ({
   onFilesDrop,
   submit,
   reset,
@@ -23,30 +23,30 @@ export const NewInstanceDialog = ({
   ...other
 }) => (
   <Dialog
-    title="Add Instance"
+    title="Add Environment"
     actions={[
-      <FlatButton
-        label="Cancel"
-        primary
+      <Button
+        color="accent"
         onTouchTap={() => {
           reset()
           onRequestClose && onRequestClose()
-        }}
-      />,
-      <FlatButton
-        primary
-        label="Create"
+        }}>
+        Cancel
+      </Button>,
+      <Button
+        color="primary"
         style={{ marginLeft: '1.5rem' }}
         disabled={pristine || submitting}
-        onTouchTap={submit}
-      />
+        onTouchTap={submit}>
+        Create
+      </Button>
     ]}
     {...other}>
     <div className={classes.body}>
       <Field
         component={TextField}
         name="name"
-        floatingLabelText="Instance Name"
+        floatingLabelText="Environment Name"
         validate={required}
       />
       <Field
@@ -79,7 +79,7 @@ export const NewInstanceDialog = ({
   </Dialog>
 )
 
-NewInstanceDialog.propTypes = {
+AddEnvironmentDialog.propTypes = {
   serviceAccounts: PropTypes.object,
   selectedAccounts: PropTypes.object,
   onRequestClose: PropTypes.func,
@@ -94,5 +94,6 @@ NewInstanceDialog.propTypes = {
 }
 
 export default reduxForm({
-  form: 'newInstance'
-})(NewInstanceDialog)
+  form: 'newInstance',
+  enableReinitialize: true // Handle new/edit modal: reinitialize with other env to edit
+})(AddEnvironmentDialog)

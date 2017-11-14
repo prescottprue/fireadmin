@@ -5,7 +5,7 @@ import SidebarLayout from 'layouts/SidebarLayout'
 import { map } from 'lodash'
 import Button from 'material-ui-next/Button'
 import Instance from '../Instance'
-import InstanceDialog from '../InstanceDialog'
+import AddEnvironmentDialog from '../AddEnvironmentDialog'
 import classesFromStyles from './ProjectPage.scss'
 
 export const ProjectPage = ({
@@ -33,10 +33,10 @@ export const ProjectPage = ({
         </Button>
       </div>
       <div>
-        {project.instances ? (
+        {project.environments ? (
           <div className="flex-column">
             <div className={classesFromStyles.instances}>
-              {map(project.instances, (inst, i) => (
+              {map(project.environments, (inst, i) => (
                 <Instance
                   key={`Instance-${i}`}
                   instance={inst}
@@ -44,13 +44,7 @@ export const ProjectPage = ({
                 />
               ))}
             </div>
-            {/* <div className="flex-row-center">
-              <Link to={DATA_MIGRATION_PATH}>
-                <Button>Migrate Data Between</Button>
-              </Link>
-            </div> */}
             <MigrationMetaTile
-              instances={project.instances}
               project={project}
               params={params}
               serviceAccounts={serviceAccounts}
@@ -60,7 +54,7 @@ export const ProjectPage = ({
           <span>No Environments</span>
         )}
       </div>
-      <InstanceDialog
+      <AddEnvironmentDialog
         open={envDialogOpen}
         initialValues={selectedInstance}
         onFilesDrop={uploadServiceAccount}

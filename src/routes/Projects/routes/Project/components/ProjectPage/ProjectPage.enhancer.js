@@ -3,8 +3,6 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withStyles } from 'material-ui-next/styles'
 import { withHandlers, withStateHandlers } from 'recompose'
-import { DragDropContext } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
 import { firebaseConnect, getVal, firestoreConnect } from 'react-redux-firebase'
 import {
   logProps,
@@ -20,7 +18,7 @@ export default compose(
     {
       collection: 'projects',
       doc: params.projectId,
-      subcollections: [{ collection: 'serviceAccounts' }]
+      subcollections: [{ collection: 'environments' }]
     }
   ]),
   connect(({ firebase, firestore: { data } }, { params }) => ({
@@ -31,7 +29,7 @@ export default compose(
       `data/serviceAccounts/${params.projectId}`
     )
   })),
-  logProps(['project', 'serviceAccounts', 'auth']),
+  logProps(['project', 'auth']),
   messageWhileEmpty(['project']),
   spinnerWhileLoading(['project']),
   withNotifications,
@@ -82,14 +80,21 @@ export default compose(
       } = props
       return firestore
         .add(
-          { collection: 'instances' },
+          {
+            collection: 'projects',
+            doc: projectId,
+            subcollections: [{ collection: 'environments' }]
+          },
           {
             ...newInstance,
             serviceAccount: get(serviceAccounts, selectedServiceAccount, null),
             projectId
           }
         )
-        .then(res => showError('Project added successfully'))
+        .then(res => {
+          props.toggleDialog()
+          showError('Project added successfully')
+        })
         .catch(err =>
           showError('Error: ', err.message || 'Could not add project')
         )
@@ -110,6 +115,5 @@ export default compose(
         })
     }
   }),
-  DragDropContext(HTML5Backend),
   withStyles(styles, { withTheme: true })
 )

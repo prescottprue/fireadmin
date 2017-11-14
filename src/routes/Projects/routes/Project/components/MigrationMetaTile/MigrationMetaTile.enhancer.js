@@ -1,10 +1,11 @@
 import { get, map, first } from 'lodash'
 import { compose } from 'redux'
-import { withStateHandlers, withHandlers } from 'recompose'
+import { withStateHandlers, withHandlers, flattenProp } from 'recompose'
 import { withFirebase } from 'react-redux-firebase'
 
 export default compose(
   withFirebase,
+  flattenProp('project'),
   withStateHandlers(
     ({ initialSelected = null }) => ({
       fromInstance: initialSelected,

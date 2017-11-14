@@ -8,7 +8,7 @@ import MenuItem from 'material-ui/MenuItem'
 
 export const MigrationInstanceTile = ({
   title,
-  instances,
+  environments,
   selectedInstance,
   selectInstance
 }) => (
@@ -18,7 +18,7 @@ export const MigrationInstanceTile = ({
       floatingLabelText="Instance"
       value={selectedInstance}
       onChange={selectInstance}>
-      {map(instances, (instance, instanceKey) => (
+      {map(environments, (instance, instanceKey) => (
         <MenuItem
           key={instanceKey}
           value={instanceKey}
@@ -31,7 +31,7 @@ export const MigrationInstanceTile = ({
 
 MigrationInstanceTile.propTypes = {
   title: PropTypes.string,
-  instances: PropTypes.object,
+  environments: PropTypes.object,
   selectedInstance: PropTypes.string,
   selectInstance: PropTypes.func
 }
