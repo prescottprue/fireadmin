@@ -1,28 +1,42 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get } from 'lodash'
+import { get, map } from 'lodash'
 import { withHandlers, withStateHandlers } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
 import { LIST_PATH } from 'constants'
 import { withNotifications } from 'modules/notification'
 import {
   withRouter,
+  logProps,
   spinnerWhileLoading,
   childRoutesWithProps
 } from 'utils/components'
+
+// TODO: Do this using populate instead
+const populateProjects = ({ ordered, data }) =>
+  map(ordered.projects, project => ({
+    ...project,
+    createdBy: get(data.users, project.createdBy)
+  }))
 
 export default compose(
   childRoutesWithProps(['params']),
   firestoreConnect(({ params, auth }) => [
     {
       collection: 'projects'
+    },
+    {
+      collection: 'users' // TODO: Load this data through populate instead
     }
   ]),
-  connect(({ firestore: { ordered }, firebase }, { params }) => ({
-    projects: ordered.projects,
-    uid: get(firebase, 'auth.uid')
-  })),
+  connect(
+    ({ firestore, firestore: { ordered, data }, firebase }, { params }) => ({
+      projects: populateProjects({ ordered, data }),
+      uid: get(firebase, 'auth.uid')
+    })
+  ),
   spinnerWhileLoading(['projects']),
+  logProps(['projects']),
   withRouter,
   withNotifications,
   withStateHandlers(

@@ -1,12 +1,30 @@
 {
   "name": "functions",
   "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "test": "npm run build && ./node_modules/.bin/mocha tests/**/*.spec.js --reporter spec --compilers js:babel-core/register",
+    "lint": "eslint -c .eslintrc ./src",
+    "build": "babel src --retain-lines -d --out-dir dist",
+    "postinstall": "npm run build"
+  },
   "dependencies": {
     "@google-cloud/storage": "^1.2.1",
-    "firebase-admin": "~4.2.1",
-    "firebase-functions": "^0.5.7",
+    "babel-runtime": "^6.26.0",
+    "firebase-admin": "^5.0.0",
+    "firebase-functions": "^0.7.0",
+    "fs-extra": "^4.0.2",
+    "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
     "mkdirp-promise": "^5.0.1"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.0.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "sinon": "^4.1.2"
+  }
 }
