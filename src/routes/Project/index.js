@@ -1,5 +1,5 @@
 export default store => ({
-  path: ':projectId',
+  path: 'projects/:projectId',
   /*  Async getComponent is only invoked when route matches   */
   getComponent(nextState, cb) {
     /*  Webpack - use 'require.ensure' to create a split point
@@ -19,5 +19,19 @@ export default store => ({
       },
       'Project'
     )
+  },
+  getChildRoutes(partialNextState, cb) {
+    require.ensure([], require => {
+      /*  Webpack - use require callback to define
+          dependencies for bundling   */
+        const Environments = require('./routes/Environments').default
+      const Migration = require('./routes/Migration').default
+
+      /*  Return getComponent   */
+      cb(null, [
+        Migration(store),
+        Environments(store)
+      ])
+    })
   }
 })

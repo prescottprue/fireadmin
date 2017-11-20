@@ -1,0 +1,14 @@
+@import 'base';
+
+.container {
+  @extend .flex-column;
+  padding: 3rem;
+}
+.button {
+  margin-bottom: 2rem;
+}
+.tiles {
+  @extend .flex-row-center;
+  justify-content: space-between;
+  width: 80%;
+}

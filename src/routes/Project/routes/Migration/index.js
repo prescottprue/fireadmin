@@ -1,7 +1,7 @@
-import { LIST_PATH as path } from 'constants'
+import { paths } from 'constants'
 
 export default store => ({
-  path,
+  path: paths.projectDataMigration,
   /*  Async getComponent is only invoked when route matches   */
   getComponent(nextState, cb) {
     /*  Webpack - use 'require.ensure' to create a split point
@@ -9,16 +9,14 @@ export default store => ({
     require.ensure(
       [],
       require => {
-        /*  Webpack - use require callback to define
-          dependencies for bundling   */
-        const Projects = require('./components/ProjectsPage').default
+        const Migration = require('./components/MigrationPage').default
 
         /*  Return getComponent   */
-        cb(null, Projects)
+        cb(null, Migration)
 
         /* Webpack named bundle   */
       },
-      'Projects'
+      'Migration'
     )
   }
 })

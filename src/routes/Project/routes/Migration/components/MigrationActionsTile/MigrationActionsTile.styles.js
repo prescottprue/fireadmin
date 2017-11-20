@@ -76,9 +76,5 @@ export default theme => ({
       height: 'calc(100% - 64px)',
       marginTop: 64
     }
-  },
-  activeListItem: {
-    background: 'rgba(0, 0, 0, 0.12)',
-    fontWeight: 'bold'
   }
 })

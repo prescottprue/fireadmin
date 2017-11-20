@@ -6,16 +6,23 @@ import AppBar from 'material-ui-next/AppBar'
 import Toolbar from 'material-ui-next/Toolbar'
 import Typography from 'material-ui-next/Typography'
 import Divider from 'material-ui-next/Divider'
-import List, {
-  ListItem,
-  ListItemIcon,
-  ListItemText
-} from 'material-ui-next/List'
 import IconButton from 'material-ui-next/IconButton'
 import ChevronLeftIcon from 'material-ui-icons/ChevronLeft'
 import ChevronRightIcon from 'material-ui-icons/ChevronRight'
 import LayersIcon from 'material-ui-icons/Layers'
 import DeviceHubIcon from 'material-ui-icons/DeviceHub'
+import SidebarList from './SidebarList'
+
+const sidebarOptions = [
+  {
+    value: 'environments',
+    iconElement: <LayersIcon />
+  },
+  {
+    value: 'migrations',
+    iconElement: <DeviceHubIcon />
+  }
+]
 
 export const SidebarLayout = ({
   title,
@@ -49,27 +56,10 @@ export const SidebarLayout = ({
           </IconButton>
         </div>
         <Divider />
-        <List className={classes.list}>
-          <ListItem button selected>
-            <ListItemIcon>
-              <LayersIcon />
-            </ListItemIcon>
-            <ListItemText primary="Environments" />
-          </ListItem>
-          <ListItem button selected>
-            <ListItemIcon>
-              <DeviceHubIcon />
-            </ListItemIcon>
-            <ListItemText primary="Migrations" />
-          </ListItem>
-          <Divider />
-          <Divider />
-          <ListItem button selected onClick={toggleDrawer}>
-            <ListItemIcon>
-              {drawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </ListItemIcon>
-          </ListItem>
-        </List>
+        <SidebarList
+          optionsConfig={sidebarOptions}
+          toggleDrawer={toggleDrawer}
+        />
       </div>
     </Drawer>
     <main className={classes.content}>

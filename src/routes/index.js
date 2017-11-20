@@ -4,6 +4,7 @@ import Migration from './Migration'
 import LoginRoute from './Login'
 import SignupRoute from './Signup'
 import ProjectsRoute from './Projects'
+import ProjectRoute from './Project'
 import AccountRoute from './Account'
 import NotFoundRoute from './NotFound'
 
@@ -19,6 +20,7 @@ export const createRoutes = store => ({
     LoginRoute(store),
     SignupRoute(store),
     ProjectsRoute(store),
+    ProjectRoute(store),
     Migration(store),
     /* Place all Routes above here so NotFoundRoute can act as a 404 page */
     NotFoundRoute(store)

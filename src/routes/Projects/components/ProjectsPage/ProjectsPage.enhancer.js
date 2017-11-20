@@ -8,8 +8,7 @@ import { withNotifications } from 'modules/notification'
 import {
   withRouter,
   logProps,
-  spinnerWhileLoading,
-  childRoutesWithProps
+  spinnerWhileLoading
 } from 'utils/components'
 
 // TODO: Do this using populate instead
@@ -20,7 +19,6 @@ const populateProjects = ({ ordered, data }) =>
   }))
 
 export default compose(
-  childRoutesWithProps(['params']),
   firestoreConnect(({ params, auth }) => [
     {
       collection: 'projects'

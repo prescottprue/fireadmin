@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classes from './<%= pascalEntityName %>.scss'
+import classes from './<%= pascalEntityName %>Page.scss'
 
-export const <%= pascalEntityName %> = ({ <%= camelEntityName %> }) => (
+export const <%= pascalEntityName %>Page = ({ <%= camelEntityName %> }) => (
   <div className={classes.container}>
     <h1><%= pascalEntityName %></h1>
     <div>
@@ -11,8 +11,8 @@ export const <%= pascalEntityName %> = ({ <%= camelEntityName %> }) => (
   </div>
 )
 
-<%= pascalEntityName %>.propTypes = {
+<%= pascalEntityName %>Page.propTypes = {
   <%= camelEntityName %>: PropTypes.object
 }
 
-export default <%= pascalEntityName %>
+export default <%= pascalEntityName %>Page
