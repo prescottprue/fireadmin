@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Button from 'material-ui-next/Button'
 import Paper from 'material-ui-next/Paper'
+import TextField from 'material-ui-next/TextField'
 import MigrationInstanceTile from '../MigrationInstanceTile'
 import classes from './MigrationMetaTile.scss'
 
@@ -10,6 +11,7 @@ export const MigrationMetaTile = ({
   environments,
   selectFrom,
   fromInstance,
+  setCopyPath,
   toInstance,
   selectTo
 }) => (
@@ -19,6 +21,9 @@ export const MigrationMetaTile = ({
       <Button raised color="primary" onTouchTap={runMigration}>
         Run Migration
       </Button>
+    </div>
+    <div className={classes.input}>
+      <TextField label="Copy Path" onChange={setCopyPath} />
     </div>
     <div className={classes.tiles}>
       <MigrationInstanceTile
@@ -42,6 +47,7 @@ export const MigrationMetaTile = ({
 MigrationMetaTile.propTypes = {
   runMigration: PropTypes.func, // from enhancer
   selectFrom: PropTypes.func, // from enhancer
+  setCopyPath: PropTypes.func, // from enhancer
   environments: PropTypes.object, // from enhancer (flattend from Project)
   fromInstance: PropTypes.string, // from enhancer
   toInstance: PropTypes.string, // from enhancer

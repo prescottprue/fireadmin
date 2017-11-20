@@ -2,7 +2,7 @@ import * as admin from 'firebase-admin'
 import path from 'path'
 import fs from 'fs'
 import os from 'os'
-import { invoke } from 'lodash'
+import { invoke, get } from 'lodash'
 import { MIGRATION_RESPONSES_PATH } from './constants'
 
 /**
@@ -32,7 +32,7 @@ export async function runMigrationWithApps(app1, app2, event) {
   return updateResponseOnRTDB(event)
 }
 
-function updateResponseOnRTDB(event, error) {
+export function updateResponseOnRTDB(event, error) {
   const response = {
     completed: true,
     completedAt: admin.database.ServerValue.TIMESTAMP
@@ -46,6 +46,14 @@ function updateResponseOnRTDB(event, error) {
   return event.data.adminRef.ref.root
     .child(`${MIGRATION_RESPONSES_PATH}/${event.params.pushId}`)
     .set(response)
+}
+
+export function updateRequestAsStarted(event) {
+  const response = {
+    status: 'started',
+    startedAt: admin.database.ServerValue.TIMESTAMP
+  }
+  return event.data.adminRef.ref.update(response)
 }
 
 async function copyBetweenFirestoreInstances(app1, app2, eventData) {
@@ -64,6 +72,10 @@ async function copyBetweenFirestoreInstances(app1, app2, eventData) {
 }
 
 async function copyBetweenRTDBInstances(app1, app2, eventData) {
+  if (!get(app1, 'database') || !get(app2, 'database')) {
+    console.log('database not found')
+    throw new Error('Invalid service account')
+  }
   const firstRTDB = app1.database()
   const secondRTDB = app2.database()
   const { copyPath } = eventData
@@ -78,7 +90,8 @@ async function copyBetweenRTDBInstances(app1, app2, eventData) {
     await secondRTDB.ref(copyPath).update(dataFromFirst)
     console.log('copy between database instances was successful')
   } catch (err) {
-    console.log('error copying between firestore instances')
+    console.log('error copying between firestore instances', err.message || err)
+    throw err
   }
 }
 
@@ -88,7 +101,7 @@ export function cleanup() {
 }
 
 function cleanupServiceAccount(appName) {
-  const localPath = `serviceAccounts/${name}.json`
+  const localPath = `serviceAccounts/${appName}.json`
   const tempLocalPath = path.join(os.tmpdir(), localPath)
   fs.unlinkSync(tempLocalPath)
 }

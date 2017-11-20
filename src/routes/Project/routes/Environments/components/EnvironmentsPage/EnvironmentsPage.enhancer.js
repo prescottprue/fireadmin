@@ -48,7 +48,9 @@ export default compose(
         selectedKey: key
       }),
       toggleDialog: ({ envDialogOpen }) => () => ({
-        envDialogOpen: !envDialogOpen
+        envDialogOpen: !envDialogOpen,
+        selectedInstance: null,
+        selectedKey: null
       }),
       selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => ({
         selectedServiceAccount: pickedAccount
@@ -74,11 +76,13 @@ export default compose(
       }
       const newProject = {
         ...newProjectData,
+        serviceAccount,
         projectId
       }
 
       try {
         const newEnvironment = await firestore.add(locationConf, newProject)
+        // Add service account to service accounts collection
         await firestore.add(
           {
             collection: 'projects',

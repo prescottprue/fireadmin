@@ -22,27 +22,34 @@ export async function getAppsFromEvent(event) {
     database2URL,
     serviceAccountType = 'firestore'
   } = event.data.val()
-  console.log('Getting apps from event for type:', serviceAccountType)
+  console.log('Getting apps from event for type:', database2URL, database1URL)
   const getServiceAccount = get(serviceAccountGetFuncByType, serviceAccountType)
   if (!getServiceAccount) {
     const errMessage = 'Invalid service account type in migration request'
     console.error(errMessage)
     throw new Error(errMessage)
   }
-  const account1LocalPath = await getServiceAccount(serviceAccount1Path, 'app1')
-  const account2LocalPath = await getServiceAccount(serviceAccount2Path, 'app2')
+  const account1LocalPath = await serviceAccountFromStoragePath(
+    serviceAccount1Path,
+    'app1'
+  )
+  const account2LocalPath = await serviceAccountFromStoragePath(
+    serviceAccount2Path,
+    'app2'
+  )
+  console.log('local paths: ', { account1LocalPath, account2LocalPath })
   return {
     app1: admin.initializeApp(
       {
         credential: admin.credential.cert(account1LocalPath),
-        database1URL
+        databaseURL: database1URL
       },
       'app1'
     ),
     app2: admin.initializeApp(
       {
         credential: admin.credential.cert(account2LocalPath),
-        database2URL
+        databaseURL: database2URL
       },
       'app2'
     )

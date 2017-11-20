@@ -14,7 +14,8 @@ const bucket = gcs.bucket(functions.config().firebase.storageBucket)
  */
 export default functions.firestore
   .document(
-    'projects/{projectId}/environments/{envrionmentId}/serviceAccounts/{serviceAccountId}'
+    'projects/{projectId}/environments/{envrionmentId}'
+    // 'projects/{projectId}/environments/{envrionmentId}/serviceAccounts/{serviceAccountId}' // for serviceAccounts as subcollection
   )
   .onCreate(handleServiceAccountCreate)
 
@@ -27,18 +28,21 @@ export default functions.firestore
  * @return {Promise} Resolves with filePath
  */
 async function handleServiceAccountCreate(event) {
-  const { fullPath } = event.data.data()
-  const tempLocalFile = path.join(os.tmpdir(), fullPath)
-  const fileName = path.basename(fullPath) // File Name
-  const tempFilePath = path.join(os.tmpdir(), fileName)
-  await bucket.file(fullPath).download({ destination: tempFilePath })
-  console.log('File downloaded locally to', tempFilePath)
+  // const { fullPath } = event.data.data() // for serviceAccounts as subcollection
+  const { serviceAccount: { fullPath } } = event.data.data()
+  const tempLocalPath = path.join(
+    os.tmpdir(),
+    'copyServiceAccount/serviceAccount.json'
+  )
+  // const fileName = path.basename(fullPath) // File Name
+  await bucket.file(fullPath).download({ destination: tempLocalPath })
+  console.log('File downloaded locally to', tempLocalPath)
   // Create Temporary directory and download file to that folder
-  const fileData = await fs.readJson(tempLocalFile)
-  // Write File data to DB
+  const fileData = await fs.readJson(tempLocalPath)
+  // Write File data to Service account
   await event.data.ref.update({ credential: fileData })
   console.log('Service account copied to Firestore, cleaning up...')
   // Once the file data hase been added to db delete the local files to free up disk space.
-  fs.unlinkSync(tempLocalFile)
-  return fullPath
+  fs.unlinkSync(tempLocalPath)
+  return tempLocalPath
 }

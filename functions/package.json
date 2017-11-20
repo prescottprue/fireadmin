@@ -4,7 +4,8 @@
   "scripts": {
     "test": "npm run build && ./node_modules/.bin/mocha tests/**/*.spec.js --reporter spec --compilers js:babel-core/register",
     "lint": "eslint -c .eslintrc ./src",
-    "build": "babel src --retain-lines -d --out-dir dist",
+    "clean": "rimraf dist etc",
+    "build": "npm run clean && babel src -d --out-dir dist",
     "postinstall": "npm run build"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
+    "rimraf": "^2.6.2",
     "sinon": "^4.1.2"
   }
 }
