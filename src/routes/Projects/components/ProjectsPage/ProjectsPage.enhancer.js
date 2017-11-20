@@ -5,11 +5,7 @@ import { withHandlers, withStateHandlers } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
 import { LIST_PATH } from 'constants'
 import { withNotifications } from 'modules/notification'
-import {
-  withRouter,
-  logProps,
-  spinnerWhileLoading
-} from 'utils/components'
+import { withRouter, spinnerWhileLoading } from 'utils/components'
 
 // TODO: Do this using populate instead
 const populateProjects = ({ ordered, data }) =>
@@ -34,7 +30,6 @@ export default compose(
     })
   ),
   spinnerWhileLoading(['projects']),
-  logProps(['projects']),
   withRouter,
   withNotifications,
   withStateHandlers(

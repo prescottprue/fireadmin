@@ -12,7 +12,7 @@ import ChevronRightIcon from 'material-ui-icons/ChevronRight'
 import LayersIcon from 'material-ui-icons/Layers'
 import enhance from './SidebarList.enhnacer'
 
-export const SidebarLayout = ({
+export const SidebarList = ({
   classes,
   drawerOpen,
   itemIsActive,
@@ -42,7 +42,7 @@ export const SidebarLayout = ({
   </List>
 )
 
-SidebarLayout.propTypes = {
+SidebarList.propTypes = {
   toggleDrawer: PropTypes.func,
   itemIsActive: PropTypes.func,
   goTo: PropTypes.func,
@@ -51,4 +51,4 @@ SidebarLayout.propTypes = {
   drawerOpen: PropTypes.bool
 }
 
-export default enhance(SidebarLayout)
+export default enhance(SidebarList)

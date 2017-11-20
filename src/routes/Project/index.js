@@ -24,14 +24,11 @@ export default store => ({
     require.ensure([], require => {
       /*  Webpack - use require callback to define
           dependencies for bundling   */
-        const Environments = require('./routes/Environments').default
+      const Environments = require('./routes/Environments').default
       const Migration = require('./routes/Migration').default
 
       /*  Return getComponent   */
-      cb(null, [
-        Migration(store),
-        Environments(store)
-      ])
+      cb(null, [Migration(store), Environments(store)])
     })
   }
 })

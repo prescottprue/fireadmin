@@ -1,4 +1,4 @@
-import Environments from 'routes/Environments';
+import Environments from 'routes/Environments'
 
 describe('(Route) Environments', () => {
   let _route
@@ -24,5 +24,4 @@ describe('(Route) Environments', () => {
   it('Defines a getChildRoutes function', () => {
     expect(_route.getChildRoutes).to.be.a.function
   })
-
 })

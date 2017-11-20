@@ -13,7 +13,9 @@ const bucket = gcs.bucket(functions.config().firebase.storageBucket)
  * @type {functions.CloudFunction}
  */
 export default functions.firestore
-  .document('projects/{projectId}/serviceAccounts/{serviceAccountId}')
+  .document(
+    'projects/{projectId}/environments/{envrionmentId}/serviceAccounts/{serviceAccountId}'
+  )
   .onCreate(handleServiceAccountCreate)
 
 /**

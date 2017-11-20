@@ -15,6 +15,7 @@ export const AddEnvironmentDialog = ({
   reset,
   submitting,
   pristine,
+  isEditing,
   serviceAccounts,
   selectedAccounts,
   onRequestClose,
@@ -38,7 +39,7 @@ export const AddEnvironmentDialog = ({
         style={{ marginLeft: '1.5rem' }}
         disabled={pristine || submitting}
         onTouchTap={submit}>
-        Create
+        {isEditing ? 'Save' : 'Create'}
       </Button>
     ]}
     {...other}>
@@ -85,6 +86,7 @@ AddEnvironmentDialog.propTypes = {
   onRequestClose: PropTypes.func,
   onAccountClick: PropTypes.func,
   onFilesDrop: PropTypes.func.isRequired,
+  isEditing: PropTypes.bool,
   open: PropTypes.bool.isRequired, // captured in other
   initialValues: PropTypes.object, // from reduxForm
   submit: PropTypes.func.isRequired, // from reduxForm

@@ -10,8 +10,6 @@ export const EnvironmentsPage = ({
   project,
   params,
   classes,
-  drawerOpen,
-  toggleDrawer,
   toggleDialog,
   serviceAccounts,
   selectServiceAccount,
@@ -19,7 +17,8 @@ export const EnvironmentsPage = ({
   selectedInstance,
   toggleDialogWithData,
   envDialogOpen,
-  addInstance,
+  addEnvironment,
+  updateEnvironment,
   removeEnvironment,
   uploadServiceAccount
 }) => (
@@ -38,7 +37,7 @@ export const EnvironmentsPage = ({
               <Instance
                 key={`Instance-${i}`}
                 instance={inst}
-                onEditClick={() => toggleDialogWithData(inst)}
+                onEditClick={() => toggleDialogWithData(inst, i)}
                 onRemoveClick={() => removeEnvironment(i)}
               />
             ))}
@@ -51,8 +50,9 @@ export const EnvironmentsPage = ({
     <AddEnvironmentDialog
       open={envDialogOpen}
       initialValues={selectedInstance}
+      isEditing={!!selectedInstance}
       onFilesDrop={uploadServiceAccount}
-      onSubmit={addInstance}
+      onSubmit={selectedInstance ? updateEnvironment : addEnvironment}
       onRequestClose={toggleDialog}
       selectedAccounts={selectedAccounts}
       onAccountClick={selectServiceAccount}
@@ -64,19 +64,18 @@ export const EnvironmentsPage = ({
 EnvironmentsPage.propTypes = {
   project: PropTypes.object,
   params: PropTypes.object,
-  serviceAccounts: PropTypes.object,
-  selectedAccounts: PropTypes.array,
-  selectedInstance: PropTypes.object,
-  toggleDialogWithData: PropTypes.func,
-  addInstance: PropTypes.func,
-  uploadServiceAccount: PropTypes.func,
-  selectServiceAccount: PropTypes.func,
-  removeEnvironment: PropTypes.func,
-  toggleDialog: PropTypes.func,
-  toggleDrawer: PropTypes.func,
-  classes: PropTypes.object, // added by withStyles
-  envDialogOpen: PropTypes.bool,
-  drawerOpen: PropTypes.bool
+  serviceAccounts: PropTypes.object, // from enhancer
+  selectedAccounts: PropTypes.array, // from enhancer
+  selectedInstance: PropTypes.object, // from enhancer
+  toggleDialogWithData: PropTypes.func, // from enhancer
+  addEnvironment: PropTypes.func, // from enhancer
+  updateEnvironment: PropTypes.func, // from enhancer
+  removeEnvironment: PropTypes.func, // from enhancer
+  uploadServiceAccount: PropTypes.func, // from enhancer
+  selectServiceAccount: PropTypes.func, // from enhancer
+  toggleDialog: PropTypes.func, // from enhancer
+  classes: PropTypes.object, // from enhancer (added by withStyles)
+  envDialogOpen: PropTypes.bool
 }
 
 export default EnvironmentsPage

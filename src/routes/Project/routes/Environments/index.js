@@ -6,13 +6,17 @@ export default store => ({
   getComponent(nextState, cb) {
     /*  Webpack - use 'require.ensure' to create a split point
         and embed an async module loader (jsonp) when bundling   */
-    require.ensure([], (require) => {
-      const Environments = require('./components/EnvironmentsPage').default
+    require.ensure(
+      [],
+      require => {
+        const Environments = require('./components/EnvironmentsPage').default
 
-      /*  Return getComponent   */
-      cb(null, Environments)
+        /*  Return getComponent   */
+        cb(null, Environments)
 
-    /* Webpack named bundle   */
-    }, 'Environments')
-  },
+        /* Webpack named bundle   */
+      },
+      'Environments'
+    )
+  }
 })

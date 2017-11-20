@@ -1,11 +1,10 @@
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withStyles } from 'material-ui-next/styles'
 import { withHandlers, withStateHandlers } from 'recompose'
 import { firebaseConnect, getVal, firestoreConnect } from 'react-redux-firebase'
 import {
-  logProps,
+  // logProps,
   messageWhileEmpty,
   spinnerWhileLoading
 } from 'utils/components'
@@ -32,43 +31,34 @@ export default compose(
       `data/serviceAccounts/${params.projectId}`
     )
   })),
-  logProps(['project', 'auth']),
+  // logProps(['project', 'auth']),
   messageWhileEmpty(['project']),
   spinnerWhileLoading(['project']),
   withNotifications,
   withStateHandlers(
-    ({ initialActions = [] }) => ({
-      selectedActions: initialActions,
+    ({ initialEnvDialogOpen = false }) => ({
       selectedServiceAccount: null,
       selectedInstance: null,
-      envDialogOpen: false,
-      drawerOpen: false
+      envDialogOpen: initialEnvDialogOpen
     }),
     {
-      addAction: ({ selectedActions }) => action => ({
-        selectedActions: selectedActions.concat(action)
-      }),
-      toggleDialogWithData: ({ envDialogOpen }) => action => ({
+      toggleDialogWithData: ({ envDialogOpen }) => (action, key) => ({
         envDialogOpen: !envDialogOpen,
-        selectedInstance: action
+        selectedInstance: action,
+        selectedKey: key
       }),
       toggleDialog: ({ envDialogOpen }) => () => ({
         envDialogOpen: !envDialogOpen
       }),
-      removeAction: ({ selectedActions }) => ind => ({
-        selectedActions: selectedActions.filter((_, i) => i !== ind)
-      }),
       selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => ({
         selectedServiceAccount: pickedAccount
-      }),
-      toggleDrawer: ({ drawerOpen }) => e => ({ drawerOpen: !drawerOpen })
+      })
     }
   ),
   withHandlers({
-    addInstance: props => newProjectData => {
+    addEnvironment: props => async newProjectData => {
       const {
         firestore,
-        showError,
         params: { projectId },
         selectedServiceAccount,
         serviceAccounts
@@ -78,35 +68,69 @@ export default compose(
         doc: projectId,
         subcollections: [{ collection: 'environments' }]
       }
+      const serviceAccount = get(serviceAccounts, selectedServiceAccount, null)
+      if (!serviceAccount) {
+        return props.showError('Please select a service account')
+      }
       const newProject = {
         ...newProjectData,
-        serviceAccount: get(serviceAccounts, selectedServiceAccount, null),
         projectId
       }
-      return firestore
-        .add(locationConf, newProject)
-        .then(res => {
-          props.toggleDialog()
-          showError('Project added successfully')
-        })
-        .catch(err =>
-          showError('Error: ', err.message || 'Could not add project')
+
+      try {
+        const newEnvironment = await firestore.add(locationConf, newProject)
+        await firestore.add(
+          {
+            collection: 'projects',
+            doc: projectId,
+            subcollections: [
+              { collection: 'environments', doc: newEnvironment.id },
+              { collection: 'serviceAccounts' }
+            ]
+          },
+          serviceAccount
         )
+        props.toggleDialog()
+        props.showError('Project added successfully')
+      } catch (err) {
+        console.error('error', err) // eslint-disable-line no-console
+        props.showError('Error: ', err.message || 'Could not add project')
+      }
     },
-    removeEnvironment: props => environmentId => {
+    removeEnvironment: props => async environmentId => {
       const { firestore, showError, params: { projectId } } = props
-      return firestore
-        .delete({
+      try {
+        await firestore.delete({
           collection: 'projects',
           doc: projectId,
           subcollections: [{ collection: 'environments', doc: environmentId }]
         })
-        .then(res => {
-          showError('Project deleted successfully')
-        })
-        .catch(err => {
-          showError('Error: ', err.message || 'Could not add project')
-        })
+        showError('Environment deleted successfully')
+      } catch (err) {
+        console.error('error', err) // eslint-disable-line no-console
+        showError('Error: ', err.message || 'Could not remove environment')
+      }
+    },
+    updateEnvironment: props => async newValues => {
+      const { params: { projectId }, selectedKey } = props
+      try {
+        await props.firestore.update(
+          {
+            collection: 'projects',
+            doc: projectId,
+            subcollections: [{ collection: 'environments', doc: selectedKey }]
+          },
+          newValues
+        )
+        props.toggleDialog()
+        props.showError('Environment updated successfully')
+      } catch (err) {
+        console.error('error', err) // eslint-disable-line no-console
+        props.showError(
+          'Error: ',
+          err.message || 'Could not update environment'
+        )
+      }
     },
     uploadServiceAccount: props => files => {
       const {

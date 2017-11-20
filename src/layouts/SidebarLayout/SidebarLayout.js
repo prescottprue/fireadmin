@@ -6,9 +6,9 @@ import AppBar from 'material-ui-next/AppBar'
 import Toolbar from 'material-ui-next/Toolbar'
 import Typography from 'material-ui-next/Typography'
 import Divider from 'material-ui-next/Divider'
-import IconButton from 'material-ui-next/IconButton'
-import ChevronLeftIcon from 'material-ui-icons/ChevronLeft'
-import ChevronRightIcon from 'material-ui-icons/ChevronRight'
+// import IconButton from 'material-ui-next/IconButton'
+// import ChevronLeftIcon from 'material-ui-icons/ChevronLeft'
+// import ChevronRightIcon from 'material-ui-icons/ChevronRight'
 import LayersIcon from 'material-ui-icons/Layers'
 import DeviceHubIcon from 'material-ui-icons/DeviceHub'
 import SidebarList from './SidebarList'
@@ -51,14 +51,15 @@ export const SidebarLayout = ({
       open={drawerOpen}>
       <div className={classes.drawerInner}>
         <div className={classes.drawerHeader}>
-          <IconButton onClick={toggleDrawer}>
+          {/* <IconButton onClick={toggleDrawer}>
             <ChevronLeftIcon />
-          </IconButton>
+          </IconButton> */}
         </div>
         <Divider />
         <SidebarList
           optionsConfig={sidebarOptions}
           toggleDrawer={toggleDrawer}
+          drawerOpen={drawerOpen}
         />
       </div>
     </Drawer>

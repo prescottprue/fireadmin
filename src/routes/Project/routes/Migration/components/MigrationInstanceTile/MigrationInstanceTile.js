@@ -1,28 +1,39 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { map } from 'lodash'
+import { map, get } from 'lodash'
 import Paper from 'material-ui/Paper'
 import classes from './MigrationInstanceTile.scss'
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 
+const databaseURLToProjectName = databaseURL =>
+  databaseURL.replace('https://', '').replace('.firebaseio.com', '')
+
 export const MigrationInstanceTile = ({
   title,
-  instances,
+  environments,
   selectedInstance,
   selectInstance
 }) => (
   <Paper className={classes.container}>
     <h4>{title}</h4>
+    {selectedInstance ? (
+      <div>
+        {databaseURLToProjectName(
+          get(environments, `${selectedInstance}.databaseURL`)
+        )}
+      </div>
+    ) : null}
     <SelectField
       floatingLabelText="Instance"
       value={selectedInstance}
       onChange={selectInstance}>
-      {map(instances, (instance, instanceKey) => (
+      {map(environments, (environment, environmentKey) => (
         <MenuItem
-          key={instanceKey}
-          value={instanceKey}
-          primaryText={instance.name || instanceKey}
+          key={environmentKey}
+          value={environmentKey}
+          primaryText={environment.name || environmentKey}
+          secondaryText={databaseURLToProjectName(environment.databaseURL)}
         />
       ))}
     </SelectField>
@@ -31,7 +42,7 @@ export const MigrationInstanceTile = ({
 
 MigrationInstanceTile.propTypes = {
   title: PropTypes.string,
-  instances: PropTypes.object,
+  environments: PropTypes.object,
   selectedInstance: PropTypes.string,
   selectInstance: PropTypes.func
 }

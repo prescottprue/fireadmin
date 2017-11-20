@@ -1,9 +1,7 @@
 @import 'base';
 
 .container {
-  @extend .flex-column;
-  width: 70%;
-  margin-left: 15%;
+  @extend .flex-column-center;
   padding-top: 5rem;
   margin-bottom: 4rem;
 }

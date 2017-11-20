@@ -1,4 +1,5 @@
-import React, { cloneElement } from 'react'
+/* eslint-disable no-console */
+import React from 'react'
 import PropTypes from 'prop-types'
 import { pick, some, filter } from 'lodash'
 import LoadingSpinner from 'components/LoadingSpinner'
@@ -67,7 +68,10 @@ export const withStoreAndRouter = compose(
  */
 export const logProps = (propNames, logName = '') =>
   mapProps(ownerProps => {
-    console.log(`${logName} props:`, propNames ? pick(ownerProps, propNames) : ownerProps) // eslint-disable-line no-console
+    console.log(
+      `${logName} props:`,
+      propNames ? pick(ownerProps, propNames) : ownerProps
+    )
     return ownerProps
   })
 

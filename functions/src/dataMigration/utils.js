@@ -1,50 +1,9 @@
-/* eslint-disable no-console */
 import * as admin from 'firebase-admin'
+import path from 'path'
+import fs from 'fs'
 import os from 'os'
-import fs from 'fs-extra'
-import mkdirp from 'mkdirp-promise'
 import { invoke } from 'lodash'
-const functions = require('firebase-functions')
-
-/**
- * @name dataMigration
- * Migrate data. Multiple serviceAccountTypes supported (i.e. stored on
- * Firestore or cloud storage)
- * @type {functions.CloudFunction}
- */
-export default functions.database
-  .ref('/requests/migration/{pushId}')
-  .onCreate(handleMigrateRequest)
-
-async function handleMigrateRequest(event) {
-  console.log('Running migration', event.data.val())
-  const { serviceAccountType = 'firestore' } = event.data.val()
-  switch (serviceAccountType) {
-    case 'firestore':
-      return migrationUsingFirestore(event)
-    default:
-      const errMessage = 'Invalid event type in migration request'
-      console.error(errMessage)
-      throw new Error(errMessage)
-  }
-}
-
-const appFromFirestorePath = async (path, name) => {
-  const firestore = admin.firestore()
-  const serviceAccountData = await firestore.doc(path).get()
-  const localPath = `serviceAccounts/${name}`
-  const tempLocalFile = path.join(os.tmpdir(), localPath)
-  const tempLocalDir = path.dirname(tempLocalFile)
-  await mkdirp(tempLocalDir)
-  await fs.writeJson(tempLocalFile, serviceAccountData.serviceAccount)
-  return admin.initializeApp(
-    {
-      credential: admin.credential.cert(tempLocalFile),
-      databaseURL: serviceAccountData.databaseURL
-    },
-    name
-  )
-}
+import { MIGRATION_RESPONSES_PATH } from './constants'
 
 /**
  * Data migration using Service account stored on Firestore
@@ -54,28 +13,39 @@ const appFromFirestorePath = async (path, name) => {
  * include 'firestore', 'storage', or 'rtdb'
  * @return {Promise}
  */
-async function migrationUsingFirestore(event) {
-  const eventData = event.data.val()
-  const {
-    serviceAccount1Path,
-    serviceAccount2Path,
-    dataType = 'firestore'
-  } = event.data.val()
-  const app1 = appFromFirestorePath(serviceAccount1Path, 'app1')
-  const app2 = appFromFirestorePath(serviceAccount2Path, 'app2')
+export async function runMigrationWithApps(app1, app2, event) {
+  const { dataType = 'firestore' } = event.data.val()
   switch (dataType) {
     case 'firestore':
-      await copyBetweenFirestoreInstances(app1, app2, eventData)
+      await copyBetweenFirestoreInstances(app1, app2, event)
       break
     case 'rtdb':
-      await copyBetweenRTDBInstances(app1, app2, eventData)
+      await copyBetweenRTDBInstances(app1, app2, event)
       break
     default:
       throw new Error(
         'Data type not supported. Try firestore, rtdb, or storage'
       )
   }
+  console.log('Migration successful, cleaning up and updating Real Time DB')
+  cleanup()
   return updateResponseOnRTDB(event)
+}
+
+function updateResponseOnRTDB(event, error) {
+  const response = {
+    completed: true,
+    completedAt: admin.database.ServerValue.TIMESTAMP
+  }
+  if (error) {
+    response.error = error.message || error
+    response.status = 'error'
+  } else {
+    response.status = 'success'
+  }
+  return event.data.adminRef.ref.root
+    .child(`${MIGRATION_RESPONSES_PATH}/${event.params.pushId}`)
+    .set(response)
 }
 
 async function copyBetweenFirestoreInstances(app1, app2, eventData) {
@@ -112,20 +82,15 @@ async function copyBetweenRTDBInstances(app1, app2, eventData) {
   }
 }
 
-function updateResponseOnRTDB(event, error) {
-  const response = {
-    completed: true,
-    completedAt: admin.database.ServerValue.TIMESTAMP
-  }
-  if (error) {
-    response.error = error.message || error
-    response.status = 'error'
-  } else {
-    response.status = 'success'
-  }
-  return event.data.adminRef.ref.root
-    .child(`responses/migration/${event.params.pushId}`)
-    .set(response)
+export function cleanup() {
+  cleanupServiceAccount('app1')
+  cleanupServiceAccount('app2')
+}
+
+function cleanupServiceAccount(appName) {
+  const localPath = `serviceAccounts/${name}.json`
+  const tempLocalPath = path.join(os.tmpdir(), localPath)
+  fs.unlinkSync(tempLocalPath)
 }
 
 // function updateResponseOnFirestore(event) {
