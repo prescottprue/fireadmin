@@ -31,11 +31,11 @@ const SignupForm = ({ pristine, submitting, handleSubmit }) => (
     <div className={classes.submit}>
       <Button
         raised
-        label="Signup"
-        primary
+        color="primary"
         type="submit"
-        disabled={pristine || submitting}
-      />
+        disabled={pristine || submitting}>
+        Signup
+      </Button>
     </div>
   </form>
 )

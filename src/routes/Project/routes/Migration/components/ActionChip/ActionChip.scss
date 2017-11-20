@@ -1,0 +1,19 @@
+@import 'base';
+
+.container {
+  @extend .flex-row;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: white;
+  margin-top: 1rem;
+  width: 10rem;
+  padding: .5rem;
+  margin-bottom: 1.5rem;
+}
+
+.paper {
+  height: 100%;
+}
+.label {
+  margin-left: 2rem;
+}

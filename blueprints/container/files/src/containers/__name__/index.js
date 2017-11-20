@@ -1,3 +1,6 @@
-import <%= pascalEntityName %> from './<%= pascalEntityName %>'
+import <%= pascalEntityName %> from './<%= pascalEntityName %>';
+import enhancer from './<%= pascalEntityName %>.enhancer'
 
-export default <%= pascalEntityName %>
+export { enhancer, <%= pascalEntityName %> as component }
+
+export default enhancer(<%= pascalEntityName %>);

@@ -11,7 +11,7 @@ export default store => ({
       require => {
         /*  Webpack - use require callback to define
           dependencies for bundling   */
-        const Projects = require('./containers/ProjectsContainer').default
+        const Projects = require('./components/ProjectsPage').default
 
         /*  Return getComponent   */
         cb(null, Projects)
@@ -20,15 +20,5 @@ export default store => ({
       },
       'Projects'
     )
-  },
-  getChildRoutes(partialNextState, cb) {
-    require.ensure([], require => {
-      /*  Webpack - use require callback to define
-          dependencies for bundling   */
-      const Project = require('./routes/Project').default
-
-      /*  Return getComponent   */
-      cb(null, [Project(store)])
-    })
   }
 })

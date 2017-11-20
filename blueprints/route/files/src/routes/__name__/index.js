@@ -7,7 +7,7 @@ export default store => ({
     /*  Webpack - use 'require.ensure' to create a split point
         and embed an async module loader (jsonp) when bundling   */
     require.ensure([], (require) => {
-      const <%= pascalEntityName %> = require('./containers/<%= pascalEntityName %>Container').default
+      const <%= pascalEntityName %> = require('./components/<%= pascalEntityName %>Page').default
 
       /*  Return getComponent   */
       cb(null, <%= pascalEntityName %>)

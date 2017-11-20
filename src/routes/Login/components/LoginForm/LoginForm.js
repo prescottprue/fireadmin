@@ -27,11 +27,11 @@ export const LoginForm = ({ pristine, submitting, handleSubmit }) => (
     <div className={classes.submit}>
       <Button
         raised
-        label={submitting ? 'Loading' : 'Login'}
-        primary
+        color="primary"
         type="submit"
-        disabled={pristine || submitting}
-      />
+        disabled={pristine || submitting}>
+        {submitting ? 'Loading' : 'Login'}
+      </Button>
     </div>
     <div className={classes.options}>
       <div className={classes.remember}>

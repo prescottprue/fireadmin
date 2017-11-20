@@ -28,13 +28,9 @@ export const AccountForm = ({ account, handleSubmit, submitting }) => (
           <ProviderDataForm providerData={account.providerData} />
         </div>
       )}
-    <Button
-      raised
-      primary
-      label="Save"
-      type="submit"
-      className={classes.submit}
-    />
+    <Button raised color="primary" type="submit" className={classes.submit}>
+      Save
+    </Button>
   </form>
 )
 
