@@ -21,7 +21,7 @@ export const SidebarList = ({
   toggleDrawer
 }) => (
   <List className={classes.list}>
-    {optionsConfig.map(({ value, iconElement }, i) => (
+    {optionsConfig.map(({ value, iconElement, label }, i) => (
       <ListItem
         button
         key={`SidebarItem-${i}-${value}`}
@@ -29,7 +29,7 @@ export const SidebarList = ({
         className={itemIsActive(value) ? classes.activeListItem : undefined}
         onClick={() => goTo(value)}>
         <ListItemIcon>{iconElement || <LayersIcon />}</ListItemIcon>
-        <ListItemText primary={capitalize(value)} />
+        <ListItemText primary={capitalize(value || label)} />
       </ListItem>
     ))}
     <Divider />

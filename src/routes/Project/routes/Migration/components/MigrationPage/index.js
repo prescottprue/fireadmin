@@ -1,3 +1,4 @@
 import MigrationPage from './MigrationPage'
+import enhancer from './MigrationPage.enhancer'
 
-export default MigrationPage
+export default enhancer(MigrationPage)
