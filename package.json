@@ -26,6 +26,7 @@
   "author": "prescottprue (https://github.com/prescottprue)",
   "license": "MIT",
   "dependencies": {
+    "autosuggest-highlight": "^3.1.1",
     "classnames": "^2.2.5",
     "firebase": "^4.6.0",
     "lodash": "^4.17.4",
@@ -37,6 +38,7 @@
     "promise": "^7.1.1",
     "prop-types": "^15.5.10",
     "react": "^15.5.4",
+    "react-autosuggest": "^9.3.2",
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.5.4",
     "react-dom": "^15.5.4",

@@ -20,8 +20,8 @@ import {
  *   test: (props: Object) => boolean,
  *   right: ?HigherOrderComponent
  * ): HigherOrderComponent
- * @param  {Function} condition -
- * @return {HigherOrderComponent}           [description]
+ * @param  {Function} condition - Condition function for when to show spinner
+ * @return {HigherOrderComponent}
  */
 export const spinnerWhile = condition =>
   branch(condition, renderComponent(LoadingSpinner))
@@ -32,8 +32,8 @@ export const spinnerWhile = condition =>
  * `profile.isLoaded`). **NOTE:** Meant to be used with props which are passed
  * as props from state.firebase using connect (from react-redux), which means
  * it could have unexpected results for other props
- * @param  {Array} propNames [description]
- * @return {HigherOrderComponent}           [description]
+ * @param  {Array} propNames - List of prop names to check loading for
+ * @return {HigherOrderComponent}
  */
 export const spinnerWhileLoading = propNames =>
   spinnerWhile(props => some(propNames, name => !isLoaded(props[name])))
