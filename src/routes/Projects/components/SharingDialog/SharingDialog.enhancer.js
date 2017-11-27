@@ -27,6 +27,7 @@ export default compose(
   withStateHandlers(
     ({ initialDialogOpen = false }) => ({
       sharingDialogOpen: initialDialogOpen,
+      selectedCollaborators: [],
       suggestions: [],
       value: ''
     }),
@@ -40,6 +41,12 @@ export default compose(
       clearSuggestions: () => () => ({
         suggestions: []
       }),
+      selectCollaborator: ({ selectedCollaborators }) => newCollaborator => {
+        // console.log('new', newCollaborator)
+        return {
+          selectedCollaborators: [...selectedCollaborators, newCollaborator]
+        }
+      },
       handleChange: () => e => ({
         value: e.target.value
       })

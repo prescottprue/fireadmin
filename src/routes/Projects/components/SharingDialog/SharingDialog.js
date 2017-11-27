@@ -1,93 +1,49 @@
+/* eslint-disable react/prop-types */
 import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog, { DialogTitle } from 'material-ui-next/Dialog'
-import Paper from 'material-ui-next/Paper'
-import FlatButton from 'material-ui/FlatButton'
+import Dialog, {
+  DialogActions,
+  DialogContent,
+  DialogTitle
+} from 'material-ui-next/Dialog'
 import Button from 'material-ui-next/Button'
 import { MenuItem } from 'material-ui-next/Menu'
-// import { Field } from 'redux-form'
-import TextField from 'material-ui-next/TextField'
-import Autosuggest from 'react-autosuggest'
-import match from 'autosuggest-highlight/match'
-import parse from 'autosuggest-highlight/parse'
+import Slide from 'material-ui-next/transitions/Slide'
+import {
+  InstantSearch,
+  Hits,
+  Stats,
+  SearchBox,
+  Panel,
+  Highlight
+} from 'react-instantsearch/dom'
+import { connectStateResults } from 'react-instantsearch/connectors'
+// import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 import classes from './SharingDialog.scss'
 
-function renderInput(inputProps) {
-  const { classes, autoFocus, value, ref, ...other } = inputProps
-
-  return (
-    <TextField
-      autoFocus={autoFocus}
-      name="some"
-      className={classes.textField}
-      value={value}
-      inputRef={ref}
-      InputProps={{
-        classes: {
-          input: classes.input
-        },
-        ...other
-      }}
-    />
-  )
-}
-
-function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(suggestion.displayName, query)
-  const parts = parse(suggestion.displayName, matches)
-
-  return (
-    <MenuItem selected={isHighlighted} component="div">
+const Content = connectStateResults(
+  ({ searchState, searchResults }) =>
+    searchState.query && searchResults && searchResults.nbHits !== 0 ? (
       <div>
-        {parts.map((part, index) => {
-          return part.highlight ? (
-            <span key={index} style={{ fontWeight: 300 }}>
-              {part.text}
-            </span>
-          ) : (
-            <strong key={index} style={{ fontWeight: 500 }}>
-              {part.text}
-            </strong>
-          )
-        })}
+        <Stats />
+        <Hits hitComponent={SearchedUser} />
       </div>
+    ) : null
+)
+
+function SearchedUser({ hit }) {
+  return (
+    <MenuItem style={{ marginTop: '10px' }}>
+      <span className="hit-name">
+        <Highlight attributeName="displayName" hit={hit} />
+      </span>
     </MenuItem>
   )
 }
 
-function renderSuggestionsContainer(options) {
-  const { containerProps, children } = options
-
-  return (
-    <Paper {...containerProps} square>
-      {children}
-    </Paper>
-  )
+function Transition(props) {
+  return <Slide direction="up" {...props} />
 }
-
-function getSuggestionValue(suggestion) {
-  return suggestion.label
-}
-
-// function getSuggestions(value) {
-//   const inputValue = value.trim().toLowerCase()
-//   const inputLength = inputValue.length
-//   let count = 0
-//
-//   return inputLength === 0
-//     ? []
-//     : suggestions.filter(suggestion => {
-//         const keep =
-//           count < 5 &&
-//           suggestion.label.toLowerCase().slice(0, inputLength) === inputValue
-//
-//         if (keep) {
-//           count += 1
-//         }
-//
-//         return keep
-//       })
-// }
 
 export const SharingDialog = ({
   open,
@@ -96,42 +52,48 @@ export const SharingDialog = ({
   suggestions,
   searchUsers,
   clearSuggestions,
-  value = ' ',
+  selectedCollaborators,
+  selectCollaborator,
   handleChange
 }) => (
-  <Dialog open={open} onRequestClose={onRequestClose}>
+  <Dialog
+    open={open}
+    onRequestClose={onRequestClose}
+    className={classes.container}
+    transition={Transition}
+    keepMounted>
     <DialogTitle>Sharing</DialogTitle>
-    {/* TODO: Add autocomplete that searches users */}
-    <Button color="primary">Add Collaborator</Button>
-    <Autosuggest
-      theme={{
-        container: classes.container,
-        suggestionsContainerOpen: classes.suggestionsContainerOpen,
-        suggestionsList: classes.suggestionsList,
-        suggestion: classes.suggestion
-      }}
-      renderInputComponent={renderInput}
-      suggestions={suggestions || []}
-      onSuggestionsFetchRequested={searchUsers}
-      onSuggestionsClearRequested={clearSuggestions}
-      renderSuggestionsContainer={renderSuggestionsContainer}
-      getSuggestionValue={getSuggestionValue}
-      renderSuggestion={renderSuggestion}
-      inputProps={{
-        autoFocus: true,
-        classes,
-        placeholder: 'Search a country (start with a)',
-        value,
-        onChange: handleChange
-      }}
-    />
-    <FlatButton label="Done" secondary onTouchTap={onRequestClose} />
+    <DialogContent>
+      {selectedCollaborators.length ? (
+        <div>
+          {selectedCollaborators.map(user => <div>{JSON.stringify(user)}</div>)}
+          <Button color="primary">Add Collaborators</Button>
+        </div>
+      ) : null}
+      <div className={classes.search}>
+        <InstantSearch
+          appId="C0D1I0GB86"
+          apiKey="7327fc566154893e3834a49de6fa73c3"
+          indexName="users">
+          <SearchBox autoFocus />
+          <Panel title="Users">
+            <Content selectCollaborator={selectCollaborator} />
+          </Panel>
+        </InstantSearch>
+      </div>
+    </DialogContent>
+    <DialogActions>
+      <Button color="accept" onTouchTap={onRequestClose}>
+        Save
+      </Button>
+    </DialogActions>
   </Dialog>
 )
 
 SharingDialog.propTypes = {
   open: PropTypes.bool,
-  value: PropTypes.string,
+  selectCollaborator: PropTypes.func, // from enhancer
+  selectedCollaborators: PropTypes.func, // from enhancer
   suggestions: PropTypes.array, // from enhancer
   searchUsers: PropTypes.func.isRequired, // from enhancer (withHandlers)
   clearSuggestions: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
