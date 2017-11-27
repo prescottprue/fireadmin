@@ -6,7 +6,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Button from 'material-ui-next/Button'
 import { MenuItem } from 'material-ui-next/Menu'
 // import { Field } from 'redux-form'
-import { TextField } from 'redux-form-material-ui'
+import TextField from 'material-ui-next/TextField'
 import Autosuggest from 'react-autosuggest'
 import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
@@ -18,6 +18,7 @@ function renderInput(inputProps) {
   return (
     <TextField
       autoFocus={autoFocus}
+      name="some"
       className={classes.textField}
       value={value}
       inputRef={ref}
@@ -32,8 +33,8 @@ function renderInput(inputProps) {
 }
 
 function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(suggestion.label, query)
-  const parts = parse(suggestion.label, matches)
+  const matches = match(suggestion.displayName, query)
+  const parts = parse(suggestion.displayName, matches)
 
   return (
     <MenuItem selected={isHighlighted} component="div">
@@ -100,32 +101,30 @@ export const SharingDialog = ({
 }) => (
   <Dialog open={open} onRequestClose={onRequestClose}>
     <DialogTitle>Sharing</DialogTitle>
-    <form onSubmit={handleSubmit} className={classes.inputs}>
-      {/* TODO: Add autocomplete that searches users */}
-      <Button color="primary">Add Collaborator</Button>
-      <Autosuggest
-        theme={{
-          container: classes.container,
-          suggestionsContainerOpen: classes.suggestionsContainerOpen,
-          suggestionsList: classes.suggestionsList,
-          suggestion: classes.suggestion
-        }}
-        renderInputComponent={renderInput}
-        suggestions={suggestions || []}
-        onSuggestionsFetchRequested={searchUsers}
-        onSuggestionsClearRequested={clearSuggestions}
-        renderSuggestionsContainer={renderSuggestionsContainer}
-        getSuggestionValue={getSuggestionValue}
-        renderSuggestion={renderSuggestion}
-        inputProps={{
-          autoFocus: true,
-          classes,
-          placeholder: 'Search a country (start with a)',
-          value,
-          onChange: handleChange
-        }}
-      />
-    </form>
+    {/* TODO: Add autocomplete that searches users */}
+    <Button color="primary">Add Collaborator</Button>
+    <Autosuggest
+      theme={{
+        container: classes.container,
+        suggestionsContainerOpen: classes.suggestionsContainerOpen,
+        suggestionsList: classes.suggestionsList,
+        suggestion: classes.suggestion
+      }}
+      renderInputComponent={renderInput}
+      suggestions={suggestions || []}
+      onSuggestionsFetchRequested={searchUsers}
+      onSuggestionsClearRequested={clearSuggestions}
+      renderSuggestionsContainer={renderSuggestionsContainer}
+      getSuggestionValue={getSuggestionValue}
+      renderSuggestion={renderSuggestion}
+      inputProps={{
+        autoFocus: true,
+        classes,
+        placeholder: 'Search a country (start with a)',
+        value,
+        onChange: handleChange
+      }}
+    />
     <FlatButton label="Done" secondary onTouchTap={onRequestClose} />
   </Dialog>
 )

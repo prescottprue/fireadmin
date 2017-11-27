@@ -36,11 +36,9 @@ exports.searchentry = functions.database
   .ref('/search/queries/{queryid}')
   .onWrite(event => {
     const index = client.initIndex(ALGOLIA_POSTS_INDEX_NAME)
-
-    const query = event.data.val().query
     const key = event.data.key
 
-    return index.search(query).then(content => {
+    return index.search(event.data.val()).then(content => {
       const updates = {
         '/search/last_query_timestamp': Date.parse(event.timestamp)
       }

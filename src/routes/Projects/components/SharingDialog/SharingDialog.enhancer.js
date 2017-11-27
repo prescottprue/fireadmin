@@ -1,7 +1,7 @@
 import { compose } from 'redux'
+import { withFirebase } from 'react-redux-firebase'
 import { withHandlers, withStateHandlers } from 'recompose'
 import { invoke } from 'lodash'
-import { reduxForm } from 'redux-form'
 import { withNotifications } from 'modules/notification'
 
 const waitForResponse = (firebase, requestKey) =>
@@ -22,6 +22,7 @@ const waitForResponse = (firebase, requestKey) =>
   })
 
 export default compose(
+  withFirebase,
   withNotifications,
   withStateHandlers(
     ({ initialDialogOpen = false }) => ({
@@ -39,8 +40,8 @@ export default compose(
       clearSuggestions: () => () => ({
         suggestions: []
       }),
-      handleChange: () => value => ({
-        value
+      handleChange: () => e => ({
+        value: e.target.value
       })
     }
   ),
@@ -67,18 +68,23 @@ export default compose(
         )
     },
     searchUsers: ({ firebase, setSuggestions, showError }) => async query => {
+      if (query.value.length < 3) {
+        return
+      }
+      if (query.reason === 'input-focused') {
+        return
+      }
       try {
-        const reqSnap = await firebase.push('search/queries', query)
+        const reqSnap = await firebase.push('search/queries', {
+          query: query.value
+        })
         const results = await waitForResponse(firebase, reqSnap.key)
         // console.log('results:', results)
-        setSuggestions(results)
+        setSuggestions(results.hits)
       } catch (err) {
         showError('Error: ', err.message || 'Could not add project')
         throw err
       }
     }
-  }),
-  reduxForm({
-    form: 'sharingDialog'
   })
 )
