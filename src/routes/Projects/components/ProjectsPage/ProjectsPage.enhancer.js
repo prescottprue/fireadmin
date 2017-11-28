@@ -47,24 +47,44 @@ export default compose(
     }
   ),
   withHandlers({
-    addProject: ({ firestore, uid, showError, showSuccess }) => newInstance => {
+    addProject: ({
+      firestore,
+      firebase,
+      uid,
+      showError,
+      showSuccess
+    }) => async newInstance => {
       if (!uid) {
         return showError('You must be logged in to create a project')
       }
-      firestore
-        .add({ collection: 'projects' }, { ...newInstance, createdBy: uid })
-        .then(res => showSuccess('Project added successfully'))
-        .catch(err =>
-          showError('Error: ', err.message || 'Could not add project')
+      try {
+        const res = await firestore.add(
+          { collection: 'projects' },
+          {
+            ...newInstance,
+            createdBy: uid,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          }
         )
+        showSuccess('Project added successfully')
+        return res
+      } catch (err) {
+        showError(err.message || 'Could not add project')
+        throw err
+      }
     },
-    deleteProject: ({ firestore, showError, showSuccess }) => projectId => {
-      firestore
-        .delete({ collection: 'projects', doc: projectId })
-        .then(res => showSuccess('Project deleted successfully'))
-        .catch(err =>
-          showError('Error: ', err.message || 'Could not add project')
-        )
+    deleteProject: ({
+      firestore,
+      showError,
+      showSuccess
+    }) => async projectId => {
+      try {
+        await firestore.delete({ collection: 'projects', doc: projectId })
+        showSuccess('Project deleted successfully')
+      } catch (err) {
+        console.error('Error:', err) // eslint-disable-line
+        showError(err.message || 'Could not add project')
+      }
     },
     goToProject: ({ router }) => projectId => {
       router.push(`${LIST_PATH}/${projectId}`)

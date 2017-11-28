@@ -1,4 +1,4 @@
-/* eslint-disable global-require */
+/* eslint-disable global-require, no-unused-vars, no-template-curly-in-string */
 // Chai is a commonly used library for creating unit test suites. It is easily extended with plugins.
 const chai = require('chai')
 // Sinon is a library used for mocking or verifying function calls in JavaScript.
@@ -34,13 +34,12 @@ describe('Cloud Functions', () => {
       firebase: {
         databaseURL: 'https://not-a-project.firebaseio.com',
         storageBucket: 'not-a-project.appspot.com',
-        projectId: "redux-firebasev3",
-        storageBucket: "redux-firebasev3.appspot.com",
-        messagingSenderId: "823357791673"
+        projectId: 'not-a-project.appspot',
+        messagingSenderId: '823357791673'
       },
       algolia: {
-        api_key: "testing",
-        app_id: "123"
+        api_key: 'testing',
+        app_id: '123'
       }
       // You can stub any other config values needed by your functions here, for example:
       // foo: 'bar'
@@ -50,7 +49,7 @@ describe('Cloud Functions', () => {
 
     // if we use ../ without dirname here, it can not be run with --prefix from parent folder
     storageFileToRTDB = require(`../src/storageFileToRTDB`).copyFileToRTDB
-    console.log("fake event", myFunctions)
+    console.log('fake event', myFunctions)
   })
 
   after(() => {
@@ -70,7 +69,13 @@ describe('Cloud Functions', () => {
         // the database item before the event, while the delta parameter represents the change that
         // occured to cause the event to fire. The last parameter is the database path, which we are
         // not making use of in this test. So we will omit it.
-        data: new functions.database.DeltaSnapshot(adminInitStub, adminInitStub, null, { filePath: 'testing' }, 'requests/fileToDb/123ABC')
+        data: new functions.database.DeltaSnapshot(
+          adminInitStub,
+          adminInitStub,
+          null,
+          { filePath: 'testing' },
+          'requests/fileToDb/123ABC'
+        )
         // To mock a database delete event:
         // data: new functions.database.DeltaSnapshot(null, null, 'old_data', null)
       }
@@ -119,5 +124,4 @@ describe('Cloud Functions', () => {
   //     myFunctions.someHttpFunc(req, res)
   //   })
   // })
-
 })

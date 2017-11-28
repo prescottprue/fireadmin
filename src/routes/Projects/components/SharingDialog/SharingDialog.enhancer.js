@@ -1,4 +1,5 @@
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { withFirestore, withFirebase } from 'react-redux-firebase'
 import { withHandlers, withStateHandlers } from 'recompose'
 import { invoke, get } from 'lodash'
@@ -8,6 +9,9 @@ export default compose(
   withFirestore,
   withFirebase,
   withNotifications,
+  connect(({ firestore: { data: { users } } }, { params }) => ({
+    users
+  })),
   withStateHandlers(
     ({ initialDialogOpen = false }) => ({
       sharingDialogOpen: initialDialogOpen,
