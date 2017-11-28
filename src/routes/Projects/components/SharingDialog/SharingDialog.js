@@ -11,35 +11,47 @@ import { MenuItem } from 'material-ui-next/Menu'
 import Slide from 'material-ui-next/transitions/Slide'
 import {
   InstantSearch,
-  Hits,
   Stats,
   SearchBox,
   Panel,
   Highlight
 } from 'react-instantsearch/dom'
-import { connectStateResults } from 'react-instantsearch/connectors'
+import {
+  connectHits,
+  connectStateResults
+} from 'react-instantsearch/connectors'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 import classes from './SharingDialog.scss'
+
+const SearchedUser = ({ hit, selectCollaborator }) => (
+  <MenuItem style={{ marginTop: '10px' }} onClick={selectCollaborator}>
+    <span className="hit-name">
+      <Highlight attributeName="displayName" hit={hit} />
+    </span>
+  </MenuItem>
+)
+
+const CustomHits = connectHits(({ hits, selectCollaborator }) => (
+  <div>
+    {hits.map((hit, i) => (
+      <SearchedUser
+        key={`Hit-${hit.objectID}-${i}`}
+        hit={hit}
+        selectCollaborator={() => selectCollaborator(hit)}
+      />
+    ))}
+  </div>
+))
 
 const Content = connectStateResults(
   ({ searchState, searchResults }) =>
     searchState.query && searchResults && searchResults.nbHits !== 0 ? (
       <div>
         <Stats />
-        <Hits hitComponent={SearchedUser} />
+        <CustomHits />
       </div>
     ) : null
 )
-
-function SearchedUser({ hit }) {
-  return (
-    <MenuItem style={{ marginTop: '10px' }}>
-      <span className="hit-name">
-        <Highlight attributeName="displayName" hit={hit} />
-      </span>
-    </MenuItem>
-  )
-}
 
 function Transition(props) {
   return <Slide direction="up" {...props} />
@@ -50,10 +62,10 @@ export const SharingDialog = ({
   onRequestClose,
   handleSubmit,
   suggestions,
-  searchUsers,
   clearSuggestions,
   selectedCollaborators,
   selectCollaborator,
+  saveCollaborators,
   handleChange
 }) => (
   <Dialog
@@ -66,8 +78,14 @@ export const SharingDialog = ({
     <DialogContent>
       {selectedCollaborators.length ? (
         <div>
-          {selectedCollaborators.map(user => <div>{JSON.stringify(user)}</div>)}
-          <Button color="primary">Add Collaborators</Button>
+          {selectedCollaborators.map((user, i) => (
+            <div key={`SelectedUser-${user.objectID}-i`}>
+              <span>{user.displayName}</span>
+            </div>
+          ))}
+          <Button color="primary" onClick={saveCollaborators}>
+            Add Collaborators
+          </Button>
         </div>
       ) : null}
       <div className={classes.search}>
@@ -76,6 +94,7 @@ export const SharingDialog = ({
           apiKey="7327fc566154893e3834a49de6fa73c3"
           indexName="users">
           <SearchBox autoFocus />
+          <div style={{ height: '2rem' }} />
           <Panel title="Users">
             <Content selectCollaborator={selectCollaborator} />
           </Panel>
@@ -83,8 +102,8 @@ export const SharingDialog = ({
       </div>
     </DialogContent>
     <DialogActions>
-      <Button color="accept" onTouchTap={onRequestClose}>
-        Save
+      <Button color="primary" onTouchTap={onRequestClose}>
+        Done
       </Button>
     </DialogActions>
   </Dialog>
@@ -93,9 +112,8 @@ export const SharingDialog = ({
 SharingDialog.propTypes = {
   open: PropTypes.bool,
   selectCollaborator: PropTypes.func, // from enhancer
-  selectedCollaborators: PropTypes.func, // from enhancer
+  selectedCollaborators: PropTypes.array, // from enhancer
   suggestions: PropTypes.array, // from enhancer
-  searchUsers: PropTypes.func.isRequired, // from enhancer (withHandlers)
   clearSuggestions: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   onRequestClose: PropTypes.func, // from enhancer (withStateHandlers)
   handleChange: PropTypes.func, // from enhancer (reduxForm)

@@ -38,6 +38,7 @@ export const ProjectTile = ({
     </IconButton>
     <SharingDialog
       open={sharingDialogOpen}
+      project={project}
       onRequestClose={toggleSharingDialog}
     />
   </Paper>

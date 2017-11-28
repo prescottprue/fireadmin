@@ -1,5 +1,5 @@
 const functions = require('firebase-functions')
-const admin = require('firebase-admin')
+// const admin = require('firebase-admin')
 
 // Authenticate to Algolia Database.
 // TODO: Make sure you configure the `algolia.app_id` and `algolia.api_key` Google Cloud environment variables.
@@ -13,12 +13,23 @@ const client = algoliasearch(
 const ALGOLIA_POSTS_INDEX_NAME = 'users'
 
 // Updates the search index when new blog entries are created or updated.
-exports.indexentry = functions.database
-  .ref('/users/{blogid}/text')
+exports.indexUsers = functions.firestore
+  .document('/users/{userId}')
   .onWrite(event => {
     const index = client.initIndex(ALGOLIA_POSTS_INDEX_NAME)
-    const firebaseObject = Object.assign({}, event.data.val(), {
-      objectID: event.params.blogid
+    const data = event.data.data()
+    const previousData = event.data.previous.data()
+
+    // We'll only update if the displayName has changed.
+    if (data.displayName === previousData.displayName) {
+      console.log(
+        'Display name did not change, no reason to re-index. Exiting...'
+      )
+      return
+    }
+
+    const firebaseObject = Object.assign({}, data, {
+      objectID: event.params.userId
     })
 
     return index
@@ -28,24 +39,4 @@ exports.indexentry = functions.database
           .child('last_index_timestamp')
           .set(Date.parse(event.timestamp))
       )
-  })
-
-// Starts a search query whenever a query is requested (by adding one to the `/search/queries`
-// element. Search results are then written under `/search/results`.
-exports.searchentry = functions.database
-  .ref('/search/queries/{queryid}')
-  .onWrite(event => {
-    const index = client.initIndex(ALGOLIA_POSTS_INDEX_NAME)
-    const key = event.data.key
-
-    return index.search(event.data.val()).then(content => {
-      const updates = {
-        '/search/last_query_timestamp': Date.parse(event.timestamp)
-      }
-      updates[`/search/results/${key}`] = content
-      return admin
-        .database()
-        .ref()
-        .update(updates)
-    })
   })
