@@ -15,6 +15,11 @@ import SidebarList from './SidebarList'
 
 const sidebarOptions = [
   {
+    value: '',
+    label: 'Home',
+    iconElement: <LayersIcon />
+  },
+  {
     value: 'environments',
     iconElement: <LayersIcon />
   },

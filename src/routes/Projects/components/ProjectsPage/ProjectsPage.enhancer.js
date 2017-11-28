@@ -8,11 +8,15 @@ import { withNotifications } from 'modules/notification'
 import { withRouter, spinnerWhileLoading } from 'utils/components'
 
 // TODO: Do this using populate instead
-const populateProjects = ({ ordered, data }) =>
-  map(ordered.projects, project => ({
+const populateProjects = ({ ordered, data }) => {
+  if (!get(ordered, 'projects') && !get(data, 'users')) {
+    return undefined
+  }
+  return map(ordered.projects, project => ({
     ...project,
     createdBy: get(data.users, project.createdBy)
   }))
+}
 
 export default compose(
   firestoreConnect(({ params, auth }) => [
