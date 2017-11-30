@@ -1,0 +1,10 @@
+@import 'base';
+
+.container {
+  width: 60%;
+  flex-basis: 60%;
+  flex-grow: 1;
+}
+.search {
+  margin-top: 3rem;
+}
