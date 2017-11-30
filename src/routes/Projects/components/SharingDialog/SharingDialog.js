@@ -60,7 +60,10 @@ export const SharingDialog = ({
         </div>
       ) : null}
       <div className={classes.search}>
-        <UsersSearch onSuggestionClick={selectCollaborator} />
+        <UsersSearch
+          onSuggestionClick={selectCollaborator}
+          ignoreSuggestions={project.collaborators}
+        />
       </div>
     </DialogContent>
     <DialogActions>

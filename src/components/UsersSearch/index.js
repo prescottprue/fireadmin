@@ -1,3 +1,4 @@
 import UsersSearch from './UsersSearch'
+import enhancer from './UsersSearch.enhancer'
 
-export default UsersSearch
+export default enhancer(UsersSearch)
