@@ -9,6 +9,7 @@
     "postinstall": "npm run build"
   },
   "dependencies": {
+    "@google-cloud/bigquery": "^0.11.1",
     "@google-cloud/storage": "^1.2.1",
     "algoliasearch": "^3.24.6",
     "babel-runtime": "^6.26.0",
@@ -17,7 +18,8 @@
     "fs-extra": "^4.0.2",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
-    "mkdirp-promise": "^5.0.1"
+    "mkdirp-promise": "^5.0.1",
+    "moment": "^2.19.3"
   },
   "private": true,
   "devDependencies": {
