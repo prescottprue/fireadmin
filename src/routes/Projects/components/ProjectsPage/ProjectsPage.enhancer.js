@@ -19,20 +19,20 @@ const populateProjects = ({ ordered, data }) => {
 }
 
 export default compose(
-  firestoreConnect(({ params, auth }) => [
+  connect(({ firebase: { auth: { uid } } }) => ({ uid })),
+  spinnerWhileLoading(['uid']),
+  firestoreConnect(({ params, uid }) => [
     {
-      collection: 'projects'
+      collection: 'projects',
+      where: ['createdBy', '==', uid]
     },
     {
       collection: 'users' // TODO: Load this data through populate instead
     }
   ]),
-  connect(
-    ({ firestore, firestore: { ordered, data }, firebase }, { params }) => ({
-      projects: populateProjects({ ordered, data }),
-      uid: get(firebase, 'auth.uid')
-    })
-  ),
+  connect(({ firestore: { ordered, data } }) => ({
+    projects: populateProjects({ ordered, data })
+  })),
   spinnerWhileLoading(['projects']),
   withRouter,
   withNotifications,
