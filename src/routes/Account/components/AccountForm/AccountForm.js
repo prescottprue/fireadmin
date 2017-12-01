@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Field, reduxForm } from 'redux-form'
+import { Field } from 'redux-form'
 import Button from 'material-ui-next/Button'
 import { TextField } from 'redux-form-material-ui'
-import { ACCOUNT_FORM_NAME } from 'constants'
 import ProviderDataForm from '../ProviderDataForm'
 import classes from './AccountForm.scss'
 
@@ -40,6 +39,4 @@ AccountForm.propTypes = {
   submitting: PropTypes.bool
 }
 
-export default reduxForm({
-  form: ACCOUNT_FORM_NAME
-})(AccountForm)
+export default AccountForm
