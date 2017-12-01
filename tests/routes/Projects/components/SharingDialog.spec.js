@@ -1,5 +1,5 @@
 import React from 'react'
-import SharingDialog from 'components/SharingDialog'
+import SharingDialog from 'routes/Projects/components/SharingDialog'
 import { shallow } from 'enzyme'
 
 describe('(Component) SharingDialog', () => {

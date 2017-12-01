@@ -5,7 +5,7 @@ sudo: false
 language: node_js
 
 node_js:
- - 6.11.1 # runtime used within Firebase functions
+ - 6.11.5 # runtime used within Firebase functions
 
 notifications:
   email:
@@ -19,16 +19,13 @@ branches:
     - prod
 
 cache:
-  bundler: true
+  # bundler: true
+  yarn: true
   directories:
     - node_modules # NPM packages
 
-install:
-  - npm set progress=false
-  - npm i
-  - npm i -g firebase-ci
-
 script:
+  - npm i -g firebase-ci
   - firebase-ci createConfig
   - npm run lint
   - npm run test
@@ -39,4 +36,4 @@ addons:
     repo_token: $CODE_CLIMATE
 
 after_success:
-  - firebase-ci deploy -s # deploy without CI actions since createConfig is called earlier 
+  - firebase-ci deploy -s # deploy without CI actions since createConfig is called earlier

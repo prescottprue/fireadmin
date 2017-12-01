@@ -1,8 +1,8 @@
 import React from 'react'
-import MigrationActionsTile from 'components/MigrationActionsTile'
+import MigrationActionsTile from 'routes/Project/routes/Migration/components/MigrationActionsTile'
 import { shallow } from 'enzyme'
 
-describe('(Component) MigrationActionsTile', () => {
+describe('(Route: Project Route: Migration Component) MigrationActionsTile', () => {
   let _component
 
   beforeEach(() => {

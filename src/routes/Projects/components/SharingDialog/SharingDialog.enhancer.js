@@ -55,18 +55,17 @@ export default compose(
       const currentProject = await firestore.get(`projects/${project.id}`)
       const promises = []
       selectedCollaborators.forEach(currentCollaborator => {
+        const currentObjectId = currentCollaborator.objectID
         if (
           !get(
             invoke(currentProject, 'data'),
-            `collaborators.${currentCollaborator.objectID}`
+            `collaborators.${currentObjectId}`
           )
         ) {
           promises.push(
             firebase
               .firestore()
-              .doc(
-                `projects/${project.id}/collaborators/${currentCollaborator.objectID}`
-              )
+              .doc(`projects/${project.id}/collaborators/${currentObjectId}`)
               .set({ permission: 'viewer', sharedAt: Date.now() })
           )
         }

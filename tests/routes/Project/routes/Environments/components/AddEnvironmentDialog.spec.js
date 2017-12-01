@@ -1,8 +1,8 @@
 import React from 'react'
-import AddEnvironmentDialog from 'components/AddEnvironmentDialog'
+import AddEnvironmentDialog from 'routes/Project/routes/Environments/components/AddEnvironmentDialog'
 import { shallow } from 'enzyme'
 
-describe('(Component) AddEnvironmentDialog', () => {
+describe('(Route: Project Route: Environments Component) AddEnvironmentDialog', () => {
   let _component
 
   beforeEach(() => {

@@ -2,7 +2,7 @@ import React from 'react'
 import UsersSearch from 'components/UsersSearch'
 import { shallow } from 'enzyme'
 
-describe('(Component) UsersSearch', () => {
+describe.skip('(Component) UsersSearch', () => {
   let _component
 
   beforeEach(() => {

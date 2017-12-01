@@ -203,8 +203,9 @@ config.plugins.push(
 // ------------------------------------
 if (__DEV__) {
   config.entry.main.push(
-    `webpack-hot-middleware/client.js?path=${config.output
-      .publicPath}__webpack_hmr`
+    `webpack-hot-middleware/client.js?path=${
+      config.output.publicPath
+    }__webpack_hmr`
   )
   config.plugins.push(
     new webpack.HotModuleReplacementPlugin(),

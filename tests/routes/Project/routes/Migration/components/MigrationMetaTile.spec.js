@@ -1,8 +1,8 @@
 import React from 'react'
-import MigrationMetaTile from 'components/MigrationMetaTile'
+import MigrationMetaTile from 'routes/Project/routes/Migration/components/MigrationMetaTile'
 import { shallow } from 'enzyme'
 
-describe('(Component) MigrationMetaTile', () => {
+describe('(Route: Project Route: Migration Component) MigrationMetaTile', () => {
   let _component
 
   beforeEach(() => {

@@ -1,6 +1,6 @@
-import Environments from 'routes/Environments'
+import Environments from 'routes/Project/routes/Environments'
 
-describe('(Route) Environments', () => {
+describe('(Route: Project Route) Environments', () => {
   let _route
   // let _component
   // let _childRoutes
@@ -15,8 +15,8 @@ describe('(Route) Environments', () => {
     expect(Environments).to.be.a.function
   })
 
-  it('Sets Path to /environments', () => {
-    expect(_route.path).to.equal('/environments')
+  it('Sets Path to environments', () => {
+    expect(_route.path).to.equal('environments')
   })
   it('Defines a getComponent function', () => {
     expect(_route.getComponent).to.be.a.function

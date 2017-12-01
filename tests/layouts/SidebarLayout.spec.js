@@ -1,6 +1,6 @@
 import React from 'react'
 import TestUtils from 'react-addons-test-utils'
-import SidebarLayoutLayout from 'layouts/SidebarLayoutLayout/SidebarLayoutLayout'
+import SidebarLayout from 'layouts/SidebarLayout'
 
 function shallowRender(component) {
   const renderer = TestUtils.createRenderer()
@@ -10,7 +10,7 @@ function shallowRender(component) {
 }
 
 function shallowRenderWithProps(props = {}) {
-  return shallowRender(<SidebarLayoutLayout {...props} />)
+  return shallowRender(<SidebarLayout {...props} />)
 }
 
 describe('(Layout) SidebarLayout', function() {
@@ -28,6 +28,6 @@ describe('(Layout) SidebarLayout', function() {
   })
 
   it('Should render as a <div>.', function() {
-    expect(_component.type).to.equal('div')
+    expect(_component.type).to.be.a.function
   })
 })
