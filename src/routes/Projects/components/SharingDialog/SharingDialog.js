@@ -5,7 +5,7 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from 'material-ui-next/Dialog'
-import { get } from 'lodash'
+import { get, map } from 'lodash'
 import PersonIcon from 'material-ui/svg-icons/social/person'
 import { MenuItem } from 'material-ui-next/Menu'
 import Button from 'material-ui-next/Button'
@@ -36,7 +36,7 @@ export const SharingDialog = ({
     <DialogContent>
       <h4>Current Collaborators</h4>
       {project.collaborators
-        ? project.collaborators.map((user, i) => {
+        ? map(project.collaborators, (user, i) => {
             return (
               <MenuItem key={`Collabe-${user.id}-${i}`}>
                 <PersonIcon />
@@ -62,7 +62,7 @@ export const SharingDialog = ({
       <div className={classes.search}>
         <UsersSearch
           onSuggestionClick={selectCollaborator}
-          ignoreSuggestions={project.collaborators}
+          ignoreSuggestions={map(project.collaborators, (val, key) => key)}
         />
       </div>
     </DialogContent>

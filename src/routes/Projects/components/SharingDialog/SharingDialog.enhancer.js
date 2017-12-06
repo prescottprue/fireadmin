@@ -53,24 +53,22 @@ export default compose(
       //   return showError('You must be the project owner to add a collaborator')
       // }
       const currentProject = await firestore.get(`projects/${project.id}`)
-      const promises = []
+      const collaborators = {}
+      const projectData = invoke(currentProject, 'data')
       selectedCollaborators.forEach(currentCollaborator => {
-        const currentObjectId = currentCollaborator.objectID
         if (
-          !get(
-            invoke(currentProject, 'data'),
-            `collaborators.${currentObjectId}`
-          )
+          !get(projectData, `collaborators.${currentCollaborator.objectID}`)
         ) {
-          promises.push(
-            firebase
-              .firestore()
-              .doc(`projects/${project.id}/collaborators/${currentObjectId}`)
-              .set({ permission: 'viewer', sharedAt: Date.now() })
-          )
+          collaborators[currentCollaborator.objectID] = {
+            permission: 'viewer',
+            sharedAt: Date.now()
+          }
         }
       })
-      await Promise.all(promises)
+      await firebase
+        .firestore()
+        .doc(`projects/${project.id}`)
+        .update({ collaborators })
       onRequestClose()
       showError('Collaborator added successfully')
     }

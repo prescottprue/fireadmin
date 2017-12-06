@@ -20,13 +20,15 @@ branches:
 
 cache:
   # bundler: true
+  # TODO: Use npm once functions runtime is updated to a node verion with lock files
   yarn: true
   directories:
     - node_modules # NPM packages
 
 script:
-  - npm i -g firebase-ci
-  - firebase-ci createConfig
+   # TODO: Use npm i -g once functions runtime is updated to a node verion with lock files
+  - yarn global add firebase-ci # install firebase-ci for use in creating config and deploying
+  - firebase-ci createConfig # create env specific src/config.js
   - npm run lint
   - npm run test
   - npm run build

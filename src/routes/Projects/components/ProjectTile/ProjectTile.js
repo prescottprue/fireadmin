@@ -7,7 +7,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import AddPersonIcon from 'material-ui/svg-icons/social/group-add'
 import PersonIcon from 'material-ui/svg-icons/social/person'
 import SharingDialog from '../SharingDialog'
-import { get } from 'lodash'
+import { get, map } from 'lodash'
 import moment from 'moment'
 import classes from './ProjectTile.scss'
 
@@ -42,15 +42,11 @@ export const ProjectTile = ({
       </IconButton>
       {project.collaborators ? (
         <div className="flex-row">
-          {project.collaborators.map((collab, idx) => (
+          {map(project.collaborators, (collab, collabId) => (
             <IconButton
-              key={`collab-${collab.id}-${idx}`}
+              key={`collab-${collabId}`}
               onClick={toggleSharingDialog}
-              tooltip={get(
-                users,
-                `${collab.id}.displayName`,
-                `Collab ${idx + 1}`
-              )}>
+              tooltip={get(users, `${collabId}.displayName`, 'Collaborator')}>
               <PersonIcon />
             </IconButton>
           ))}
