@@ -10,10 +10,10 @@ import * as handlers from './ProjectsPage.handlers'
 
 // TODO: Do this using populate instead once it is supported
 const populateUsers = (path, { ordered, data }) => {
-  if (!get(ordered, path, get(data, path)) && !get(data, 'users')) {
+  if (!get(ordered, path) && !get(data, 'users')) {
     return undefined
   }
-  return map(get(ordered, path, get(data, path)), project => ({
+  return map(get(ordered, path), project => ({
     ...project,
     createdBy: get(data.users, project.createdBy)
   }))

@@ -42,15 +42,11 @@ export const ProjectTile = ({
       </IconButton>
       {project.collaborators ? (
         <div className="flex-row">
-          {map(project.collaborators, (collab, idx) => (
+          {map(project.collaborators, (collab, collabId) => (
             <IconButton
-              key={`collab-${collab.id}-${idx}`}
+              key={`collab-${collabId}`}
               onClick={toggleSharingDialog}
-              tooltip={get(
-                users,
-                `${collab.id}.displayName`,
-                `Collab ${idx + 1}`
-              )}>
+              tooltip={get(users, `${collabId}.displayName`, 'Collaborator')}>
               <PersonIcon />
             </IconButton>
           ))}
