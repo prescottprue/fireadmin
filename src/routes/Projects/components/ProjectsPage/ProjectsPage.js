@@ -9,6 +9,7 @@ import classes from './ProjectsPage.scss'
 export const ProjectsPage = ({
   children,
   projects,
+  collabProjects,
   auth,
   newDialogOpen,
   toggleDialog,
@@ -31,7 +32,17 @@ export const ProjectsPage = ({
         {!isEmpty(projects) &&
           projects.map((project, ind) => (
             <ProjectTile
-              key={`${project.id}-${ind}`}
+              key={`Project-${project.id}-${ind}`}
+              project={project}
+              onCollabClick={goToCollaborator}
+              onSelect={() => goToProject(project.id)}
+              onDelete={() => deleteProject(project.id)}
+            />
+          ))}
+        {!isEmpty(collabProjects) &&
+          collabProjects.map((project, ind) => (
+            <ProjectTile
+              key={`Collab-Project-${project.id}-${ind}`}
               project={project}
               onCollabClick={goToCollaborator}
               onSelect={() => goToProject(project.id)}
@@ -46,6 +57,7 @@ ProjectsPage.propTypes = {
   children: PropTypes.object,
   auth: PropTypes.object,
   projects: PropTypes.array,
+  collabProjects: PropTypes.array,
   newDialogOpen: PropTypes.bool,
   toggleDialog: PropTypes.func,
   deleteProject: PropTypes.func,

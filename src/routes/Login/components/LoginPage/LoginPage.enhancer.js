@@ -7,7 +7,7 @@ export default compose(
   UserIsNotAuthenticated, // redirect to /projects if user is already authed
   withNotifications, // add props.showError
   firebaseConnect(), // add props.firebase
-  //  Handlers
+  // Handlers as props
   withHandlers({
     onSubmitFail: props => (formErrs, dispatch, err) =>
       props.showError(formErrs ? 'Form Invalid' : err.message || 'Error'),
