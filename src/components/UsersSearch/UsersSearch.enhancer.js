@@ -20,9 +20,9 @@ export default compose(
       filterString: ignoreIds
         .map(
           (id, index) =>
-            `${index !== 0 && index !== ignoreIds.length
-              ? 'AND '
-              : ''}NOT objectID:${id}`
+            `${
+              index !== 0 && index !== ignoreIds.length ? 'AND ' : ''
+            }NOT objectID:${id}`
         )
         .join(' ')
     }

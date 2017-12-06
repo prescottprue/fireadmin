@@ -50,13 +50,11 @@ export default class ActionsBoard extends Component {
 
   render() {
     const { connectDropTarget, isOver, canDrop, actions } = this.props
+    const classNameForActions = size(actions) ? classes.empty : ''
     return (
       <div>
         {connectDropTarget(
-          <div
-            className={`${classes.container} ${size(actions)
-              ? classes.empty
-              : ''}`}>
+          <div className={`${classes.container} ${classNameForActions}`}>
             {map(actions, (action, key) => (
               <ActionCard key={`SelectedAction-${key}`} label={action.label} />
             ))}

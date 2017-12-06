@@ -5,7 +5,7 @@ import { withHandlers, withStateHandlers } from 'recompose'
 import { firebaseConnect, getVal, firestoreConnect } from 'react-redux-firebase'
 import {
   // logProps,
-  messageWhileEmpty,
+  // messageWhileEmpty,
   spinnerWhileLoading
 } from 'utils/components'
 import { withNotifications } from 'modules/notification'
@@ -32,7 +32,7 @@ export default compose(
     )
   })),
   // logProps(['project', 'auth']),
-  messageWhileEmpty(['project']),
+  // messageWhileEmpty(['project']),
   spinnerWhileLoading(['project']),
   withNotifications,
   withStateHandlers(

@@ -1,12 +1,12 @@
 import React from 'react'
-import UsersSearch from 'components/UsersSearch'
+import ProjectPage from 'routes/Project/components/ProjectPage'
 import { shallow } from 'enzyme'
 
-describe.skip('(Component) UsersSearch', () => {
+describe.skip('(Route: Project Component) ProjectPage', () => {
   let _component
 
   beforeEach(() => {
-    _component = shallow(<UsersSearch usersSearch={{}} />)
+    _component = shallow(<ProjectPage projectPage={{}} />)
   })
 
   it('Renders div', () => {

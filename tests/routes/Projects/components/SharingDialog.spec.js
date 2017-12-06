@@ -1,12 +1,12 @@
 import React from 'react'
-import UsersSearch from 'components/UsersSearch'
+import SharingDialog from 'routes/Projects/components/SharingDialog'
 import { shallow } from 'enzyme'
 
-describe.skip('(Component) UsersSearch', () => {
+describe('(Component) SharingDialog', () => {
   let _component
 
   beforeEach(() => {
-    _component = shallow(<UsersSearch usersSearch={{}} />)
+    _component = shallow(<SharingDialog sharingDialog={{}} />)
   })
 
   it('Renders div', () => {
