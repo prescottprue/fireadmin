@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import { get, map } from 'lodash'
 import { withHandlers, withStateHandlers, pure } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
-import { LIST_PATH } from 'constants'
 import { withNotifications } from 'modules/notification'
-import { withRouter, spinnerWhileLoading, logProps } from 'utils/components'
+import { withRouter, spinnerWhileLoading } from 'utils/components'
 import { UserIsAuthenticated } from 'utils/router'
+import * as handlers from './ProjectsPage.handlers'
 
 // TODO: Do this using populate instead once it is supported
 const populateUsers = (path, { ordered, data }) => {
@@ -50,10 +50,13 @@ export default compose(
     projects: populateUsers('projects', { ordered, data }),
     collabProjects: populateUsers('collabProjects', { ordered, data })
   })),
+  // Show loading spinner while projects and collabProjects are loading
   spinnerWhileLoading(['projects', 'collabProjects']),
-  logProps(['project', 'collabProjects']),
-  withRouter, // add props.router
-  withNotifications, // add props.showError and props.showSuccess
+  // Add props.router
+  withRouter,
+  // Add props.showError and props.showSuccess
+  withNotifications,
+  // Add state and state handlers as props
   withStateHandlers(
     // Setup initial state
     ({ initialDialogOpen = false }) => ({ newDialogOpen: initialDialogOpen }),
@@ -69,45 +72,6 @@ export default compose(
     }
   ),
   // Add other handlers as props
-  withHandlers({
-    addProject: props => async newInstance => {
-      const { firestore, firebase, uid, showError, showSuccess } = props
-      if (!uid) {
-        return showError('You must be logged in to create a project')
-      }
-      try {
-        const res = await firestore.add(
-          { collection: 'projects' },
-          {
-            ...newInstance,
-            createdBy: uid,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          }
-        )
-        showSuccess('Project added successfully')
-        return res
-      } catch (err) {
-        showError(err.message || 'Could not add project')
-        throw err
-      }
-    },
-    deleteProject: props => async projectId => {
-      const { firestore, showError, showSuccess } = props
-      try {
-        await firestore.delete({ collection: 'projects', doc: projectId })
-        showSuccess('Project deleted successfully')
-      } catch (err) {
-        console.error('Error:', err) // eslint-disable-line no-console
-        showError(err.message || 'Could not add project')
-      }
-    },
-    goToProject: ({ router }) => projectId => {
-      router.push(`${LIST_PATH}/${projectId}`)
-    },
-    goToCollaborator: ({ router, showError }) => userId => {
-      showError('User pages are not yet supported!')
-      // router.push(`${USERS_PATH}/${userId}`)
-    }
-  }),
+  withHandlers(handlers),
   pure // shallow equals comparison on props (prevent unessesary re-renders)
 )
