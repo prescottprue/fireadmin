@@ -8,17 +8,36 @@
   width: 100%;
   font-weight: 400;
   padding-top: 1.5rem;
+  @include mobile {
+    padding-top: 3rem;
+  }
 }
 .panel {
   @extend .flex-column-center;
   justify-content: center;
   padding: 1.25rem;
   width: 35%;
+  @include desktop {
+    min-width: 250px;
+    min-height: 270px;
+  }
   @include mobile {
     width: 75%;
+    padding: 1rem;
   }
-  min-width: 250px;
-  min-height: 270px;
+}
+.instructions {
+  @extend .flex-row-center;
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 4rem;
+  color: $words;
+  font-weight: 300;
+  width: 75%;
+  margin-top: 3rem;
+  @include mobile {
+    width: 100%;
+  }
 }
 .or {
   margin-top: 1rem;
@@ -46,4 +65,5 @@
 }
 .providers {
   margin-top: 1rem;
+  margin-bottom: 3rem;
 }

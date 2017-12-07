@@ -80,11 +80,8 @@ export default class Navbar extends Component {
 
     const mainMenu = (
       <div className={classes.menu}>
-        <Link to={SIGNUP_PATH}>
-          <FlatButton label="Sign Up" style={buttonStyle} />
-        </Link>
         <Link to={LOGIN_PATH}>
-          <FlatButton label="Login" style={buttonStyle} />
+          <FlatButton label="Sign In" style={buttonStyle} />
         </Link>
       </div>
     )
@@ -109,7 +106,7 @@ export default class Navbar extends Component {
       <AppBar
         title={
           <Link to={authExists ? LIST_PATH : '/'} className={classes.brand}>
-            fireadmin
+            Fireadmin
           </Link>
         }
         showMenuIconButton={false}

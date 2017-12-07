@@ -1,24 +1,25 @@
 @import 'base';
 .brand {
   font-weight: 200;
-  .icon {
-    height: 50px;
-    margin-top: 7px;
-    @include mobile {
-      width: 3rem;
-      height: 3rem;
-      margin-top: 1.1rem;
-    }
-  }
+  // .icon {
+  //   height: 50px;
+  //   margin-top: 7px;
+  //   @include mobile {
+  //     // width: 3rem;
+  //     height: 3rem;
+  //     margin-top: 1.1rem;
+  //   }
+  // }
 }
 // fix button alignment
 .appBar > div {
   @extend .flex-row;
   align-items: center;
   margin-top: 0px !important;
-  @include mobile {
-    justify-content: flex-end;
-  }
+  // Move words over for icon
+  // @include mobile {
+  //   justify-content: flex-end;
+  // }
 }
 .wrapper {
   @extend .flex-row;

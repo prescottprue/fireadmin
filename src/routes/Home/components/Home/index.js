@@ -1,3 +1,4 @@
 import Home from './Home'
+import enhancer from './Home.enhancer'
 
-export default Home
+export default enhancer(Home)
