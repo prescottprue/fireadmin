@@ -25,9 +25,12 @@ cache:
   directories:
     - node_modules # NPM packages
 
-script:
-   # TODO: Use npm i -g once functions runtime is updated to a node verion with lock files
+install:
+  - yarn install
+  # TODO: Use npm i -g once functions runtime is updated to a node verion with lock files
   - yarn global add firebase-ci # install firebase-ci for use in creating config and deploying
+
+script:
   - firebase-ci createConfig # create env specific src/config.js
   - npm run lint
   - npm run test
