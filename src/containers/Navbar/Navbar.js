@@ -10,7 +10,7 @@ import DownArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import Avatar from 'material-ui/Avatar'
 import { connect } from 'react-redux'
 import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
-import { LIST_PATH, ACCOUNT_PATH, LOGIN_PATH, SIGNUP_PATH } from 'constants'
+import { LIST_PATH, ACCOUNT_PATH, LOGIN_PATH } from 'constants'
 import defaultUserImage from 'static/User.png'
 import classes from './Navbar.scss'
 

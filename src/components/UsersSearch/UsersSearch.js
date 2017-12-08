@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   InstantSearch,
+  PoweredBy,
   SearchBox,
   Panel,
   Configure
@@ -17,6 +18,9 @@ export const UsersSearch = ({ onSuggestionClick, filterString }) => (
     apiKey={algolia.apiKey}
     indexName="users">
     <SearchBox autoFocus />
+    <div className={classes.poweredBy}>
+      <PoweredBy />
+    </div>
     <div className={classes.spacer} />
     <Panel title="Users">
       <SearchResults onSuggestionClick={onSuggestionClick} />

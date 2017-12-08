@@ -37,7 +37,7 @@ export const Home = ({ goToLogin }) => (
               Don't want to run it online? Have your own features you want to
               add? The source code on is{' '}
               <a href={'https://github.com/prescottprue/fireadmin'}>
-                available on Github{' '}.
+                available on Github .
               </a>
             </p>
           </div>

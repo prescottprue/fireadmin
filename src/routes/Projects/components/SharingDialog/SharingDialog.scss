@@ -1,10 +1,12 @@
 @import 'base';
 
 .container {
-  width: 60%;
-  flex-basis: 60%;
-  flex-grow: 1;
+
+}
+.content {
+  width: 30rem !important;
+  min-height: 20rem !important;
 }
 .search {
-  margin-top: 3rem;
+  margin-top: 0rem !important;
 }

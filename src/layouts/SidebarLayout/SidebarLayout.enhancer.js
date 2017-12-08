@@ -8,7 +8,7 @@ export default compose(
     ({ initialActions = [] }) => ({
       selectedActions: initialActions,
       envDialogOpen: false,
-      drawerOpen: true
+      drawerOpen: false
     }),
     {
       addAction: ({ selectedActions }) => action => ({

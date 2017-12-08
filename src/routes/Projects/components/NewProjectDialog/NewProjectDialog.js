@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Dialog from 'material-ui/Dialog'
-import FlatButton from 'material-ui/FlatButton'
+import Button from 'material-ui-next/Button'
 import { Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
 import { required } from 'utils/form'
@@ -20,8 +20,12 @@ export const NewProjectDialog = ({
     onRequestClose={onRequestClose}
     contentClassName={classes.container}
     actions={[
-      <FlatButton label="Cancel" secondary onTouchTap={onRequestClose} />,
-      <FlatButton label="Create" primary onTouchTap={createProject} />
+      <Button color="accent" onTouchTap={onRequestClose}>
+        Cancel
+      </Button>,
+      <Button color="primary" onTouchTap={createProject}>
+        Create
+      </Button>
     ]}>
     <form onSubmit={handleSubmit} className={classes.inputs}>
       <Field

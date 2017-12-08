@@ -14,7 +14,8 @@ export default compose(
     itemIsActive: ({ router }) => value => {
       const currentParentRoute = `${LIST_PATH}/${router.params.projectId}/`
       return value === ''
-        ? router.getCurrentLocation().pathname === currentParentRoute
+        ? `${router.getCurrentLocation().pathname}/` === currentParentRoute ||
+            router.getCurrentLocation().pathname === currentParentRoute
         : router.isActive(`${currentParentRoute}${value}/`)
     }
   }),

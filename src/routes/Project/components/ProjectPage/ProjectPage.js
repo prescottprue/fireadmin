@@ -1,5 +1,5 @@
 import React, { cloneElement } from 'react'
-import { get, size } from 'lodash'
+import { size } from 'lodash'
 import PropTypes from 'prop-types'
 import SidebarLayout from 'layouts/SidebarLayout'
 import { isEmpty } from 'react-redux-firebase'
@@ -21,8 +21,8 @@ export const ProjectPage = ({ project, params, children }) => (
         </div>
         Click on the Sidebar to go to a page
       </div>
-    ) : isEmpty(project, get(project, 'environments', null)) ? (
-      <div>Project Not Found</div>
+    ) : isEmpty(project) ? (
+      <div className={classes.container}>Project Not Found</div>
     ) : (
       cloneElement(children, { project, params })
     )}
