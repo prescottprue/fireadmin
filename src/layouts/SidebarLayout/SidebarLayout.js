@@ -10,6 +10,7 @@ import Divider from 'material-ui-next/Divider'
 // import ChevronLeftIcon from 'material-ui-icons/ChevronLeft'
 // import ChevronRightIcon from 'material-ui-icons/ChevronRight'
 import LayersIcon from 'material-ui-icons/Layers'
+import HomeIcon from 'material-ui-icons/Home'
 import DeviceHubIcon from 'material-ui-icons/DeviceHub'
 import SidebarList from './SidebarList'
 
@@ -17,7 +18,7 @@ const sidebarOptions = [
   {
     value: '',
     label: 'Home',
-    iconElement: <LayersIcon />
+    iconElement: <HomeIcon />
   },
   {
     value: 'environments',

@@ -33,19 +33,21 @@ export const SharingDialog = ({
     transition={Transition}
     keepMounted>
     <DialogTitle>Sharing</DialogTitle>
-    <DialogContent>
-      <h4>Current Collaborators</h4>
-      {project.collaborators
-        ? map(project.collaborators, (user, i) => {
+    <DialogContent className={classes.content}>
+      {project.collaborators ? (
+        <div>
+          <h4>Current Collaborators</h4>
+          {map(project.collaborators, (user, i) => {
             return (
               <MenuItem key={`Collabe-${user.id}-${i}`}>
                 <PersonIcon />
                 {get(users, `${user.id}.displayName`, 'User')}
               </MenuItem>
             )
-          })
-        : null}
-      <h4>New Collaborators</h4>
+          })}
+        </div>
+      ) : null}
+      <h4>Add New Collaborators</h4>
       {selectedCollaborators.length ? (
         <div>
           {selectedCollaborators.map((user, i) => (

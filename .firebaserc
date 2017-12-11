@@ -20,6 +20,10 @@
           "userProfile": "users",
           "enableLogging": false,
           "updateProfileOnLogin": false
+        },
+        "algolia": {
+          "appId": "C0D1I0GB86",
+          "apiKey": "7327fc566154893e3834a49de6fa73c3"
         }
       },
       "prod": {
@@ -36,6 +40,10 @@
           "userProfile": "users",
           "enableLogging": false,
           "updateProfileOnLogin": false
+        },
+        "algolia": {
+          "appId": "C0D1I0GB86",
+          "apiKey": "7327fc566154893e3834a49de6fa73c3"
         }
       }
     }

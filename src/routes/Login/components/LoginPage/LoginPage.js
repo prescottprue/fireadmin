@@ -1,22 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router'
+// import { Link } from 'react-router'
 import GoogleButton from 'react-google-button'
-import { SIGNUP_PATH } from 'constants'
+import Paper from 'material-ui-next/Paper'
 
 import classes from './LoginPage.scss'
 
 export const LoginPage = ({ emailLogin, googleLogin, onSubmitFail }) => (
   <div className={classes.container}>
-    <div className={classes.providers}>
-      <GoogleButton onClick={googleLogin} />
-    </div>
-    <div className={classes.signup}>
-      <span className={classes.signupLabel}>Need an account?</span>
-      <Link className={classes.signupLink} to={SIGNUP_PATH}>
-        Sign Up
-      </Link>
-    </div>
+    <Paper className={classes.panel}>
+      <div className={classes.instructions}>
+        Click below to login using your Google Account
+      </div>
+      <div className={classes.providers}>
+        <GoogleButton onClick={googleLogin} />
+      </div>
+    </Paper>
   </div>
 )
 
