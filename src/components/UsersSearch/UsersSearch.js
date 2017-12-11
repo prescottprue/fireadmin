@@ -9,7 +9,7 @@ import {
 } from 'react-instantsearch/dom'
 import SearchResults from './SearchResults'
 import classes from './UsersSearch.scss'
-import { algolia } from '../config'
+import { algolia } from '../../config'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 
 export const UsersSearch = ({ onSuggestionClick, filterString }) => (

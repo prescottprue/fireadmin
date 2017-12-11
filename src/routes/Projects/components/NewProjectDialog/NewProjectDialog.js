@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React from 'react'
 import PropTypes from 'prop-types'
 import Dialog from 'material-ui/Dialog'
@@ -11,8 +12,8 @@ import classes from './NewProjectDialog.scss'
 export const NewProjectDialog = ({
   open,
   onRequestClose,
-  createProject,
-  handleSubmit
+  handleSubmit,
+  submit
 }) => (
   <Dialog
     title="New Project"
@@ -23,7 +24,7 @@ export const NewProjectDialog = ({
       <Button color="accent" onTouchTap={onRequestClose}>
         Cancel
       </Button>,
-      <Button color="primary" onTouchTap={createProject}>
+      <Button color="primary" onTouchTap={submit}>
         Create
       </Button>
     ]}>
@@ -41,10 +42,9 @@ export const NewProjectDialog = ({
 NewProjectDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onRequestClose: PropTypes.func.isRequired,
-  createProject: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired, // added by redux-form
-  onSubmit: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
-  submit: PropTypes.func.isRequired // eslint-disable-line react/no-unused-prop-types
+  submit: PropTypes.func.isRequired // added by redux-form
 }
 
 export default NewProjectDialog
