@@ -6253,6 +6253,13 @@ redux-auth-wrapper@^1.0.0:
     lodash.isempty "4.4.0"
     prop-types "15.5.8"
 
+redux-firestore@0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/redux-firestore/-/redux-firestore-0.2.1.tgz#9e3417983c2f1a6b9b7f2865860fe24b76866914"
+  dependencies:
+    lodash "^4.17.4"
+    prop-types "^15.6.0"
+
 redux-firestore@latest:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/redux-firestore/-/redux-firestore-0.2.0.tgz#3ac6d910970f2117c90ea3344b7efabf5324b16f"
