@@ -5,7 +5,7 @@ import MigrationMetaTile from '../MigrationMetaTile'
 export const MigrationPage = props => (
   <div>
     <h2>Data Migration</h2>
-    <div>
+    <div className="flex-row-center">
       <MigrationMetaTile {...props} />
     </div>
   </div>
