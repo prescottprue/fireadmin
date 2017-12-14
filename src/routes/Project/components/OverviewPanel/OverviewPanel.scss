@@ -1,0 +1,43 @@
+@import 'base';
+
+.container {
+  @extend .flex-column-center;
+  width: 90%;
+  padding: 1.5rem;
+
+}
+.name {
+  color: #212121;
+  font-size: 2.75rem;
+  font-weight: 300;
+  margin-bottom: 2rem;
+}
+.columns {
+  @extend .flex-row;
+  justify-content: space-between;
+  width: 70%;
+}
+.column {
+  @extend .flex-column-center;
+  justify-content: space-between;
+  min-height: 18rem;
+  &Inner {
+    @extend .flex-column-center;
+  }
+}
+.description {
+  max-width: 18rem;
+}
+.environments {
+  height: 50%;
+}
+.paper {
+  @extend .flex-column;
+  width: 100%;
+  padding: 2rem;
+  margin-bottom: 1rem;
+}
+.instances {
+  @extend .flex-row-center;
+  padding-bottom: 4rem;
+}
