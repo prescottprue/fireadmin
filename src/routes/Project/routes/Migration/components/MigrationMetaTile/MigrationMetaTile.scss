@@ -3,7 +3,7 @@
 .container {
   @extend .flex-column-center;
   padding: 1rem;
-  flex-basis: 80%;
+  width: 90%;
 }
 .button {
   margin-bottom: 2rem;

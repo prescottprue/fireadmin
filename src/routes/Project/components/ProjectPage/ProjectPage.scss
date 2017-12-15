@@ -1,13 +1,22 @@
 @import 'base';
 
 .container {
-  @extend .flex-column-center;
-  padding-top: 5rem;
+  @extend .flex-row-center;
+  padding-top: 1rem;
   margin-bottom: 4rem;
 }
+.panel {
+  @extend .flex-column-center;
+  width: 90%;
+  padding: 1.5rem;
+  &Header {
+    color: #212121;
+    font-size: 2.75rem;
+    font-weight: 300;
+  }
+}
 .empty {
-  @extend .flex-row-center;
-  padding-top: 5rem;
+  max-width: 12rem;
 }
 .paper {
   @extend .flex-column;

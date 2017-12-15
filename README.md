@@ -12,8 +12,9 @@
 
 ## Table of Contents
 1. [Features](#features)
-1. [Requirements](#requirements)
 1. [Getting Started](#getting-started)
+1. [Running Your Own](#running-your-own)
+  1. [Requirements](#requirements)
 1. [Application Structure](#application-structure)
 1. [Development](#development)
   1. [Routing](#routing)
@@ -25,17 +26,32 @@
 ## Features
 * Multiple Environments
 * Data Migrations
+* Project Sharing (invite by email coming soon)
 
-## Requirements
+*coming soon*
+
+* Set CORS Config of Storage Buckets
+* Multi Step Migrations (with mapping)
+* Custom Code For Migrations
+* Data Viewer
+* Invite new users by email
+* User manager (including role assignment)
+* "Go To Production" checklist
+
+Interested in adding a feature or contributing? Open an issue or [reach out over](https://gitter.im/firebase-admin/Lobby)
+
+## Getting Started
+
+If you are just getting started with Fireadmin, it is probably best to checkout the [hosted version at fireadmin.io](http://fireadmin.io). After you become more familiar, feel free to run your own by pulling this source and proceeding to the [run your own section](#run-your-own).
+
+### Requirements
 * node `^6.0.0` (`6.11.5` suggested)
 
 ## Running Your Own
 
- Note: A Yeoman Generator is planned to automate this process
-
-1. Install dependencies: `npm install`
+1. Install dependencies: `yarn install` (can also be done with `npm install`)
 1. Change settings in `src/config.js` and `.firebaserc` to match your own Firebase credentials
-2. Start Development server: `npm start`
+1. Start Development server: `yarn start`
 
 While developing, you will probably rely mostly on `npm start`; however, there are additional scripts at your disposal:
 
