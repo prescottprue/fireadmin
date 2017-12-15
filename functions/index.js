@@ -3,7 +3,8 @@ const admin = require('firebase-admin')
 const storageFileToRTDB = require('./dist/storageFileToRTDB').default
 const dataMigration = require('./dist/dataMigration').default
 const indexUsers = require('./dist/search').indexUsers
-// const callGoogleApi = require('./dist/callGoogleApi').default
+const callGoogleApi = require('./dist/callGoogleApi').default
+const authWithGoogle = require('./dist/authWithGoogle').default
 const copyServiceAccountToFirestore = require('./dist/copyServiceAccountToFirestore')
   .default
 
@@ -13,4 +14,5 @@ exports.dataMigration = dataMigration
 exports.copyServiceAccountToFirestore = copyServiceAccountToFirestore
 exports.storageFileToRTDB = storageFileToRTDB
 exports.indexUsers = indexUsers
-// exports.callGoogleApi = callGoogleApi
+exports.callGoogleApi = callGoogleApi
+exports.authWithGoogle = authWithGoogle
