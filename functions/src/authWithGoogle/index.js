@@ -20,7 +20,7 @@ const TOKEN_ENCRYPTION_PASSWORD = functions.config().googleapi
 export const refreshEndpoint = 'https://www.googleapis.com/oauth2/v4/token'
 
 // setup for authGoogleAPI
-const SCOPES = []
+const SCOPES = ['https://www.googleapis.com/auth/cloud-platform']
 const auth = new GoogleAuth()
 const functionsOauthClient = new auth.OAuth2(
   CONFIG_CLIENT_ID,
