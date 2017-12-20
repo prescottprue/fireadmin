@@ -154,7 +154,7 @@ config.module.rules.push(
   },
   {
     test: /\.css$/,
-    include: path.resolve('../node_modules/codemirror'),
+    include: [/node_modules\/codemirror/],
     use: ['style-loader', 'css-loader']
   }
 )

@@ -1,7 +1,7 @@
 import { LIST_PATH } from 'constants'
 
 export const addProject = props => async newInstance => {
-  const { firestore, firebase, uid, showError, showSuccess } = props
+  const { firestore, firebase, uid, showError } = props
   if (!uid) {
     return showError('You must be logged in to create a project')
   }
@@ -14,7 +14,8 @@ export const addProject = props => async newInstance => {
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }
     )
-    showSuccess('Project added successfully')
+    props.showSuccess('Project added successfully')
+    props.toggleDialog()
     return res
   } catch (err) {
     showError(err.message || 'Could not add project')

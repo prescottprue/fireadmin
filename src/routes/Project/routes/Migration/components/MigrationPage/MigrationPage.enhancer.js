@@ -28,7 +28,14 @@ export default compose(
   ),
   withHandlers({
     runMigration: props => async () => {
-      const { firebase, project, toInstance, fromInstance, copyPath } = props
+      const {
+        firebase,
+        params,
+        project,
+        toInstance,
+        fromInstance,
+        copyPath
+      } = props
       const serviceAccount1 = get(
         project,
         `environments.${fromInstance}.serviceAccount`
@@ -43,19 +50,10 @@ export default compose(
       if (!serviceAccount1 || !serviceAccount2) {
         return props.showError('Service Account Not found')
       }
-      // TODO: Use when service accounts is a subcollection on environment instead of paramert
-      // const serviceAccounts1Snap = await firebase.firestore()
-      //   .doc(`project/${params.projectId}/environments/${fromInstance}`)
-      //   .get()
-      // const serviceAccounts2Snap = await firebase.firestore()
-      //   .doc(`project/${params.projectId}/environments/${toInstance}`)
-      //   .get()
-      // if (!serviceAccounts1Snap.exists || !serviceAccounts2Snap.exists) {
-      //   return props.showError('Service Account Not found')
-      // }
       return firebase.pushWithMeta('requests/migration', {
         copyPath: copyPath || 'instances',
         dataType: 'rtdb',
+        projectId: get(params, 'projectId'),
         serviceAccountType: 'storage',
         database1URL: environment1.databaseURL,
         database2URL: environment2.databaseURL,

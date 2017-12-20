@@ -14,7 +14,14 @@ export default compose(
       editor.setOption('theme', 'monokai')
       const Firepad = require('firepad')
       const fbRef = firebase.ref(`${firebasePaths.migrations}/${projectId}`)
-      Firepad.fromCodeMirror(fbRef, editor)
+      const settings = {
+        defaultText: `// run custom code here\n// const someData = await admin.firebase.ref('some/path').once('value')`
+      }
+      try {
+        Firepad.fromCodeMirror(fbRef, editor, settings)
+      } catch (err) {
+        console.error('It threw :(') // eslint-disable-line
+      }
       // editor.setOption('lineNumbers', false)
     }
   })
