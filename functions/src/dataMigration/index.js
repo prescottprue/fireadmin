@@ -5,6 +5,8 @@ import {
 } from './utils'
 import { getAppsFromEvent } from './serviceAccounts'
 import { MIGRATION_REQUESTS_PATH } from './constants'
+import * as admin from 'firebase-admin'
+import { getFirepadContent } from './firepad'
 const functions = require('firebase-functions')
 
 /**
@@ -22,6 +24,9 @@ async function handleMigrateRequest(event) {
   const { app1, app2 } = await getAppsFromEvent(event)
   console.log('Got apps from event, running migration...')
   try {
+    const rootRef = admin.database().ref('migrations/mzYyHTZkRMKgIo4riP73')
+    const firepadContent = await getFirepadContent(rootRef)
+    console.log('Content loaded from Firepad:', firepadContent)
     await updateRequestAsStarted(event)
     await runMigrationWithApps(app1, app2, event)
   } catch (err) {
