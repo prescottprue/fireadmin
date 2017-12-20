@@ -1,3 +1,4 @@
 import MigrationEditor from './MigrationEditor'
+import enhance from './MigrationEditor.enhancer'
 
-export default MigrationEditor
+export default enhance(MigrationEditor)

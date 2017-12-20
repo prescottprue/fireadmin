@@ -6,16 +6,11 @@ describe('(Component) MigrationEditor', () => {
   let _component
 
   beforeEach(() => {
-    _component = shallow(
-      <MigrationEditor
-        migrationEditor={{}}
-      />
-    )
+    _component = shallow(<MigrationEditor migrationEditor={{}} />)
   })
 
   it('Renders div', () => {
     const firstDiv = _component.find('div')
     expect(firstDiv).to.exist
   })
-
 })

@@ -39,6 +39,7 @@ export default compose(
         `environments.${toInstance}.serviceAccount`
       )
       const environment2 = get(project, `environments.${toInstance}`)
+      // Show error notification if either service account is missing
       if (!serviceAccount1 || !serviceAccount2) {
         return props.showError('Service Account Not found')
       }
@@ -52,7 +53,6 @@ export default compose(
       // if (!serviceAccounts1Snap.exists || !serviceAccounts2Snap.exists) {
       //   return props.showError('Service Account Not found')
       // }
-      // console.log('serviceAccount1', serviceAccounts1Snap.data(), serviceAccounts2.data())
       return firebase.pushWithMeta('requests/migration', {
         copyPath: copyPath || 'instances',
         dataType: 'rtdb',
