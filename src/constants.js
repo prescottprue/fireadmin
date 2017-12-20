@@ -26,4 +26,8 @@ export const paths = {
   projectEnvironments: PROJECT_ENVIRONMENTS_PATH
 }
 
+export const firebasePaths = {
+  migrations: 'migrations'
+}
+
 export default { ...paths, ...formNames }

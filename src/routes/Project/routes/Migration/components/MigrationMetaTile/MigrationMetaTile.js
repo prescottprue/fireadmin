@@ -16,7 +16,6 @@ export const MigrationMetaTile = ({
   selectTo
 }) => (
   <Paper className={classes.container}>
-    <h2>Migration</h2>
     <div className={classes.button}>
       <Button raised color="primary" onTouchTap={runMigration}>
         Run Migration
