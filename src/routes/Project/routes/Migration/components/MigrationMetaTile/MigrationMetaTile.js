@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Button from 'material-ui-next/Button'
 import Paper from 'material-ui-next/Paper'
 import TextField from 'material-ui-next/TextField'
 import MigrationInstanceTile from '../MigrationInstanceTile'
@@ -16,11 +15,6 @@ export const MigrationMetaTile = ({
   selectTo
 }) => (
   <Paper className={classes.container}>
-    <div className={classes.button}>
-      <Button raised color="primary" onTouchTap={runMigration}>
-        Run Migration
-      </Button>
-    </div>
     <div className={classes.input}>
       <TextField label="Copy Path" onChange={setCopyPath} />
     </div>

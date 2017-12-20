@@ -1,0 +1,9 @@
+@import 'base';
+
+.container {
+
+}
+.tiles {
+  @extend .flex-row;
+  justify-content: space-between;
+}
