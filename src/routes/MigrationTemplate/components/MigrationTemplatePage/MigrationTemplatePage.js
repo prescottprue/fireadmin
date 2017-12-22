@@ -1,18 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Paper from 'material-ui-next/Paper'
+import Typography from 'material-ui-next/Typography'
 import MigrationTemplateForm from '../MigrationTemplateForm'
 import classes from './MigrationTemplatePage.scss'
 
 export const MigrationTemplatePage = ({ template, updateTemplate }) => (
   <div className={classes.container}>
-    <h1>Migration Template</h1>
-    <Paper className={classes.paper}>
-      <MigrationTemplateForm
-        onSubmit={updateTemplate}
-        initialValues={template}
-      />
-    </Paper>
+    <Typography className={classes.header}>Migration Template</Typography>
+    <MigrationTemplateForm onSubmit={updateTemplate} initialValues={template} />
   </div>
 )
 
