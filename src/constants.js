@@ -9,6 +9,7 @@ export const ACCOUNT_FORM_NAME = 'account'
 export const LOGIN_FORM_NAME = 'login'
 export const SIGNUP_FORM_NAME = 'signup'
 export const NEW_PROJECT_FORM_NAME = 'newProject'
+export const PROJECT_BUCKET_CONFIG_PATH = 'bucketConfig'
 
 export const formNames = {
   account: ACCOUNT_FORM_NAME,
@@ -23,7 +24,8 @@ export const paths = {
   signup: SIGNUP_PATH,
   dataMigration: DATA_MIGRATION_PATH,
   projectDataMigration: PROJECT_MIGRATION_PATH,
-  projectEnvironments: PROJECT_ENVIRONMENTS_PATH
+  projectEnvironments: PROJECT_ENVIRONMENTS_PATH,
+  projectBucketConfig: PROJECT_BUCKET_CONFIG_PATH
 }
 
 export default { ...paths, ...formNames }

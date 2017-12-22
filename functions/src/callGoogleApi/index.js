@@ -15,7 +15,7 @@ export default functions.database
 async function callGoogleApi(event) {
   const {
     api = 'storage',
-    body,
+    body = { cors: [{ origin: 'http://mytest.com' }] },
     accessToken,
     suffix = `b/${functions.config().firebase.storageBucket}`
   } = event
