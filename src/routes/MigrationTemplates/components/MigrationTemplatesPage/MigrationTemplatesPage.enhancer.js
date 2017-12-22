@@ -1,10 +1,9 @@
 import { compose } from 'redux'
-import { connect } from 'react-redux'
-import { firebaseConnect } from 'react-redux-firebase'
+// import { connect } from 'react-redux'
+// import { firestoreConnect } from 'react-redux-firebase'
 
-export default compose(
-  firebaseConnect(['MigrationTemplates']),
-  connect(({ firebase: { data } }) => ({
-    MigrationTemplates: data['MigrationTemplates']
-  }))
-)
+export default compose()
+// firestoreConnect([{ collection: 'migrationTemplates' }]),
+// connect(({ firebase: { ordered: { migrationTemplates } } }) => ({
+//   migrationTemplates
+// }))
