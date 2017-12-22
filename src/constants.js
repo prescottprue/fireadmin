@@ -15,7 +15,8 @@ export const formNames = {
   account: ACCOUNT_FORM_NAME,
   signup: SIGNUP_FORM_NAME,
   login: LOGIN_FORM_NAME,
-  newMigrationTemplate: 'newMigrationTemplate'
+  newMigrationTemplate: 'newMigrationTemplate',
+  migrationTemplate: 'migrationTemplate'
 }
 
 export const paths = {

@@ -10,7 +10,8 @@ export const MigrationTemplatesList = ({
   migrationTemplates,
   toggleNewDialog,
   newDialogOpen,
-  createNewMigrationTemplate
+  createNewMigrationTemplate,
+  goToTemplate
 }) => (
   <div className={classes.container}>
     <Button
@@ -22,8 +23,9 @@ export const MigrationTemplatesList = ({
     </Button>
     {map(migrationTemplates, (template, templateIdx) => (
       <MigrationTemplateListCard
-        key={`Template-${template.key}-${templateIdx}`}
+        key={`Template-${template.id}-${templateIdx}`}
         template={template}
+        onClick={() => goToTemplate(template.id)}
       />
     ))}
     <NewMigrationTemplateDialog
@@ -38,7 +40,8 @@ MigrationTemplatesList.propTypes = {
   migrationTemplates: PropTypes.array,
   toggleNewDialog: PropTypes.func.isRequired,
   createNewMigrationTemplate: PropTypes.func.isRequired,
-  newDialogOpen: PropTypes.bool.isRequired
+  newDialogOpen: PropTypes.bool.isRequired,
+  goToTemplate: PropTypes.func.isRequired
 }
 
 export default MigrationTemplatesList

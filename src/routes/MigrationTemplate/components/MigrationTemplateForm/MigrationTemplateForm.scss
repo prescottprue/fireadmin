@@ -1,0 +1,9 @@
+@import 'base';
+
+.container {
+  @extend .flex-column-center;
+}
+.buttons {
+  @extend .flex-row;
+  margin-top: 2rem;
+}

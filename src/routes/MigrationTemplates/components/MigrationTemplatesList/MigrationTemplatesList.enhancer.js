@@ -1,7 +1,7 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withStateHandlers, withHandlers } from 'recompose'
-import { firebasePaths } from 'constants'
+import { firebasePaths, paths } from 'constants'
 import { firestoreConnect } from 'react-redux-firebase'
 import { withRouter } from 'utils/components'
 import { withNotifications } from 'modules/notification'
@@ -43,6 +43,8 @@ export default compose(
         props.showError('Error deleting migration template')
         console.error('Error deleting migration template:', err.message || err) // eslint-disable-line no-console
       }
-    }
+    },
+    goToTemplate: props => id =>
+      props.router.push(`${paths.dataMigration}/${id}`)
   })
 )

@@ -12,9 +12,9 @@ export const MigrationTemplateListCard = ({
   description,
   actions,
   expanded,
-  onExpandClick
+  onClick
 }) => (
-  <Card className={classes.container}>
+  <Card className={classes.container} onClick={onClick}>
     <CardHeader
       action={
         <IconButton>
@@ -32,7 +32,7 @@ export const MigrationTemplateListCard = ({
 
 MigrationTemplateListCard.propTypes = {
   expanded: PropTypes.bool,
-  onExpandClick: PropTypes.func,
+  onClick: PropTypes.func,
   name: PropTypes.string, // from enhancer (flattenProp - template)
   description: PropTypes.string, // from enhancer (flattenProp - template)
   actions: PropTypes.object // from enhancer (flattenProp - template)
