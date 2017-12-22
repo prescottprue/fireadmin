@@ -1,6 +1,6 @@
 import CoreLayout from '../layouts/CoreLayout'
 import Home from './Home'
-import Migration from './Migration'
+import MigrationTemplates from './MigrationTemplates'
 import LoginRoute from './Login'
 import SignupRoute from './Signup'
 import ProjectsRoute from './Projects'
@@ -21,7 +21,7 @@ export const createRoutes = store => ({
     SignupRoute(store),
     ProjectsRoute(store),
     ProjectRoute(store),
-    Migration(store),
+    MigrationTemplates(store),
     /* Place all Routes above here so NotFoundRoute can act as a 404 page */
     NotFoundRoute(store)
   ]
