@@ -6,7 +6,7 @@ const environment = process.env.NODE_ENV
 let errorHandler
 
 export function init() {
-  if (environment === 'production') {
+  if (environment === 'production' && googleApis && googleApis.apiKey) {
     window.addEventListener('DOMContentLoaded', () => {
       errorHandler = new window.StackdriverErrorReporter()
       errorHandler.start({

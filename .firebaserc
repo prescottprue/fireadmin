@@ -11,10 +11,11 @@
         "env": "development",
         "firebase": {
           "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s",
-          "authDomain": "fireadmin-33d82.firebaseapp.com",
-          "databaseURL": "https://fireadmin-33d82.firebaseio.com",
-          "projectId": "fireadmin-33d82",
-          "storageBucket": "fireadmin-33d82.appspot.com"
+          "authDomain": "fireadmin-stage.firebaseapp.com",
+          "databaseURL": "https://fireadmin-stage.firebaseio.com",
+          "projectId": "fireadmin-stage",
+          "storageBucket": "fireadmin-stage.appspot.com",
+          "messagingSenderId": "566109548798"
         },
         "reduxFirebase": {
           "userProfile": "users",
@@ -24,6 +25,9 @@
         "algolia": {
           "appId": "C0D1I0GB86",
           "apiKey": "7327fc566154893e3834a49de6fa73c3"
+        },
+        "googleApis": {
+          "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s"
         }
       },
       "prod": {
@@ -44,6 +48,9 @@
         "algolia": {
           "appId": "C0D1I0GB86",
           "apiKey": "7327fc566154893e3834a49de6fa73c3"
+        },
+        "googleApis": {
+          "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s"
         }
       }
     }
