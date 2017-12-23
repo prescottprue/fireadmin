@@ -1,27 +1,18 @@
 import React from 'react'
-import Button from 'material-ui-next/Button'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
+import BucketConfigForm from '../BucketConfigForm'
 
-export const BucketConfigPage = props => (
+export const BucketConfigPage = ({ updateBucketConfig }) => (
   <div>
-    <h2>Bucket Config</h2>
+    <h2>Storage Bucket Configuration</h2>
     <div className="flex-column-center">
-      Here is where we will set config
-      <div className="flex-row-center">
-        <Button raised color="primary">
-          Get Bucket Config
-        </Button>
-        <Button raised color="primary">
-          Set Bucket Config
-        </Button>
-      </div>
-      <pre>origin: "http://somedomain.com"</pre>
+      <BucketConfigForm onSubmit={updateBucketConfig} />
     </div>
   </div>
 )
 
-// BucketConfigPage.propTypes = {
-//
-// }
+BucketConfigPage.propTypes = {
+  updateBucketConfig: PropTypes.func.isRequired // from enhancer (withHandlers)
+}
 
 export default BucketConfigPage

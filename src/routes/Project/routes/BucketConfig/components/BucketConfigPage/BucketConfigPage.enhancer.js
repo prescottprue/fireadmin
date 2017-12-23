@@ -1,8 +1,24 @@
-import { get } from 'lodash'
+import { get, invoke } from 'lodash'
 import { compose } from 'redux'
 import { withStateHandlers, withHandlers } from 'recompose'
 import { withNotifications } from 'modules/notification'
 import { withFirestore } from 'react-redux-firebase'
+
+const waitForCompleted = ref => {
+  return new Promise((resolve, reject) => {
+    ref.on(
+      'value',
+      snap => {
+        const snapVal = invoke(snap, 'val')
+        if (get(snapVal, 'complete') === true) {
+          resolve(snap)
+        }
+        console.log('on fired without having complete true:', snapVal) // eslint-disable-line no-console
+      },
+      err => reject(err)
+    )
+  })
+}
 
 export default compose(
   withFirestore,
@@ -27,41 +43,22 @@ export default compose(
     }
   ),
   withHandlers({
-    runMigration: props => async () => {
-      const { firebase, project, toInstance, fromInstance, copyPath } = props
-      const serviceAccount1 = get(
-        project,
-        `environments.${fromInstance}.serviceAccount`
-      )
-      const environment1 = get(project, `environments.${fromInstance}`)
-      const serviceAccount2 = get(
-        project,
-        `environments.${toInstance}.serviceAccount`
-      )
-      const environment2 = get(project, `environments.${toInstance}`)
-      if (!serviceAccount1 || !serviceAccount2) {
-        return props.showError('Service Account Not found')
+    updateBucketConfig: ({
+      firebase,
+      showSuccess,
+      showError
+    }) => async bucketConfig => {
+      try {
+        const pushRef = await firebase.pushWithMeta('requests/googleApi', {
+          api: 'storage',
+          body: bucketConfig
+        })
+        await waitForCompleted(pushRef)
+        showSuccess('Stoage Bucket Config Updated Successfully')
+      } catch (err) {
+        showError('Error Updating Storage Bucket Config')
+        throw err
       }
-      // TODO: Use when service accounts is a subcollection on environment instead of paramert
-      // const serviceAccounts1Snap = await firebase.firestore()
-      //   .doc(`project/${params.projectId}/environments/${fromInstance}`)
-      //   .get()
-      // const serviceAccounts2Snap = await firebase.firestore()
-      //   .doc(`project/${params.projectId}/environments/${toInstance}`)
-      //   .get()
-      // if (!serviceAccounts1Snap.exists || !serviceAccounts2Snap.exists) {
-      //   return props.showError('Service Account Not found')
-      // }
-      // console.log('serviceAccount1', serviceAccounts1Snap.data(), serviceAccounts2.data())
-      return firebase.pushWithMeta('requests/migration', {
-        copyPath: copyPath || 'instances',
-        dataType: 'rtdb',
-        serviceAccountType: 'storage',
-        database1URL: environment1.databaseURL,
-        database2URL: environment2.databaseURL,
-        serviceAccount1Path: serviceAccount1.fullPath,
-        serviceAccount2Path: serviceAccount2.fullPath
-      })
     }
   })
 )

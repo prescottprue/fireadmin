@@ -12,7 +12,7 @@ import Divider from 'material-ui-next/Divider'
 import LayersIcon from 'material-ui-icons/Layers'
 import HomeIcon from 'material-ui-icons/Home'
 import DeviceHubIcon from 'material-ui-icons/DeviceHub'
-import StorageIcon from 'material-ui-icons/Storage'
+import StorageIcon from 'material-ui-icons/Dns'
 import SidebarList from './SidebarList'
 
 const sidebarOptions = [
