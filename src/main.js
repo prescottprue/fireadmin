@@ -4,12 +4,14 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 import createStore from './store/createStore'
 import { version } from '../package.json'
 import { env } from './config'
+import { init as initErrorHandler } from './utils/errorHandler'
 import './styles/core.scss'
 
 // Window Variables
 // ------------------------------------
 window.version = version
 window.env = env
+initErrorHandler()
 
 // Store Initialization
 // ------------------------------------
@@ -17,7 +19,6 @@ const initialState = window.___INITIAL_STATE__ || {
   firebase: { authError: null }
 }
 const store = createStore(initialState)
-
 // Render Setup
 // ------------------------------------
 const MOUNT_NODE = document.getElementById('root')
