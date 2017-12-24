@@ -22,10 +22,6 @@
           "enableLogging": false,
           "updateProfileOnLogin": false
         },
-        "algolia": {
-          "appId": "C0D1I0GB86",
-          "apiKey": "7327fc566154893e3834a49de6fa73c3"
-        },
         "googleApis": {
           "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s"
         }
@@ -45,14 +41,14 @@
           "enableLogging": false,
           "updateProfileOnLogin": false
         },
-        "algolia": {
-          "appId": "C0D1I0GB86",
-          "apiKey": "7327fc566154893e3834a49de6fa73c3"
-        },
         "googleApis": {
           "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s"
         }
       }
+    },
+    "mapEnv": {
+      "ALGOLIA_PROD_ID": "algolia.app_id",
+      "ALGOLIA_PROD_KEY": "algolia.apiKey"
     }
   }
 }
