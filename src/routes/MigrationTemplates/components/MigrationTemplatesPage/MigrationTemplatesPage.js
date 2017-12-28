@@ -1,11 +1,12 @@
 import React from 'react'
 // import PropTypes from 'prop-types'
+import Typography from 'material-ui-next/Typography'
 import MigrationTemplatesList from '../MigrationTemplatesList'
 import classes from './MigrationTemplatesPage.scss'
 
 export const MigrationTemplatesPage = () => (
   <div className={classes.container}>
-    <h1>Migration Templates</h1>
+    <Typography className={classes.header}>Migration Templates</Typography>
     <MigrationTemplatesList />
   </div>
 )

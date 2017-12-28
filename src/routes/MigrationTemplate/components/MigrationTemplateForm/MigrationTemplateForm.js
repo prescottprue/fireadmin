@@ -39,11 +39,13 @@ const renderSubFields = (member, index, fields) => (
             name={`${member}.name`}
             component={TextField}
             floatingLabelText="Name"
+            className={classes.field}
           />
           <Field
             name={`${member}.description`}
             component={TextField}
             floatingLabelText="Description"
+            className={classes.field}
           />
         </Grid>
         <Grid item xs={12} lg={6}>
@@ -68,23 +70,14 @@ const renderSubFields = (member, index, fields) => (
             ))}
           </Field>
         </Grid>
-        <Grid item xs={12} lg={6}>
+        <Grid item xs={12} lg={3}>
           <h4>Source</h4>
-          <Field
-            name={`${member}.src.environment`}
-            component={TextField}
-            floatingLabelText="Environment"
-          />
-          <Field
-            name={`${member}.src.serviceAccount`}
-            component={TextField}
-            floatingLabelText="Service Account"
-          />
           <Field
             name={`${member}.src.resource`}
             component={SelectField}
             hintText="Select A Resource"
-            floatingLabelText="Resource">
+            floatingLabelText="Resource"
+            className={classes.field}>
             {resourcesOptions.map((option, idx) => (
               <MenuItem
                 key={`Option-${option.value}-${idx}`}
@@ -98,12 +91,14 @@ const renderSubFields = (member, index, fields) => (
             name={`${member}.src.path`}
             component={TextField}
             floatingLabelText="Path"
+            className={classes.field}
           />
           <Field
             name={`${member}.src.pathType`}
             component={SelectField}
             hintText="Select A Path Type"
-            floatingLabelText="Path Type">
+            floatingLabelText="Path Type"
+            className={classes.field}>
             {pathTypeOptions.map((option, idx) => (
               <MenuItem
                 key={`Option-${option.value}-${idx}`}
@@ -114,23 +109,14 @@ const renderSubFields = (member, index, fields) => (
             ))}
           </Field>
         </Grid>
-        <Grid item xs={12} lg={6}>
+        <Grid item xs={12} lg={3}>
           <h4>Destination</h4>
-          <Field
-            name={`${member}.dest.environment`}
-            component={TextField}
-            floatingLabelText="Environment"
-          />
-          <Field
-            name={`${member}.dest.serviceAccount`}
-            component={TextField}
-            floatingLabelText="Service Account"
-          />
           <Field
             name={`${member}.dest.resource`}
             component={SelectField}
             hintText="Select A Resource"
-            floatingLabelText="Resource">
+            floatingLabelText="Resource"
+            className={classes.field}>
             {resourcesOptions.map((option, idx) => (
               <MenuItem
                 key={`Option-${option.value}-${idx}`}
@@ -144,21 +130,8 @@ const renderSubFields = (member, index, fields) => (
             name={`${member}.dest.path`}
             component={TextField}
             floatingLabelText="Path"
+            className={classes.field}
           />
-          <Field
-            name={`${member}.src.pathType`}
-            component={SelectField}
-            hintText="Select A Path Type"
-            floatingLabelText="Path Type">
-            {pathTypeOptions.map((option, idx) => (
-              <MenuItem
-                key={`Option-${option.value}-${idx}`}
-                value={option.value}
-                primaryText={option.label || capitalize(option.value)}
-                disabled={option.disabled}
-              />
-            ))}
-          </Field>
         </Grid>
       </Grid>
     </ExpansionPanelDetails>
@@ -209,6 +182,12 @@ export const MigrationTemplateForm = ({
     <Paper className={classes.paper}>
       <Grid container spacing={24}>
         <Grid item xs>
+          <Field
+            name="name"
+            component={TextField}
+            floatingLabelText="Name"
+            className={classes.field}
+          />
           <Field
             name="description"
             component={TextField}

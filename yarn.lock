@@ -4811,9 +4811,9 @@ material-ui-icons@^1.0.0-beta.17:
   dependencies:
     recompose "^0.26.0"
 
-material-ui-next@^1.0.0-beta.24:
-  version "1.0.0-beta.23"
-  resolved "https://registry.yarnpkg.com/material-ui-next/-/material-ui-next-1.0.0-beta.23.tgz#fe76ac6e5fcf85eaa574c24df1c89cbffdc179db"
+material-ui-next@^1.0.0-beta.23:
+  version "1.0.0-beta.25"
+  resolved "https://registry.yarnpkg.com/material-ui-next/-/material-ui-next-1.0.0-beta.25.tgz#4d13f0b08d907e3aa49f26c89bbdcd648713fd8b"
   dependencies:
     babel-runtime "^6.26.0"
     brcast "^3.0.1"
@@ -4828,7 +4828,6 @@ material-ui-next@^1.0.0-beta.24:
     normalize-scroll-left "^0.1.2"
     prop-types "^15.6.0"
     react-event-listener "^0.5.1"
-    react-flow-types "^0.2.0-beta.6"
     react-jss "^8.1.0"
     react-popper "^0.7.4"
     react-scrollbar-size "^2.0.2"
@@ -6200,10 +6199,6 @@ react-event-listener@^0.5.0, react-event-listener@^0.5.1:
     prop-types "^15.6.0"
     warning "^3.0.0"
 
-react-flow-types@^0.2.0-beta.6:
-  version "0.2.0-beta.6"
-  resolved "https://registry.yarnpkg.com/react-flow-types/-/react-flow-types-0.2.0-beta.6.tgz#bf49c8b7864fcd0951b03286c63a80d66ce9fae4"
-
 react-google-button@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/react-google-button/-/react-google-button-0.3.0.tgz#84fc471d01be9b4a06bda3429c18cca4934079e1"
@@ -6237,13 +6232,13 @@ react-popper@^0.7.4:
     popper.js "^1.12.5"
     prop-types "^15.5.10"
 
-react-redux-firebase@^2.0.0-rc.1:
-  version "2.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/react-redux-firebase/-/react-redux-firebase-2.0.0-rc.1.tgz#92b93eba0d0a919b0d5f2e00e2430cb3e2b8eea1"
+react-redux-firebase@2.0.0-rc.2:
+  version "2.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/react-redux-firebase/-/react-redux-firebase-2.0.0-rc.2.tgz#b468e966fd150008116a5c2524a1bd5e3377a92e"
   dependencies:
     hoist-non-react-statics "^2.3.1"
     lodash "^4.17.4"
-    prop-types "^15.5.10"
+    prop-types "^15.6.0"
 
 react-redux@^5.0.4:
   version "5.0.6"

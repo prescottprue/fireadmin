@@ -35,7 +35,7 @@ MigrationTemplateListCard.propTypes = {
   onClick: PropTypes.func,
   name: PropTypes.string, // from enhancer (flattenProp - template)
   description: PropTypes.string, // from enhancer (flattenProp - template)
-  actions: PropTypes.object // from enhancer (flattenProp - template)
+  actions: PropTypes.array // from enhancer (flattenProp - template)
 }
 
 export default MigrationTemplateListCard

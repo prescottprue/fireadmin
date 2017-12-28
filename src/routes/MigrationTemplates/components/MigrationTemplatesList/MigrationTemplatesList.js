@@ -18,7 +18,7 @@ export const MigrationTemplatesList = ({
       raised
       color="primary"
       onClick={toggleNewDialog}
-      className={classes.submit}>
+      className={classes.new}>
       New Template
     </Button>
     {map(migrationTemplates, (template, templateIdx) => (

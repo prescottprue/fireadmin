@@ -26,7 +26,7 @@ export const ProjectTile = ({
         {project.name}
       </span>
       {onDelete ? (
-        <IconButton tooltip="delete" onClick={onDelete}>
+        <IconButton tooltip="Delete Project" onClick={onDelete}>
           <DeleteIcon />
         </IconButton>
       ) : null}

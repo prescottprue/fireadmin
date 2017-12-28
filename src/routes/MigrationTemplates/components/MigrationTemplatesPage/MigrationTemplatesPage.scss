@@ -1,5 +1,18 @@
 @import 'base';
 
 .container {
+  @extend .flex-column;
+  justify-content: flex-start;
   padding: 2rem;
+  padding-top: 30px;
+  flex-grow: 2;
+  box-sizing: border-box;
+  overflow-y: scroll;
+}
+
+.header {
+  color: rgba(0, 0, 0, 0.54) !important;
+  font-size: 2.25rem !important;
+  align-self: flex-start;
+  margin-bottom: 2rem !important;
 }

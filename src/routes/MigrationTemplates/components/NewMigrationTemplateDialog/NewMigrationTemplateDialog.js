@@ -16,11 +16,7 @@ export const NewMigrationTemplateDialog = ({
   pristine,
   open
 }) => (
-  <Dialog
-    open={open}
-    onRequestClose={onRequestClose}
-    className={classes.container}
-    keepMounted>
+  <Dialog open={open} onClose={onRequestClose} className={classes.container}>
     <DialogTitle>New Migration Template</DialogTitle>
     <form className={classes.container} onSubmit={handleSubmit}>
       <DialogContent className={classes.content}>

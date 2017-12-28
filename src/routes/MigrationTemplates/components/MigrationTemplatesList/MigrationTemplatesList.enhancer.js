@@ -9,10 +9,21 @@ import { withNotifications } from 'modules/notification'
 export default compose(
   withNotifications,
   withRouter,
-  firestoreConnect([{ collection: firebasePaths.migrationTemplates }]),
-  connect(({ firestore: { ordered: { migrationTemplates } } }) => ({
-    migrationTemplates
-  })),
+  firestoreConnect([
+    {
+      collection: firebasePaths.migrationTemplates,
+      where: ['public', '==', true]
+    }
+  ]),
+  connect(
+    ({
+      firestore: { ordered: { migrationTemplates } },
+      firebase: { auth: { uid } }
+    }) => ({
+      uid,
+      migrationTemplates
+    })
+  ),
   withStateHandlers(
     () => ({
       newDialogOpen: false
@@ -26,7 +37,15 @@ export default compose(
   withHandlers({
     createNewMigrationTemplate: props => async newTemplate => {
       try {
-        await props.firestore.add(firebasePaths.migrationTemplates, newTemplate)
+        const newTemplateWithMeta = {
+          ...newTemplate,
+          createdBy: props.uid,
+          createdAt: props.firestore.FieldValue.serverTimestamp()
+        }
+        await props.firestore.add(
+          firebasePaths.migrationTemplates,
+          newTemplateWithMeta
+        )
         props.toggleNewDialog()
         props.showSuccess('New migration template created successfully')
       } catch (err) {
