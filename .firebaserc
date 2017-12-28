@@ -8,9 +8,9 @@
     "createConfig": {
       "master": {
         "version": "${npm_package_version}",
-        "env": "production",
+        "env": "stage",
         "firebase": {
-          "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s",
+          "apiKey": "${STAGE_FIREBASE_API_KEY}",
           "authDomain": "fireadmin-stage.firebaseapp.com",
           "databaseURL": "https://fireadmin-stage.firebaseio.com",
           "projectId": "fireadmin-stage",
@@ -23,14 +23,14 @@
           "updateProfileOnLogin": false
         },
         "googleApis": {
-          "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s"
+          "apiKey": "${STAGE_GOOGLE_API_KEY}"
         }
       },
       "prod": {
         "version": "${npm_package_version}",
         "env": "production",
         "firebase": {
-          "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s",
+          "apiKey": "${PROD_FIREBASE_API_KEY}",
           "authDomain": "fireadmin-33d82.firebaseapp.com",
           "databaseURL": "https://fireadmin-33d82.firebaseio.com",
           "projectId": "fireadmin-33d82",
@@ -42,7 +42,7 @@
           "updateProfileOnLogin": false
         },
         "googleApis": {
-          "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s"
+          "apiKey": "${PROD_GOOGLE_API_KEY}"
         }
       }
     },
