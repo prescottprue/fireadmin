@@ -1,13 +1,5 @@
 @import 'base';
 
-.container {
-  @extend .flex-row-center;
-  padding-top: 3rem;
-}
-.header {
-  font-size: 3rem;
-  margin-bottom: 2rem;
-}
 .button {
   margin-left: 2rem;
 }

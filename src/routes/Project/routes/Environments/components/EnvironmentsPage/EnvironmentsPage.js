@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
+import Typography from 'material-ui-next/Typography'
 import Button from 'material-ui-next/Button'
 import Instance from '../Instance'
 import AddEnvironmentDialog from '../AddEnvironmentDialog'
@@ -9,7 +10,6 @@ import classesFromStyles from './EnvironmentsPage.scss'
 export const EnvironmentsPage = ({
   project,
   params,
-  classes,
   toggleDialog,
   serviceAccounts,
   selectServiceAccount,
@@ -23,7 +23,9 @@ export const EnvironmentsPage = ({
   uploadServiceAccount
 }) => (
   <div>
-    <h2>Environments</h2>
+    <Typography className={classesFromStyles.pageHeader}>
+      Environments
+    </Typography>
     <div style={{ marginBottom: '2rem' }}>
       <Button raised color="primary" onTouchTap={toggleDialog}>
         Add Environment
@@ -74,7 +76,6 @@ EnvironmentsPage.propTypes = {
   uploadServiceAccount: PropTypes.func, // from enhancer
   selectServiceAccount: PropTypes.func, // from enhancer
   toggleDialog: PropTypes.func, // from enhancer
-  classes: PropTypes.object, // from enhancer (added by withStyles)
   envDialogOpen: PropTypes.bool
 }
 
