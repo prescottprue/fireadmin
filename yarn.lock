@@ -6027,16 +6027,13 @@ react-popper@^0.7.4:
     popper.js "^1.12.5"
     prop-types "^15.5.10"
 
-react-redux-firebase@next:
-  version "2.0.0-beta.18"
-  resolved "https://registry.yarnpkg.com/react-redux-firebase/-/react-redux-firebase-2.0.0-beta.18.tgz#808388db36b29a90ebb439ac2f0276c867c7f1d6"
+react-redux-firebase@^2.0.0-rc.2:
+  version "2.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/react-redux-firebase/-/react-redux-firebase-2.0.0-rc.2.tgz#b468e966fd150008116a5c2524a1bd5e3377a92e"
   dependencies:
     hoist-non-react-statics "^2.3.1"
     lodash "^4.17.4"
-    prop-types "^15.5.10"
-    recompose "^0.26.0"
-  optionalDependencies:
-    redux-firestore latest
+    prop-types "^15.6.0"
 
 react-redux@^5.0.4:
   version "5.0.6"
@@ -6253,16 +6250,9 @@ redux-auth-wrapper@^1.0.0:
     lodash.isempty "4.4.0"
     prop-types "15.5.8"
 
-redux-firestore@0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/redux-firestore/-/redux-firestore-0.2.1.tgz#9e3417983c2f1a6b9b7f2865860fe24b76866914"
-  dependencies:
-    lodash "^4.17.4"
-    prop-types "^15.6.0"
-
-redux-firestore@latest:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/redux-firestore/-/redux-firestore-0.2.0.tgz#3ac6d910970f2117c90ea3344b7efabf5324b16f"
+redux-firestore@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/redux-firestore/-/redux-firestore-0.2.5.tgz#c0c5ffdbb8759b2a3f61d7df48d61e29d9195377"
   dependencies:
     lodash "^4.17.4"
     prop-types "^15.6.0"

@@ -48,7 +48,7 @@
     },
     "mapEnv": {
       "ALGOLIA_PROD_ID": "algolia.app_id",
-      "ALGOLIA_PROD_KEY": "algolia.apiKey"
+      "ALGOLIA_PROD_KEY": "algolia.api_key"
     }
   }
 }

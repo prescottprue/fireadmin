@@ -41,4 +41,6 @@ addons:
     repo_token: $CODE_CLIMATE
 
 after_success:
-  - firebase-ci deploy -s # deploy without CI actions since createConfig is called earlier
+  # deploy hosting, RTDB rules, firestore rules, functions, and
+  # functions config (from mapEnv settings in .firebaserc)
+  - firebase-ci deploy
