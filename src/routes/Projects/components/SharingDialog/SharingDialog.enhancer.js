@@ -4,6 +4,7 @@ import { withFirestore, withFirebase } from 'react-redux-firebase'
 import { withHandlers, withStateHandlers } from 'recompose'
 import { invoke, get } from 'lodash'
 import { withNotifications } from 'modules/notification'
+import { trackEvent } from 'utils/analytics'
 
 export default compose(
   withFirestore,
@@ -65,12 +66,17 @@ export default compose(
           }
         }
       })
-      await firebase
-        .firestore()
-        .doc(`projects/${project.id}`)
-        .update({ collaborators })
-      onRequestClose()
-      showError('Collaborator added successfully')
+      try {
+        await firebase
+          .firestore()
+          .doc(`projects/${project.id}`)
+          .update({ collaborators })
+        onRequestClose()
+        showError('Collaborator added successfully')
+        trackEvent({ category: 'Projects', action: 'Add Collaborator' })
+      } catch (err) {
+        showError('Error adding collaborator')
+      }
     }
   })
 )

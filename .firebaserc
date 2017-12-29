@@ -20,8 +20,10 @@
         "reduxFirebase": {
           "userProfile": "users",
           "enableLogging": false,
-          "updateProfileOnLogin": false
+          "updateProfileOnLogin": false,
+          "useFirestoreForProfile": true
         },
+        "analyticsTrackingId": "${GA_TRACKING_ID}",
         "googleApis": {
           "apiKey": "${STAGE_GOOGLE_API_KEY}"
         }
@@ -39,8 +41,10 @@
         "reduxFirebase": {
           "userProfile": "users",
           "enableLogging": false,
-          "updateProfileOnLogin": false
+          "updateProfileOnLogin": false,
+          "useFirestoreForProfile": true
         },
+        "analyticsTrackingId": "${GA_TRACKING_ID}",
         "googleApis": {
           "apiKey": "${PROD_GOOGLE_API_KEY}"
         }
