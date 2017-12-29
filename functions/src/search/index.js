@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 const functions = require('firebase-functions')
 // const admin = require('firebase-admin')
 
@@ -50,12 +51,23 @@ async function indexUser(event) {
 function createIndexFunc(indexName, idParam, updateProps) {
   return event => {
     const index = client.initIndex(indexName)
+    const objectID = get(event, `params.${idParam}`)
+    console.log('Event data object:', event.data)
+    // Exit when the data is deleted.
+    if (!event.data.val()) {
+      console.log(
+        `Object with ID: ${objectID} being deleted, calling delete from Algolia`
+      )
+      return index.deleteObject(objectID).then(() => {
+        console.log('Object successfully deleted from Algolia. Exiting')
+        return null
+      })
+    }
     const data = event.data.data()
+
     // const previousData = event.data.previous.data()
     // TODO: Only re-index if a prop in the update props list is changed
-    const firebaseObject = Object.assign({}, data, {
-      objectID: event.params[idParam]
-    })
+    const firebaseObject = Object.assign({}, data, { objectID })
     return index.saveObject(firebaseObject).then(algoliaResponse => {
       console.log('Object saved to Algolia successfully')
       return algoliaResponse
