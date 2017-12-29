@@ -47,8 +47,8 @@ async function indexUser(event) {
   }
 }
 
-async function createIndexFunc(indexName, idParam, updateProps) {
-  return async event => {
+function createIndexFunc(indexName, idParam, updateProps) {
+  return event => {
     const index = client.initIndex(indexName)
     const data = event.data.data()
     // const previousData = event.data.previous.data()
@@ -56,13 +56,9 @@ async function createIndexFunc(indexName, idParam, updateProps) {
     const firebaseObject = Object.assign({}, data, {
       objectID: event.params[idParam]
     })
-    try {
-      const algoliaResponse = await index.saveObject(firebaseObject)
+    return index.saveObject(firebaseObject).then(algoliaResponse => {
       console.log('Object saved to Algolia successfully')
       return algoliaResponse
-    } catch (err) {
-      console.error('Error saving object to Algolia:', err.message || err)
-      throw err
-    }
+    })
   }
 }

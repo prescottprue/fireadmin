@@ -18,7 +18,7 @@ import DeleteIcon from 'material-ui-icons/Delete'
 import classes from './MigrationTemplateForm.scss'
 
 const typeOptions = [{ value: 'copy' }, { value: 'map' }, { value: 'delete' }]
-const pathTypeOptions = [{ value: 'only' }, { value: 'all but' }]
+// const pathTypeOptions = [{ value: 'only' }, { value: 'all but' }]
 const resourcesOptions = [
   { value: 'rtdb', label: 'Real Time Database' },
   { value: 'firestore' },
@@ -93,7 +93,7 @@ const renderSubFields = (member, index, fields) => (
             floatingLabelText="Path"
             className={classes.field}
           />
-          <Field
+          {/* <Field
             name={`${member}.src.pathType`}
             component={SelectField}
             hintText="Select A Path Type"
@@ -107,7 +107,7 @@ const renderSubFields = (member, index, fields) => (
                 disabled={option.disabled}
               />
             ))}
-          </Field>
+          </Field> */}
         </Grid>
         <Grid item xs={12} lg={3}>
           <h4>Destination</h4>
@@ -159,7 +159,8 @@ export const MigrationTemplateForm = ({
   submitting,
   pristine,
   reset,
-  handleSubmit
+  handleSubmit,
+  startTemplateDelete
 }) => (
   <form className={classes.container} onSubmit={handleSubmit}>
     <div className={classes.buttons}>
@@ -177,6 +178,12 @@ export const MigrationTemplateForm = ({
         className={classes.submit}>
         Save
       </Button>
+      <IconButton
+        onClick={startTemplateDelete}
+        color="accent"
+        className={classes.submit}>
+        <DeleteIcon />
+      </IconButton>
     </div>
     <Typography className={classes.header}>Meta Data</Typography>
     <Paper className={classes.paper}>
@@ -217,6 +224,7 @@ export const MigrationTemplateForm = ({
 
 MigrationTemplateForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
+  startTemplateDelete: PropTypes.func,
   submitting: PropTypes.bool.isRequired,
   pristine: PropTypes.bool.isRequired,
   reset: PropTypes.func.isRequired
