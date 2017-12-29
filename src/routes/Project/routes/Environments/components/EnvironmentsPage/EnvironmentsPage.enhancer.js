@@ -9,6 +9,7 @@ import {
   spinnerWhileLoading
 } from 'utils/components'
 import { withNotifications } from 'modules/notification'
+import { trackEvent } from 'utils/analytics'
 
 export default compose(
   firebaseConnect(({ params }) => [`serviceAccounts/${params.projectId}`]),
@@ -95,7 +96,8 @@ export default compose(
           serviceAccount
         )
         props.toggleDialog()
-        props.showError('Project added successfully')
+        props.showError('Environment added successfully')
+        trackEvent({ category: 'Project', action: 'Add Environment' })
       } catch (err) {
         console.error('error', err) // eslint-disable-line no-console
         props.showError('Error: ', err.message || 'Could not add project')
@@ -110,6 +112,7 @@ export default compose(
           subcollections: [{ collection: 'environments', doc: environmentId }]
         })
         showError('Environment deleted successfully')
+        trackEvent({ category: 'Project', action: 'Remove Environment' })
       } catch (err) {
         console.error('error', err) // eslint-disable-line no-console
         showError('Error: ', err.message || 'Could not remove environment')
@@ -128,6 +131,7 @@ export default compose(
         )
         props.toggleDialog()
         props.showError('Environment updated successfully')
+        trackEvent({ category: 'Project', action: 'Update Environment' })
       } catch (err) {
         console.error('error', err) // eslint-disable-line no-console
         props.showError(
@@ -148,6 +152,7 @@ export default compose(
         .uploadFiles(filePath, files, `serviceAccounts/${projectId}`)
         .then(res => {
           props.selectServiceAccount(res)
+          trackEvent({ category: 'Project', action: 'Upload Service Account' })
           showError('Service Account Uploaded successfully')
         })
     }
