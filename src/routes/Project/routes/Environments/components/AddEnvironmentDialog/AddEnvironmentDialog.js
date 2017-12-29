@@ -97,5 +97,8 @@ AddEnvironmentDialog.propTypes = {
 
 export default reduxForm({
   form: 'newInstance',
+  onSubmitSuccess: (result, dispatch, props) => {
+    props.reset()
+  },
   enableReinitialize: true // Handle new/edit modal: reinitialize with other env to edit
 })(AddEnvironmentDialog)

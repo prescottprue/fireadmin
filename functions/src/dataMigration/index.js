@@ -1,8 +1,5 @@
-import {
-  runMigrationWithApps,
-  updateResponseOnRTDB,
-  updateRequestAsStarted
-} from './utils'
+import { runMigrationWithApps } from './actions'
+import { updateResponseOnRTDB, updateRequestAsStarted } from './utils'
 import { getAppsFromEvent } from './serviceAccounts'
 import { MIGRATION_REQUESTS_PATH } from './constants'
 const functions = require('firebase-functions')

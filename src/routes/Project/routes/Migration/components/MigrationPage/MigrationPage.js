@@ -112,8 +112,8 @@ export const MigrationPage = ({
 )
 
 MigrationPage.propTypes = {
-  toInstance: PropTypes.object,
-  fromInstance: PropTypes.object,
+  toInstance: PropTypes.string,
+  fromInstance: PropTypes.string,
   project: PropTypes.object,
   selectTo: PropTypes.func.isRequired,
   selectFrom: PropTypes.func.isRequired,

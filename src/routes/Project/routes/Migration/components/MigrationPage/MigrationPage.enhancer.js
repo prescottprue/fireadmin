@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, invoke } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withStateHandlers, withHandlers, withProps } from 'recompose'
@@ -66,8 +66,9 @@ export default compose(
         project,
         toInstance,
         fromInstance,
-        // selectedTemplate,
-        copyPath
+        selectedTemplate,
+        showSuccess,
+        showError
       } = props
       const serviceAccount1 = get(
         project,
@@ -83,16 +84,40 @@ export default compose(
       if (!serviceAccount1 || !serviceAccount2) {
         return props.showError('Service Account Not found')
       }
-      return firebase.pushWithMeta('requests/migration', {
-        copyPath: copyPath || 'instances',
-        dataType: 'rtdb',
-        projectId: get(params, 'projectId'),
-        serviceAccountType: 'storage',
-        database1URL: environment1.databaseURL,
-        database2URL: environment2.databaseURL,
-        serviceAccount1Path: serviceAccount1.fullPath,
-        serviceAccount2Path: serviceAccount2.fullPath
-      })
+      try {
+        // Push request to real time database
+        const pushRes = await firebase.pushWithMeta('requests/migration', {
+          projectId: get(params, 'projectId'),
+          serviceAccountType: 'storage',
+          database1URL: environment1.databaseURL,
+          database2URL: environment2.databaseURL,
+          serviceAccount1Path: serviceAccount1.fullPath,
+          serviceAccount2Path: serviceAccount2.fullPath,
+          ...selectedTemplate
+        })
+        const pushKey = pushRes.key
+        // TODO: Add watcher for progress
+        // wait for response to be set (set by data migraiton function
+        // after migration is complete)
+        await new Promise((resolve, reject) => {
+          firebase.ref(`responses/migration/${pushKey}`).on(
+            'value',
+            snap => {
+              const refVal = invoke(snap, 'val')
+              if (refVal) {
+                resolve(refVal)
+              }
+            },
+            err => {
+              reject(err)
+            }
+          )
+        })
+        showSuccess('Migration complete!')
+        return pushKey
+      } catch (err) {
+        showError('Error with migration request')
+      }
     }
   }),
   withProps(({ selectedTemplate }) => ({
