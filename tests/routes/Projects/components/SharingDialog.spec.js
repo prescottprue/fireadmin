@@ -2,7 +2,7 @@ import React from 'react'
 import SharingDialog from 'routes/Projects/components/SharingDialog'
 import { shallow } from 'enzyme'
 
-describe('(Component) SharingDialog', () => {
+describe.skip('(Route: Projects Component) SharingDialog', () => {
   let _component
 
   beforeEach(() => {

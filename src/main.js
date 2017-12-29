@@ -4,14 +4,14 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 import createStore from './store/createStore'
 import { version } from '../package.json'
 import { env } from './config'
-import { init as initErrorHandler } from './utils/errorHandler'
+import { initScripts } from './utils'
 import './styles/core.scss'
 
 // Window Variables
 // ------------------------------------
 window.version = version
 window.env = env
-initErrorHandler()
+initScripts()
 
 // Store Initialization
 // ------------------------------------

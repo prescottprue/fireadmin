@@ -6199,6 +6199,16 @@ react-event-listener@^0.5.0, react-event-listener@^0.5.1:
     prop-types "^15.6.0"
     warning "^3.0.0"
 
+react-flow-types@0.2.0-beta.3:
+  version "0.2.0-beta.3"
+  resolved "https://registry.yarnpkg.com/react-flow-types/-/react-flow-types-0.2.0-beta.3.tgz#93e7e3c95a75a1a941de05b9d7287e3ca6871046"
+
+react-ga@^2.3.5:
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-2.3.5.tgz#7c3d0c530b2bbe64ceb1faa79be340685aa84a9a"
+  dependencies:
+    object-assign "^4.1.1"
+
 react-google-button@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/react-google-button/-/react-google-button-0.3.0.tgz#84fc471d01be9b4a06bda3429c18cca4934079e1"
@@ -6232,7 +6242,7 @@ react-popper@^0.7.4:
     popper.js "^1.12.5"
     prop-types "^15.5.10"
 
-react-redux-firebase@2.0.0-rc.2:
+react-redux-firebase@^2.0.0-rc.2:
   version "2.0.0-rc.2"
   resolved "https://registry.yarnpkg.com/react-redux-firebase/-/react-redux-firebase-2.0.0-rc.2.tgz#b468e966fd150008116a5c2524a1bd5e3377a92e"
   dependencies:
@@ -6455,7 +6465,7 @@ redux-auth-wrapper@^1.0.0:
     lodash.isempty "4.4.0"
     prop-types "15.5.8"
 
-redux-firestore@latest:
+redux-firestore@^0.2.5:
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/redux-firestore/-/redux-firestore-0.2.5.tgz#c0c5ffdbb8759b2a3f61d7df48d61e29d9195377"
   dependencies:
