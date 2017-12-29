@@ -17,6 +17,10 @@ exports.indexUsers = functions.firestore
   .document('/users/{userId}')
   .onWrite(indexUser)
 
+exports.indexMigrationTemplates = functions.firestore
+  .document('/migrationTemplates/{templateId}')
+  .onWrite(createIndexFunc('migrationTemplates', 'templateId'))
+
 async function indexUser(event) {
   const index = client.initIndex(ALGOLIA_POSTS_INDEX_NAME)
   const data = event.data.data()
@@ -40,5 +44,25 @@ async function indexUser(event) {
   } catch (err) {
     console.error('Error saving object to Algolia:', err.message || err)
     throw err
+  }
+}
+
+async function createIndexFunc(indexName, idParam, updateProps) {
+  return async event => {
+    const index = client.initIndex(indexName)
+    const data = event.data.data()
+    // const previousData = event.data.previous.data()
+    // TODO: Only re-index if a prop in the update props list is changed
+    const firebaseObject = Object.assign({}, data, {
+      objectID: event.params[idParam]
+    })
+    try {
+      const algoliaResponse = await index.saveObject(firebaseObject)
+      console.log('Object saved to Algolia successfully')
+      return algoliaResponse
+    } catch (err) {
+      console.error('Error saving object to Algolia:', err.message || err)
+      throw err
+    }
   }
 }

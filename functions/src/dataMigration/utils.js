@@ -2,8 +2,11 @@ import * as admin from 'firebase-admin'
 import path from 'path'
 import fs from 'fs'
 import os from 'os'
+import safeEval from 'safe-eval'
 import { invoke, get } from 'lodash'
-import { MIGRATION_RESPONSES_PATH } from './constants'
+import { MIGRATION_RESPONSES_PATH, MIGRATION_MAPPING_PATH } from './constants'
+import { getFirepadContent } from './firepad'
+const functions = require('firebase-functions')
 
 /**
  * Data migration using Service account stored on Firestore
@@ -14,7 +17,7 @@ import { MIGRATION_RESPONSES_PATH } from './constants'
  * @return {Promise}
  */
 export async function runMigrationWithApps(app1, app2, event) {
-  const { dataType = 'firestore' } = event.data.val()
+  const { dataType = 'firestore', projectId } = event.data.val()
   switch (dataType) {
     case 'firestore':
       await copyBetweenFirestoreInstances(app1, app2, event)
@@ -22,6 +25,24 @@ export async function runMigrationWithApps(app1, app2, event) {
     case 'rtdb':
       await copyBetweenRTDBInstances(app1, app2, event)
       break
+    case 'custom':
+      const eventData = event.data.val()
+      const mappingPath = `${MIGRATION_MAPPING_PATH}/${projectId}`
+      console.log(
+        'Data backup complete. Looking for custom mapping...',
+        mappingPath
+      )
+      const rootRef = admin.database().ref(mappingPath)
+      const firepadContent = await getFirepadContent(rootRef)
+      if (!firepadContent) {
+        console.log('Custom mapping not found. Skipping.')
+        return eventData
+      }
+      console.log(
+        'Content loaded from Firepad. Evaluating within function context...'
+      )
+      const evalContext = { console, functions, admin }
+      return safeEval(firepadContent, evalContext)
     default:
       throw new Error(
         'Data type not supported. Try firestore, rtdb, or storage'

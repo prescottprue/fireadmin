@@ -1,17 +1,39 @@
 import { get } from 'lodash'
 import { compose } from 'redux'
-import { withStateHandlers, withHandlers } from 'recompose'
+import { connect } from 'react-redux'
+import { withStateHandlers, withHandlers, withProps } from 'recompose'
 import { withNotifications } from 'modules/notification'
-import { withFirestore } from 'react-redux-firebase'
+import { firebaseConnect, firestoreConnect, getVal } from 'react-redux-firebase'
 
 export default compose(
-  withFirestore,
   withNotifications,
+  firebaseConnect(({ params }) => [`serviceAccounts/${params.projectId}`]),
+  firestoreConnect(({ params }) => [
+    {
+      collection: 'projects',
+      doc: params.projectId,
+      subcollections: [{ collection: 'environments' }]
+    },
+    {
+      collection: 'projects',
+      doc: params.projectId
+    }
+  ]),
+  connect(({ firebase, firestore: { data } }, { params }) => ({
+    auth: firebase.auth,
+    project: get(data, `projects.${params.projectId}`),
+    serviceAccounts: getVal(
+      firebase,
+      `data/serviceAccounts/${params.projectId}`
+    )
+  })),
   withStateHandlers(
     ({ initialSelected = null }) => ({
       fromInstance: initialSelected,
       toInstance: initialSelected,
+      templateEditExpanded: true,
       copyPath: null,
+      configExpanded: true,
       instances: null
     }),
     {
@@ -20,6 +42,16 @@ export default compose(
       }),
       selectTo: ({ selectInstance }) => (e, ind, newSelected) => ({
         toInstance: newSelected
+      }),
+      toggleTemplateEdit: ({ templateEditExpanded }) => () => ({
+        templateEditExpanded: !templateEditExpanded
+      }),
+      toggleConfig: ({ templateEditExpanded }) => () => ({
+        configExpanded: !templateEditExpanded
+      }),
+      selectMigrationTemplate: ({ selectInstance }) => newSelectedTemplate => ({
+        selectedTemplate: newSelectedTemplate,
+        templateEditExpanded: false
       }),
       setCopyPath: ({ copyPath }) => e => ({
         copyPath: e.target.value
@@ -34,6 +66,7 @@ export default compose(
         project,
         toInstance,
         fromInstance,
+        // selectedTemplate,
         copyPath
       } = props
       const serviceAccount1 = get(
@@ -61,5 +94,10 @@ export default compose(
         serviceAccount2Path: serviceAccount2.fullPath
       })
     }
-  })
+  }),
+  withProps(({ selectedTemplate }) => ({
+    templateName: selectedTemplate
+      ? `Template: ${get(selectedTemplate, 'name', '')}`
+      : 'Template'
+  }))
 )
