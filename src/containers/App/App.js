@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { browserHistory, Router } from 'react-router'
 import { Provider } from 'react-redux'
 import { withContext } from 'recompose'
+import { handleRouteUpdate } from 'utils/router'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui-next/styles'
 
 // Themeing/Styling
@@ -14,7 +15,9 @@ const theme = createMuiTheme(Theme)
 const App = ({ routes, store }) => (
   <Provider store={store}>
     <MuiThemeProvider theme={theme}>
-      <Router history={browserHistory}>{routes}</Router>
+      <Router history={browserHistory} onUpdate={handleRouteUpdate}>
+        {routes}
+      </Router>
     </MuiThemeProvider>
   </Provider>
 )

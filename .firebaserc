@@ -20,10 +20,16 @@
         "reduxFirebase": {
           "userProfile": "users",
           "enableLogging": false,
-          "updateProfileOnLogin": false
+          "updateProfileOnLogin": false,
+          "useFirestoreForProfile": true
         },
+        "analyticsTrackingId": "${GA_TRACKING_ID}",
         "googleApis": {
           "apiKey": "${STAGE_GOOGLE_API_KEY}"
+        },
+        "algolia": {
+          "appId": "${STAGE_ALGOLIA_APP_ID}",
+          "apiKey": "${STAGE_ALGOLIA_BROWSER_KEY}"
         }
       },
       "prod": {
@@ -39,16 +45,18 @@
         "reduxFirebase": {
           "userProfile": "users",
           "enableLogging": false,
-          "updateProfileOnLogin": false
+          "updateProfileOnLogin": false,
+          "useFirestoreForProfile": true
         },
+        "analyticsTrackingId": "${GA_TRACKING_ID}",
         "googleApis": {
           "apiKey": "${PROD_GOOGLE_API_KEY}"
+        },
+        "algolia": {
+          "appId": "${PROD_ALGOLIA_APP_ID}",
+          "apiKey": "${PROD_ALGOLIA_BROWSER_KEY}"
         }
       }
-    },
-    "mapEnv": {
-      "ALGOLIA_PROD_ID": "algolia.app_id",
-      "ALGOLIA_PROD_KEY": "algolia.api_key"
     }
   }
 }
