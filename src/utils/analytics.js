@@ -14,18 +14,16 @@ export const initGA = () => {
 }
 
 export const trackEvent = settings => {
-  if (analyticsTrackingId) {
+  if (analyticsTrackingId && env === 'prod') {
     ReactGA.event(settings)
   } else {
-    console.debug('Analytics event:', settings) // eslint-disable-line no-console
+    console.debug('Analytics Event:', settings) // eslint-disable-line no-console
   }
 }
 
 export const setGAUser = auth => {
   if (auth && auth.uid) {
-    ReactGA.set({
-      userId: auth.uid
-    })
+    ReactGA.set({ userId: auth.uid })
   }
 }
 
