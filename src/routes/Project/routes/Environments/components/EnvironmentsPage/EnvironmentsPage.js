@@ -18,6 +18,7 @@ export const EnvironmentsPage = ({
   toggleDialogWithData,
   envDialogOpen,
   addEnvironment,
+  selectedServiceAccount,
   updateEnvironment,
   removeEnvironment,
   uploadServiceAccount
@@ -57,6 +58,7 @@ export const EnvironmentsPage = ({
       onSubmit={selectedInstance ? updateEnvironment : addEnvironment}
       onRequestClose={toggleDialog}
       selectedAccounts={selectedAccounts}
+      selectedServiceAccount={selectedServiceAccount}
       onAccountClick={selectServiceAccount}
       serviceAccounts={serviceAccounts}
     />
@@ -75,6 +77,7 @@ EnvironmentsPage.propTypes = {
   removeEnvironment: PropTypes.func, // from enhancer
   uploadServiceAccount: PropTypes.func, // from enhancer
   selectServiceAccount: PropTypes.func, // from enhancer
+  selectedServiceAccount: PropTypes.string, // from enhancer
   toggleDialog: PropTypes.func, // from enhancer
   envDialogOpen: PropTypes.bool
 }

@@ -53,9 +53,16 @@ export default compose(
         selectedInstance: null,
         selectedKey: null
       }),
-      selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => ({
-        selectedServiceAccount: pickedAccount
-      })
+      selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => {
+        if (selectedServiceAccount === pickedAccount) {
+          return {
+            selectedServiceAccount: null
+          }
+        }
+        return {
+          selectedServiceAccount: pickedAccount
+        }
+      }
     }
   ),
   withHandlers({

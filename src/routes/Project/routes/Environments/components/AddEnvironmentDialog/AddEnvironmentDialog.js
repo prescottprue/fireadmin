@@ -17,7 +17,7 @@ export const AddEnvironmentDialog = ({
   pristine,
   isEditing,
   serviceAccounts,
-  selectedAccounts,
+  selectedServiceAccount,
   onRequestClose,
   initialValues,
   onAccountClick,
@@ -65,7 +65,7 @@ export const AddEnvironmentDialog = ({
         {serviceAccounts ? (
           <ServiceAccounts
             serviceAccounts={serviceAccounts}
-            selectedAccounts={selectedAccounts}
+            selectedAccountKey={selectedServiceAccount}
             onAccountClick={onAccountClick}
           />
         ) : (
@@ -82,7 +82,7 @@ export const AddEnvironmentDialog = ({
 
 AddEnvironmentDialog.propTypes = {
   serviceAccounts: PropTypes.object,
-  selectedAccounts: PropTypes.object,
+  selectedServiceAccount: PropTypes.string,
   onRequestClose: PropTypes.func,
   onAccountClick: PropTypes.func,
   onFilesDrop: PropTypes.func.isRequired,
