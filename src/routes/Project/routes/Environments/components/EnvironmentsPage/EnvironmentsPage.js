@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { map } from 'lodash'
 import Typography from 'material-ui-next/Typography'
 import Button from 'material-ui-next/Button'
+import Paper from 'material-ui-next/Paper'
 import Instance from '../Instance'
 import AddEnvironmentDialog from '../AddEnvironmentDialog'
 import classesFromStyles from './EnvironmentsPage.scss'
@@ -47,7 +48,19 @@ export const EnvironmentsPage = ({
           </div>
         </div>
       ) : (
-        <span>No Environments</span>
+        <Paper className={classesFromStyles.paper}>
+          <Typography className={classesFromStyles.paragraph}>
+            An environment is a Firebase project for a specific phase of your
+            project (such as "development" or "production"). Multiple
+            environments allow for testing code in a "sandbox" before releasing
+            it to the world. Most Real World Production applications leverage
+            many environment.
+          </Typography>
+          <Typography className={classesFromStyles.paragraph}>
+            Create an environment within your project by clicking the "Add
+            Environment" button above
+          </Typography>
+        </Paper>
       )}
     </div>
     <AddEnvironmentDialog

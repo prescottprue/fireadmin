@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { List, ListItem } from 'material-ui/List'
+import { List, ListItem } from 'material-ui-next/List'
 import classes from './ProviderDataForm.scss'
-import AccountCircle from 'material-ui/svg-icons/action/account-circle'
+import AccountCircle from 'material-ui-icons/AccountCircle'
 
 export const ProviderData = ({ providerData }) => (
   <div className={classes.container}>

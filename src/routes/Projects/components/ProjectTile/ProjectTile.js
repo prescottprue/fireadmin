@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Paper from 'material-ui-next/Paper'
-import IconButton from 'material-ui/IconButton'
+import Tooltip from 'material-ui-next/Tooltip'
+import IconButton from 'material-ui-next/IconButton'
 // import Button from 'material-ui-next/Button'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import AddPersonIcon from 'material-ui/svg-icons/social/group-add'
-import PersonIcon from 'material-ui/svg-icons/social/person'
+import DeleteIcon from 'material-ui-icons/Delete'
+import AddPersonIcon from 'material-ui-icons/GroupAdd'
+import PersonIcon from 'material-ui-icons/Person'
 import SharingDialog from '../SharingDialog'
 import { get, map } from 'lodash'
 import moment from 'moment'
@@ -26,9 +27,11 @@ export const ProjectTile = ({
         {project.name}
       </span>
       {onDelete ? (
-        <IconButton tooltip="Delete Project" onClick={onDelete}>
-          <DeleteIcon />
-        </IconButton>
+        <Tooltip title="Delete Project">
+          <IconButton onClick={onDelete}>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
       ) : null}
     </div>
     {project.createdAt ? (
@@ -37,18 +40,21 @@ export const ProjectTile = ({
       </span>
     ) : null}
     <div className="flex-column">
-      <IconButton onClick={toggleSharingDialog} tooltip="Add Collaborators">
-        <AddPersonIcon />
-      </IconButton>
+      <Tooltip title="Add Collaborators">
+        <IconButton onClick={toggleSharingDialog}>
+          <AddPersonIcon />
+        </IconButton>
+      </Tooltip>
       {project.collaborators ? (
         <div className="flex-row">
           {map(project.collaborators, (collab, collabId) => (
-            <IconButton
+            <Tooltip
               key={`collab-${collabId}`}
-              onClick={toggleSharingDialog}
-              tooltip={get(users, `${collabId}.displayName`, 'Collaborator')}>
-              <PersonIcon />
-            </IconButton>
+              title={get(users, `${collabId}.displayName`, 'Collaborator')}>
+              <IconButton onClick={toggleSharingDialog}>
+                <PersonIcon />
+              </IconButton>
+            </Tooltip>
           ))}
         </div>
       ) : null}

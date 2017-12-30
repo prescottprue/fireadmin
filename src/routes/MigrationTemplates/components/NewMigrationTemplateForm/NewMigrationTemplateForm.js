@@ -9,7 +9,12 @@ export const NewMigrationTemplateForm = () => (
     <Grid container spacing={24} style={{ flexGrow: 1 }}>
       <Grid item xs={12} lg={3}>
         <Field name="name" component={TextField} floatingLabelText="Name" />
-        <Field name="public" component={Toggle} label="Public" />
+        <Field
+          name="public"
+          component={Toggle}
+          defaultValue={false}
+          label="Public"
+        />
         <Field
           name="description"
           component={TextField}

@@ -1,54 +1,58 @@
-import { get } from 'lodash'
+import { get, isFunction, invoke } from 'lodash'
 const functions = require('firebase-functions')
-// const admin = require('firebase-admin')
+const algoliasearch = require('algoliasearch')
 
 // Authenticate to Algolia Database.
-// TODO: Make sure you configure the `algolia.app_id` and `algolia.api_key` Google Cloud environment variables.
-const algoliasearch = require('algoliasearch')
+// TODO: Make sure you configure the `algolia.app_id` and `algolia.api_key`
+// Google Cloud environment variables.
 const client = algoliasearch(
   functions.config().algolia.app_id,
   functions.config().algolia.api_key
 )
 
-// Name fo the algolia index for Blog posts content.
-const ALGOLIA_POSTS_INDEX_NAME = 'users'
+// Updates the search index when users are created or displayName is updated
+exports.indexUsers = functions.firestore.document('/users/{userId}').onWrite(
+  createIndexFunc({
+    indexName: 'users',
+    idParam: 'userId',
+    indexCondition: (user, data) => {
+      const previousData = invoke(data, 'previous.data')
+      const nameChanged =
+        get(user, 'displayName') !== get(previousData, 'displayName')
+      if (nameChanged) {
+        console.log('Display name changed re-indexing...')
+      } else {
+        console.log(
+          'Display name did not change, no reason to re-index. Exiting...'
+        )
+      }
+      return nameChanged
+    }
+  })
+)
 
-// Updates the search index when new blog entries are created or updated.
-exports.indexUsers = functions.firestore
-  .document('/users/{userId}')
-  .onWrite(indexUser)
-
+// Updates the search index for migration templates when template is created or updated.
 exports.indexMigrationTemplates = functions.firestore
   .document('/migrationTemplates/{templateId}')
-  .onWrite(createIndexFunc('migrationTemplates', 'templateId'))
+  .onWrite(
+    // index migration templates with parameter templateId only if template is public
+    createIndexFunc({
+      indexName: 'migrationTemplates',
+      idParam: 'templateId',
+      indexCondition: template => template.public
+    })
+  )
 
-async function indexUser(event) {
-  const index = client.initIndex(ALGOLIA_POSTS_INDEX_NAME)
-  const data = event.data.data()
-  const previousData = event.data.previous.data()
-
-  // We'll only update if the displayName has changed.
-  if (data.displayName === previousData.displayName) {
-    console.log(
-      'Display name did not change, no reason to re-index. Exiting...'
-    )
-    return
-  }
-
-  const firebaseObject = Object.assign({}, data, {
-    objectID: event.params.userId
-  })
-  try {
-    const algoliaResponse = await index.saveObject(firebaseObject)
-    console.log('Object saved to Algolia successfully')
-    return algoliaResponse
-  } catch (err) {
-    console.error('Error saving object to Algolia:', err.message || err)
-    throw err
-  }
-}
-
-function createIndexFunc(indexName, idParam, updateProps) {
+/**
+ * Creates a function indexs item within Algolia from a function event.
+ * @param  {String} indexName - name of Algolia index under which to place item
+ * @param  {String} idParam - Parameter which contains id
+ * @param  {Function} indexCondition - Function that decides conditions under
+ * which item is index. If provided, it must return truthy in order for item
+ * to be indexed.
+ * @return {Function} Cloud Function event handler function
+ */
+function createIndexFunc({ indexName, idParam, indexCondition }) {
   return event => {
     const index = client.initIndex(indexName)
     const objectID = get(event, `params.${idParam}`)
@@ -64,9 +68,16 @@ function createIndexFunc(indexName, idParam, updateProps) {
         return null
       })
     }
-    // const previousData = event.data.previous.data()
-    // TODO: Only re-index if a prop in the update props list is changed
     const data = event.data.data()
+    // Check if index indexCondition is a function
+    if (isFunction(indexCondition)) {
+      // Only re-index if indexCondition function returns truthy
+      if (!indexCondition(data, event.data)) {
+        console.log('Item index indexCondition provided and not met. Exiting.')
+        return null
+      }
+      console.log('Item index indexCondition provided met. Indexing item.')
+    }
     const firebaseObject = Object.assign({}, data, { objectID })
     return index.saveObject(firebaseObject).then(algoliaResponse => {
       console.log(

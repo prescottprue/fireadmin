@@ -52,6 +52,7 @@ export default compose(
     createNewMigrationTemplate: props => async newTemplate => {
       try {
         const newTemplateWithMeta = {
+          public: false,
           ...newTemplate,
           createdBy: props.uid,
           createdAt: props.firestore.FieldValue.serverTimestamp()
