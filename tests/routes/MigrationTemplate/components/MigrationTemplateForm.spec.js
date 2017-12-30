@@ -1,8 +1,8 @@
 import React from 'react'
-import MigrationTemplateForm from 'components/MigrationTemplateForm'
+import MigrationTemplateForm from 'routes/MigrationTemplate/components/MigrationTemplateForm'
 import { shallow } from 'enzyme'
 
-describe('(Component) MigrationTemplateForm', () => {
+describe('(Route: MigrationTemplate Component) MigrationTemplateForm', () => {
   let _component
 
   beforeEach(() => {

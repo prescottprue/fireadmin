@@ -1,8 +1,8 @@
 import React from 'react'
-import MigrationEditor from 'components/MigrationEditor'
+import MigrationEditor from 'routes/MigrationTemplate/components/MigrationEditor'
 import { shallow } from 'enzyme'
 
-describe('(Component) MigrationEditor', () => {
+describe('(Route: MigrationTemplate Component) MigrationEditor', () => {
   let _component
 
   beforeEach(() => {

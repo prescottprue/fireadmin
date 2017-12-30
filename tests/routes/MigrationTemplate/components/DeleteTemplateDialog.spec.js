@@ -1,8 +1,8 @@
 import React from 'react'
-import DeleteTemplateDialog from 'components/DeleteTemplateDialog'
+import DeleteTemplateDialog from 'routes/MigrationTemplate/components/DeleteTemplateDialog'
 import { shallow } from 'enzyme'
 
-describe('(Component) DeleteTemplateDialog', () => {
+describe('(Route: MigrationTemplate Component) DeleteTemplateDialog', () => {
   let _component
 
   beforeEach(() => {

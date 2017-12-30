@@ -16,6 +16,7 @@ export const MigrationTemplatePage = ({
   deleteTemplate,
   startTemplateDelete,
   deleteDialogOpen,
+  params,
   toggleDeleteDialog
 }) => (
   <div className={classes.container}>
@@ -30,6 +31,7 @@ export const MigrationTemplatePage = ({
     <MigrationTemplateForm
       onSubmit={updateTemplate}
       initialValues={template}
+      templateId={params.templateId}
       startTemplateDelete={startTemplateDelete}
     />
     <DeleteTemplateDialog
@@ -42,6 +44,7 @@ export const MigrationTemplatePage = ({
 
 MigrationTemplatePage.propTypes = {
   template: PropTypes.object,
+  params: PropTypes.object.isRequired,
   deleteTemplate: PropTypes.func.isRequired,
   startTemplateDelete: PropTypes.func.isRequired,
   deleteDialogOpen: PropTypes.bool.isRequired,

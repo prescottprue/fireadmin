@@ -2,7 +2,6 @@ import { compose } from 'redux'
 import { withHandlers } from 'recompose'
 import { withFirebase } from 'react-redux-firebase'
 import { invoke } from 'lodash'
-import { firebasePaths } from 'constants'
 import CodeMirror from 'codemirror'
 import { getCodeMirror } from './MigrationEditor.utils'
 
@@ -11,7 +10,10 @@ let firepadEditor
 export default compose(
   withFirebase,
   withHandlers({
-    setupEditor: ({ firebase, params: { projectId } }) => el => {
+    setupEditor: ({ firebase, rtdbPath }) => el => {
+      if (!rtdbPath) {
+        throw new Error('Real Time DB path required to make editor')
+      }
       // Called when unmounting
       if (el === null) {
         // Dispose of firepad instance
@@ -21,7 +23,7 @@ export default compose(
       const editor = getCodeMirror(el, doc)
       editor.setOption('theme', 'monokai')
       const Firepad = require('firepad')
-      const fbRef = firebase.ref(`${firebasePaths.migrations}/${projectId}`)
+      const fbRef = firebase.ref(rtdbPath)
       const settings = {
         defaultText: `// run custom code here\n// const someData = await admin.firebase.ref('some/path').once('value')`
       }
