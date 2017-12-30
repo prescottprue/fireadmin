@@ -3,25 +3,39 @@ import { connect } from 'react-redux'
 import { withStateHandlers, withHandlers } from 'recompose'
 import { firebasePaths, paths } from 'constants'
 import { firestoreConnect } from 'react-redux-firebase'
-import { withRouter } from 'utils/components'
+import { spinnerWhileLoading, withRouter } from 'utils/components'
 import { withNotifications } from 'modules/notification'
 
 export default compose(
   withNotifications,
   withRouter,
-  firestoreConnect([
+  // Map auth uid from state to props
+  connect(({ firebase: { auth: { uid } } }) => ({ uid })),
+  // Wait for uid to exist before going further
+  spinnerWhileLoading(['uid']),
+  // Set listeners for Firestore
+  firestoreConnect(({ uid }) => [
     {
       collection: firebasePaths.migrationTemplates,
-      where: ['public', '==', true]
+      where: ['public', '==', true],
+      limit: 30
+    },
+    // Listener for projects current user collaborates on
+    {
+      collection: firebasePaths.migrationTemplates,
+      where: [['createdBy', '==', uid], ['public', '==', false]],
+      storeAs: 'myTemplates'
     }
   ]),
+  // map redux state to props
   connect(
     ({
-      firestore: { ordered: { migrationTemplates } },
+      firestore: { ordered: { migrationTemplates, myTemplates } },
       firebase: { auth: { uid } }
     }) => ({
       uid,
-      migrationTemplates
+      migrationTemplates,
+      myTemplates
     })
   ),
   withStateHandlers(

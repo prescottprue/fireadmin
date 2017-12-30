@@ -10,12 +10,14 @@ import { spinnerWhileLoading, withRouter } from 'utils/components'
 export default compose(
   withNotifications,
   withRouter,
+  // Set listeners for Firestore
   firestoreConnect(props => [
     {
       collection: `${firebasePaths.migrationTemplates}`,
       doc: props.params.templateId
     }
   ]),
+  // map redux state to props
   connect(({ firestore: { data: { migrationTemplates } } }, { params }) => ({
     template: get(migrationTemplates, params.templateId)
   })),

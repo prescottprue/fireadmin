@@ -52,24 +52,26 @@ function createIndexFunc(indexName, idParam, updateProps) {
   return event => {
     const index = client.initIndex(indexName)
     const objectID = get(event, `params.${idParam}`)
-    console.log('Event data object:', event.data)
-    // Exit when the data is deleted.
-    if (!event.data.val()) {
+    // Remove the item from algolia if it is being deleted
+    if (!event.data.exists) {
       console.log(
-        `Object with ID: ${objectID} being deleted, calling delete from Algolia`
+        `Object with ID: ${objectID} being deleted, deleting from Algolia index: ${indexName} ... `
       )
       return index.deleteObject(objectID).then(() => {
-        console.log('Object successfully deleted from Algolia. Exiting')
+        console.log(
+          `Object with ID: ${objectID} successfully deleted from index: ${indexName} on Algolia. Exiting.`
+        )
         return null
       })
     }
-    const data = event.data.data()
-
     // const previousData = event.data.previous.data()
     // TODO: Only re-index if a prop in the update props list is changed
+    const data = event.data.data()
     const firebaseObject = Object.assign({}, data, { objectID })
     return index.saveObject(firebaseObject).then(algoliaResponse => {
-      console.log('Object saved to Algolia successfully')
+      console.log(
+        `Object with ID: ${objectID} successfully saved to index: ${indexName} on Algolia successfully. Exiting.`
+      )
       return algoliaResponse
     })
   }

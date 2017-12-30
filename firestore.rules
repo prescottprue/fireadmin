@@ -18,7 +18,7 @@ service cloud.firestore {
       allow read: if resource.data.public == true || resource.data.createdBy == request.auth.uid;
       allow write: if request.auth != null;
       match /{allChildren=**} {
-        allow read: if get(/databases/$(database)/documents/migrationTemplates/$(templateId)).data.public == true || get(/databases/$(database)/documents/migrationTemplates/$(templateId)).data.createdBy == request.auth.uid;
+        allow read: if resource.data.public == true || resource.data.createdBy == request.auth.uid;
         allow write: if request.auth != null;
       }
     }
