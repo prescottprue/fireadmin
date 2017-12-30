@@ -5,10 +5,15 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from 'material-ui-next/Dialog'
-import { get, map } from 'lodash'
-import PersonIcon from 'material-ui/svg-icons/social/person'
-import { MenuItem } from 'material-ui-next/Menu'
+import { get, map, find } from 'lodash'
+import PersonIcon from 'material-ui-icons/Person'
 import Button from 'material-ui-next/Button'
+import Checkbox from 'material-ui-next/Checkbox'
+import List, {
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText
+} from 'material-ui-next/List'
 import Slide from 'material-ui-next/transitions/Slide'
 import UsersSearch from 'components/UsersSearch'
 import classes from './SharingDialog.scss'
@@ -31,34 +36,24 @@ export const SharingDialog = ({
     onRequestClose={onRequestClose}
     className={classes.container}
     transition={Transition}
-    keepMounted>
+    modal={false}>
     <DialogTitle>Sharing</DialogTitle>
     <DialogContent className={classes.content}>
       {project.collaborators ? (
         <div>
           <h4>Current Collaborators</h4>
-          {map(project.collaborators, (user, i) => {
-            return (
-              <MenuItem key={`Collabe-${user.id}-${i}`}>
-                <PersonIcon />
-                {get(users, `${user.id}.displayName`, 'User')}
-              </MenuItem>
-            )
-          })}
-        </div>
-      ) : null}
-      <h4>Add New Collaborators</h4>
-      {selectedCollaborators.length ? (
-        <div>
-          {selectedCollaborators.map((user, i) => (
-            <MenuItem key={`SelectedUser-${user.id || user.objectID}-${i}`}>
-              <PersonIcon />
-              <span>{user.displayName}</span>
-            </MenuItem>
-          ))}
-          <Button color="primary" onClick={saveCollaborators}>
-            Add New Collaborators
-          </Button>
+          <List>
+            {map(project.collaborators, (user, i) => {
+              return (
+                <ListItem key={`Collab-${user.id}-${i}`}>
+                  <PersonIcon />
+                  <ListItemText
+                    primary={get(users, `${user.id}.displayName`, 'User')}
+                  />
+                </ListItem>
+              )
+            })}
+          </List>
         </div>
       ) : null}
       <div className={classes.search}>
@@ -67,10 +62,34 @@ export const SharingDialog = ({
           ignoreSuggestions={map(project.collaborators, (val, key) => key)}
         />
       </div>
+      <h4>New Collaborators</h4>
+      {selectedCollaborators.length ? (
+        <List>
+          {selectedCollaborators.map((user, i) => (
+            <ListItem key={`SelectedUser-${user.id || user.objectID}-${i}`}>
+              <PersonIcon />
+              <ListItemText primary={user.displayName} />
+              <ListItemSecondaryAction>
+                <Checkbox
+                  onChange={() => selectCollaborator(user)}
+                  checked={
+                    !!find(selectedCollaborators, {
+                      objectID: user.id || user.objectID
+                    })
+                  }
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      ) : null}
     </DialogContent>
     <DialogActions>
-      <Button color="primary" onTouchTap={onRequestClose}>
-        Done
+      <Button color="accent" onTouchTap={onRequestClose}>
+        Cancel
+      </Button>
+      <Button color="primary" onTouchTap={saveCollaborators}>
+        Save
       </Button>
     </DialogActions>
   </Dialog>

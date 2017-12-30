@@ -5,3 +5,6 @@ export const initScripts = () => {
   initGA()
   initErrorHandler()
 }
+
+export const databaseURLToProjectName = databaseURL =>
+  databaseURL.replace('https://', '').replace('.firebaseio.com', '')

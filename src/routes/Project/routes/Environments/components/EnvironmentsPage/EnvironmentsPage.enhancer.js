@@ -53,9 +53,16 @@ export default compose(
         selectedInstance: null,
         selectedKey: null
       }),
-      selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => ({
-        selectedServiceAccount: pickedAccount
-      })
+      selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => {
+        if (selectedServiceAccount === pickedAccount) {
+          return {
+            selectedServiceAccount: null
+          }
+        }
+        return {
+          selectedServiceAccount: pickedAccount
+        }
+      }
     }
   ),
   withHandlers({
@@ -96,7 +103,7 @@ export default compose(
           serviceAccount
         )
         props.toggleDialog()
-        props.showError('Environment added successfully')
+        props.showSuccess('Environment added successfully')
         trackEvent({ category: 'Project', action: 'Add Environment' })
       } catch (err) {
         console.error('error', err) // eslint-disable-line no-console
@@ -104,14 +111,14 @@ export default compose(
       }
     },
     removeEnvironment: props => async environmentId => {
-      const { firestore, showError, params: { projectId } } = props
+      const { firestore, showError, showSuccess, params: { projectId } } = props
       try {
         await firestore.delete({
           collection: 'projects',
           doc: projectId,
           subcollections: [{ collection: 'environments', doc: environmentId }]
         })
-        showError('Environment deleted successfully')
+        showSuccess('Environment deleted successfully')
         trackEvent({ category: 'Project', action: 'Remove Environment' })
       } catch (err) {
         console.error('error', err) // eslint-disable-line no-console
@@ -130,7 +137,7 @@ export default compose(
           newValues
         )
         props.toggleDialog()
-        props.showError('Environment updated successfully')
+        props.showSuccess('Environment updated successfully')
         trackEvent({ category: 'Project', action: 'Update Environment' })
       } catch (err) {
         console.error('error', err) // eslint-disable-line no-console
@@ -143,7 +150,7 @@ export default compose(
     uploadServiceAccount: props => files => {
       const {
         firebase,
-        showError,
+        showSuccess,
         auth: { uid },
         params: { projectId }
       } = props
@@ -153,7 +160,7 @@ export default compose(
         .then(res => {
           props.selectServiceAccount(res)
           trackEvent({ category: 'Project', action: 'Upload Service Account' })
-          showError('Service Account Uploaded successfully')
+          showSuccess('Service Account Uploaded successfully')
         })
     }
   })

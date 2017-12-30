@@ -2,35 +2,7 @@ import * as admin from 'firebase-admin'
 import path from 'path'
 import fs from 'fs'
 import os from 'os'
-import { invoke, get } from 'lodash'
 import { MIGRATION_RESPONSES_PATH } from './constants'
-
-/**
- * Data migration using Service account stored on Firestore
- * @param  {functions.Event} event [description]
- * @param  {object|undefined} event.params [description]
- * @param  {String} event.data.serviceAccountType - Type of service accounts, options
- * include 'firestore', 'storage', or 'rtdb'
- * @return {Promise}
- */
-export async function runMigrationWithApps(app1, app2, event) {
-  const { dataType = 'firestore' } = event.data.val()
-  switch (dataType) {
-    case 'firestore':
-      await copyBetweenFirestoreInstances(app1, app2, event)
-      break
-    case 'rtdb':
-      await copyBetweenRTDBInstances(app1, app2, event)
-      break
-    default:
-      throw new Error(
-        'Data type not supported. Try firestore, rtdb, or storage'
-      )
-  }
-  console.log('Migration successful, cleaning up and updating Real Time DB')
-  cleanup()
-  return updateResponseOnRTDB(event)
-}
 
 export function updateResponseOnRTDB(event, error) {
   const response = {
@@ -54,45 +26,6 @@ export function updateRequestAsStarted(event) {
     startedAt: admin.database.ServerValue.TIMESTAMP
   }
   return event.data.adminRef.ref.update(response)
-}
-
-async function copyBetweenFirestoreInstances(app1, app2, eventData) {
-  console.log('starting copyBetweenFirestoreInstances', eventData)
-  const firestore1 = app1.firestore()
-  const firestore2 = app2.firestore()
-  const { copyPath } = eventData
-  // TODO: Use runTransaction
-  try {
-    const dataFromFirst = await firestore1.doc(copyPath).get()
-    await firestore2.doc(copyPath).update(dataFromFirst)
-    console.log('copy between firestore instances was successful')
-  } catch (err) {
-    console.log('error copying between firestore instances')
-  }
-}
-
-async function copyBetweenRTDBInstances(app1, app2, eventData) {
-  if (!get(app1, 'database') || !get(app2, 'database')) {
-    console.log('database not found')
-    throw new Error('Invalid service account')
-  }
-  const firstRTDB = app1.database()
-  const secondRTDB = app2.database()
-  const { copyPath } = eventData
-  try {
-    const dataSnapFromFirst = await firstRTDB.ref(copyPath).once('value')
-    const dataFromFirst = invoke(dataSnapFromFirst, 'val')
-    if (!dataFromFirst) {
-      const errorMessage = 'Path does not exist in First source database'
-      console.error(errorMessage)
-      throw new Error(errorMessage)
-    }
-    await secondRTDB.ref(copyPath).update(dataFromFirst)
-    console.log('copy between database instances was successful')
-  } catch (err) {
-    console.log('error copying between firestore instances', err.message || err)
-    throw err
-  }
 }
 
 export function cleanup() {

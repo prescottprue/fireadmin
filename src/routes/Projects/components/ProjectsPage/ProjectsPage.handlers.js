@@ -2,7 +2,7 @@ import { LIST_PATH } from 'constants'
 import { trackEvent } from 'utils/analytics'
 
 export const addProject = props => async newInstance => {
-  const { firestore, firebase, uid, showError, showSuccess } = props
+  const { firestore, firebase, uid, showError } = props
   if (!uid) {
     return showError('You must be logged in to create a project')
   }
@@ -15,7 +15,8 @@ export const addProject = props => async newInstance => {
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }
     )
-    showSuccess('Project added successfully')
+    props.showSuccess('Project added successfully')
+    props.toggleDialog()
     trackEvent({ category: 'Projects', action: 'Create' })
     return res
   } catch (err) {
