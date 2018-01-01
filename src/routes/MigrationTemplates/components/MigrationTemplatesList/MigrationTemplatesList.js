@@ -36,7 +36,7 @@ export const MigrationTemplatesList = ({
       {migrationTemplates && migrationTemplates.length ? (
         <div>
           <Typography className={classesFromStyles.sectionHeader}>
-            Private Templates
+            Public Templates
           </Typography>
           <Grid container spacing={24} className={classes.root}>
             {map(migrationTemplates, (template, templateIdx) => (

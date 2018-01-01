@@ -32,6 +32,7 @@ export default compose(
       fromInstance: initialSelected,
       toInstance: initialSelected,
       templateEditExpanded: true,
+      migrationProcessing: false,
       copyPath: null,
       configExpanded: true,
       instances: null
@@ -55,6 +56,9 @@ export default compose(
       }),
       setCopyPath: ({ copyPath }) => e => ({
         copyPath: e.target.value
+      }),
+      toggleMigrationProcessing: ({ migrationProcessing }) => e => ({
+        migrationProcessing: !migrationProcessing
       })
     }
   ),
@@ -68,6 +72,7 @@ export default compose(
         fromInstance,
         selectedTemplate,
         showSuccess,
+        toggleMigrationProcessing,
         showError
       } = props
       const serviceAccount1 = get(
@@ -95,6 +100,7 @@ export default compose(
           serviceAccount2Path: serviceAccount2.fullPath,
           ...selectedTemplate
         })
+        toggleMigrationProcessing()
         const pushKey = pushRes.key
         // TODO: Add watcher for progress
         // wait for response to be set (set by data migraiton function
@@ -113,9 +119,11 @@ export default compose(
             }
           )
         })
+        toggleMigrationProcessing()
         showSuccess('Migration complete!')
         return pushKey
       } catch (err) {
+        toggleMigrationProcessing()
         showError('Error with migration request')
       }
     }
