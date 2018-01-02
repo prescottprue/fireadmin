@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "main": "index.js",
   "scripts": {
@@ -55,7 +55,7 @@
     "redux": "^3.6.0",
     "redux-auth-wrapper": "^1.0.0",
     "redux-firestore": "^0.2.5",
-    "redux-form": "^6.6.1",
+    "redux-form": "^7.2.0",
     "redux-form-material-ui": "^4.2.0",
     "redux-thunk": "^2.2.0",
     "whatwg-fetch": "^2.0.3"

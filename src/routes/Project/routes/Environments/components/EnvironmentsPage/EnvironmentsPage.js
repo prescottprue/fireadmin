@@ -64,6 +64,7 @@ export const EnvironmentsPage = ({
       )}
     </div>
     <AddEnvironmentDialog
+      selectedInstance={selectedInstance}
       open={envDialogOpen}
       initialValues={selectedInstance}
       isEditing={!!selectedInstance}

@@ -34,7 +34,8 @@ const config = {
   },
   externals: project.externals,
   module: {
-    rules: []
+    rules: [],
+    noParse: [/firepad/]
   },
   plugins: [
     new webpack.DefinePlugin(
