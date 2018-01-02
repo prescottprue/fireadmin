@@ -4,7 +4,7 @@ import { analyticsTrackingId, env } from 'config' // eslint-disable-line import/
 
 // Initialize Google Analytics
 export const initGA = () => {
-  if (analyticsTrackingId && env === 'prod') {
+  if (analyticsTrackingId && env === 'production') {
     ReactGA.initialize(analyticsTrackingId)
     ReactGA.set({
       appName: env || 'Production',
@@ -14,7 +14,7 @@ export const initGA = () => {
 }
 
 export const trackEvent = settings => {
-  if (analyticsTrackingId && env === 'prod') {
+  if (analyticsTrackingId && env === 'production') {
     ReactGA.event(settings)
   } else {
     console.debug('Analytics Event:', settings) // eslint-disable-line no-console

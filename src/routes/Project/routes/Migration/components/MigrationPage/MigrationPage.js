@@ -26,6 +26,7 @@ export const MigrationPage = ({
   fromInstance,
   toggleConfig,
   selectTo,
+  migrationProcessing,
   selectFrom,
   project
 }) => (
@@ -35,7 +36,12 @@ export const MigrationPage = ({
       <div className={classes.buttons}>
         <Button
           raised
-          disabled={!selectedTemplate || !toInstance || !fromInstance}
+          disabled={
+            !selectedTemplate ||
+            !toInstance ||
+            !fromInstance ||
+            migrationProcessing
+          }
           color="primary"
           onTouchTap={runMigration}>
           Run Migration
@@ -122,6 +128,7 @@ MigrationPage.propTypes = {
   selectMigrationTemplate: PropTypes.func.isRequired,
   toggleTemplateEdit: PropTypes.func.isRequired,
   templateEditExpanded: PropTypes.bool.isRequired,
+  migrationProcessing: PropTypes.bool.isRequired,
   selectedTemplate: PropTypes.object,
   configExpanded: PropTypes.bool.isRequired,
   templateName: PropTypes.string.isRequired
