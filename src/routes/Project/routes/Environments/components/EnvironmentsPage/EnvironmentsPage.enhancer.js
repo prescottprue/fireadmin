@@ -1,8 +1,10 @@
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
+import { reset } from 'redux-form'
 import { withHandlers, withStateHandlers } from 'recompose'
 import { firebaseConnect, getVal, firestoreConnect } from 'react-redux-firebase'
+import { formNames } from 'constants'
 import {
   // logProps,
   // messageWhileEmpty,
@@ -62,7 +64,10 @@ export default compose(
         return {
           selectedServiceAccount: pickedAccount
         }
-      }
+      },
+      clearServiceAccount: () => () => ({
+        selectedServiceAccount: null
+      })
     }
   ),
   withHandlers({
@@ -79,30 +84,39 @@ export default compose(
         subcollections: [{ collection: 'environments' }]
       }
       const serviceAccount = get(serviceAccounts, selectedServiceAccount, null)
+      // Show error if service account is not selected (not part of form)
       if (!serviceAccount) {
         return props.showError('Please select a service account')
       }
-      const newProject = {
+      // Build new environment object
+      const newEnv = {
         ...newProjectData,
         serviceAccount,
         projectId
       }
 
       try {
-        const newEnvironment = await firestore.add(locationConf, newProject)
+        // Write new environment to firestore
+        const newEnvironmentRes = await firestore.add(locationConf, newEnv)
         // Add service account to service accounts collection
         await firestore.add(
           {
             collection: 'projects',
             doc: projectId,
             subcollections: [
-              { collection: 'environments', doc: newEnvironment.id },
+              { collection: 'environments', doc: newEnvironmentRes.id },
               { collection: 'serviceAccounts' }
             ]
           },
           serviceAccount
         )
+        // Reset form for future use
+        props.dispatch(reset(formNames.newEnvironment))
+        // Close AddEnvironmentDialog
         props.toggleDialog()
+        // Unselect selected service account
+        props.clearServiceAccount()
+        // Show success snackbar
         props.showSuccess('Environment added successfully')
         trackEvent({ category: 'Project', action: 'Add Environment' })
       } catch (err) {
