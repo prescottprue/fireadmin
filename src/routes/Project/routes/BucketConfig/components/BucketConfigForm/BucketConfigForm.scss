@@ -8,5 +8,8 @@
   margin: 1rem;
 }
 .add {
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  @extend .flex-row-center;
+  width: 100%;
 }

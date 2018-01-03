@@ -101,6 +101,9 @@ export const BucketConfigForm = ({
   serviceAccounts,
   serviceAccount,
   reset,
+  project,
+  currentConfig,
+  body,
   submitting
 }) => (
   <form onSubmit={handleSubmit}>
@@ -117,7 +120,7 @@ export const BucketConfigForm = ({
         raised
         color="primary"
         type="submit"
-        disabled={pristine || submitting || !serviceAccount}
+        disabled={pristine || submitting || !body || !serviceAccount}
         style={{ marginRight: '1rem' }}>
         Update Bucket Config
       </Button>
@@ -129,6 +132,8 @@ export const BucketConfigForm = ({
         Clear Values
       </Button>
     </div>
+    {currentConfig ? <div>{JSON.stringify(currentConfig, null, 2)}</div> : null}
+
     <div style={{ marginLeft: '4rem', marginRight: '4rem' }}>
       <Field
         name="serviceAccount.fullPath"
@@ -137,6 +142,17 @@ export const BucketConfigForm = ({
         fullWidth>
         {map(serviceAccounts, ({ name, fullPath }) => (
           <MenuItem key={name} value={fullPath} primaryText={name} />
+        ))}
+      </Field>
+    </div>
+    <div style={{ marginLeft: '4rem', marginRight: '4rem' }}>
+      <Field
+        name="environment"
+        component={SelectField}
+        floatingLabelText="Environment"
+        fullWidth>
+        {map(project.environments, ({ name, fullPath }, key) => (
+          <MenuItem key={key} value={key} primaryText={name} />
         ))}
       </Field>
     </div>
@@ -149,14 +165,17 @@ BucketConfigForm.propTypes = {
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
   reset: PropTypes.func.isRequired,
+  body: PropTypes.object,
+  project: PropTypes.object,
   serviceAccounts: PropTypes.object,
+  currentConfig: PropTypes.object,
   serviceAccount: PropTypes.object
 }
 
 export default compose(
   reduxForm({
-    form: 'bucketConfig',
-    initialValues: { body: { cors: [{ origin: [''] }] } }
+    form: 'bucketConfig'
   }),
-  formValues('serviceAccount')
+  formValues('serviceAccount'),
+  formValues('body')
 )(BucketConfigForm)

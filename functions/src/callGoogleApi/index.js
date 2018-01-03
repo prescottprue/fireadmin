@@ -1,6 +1,7 @@
 import { invoke, get } from 'lodash'
 import request from 'request-promise'
 import { serviceAccountFileFromStorage } from '../utils/serviceAccounts'
+import * as admin from 'firebase-admin'
 const functions = require('firebase-functions')
 const google = require('googleapis')
 
@@ -85,6 +86,7 @@ export const googleApisRequest = async (serviceAccount, requestSettings) => {
   try {
     const response = await request(requestSettingsWithAuth)
     console.log(`Google API Request completed successfully`, response)
+    return response
   } catch (err) {
     console.error(`Google API Responded with an error: \n`, err.message || err)
     throw err
@@ -101,27 +103,48 @@ export default functions.database
   .onCreate(callGoogleApi)
 
 async function callGoogleApi(event) {
-  console.log('call google api', event)
   const eventData = get(event, 'data')
   const eventVal = invoke(eventData, 'val')
+  const eventId = get(event, 'params.pushId')
   const {
     api = 'storage',
     method = 'GET',
     body,
+    apiVersion = 'v1',
     suffix = `b/${functions.config().firebase.storageBucket}`,
     serviceAccount: { fullPath }
   } = eventVal
-  const serviceAccount = await serviceAccountFileFromStorage(
-    fullPath,
-    get(event, 'params.pushId', 'nope')
-  )
-  return googleApisRequest(serviceAccount, {
-    method,
-    uri: `https://www.googleapis.com/${api}/v1/${suffix}?cors`,
-    body,
-    headers: {
-      'Gdata-Version': '3.0'
-    },
-    json: true
-  })
+  try {
+    const serviceAccount = await serviceAccountFileFromStorage(
+      fullPath,
+      `callGoogleApi/${eventId}/${Date.now()}`
+    )
+    const response = await googleApisRequest(serviceAccount, {
+      method,
+      uri: `https://www.googleapis.com/${api}/${apiVersion}/${suffix}?alt=json&cors`,
+      body,
+      headers: {
+        'Gdata-Version': '3.0'
+      },
+      json: true
+    })
+    console.log('Google API response successful. Writing response to RTDB...')
+    await event.data.adminRef.ref.root
+      .child(`responses/${eventPathName}/${eventId}`)
+      .set({
+        completed: true,
+        responseData: response,
+        completedAt: admin.database.ServerValue.TIMESTAMP
+      })
+    console.log('Success! Response data written to RTDB. Exiting.')
+    return response
+  } catch (err) {
+    await event.data.adminRef.ref.root
+      .child(`responses/${eventPathName}/${eventId}`)
+      .set({
+        completed: true,
+        error: err.message || err,
+        completedAt: admin.database.ServerValue.TIMESTAMP
+      })
+  }
 }

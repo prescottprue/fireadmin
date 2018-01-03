@@ -1,14 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Typography from 'material-ui-next/Typography'
 import BucketConfigForm from '../BucketConfigForm'
+import classes from './BucketConfigPage.scss'
 
-export const BucketConfigPage = ({ updateBucketConfig, serviceAccounts }) => (
+export const BucketConfigPage = ({
+  updateBucketConfig,
+  serviceAccounts,
+  project
+}) => (
   <div>
-    <h2>Storage Bucket Configuration</h2>
+    <Typography className={classes.pageHeader}>
+      Storage Bucket Configuration
+    </Typography>
     <div className="flex-column-center">
+      <Typography className={classes.subHeader}>CORS Configuration</Typography>
       <BucketConfigForm
         onSubmit={updateBucketConfig}
         serviceAccounts={serviceAccounts}
+        project={project}
       />
     </div>
   </div>
@@ -16,7 +26,8 @@ export const BucketConfigPage = ({ updateBucketConfig, serviceAccounts }) => (
 
 BucketConfigPage.propTypes = {
   updateBucketConfig: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  serviceAccounts: PropTypes.object
+  serviceAccounts: PropTypes.object,
+  project: PropTypes.object
 }
 
 export default BucketConfigPage
