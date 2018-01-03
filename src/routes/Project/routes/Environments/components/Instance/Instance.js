@@ -1,8 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
-import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card'
-import FlatButton from 'material-ui/FlatButton'
+import Card, {
+  CardActions,
+  CardHeader,
+  CardContent
+} from 'material-ui-next/Card'
+import Typography from 'material-ui-next/Typography'
+import Button from 'material-ui-next/Button'
 import classes from './Instance.scss'
 
 const databaseURLToProjectName = databaseURL =>
@@ -11,14 +16,20 @@ const databaseURLToProjectName = databaseURL =>
 export const Instance = ({ instance, onRemoveClick, onEditClick }) => (
   <div className={classes.container}>
     <Card className={classes.card}>
-      <CardTitle
+      <CardHeader
         title={instance.name}
-        subtitle={databaseURLToProjectName(get(instance, 'databaseURL', ''))}
+        subheader={databaseURLToProjectName(get(instance, 'databaseURL', ''))}
       />
-      <CardText>{get(instance, 'description', null)}</CardText>
+      <CardContent>
+        <Typography>{get(instance, 'description', null)}</Typography>
+      </CardContent>
       <CardActions>
-        <FlatButton label="Edit" onTouchTap={onEditClick} />
-        <FlatButton label="Remove" onTouchTap={onRemoveClick} />
+        <Button color="primary" onClick={onEditClick}>
+          Edit
+        </Button>
+        <Button color="accent" onClick={onRemoveClick}>
+          Remove
+        </Button>
       </CardActions>
     </Card>
   </div>

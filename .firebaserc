@@ -1,36 +1,42 @@
 {
   "projects": {
-    "master": "fireadmin-33d82",
+    "master": "fireadmin-stage",
     "prod": "fireadmin-33d82",
-    "default": "fireadmin-33d82"
+    "default": "fireadmin-stage"
   },
   "ci": {
     "createConfig": {
       "master": {
         "version": "${npm_package_version}",
-        "env": "development",
+        "env": "stage",
         "firebase": {
-          "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s",
-          "authDomain": "fireadmin-33d82.firebaseapp.com",
-          "databaseURL": "https://fireadmin-33d82.firebaseio.com",
-          "projectId": "fireadmin-33d82",
-          "storageBucket": "fireadmin-33d82.appspot.com"
+          "apiKey": "${STAGE_FIREBASE_API_KEY}",
+          "authDomain": "fireadmin-stage.firebaseapp.com",
+          "databaseURL": "https://fireadmin-stage.firebaseio.com",
+          "projectId": "fireadmin-stage",
+          "storageBucket": "fireadmin-stage.appspot.com",
+          "messagingSenderId": "566109548798"
         },
         "reduxFirebase": {
           "userProfile": "users",
           "enableLogging": false,
-          "updateProfileOnLogin": false
+          "updateProfileOnLogin": false,
+          "useFirestoreForProfile": true
+        },
+        "analyticsTrackingId": "${GA_TRACKING_ID}",
+        "googleApis": {
+          "apiKey": "${STAGE_GOOGLE_API_KEY}"
         },
         "algolia": {
-          "appId": "C0D1I0GB86",
-          "apiKey": "7327fc566154893e3834a49de6fa73c3"
+          "appId": "${STAGE_ALGOLIA_APP_ID}",
+          "apiKey": "${STAGE_ALGOLIA_BROWSER_KEY}"
         }
       },
       "prod": {
         "version": "${npm_package_version}",
         "env": "production",
         "firebase": {
-          "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s",
+          "apiKey": "${PROD_FIREBASE_API_KEY}",
           "authDomain": "fireadmin-33d82.firebaseapp.com",
           "databaseURL": "https://fireadmin-33d82.firebaseio.com",
           "projectId": "fireadmin-33d82",
@@ -39,11 +45,16 @@
         "reduxFirebase": {
           "userProfile": "users",
           "enableLogging": false,
-          "updateProfileOnLogin": false
+          "updateProfileOnLogin": false,
+          "useFirestoreForProfile": true
+        },
+        "analyticsTrackingId": "${GA_TRACKING_ID}",
+        "googleApis": {
+          "apiKey": "${PROD_GOOGLE_API_KEY}"
         },
         "algolia": {
-          "appId": "C0D1I0GB86",
-          "apiKey": "7327fc566154893e3834a49de6fa73c3"
+          "appId": "${PROD_ALGOLIA_APP_ID}",
+          "apiKey": "${PROD_ALGOLIA_BROWSER_KEY}"
         }
       }
     }

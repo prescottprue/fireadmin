@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
+import Typography from 'material-ui-next/Typography'
 import Button from 'material-ui-next/Button'
+import Paper from 'material-ui-next/Paper'
 import Instance from '../Instance'
 import AddEnvironmentDialog from '../AddEnvironmentDialog'
 import classesFromStyles from './EnvironmentsPage.scss'
@@ -9,7 +11,6 @@ import classesFromStyles from './EnvironmentsPage.scss'
 export const EnvironmentsPage = ({
   project,
   params,
-  classes,
   toggleDialog,
   serviceAccounts,
   selectServiceAccount,
@@ -18,12 +19,15 @@ export const EnvironmentsPage = ({
   toggleDialogWithData,
   envDialogOpen,
   addEnvironment,
+  selectedServiceAccount,
   updateEnvironment,
   removeEnvironment,
   uploadServiceAccount
 }) => (
   <div>
-    <h2>Environments</h2>
+    <Typography className={classesFromStyles.pageHeader}>
+      Environments
+    </Typography>
     <div style={{ marginBottom: '2rem' }}>
       <Button raised color="primary" onTouchTap={toggleDialog}>
         Add Environment
@@ -44,10 +48,23 @@ export const EnvironmentsPage = ({
           </div>
         </div>
       ) : (
-        <span>No Environments</span>
+        <Paper className={classesFromStyles.paper}>
+          <Typography className={classesFromStyles.paragraph}>
+            An environment is a Firebase project for a specific phase of your
+            project (such as "development" or "production"). Multiple
+            environments allow for testing code in a "sandbox" before releasing
+            it to the world. Most Real World Production applications leverage
+            many environment.
+          </Typography>
+          <Typography className={classesFromStyles.paragraph}>
+            Create an environment within your project by clicking the "Add
+            Environment" button above
+          </Typography>
+        </Paper>
       )}
     </div>
     <AddEnvironmentDialog
+      selectedInstance={selectedInstance}
       open={envDialogOpen}
       initialValues={selectedInstance}
       isEditing={!!selectedInstance}
@@ -55,6 +72,7 @@ export const EnvironmentsPage = ({
       onSubmit={selectedInstance ? updateEnvironment : addEnvironment}
       onRequestClose={toggleDialog}
       selectedAccounts={selectedAccounts}
+      selectedServiceAccount={selectedServiceAccount}
       onAccountClick={selectServiceAccount}
       serviceAccounts={serviceAccounts}
     />
@@ -73,8 +91,8 @@ EnvironmentsPage.propTypes = {
   removeEnvironment: PropTypes.func, // from enhancer
   uploadServiceAccount: PropTypes.func, // from enhancer
   selectServiceAccount: PropTypes.func, // from enhancer
+  selectedServiceAccount: PropTypes.string, // from enhancer
   toggleDialog: PropTypes.func, // from enhancer
-  classes: PropTypes.object, // from enhancer (added by withStyles)
   envDialogOpen: PropTypes.bool
 }
 

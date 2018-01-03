@@ -48,7 +48,7 @@ export const SidebarLayout = ({
       className={classNames(classes.appBar, drawerOpen && classes.appBarShift)}>
       <Toolbar>
         <Typography type="title" color="inherit" noWrap>
-          {title}
+          {title || 'Project'}
         </Typography>
       </Toolbar>
     </AppBar>

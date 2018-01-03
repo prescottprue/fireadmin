@@ -1,8 +1,7 @@
 @import 'base';
 
 .container {
-  @extend .flex-row-center;
-  padding-top: 1rem;
+  @extend .flex-column-center;
   margin-bottom: 4rem;
 }
 .panel {

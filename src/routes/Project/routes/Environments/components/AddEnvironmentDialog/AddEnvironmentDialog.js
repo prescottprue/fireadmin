@@ -4,9 +4,10 @@ import Dialog from 'material-ui/Dialog'
 import { reduxForm, Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
 import Button from 'material-ui-next/Button'
+import { formNames } from 'constants'
+import { required, validateDatabaseUrl } from 'utils/form'
 import FilesUploader from '../FilesUploader'
 import ServiceAccounts from '../ServiceAccounts'
-import { required } from 'utils/form'
 import classes from './AddEnvironmentDialog.scss'
 
 export const AddEnvironmentDialog = ({
@@ -17,7 +18,7 @@ export const AddEnvironmentDialog = ({
   pristine,
   isEditing,
   serviceAccounts,
-  selectedAccounts,
+  selectedServiceAccount,
   onRequestClose,
   initialValues,
   onAccountClick,
@@ -28,6 +29,7 @@ export const AddEnvironmentDialog = ({
     actions={[
       <Button
         color="accent"
+        disabled={submitting}
         onTouchTap={() => {
           reset()
           onRequestClose && onRequestClose()
@@ -53,6 +55,7 @@ export const AddEnvironmentDialog = ({
       <Field
         component={TextField}
         name="databaseURL"
+        validate={[required, validateDatabaseUrl]}
         floatingLabelText="Database URL"
       />
       <Field
@@ -60,29 +63,31 @@ export const AddEnvironmentDialog = ({
         name="description"
         floatingLabelText="Instance Description"
       />
-      <div>
-        <h4>Service Account</h4>
-        {serviceAccounts ? (
-          <ServiceAccounts
-            serviceAccounts={serviceAccounts}
-            selectedAccounts={selectedAccounts}
-            onAccountClick={onAccountClick}
+      {!isEditing ? (
+        <div>
+          <h4>Service Account</h4>
+          {serviceAccounts ? (
+            <ServiceAccounts
+              serviceAccounts={serviceAccounts}
+              selectedAccountKey={selectedServiceAccount}
+              onAccountClick={onAccountClick}
+            />
+          ) : (
+            <div>No Service Accounts </div>
+          )}
+          <FilesUploader
+            onFilesDrop={onFilesDrop}
+            label="to upload Service Account"
           />
-        ) : (
-          <div>No Service Accounts </div>
-        )}
-        <FilesUploader
-          onFilesDrop={onFilesDrop}
-          label="to upload Service Account"
-        />
-      </div>
+        </div>
+      ) : null}
     </div>
   </Dialog>
 )
 
 AddEnvironmentDialog.propTypes = {
   serviceAccounts: PropTypes.object,
-  selectedAccounts: PropTypes.object,
+  selectedServiceAccount: PropTypes.string,
   onRequestClose: PropTypes.func,
   onAccountClick: PropTypes.func,
   onFilesDrop: PropTypes.func.isRequired,
@@ -96,6 +101,6 @@ AddEnvironmentDialog.propTypes = {
 }
 
 export default reduxForm({
-  form: 'newInstance',
+  form: formNames.newEnvironment,
   enableReinitialize: true // Handle new/edit modal: reinitialize with other env to edit
 })(AddEnvironmentDialog)

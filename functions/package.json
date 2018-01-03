@@ -11,15 +11,18 @@
   "dependencies": {
     "@google-cloud/storage": "^1.2.1",
     "algoliasearch": "^3.24.6",
+    "babel-core": "^6.26.0",
     "babel-runtime": "^6.26.0",
     "firebase-admin": "^5.0.0",
-    "firebase-functions": "^0.7.0",
+    "firebase-functions": "^0.7.5",
+    "firepad": "^1.4.0",
     "fs-extra": "^4.0.2",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
     "mkdirp-promise": "^5.0.1",
     "request": "^2.83.0",
-    "request-promise": "^4.2.2"
+    "request-promise": "^4.2.2",
+    "safe-eval": "^0.3.0"
   },
   "private": true,
   "devDependencies": {

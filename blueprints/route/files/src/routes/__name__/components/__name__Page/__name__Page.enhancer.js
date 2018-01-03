@@ -1,10 +1,10 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { firebaseConnect } from 'react-redux-firebase'
+import { firestoreConnect } from 'react-redux-firebase'
 
 export default compose(
-  firebaseConnect(['<%= pascalEntityName %>']),
-  connect(({ firebase: { data } }) => ({
-    '<%= pascalEntityName %>': data['<%= pascalEntityName %>']
-  })),
+  firestoreConnect([{ collection: '<%= camelEntityName %>' }]),
+  connect(({ firebase: { ordered: { <%= camelEntityName %> } } }) => ({
+    <%= camelEntityName %>
+  }))
 )

@@ -1,9 +1,10 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withFirestore, withFirebase } from 'react-redux-firebase'
-import { withHandlers, withStateHandlers } from 'recompose'
-import { invoke, get } from 'lodash'
+import { withHandlers, withStateHandlers, withProps } from 'recompose'
+import { invoke, get, findIndex } from 'lodash'
 import { withNotifications } from 'modules/notification'
+import { trackEvent } from 'utils/analytics'
 
 export default compose(
   withFirestore,
@@ -26,11 +27,29 @@ export default compose(
       clearSuggestions: () => () => ({
         suggestions: []
       }),
-      selectCollaborator: ({ selectedCollaborators }) => newCollaborator => ({
-        selectedCollaborators: [...selectedCollaborators, newCollaborator]
-      }),
+      selectCollaborator: ({ selectedCollaborators }) => newCollaborator => {
+        const currentIndex = findIndex(selectedCollaborators, {
+          objectID: newCollaborator.id || newCollaborator.objectID
+        })
+        const newSelected = [...selectedCollaborators]
+
+        if (currentIndex === -1) {
+          newSelected.push(newCollaborator)
+        } else {
+          newSelected.splice(currentIndex, 1)
+        }
+
+        return {
+          selectedCollaborators: newSelected
+        }
+      },
       handleChange: () => e => ({
         value: e.target.value
+      }),
+      reset: () => () => ({
+        selectedCollaborators: [],
+        suggestions: [],
+        value: ''
       })
     }
   ),
@@ -54,23 +73,36 @@ export default compose(
       // }
       const currentProject = await firestore.get(`projects/${project.id}`)
       const collaborators = {}
+      const collaboratorPermissions = {}
       const projectData = invoke(currentProject, 'data')
       selectedCollaborators.forEach(currentCollaborator => {
         if (
           !get(projectData, `collaborators.${currentCollaborator.objectID}`)
         ) {
-          collaborators[currentCollaborator.objectID] = {
+          collaborators[currentCollaborator.objectID] = true
+          collaboratorPermissions[currentCollaborator.objectID] = {
             permission: 'viewer',
             sharedAt: Date.now()
           }
         }
       })
-      await firebase
-        .firestore()
-        .doc(`projects/${project.id}`)
-        .update({ collaborators })
-      onRequestClose()
-      showError('Collaborator added successfully')
+      try {
+        await firebase
+          .firestore()
+          .doc(`projects/${project.id}`)
+          .update({ collaborators, collaboratorPermissions })
+        onRequestClose()
+        showError('Collaborator added successfully')
+        trackEvent({ category: 'Projects', action: 'Add Collaborator' })
+      } catch (err) {
+        showError('Error adding collaborator')
+      }
     }
-  })
+  }),
+  withProps(({ onRequestClose, reset }) => ({
+    closeAndReset: () => {
+      onRequestClose()
+      reset()
+    }
+  }))
 )

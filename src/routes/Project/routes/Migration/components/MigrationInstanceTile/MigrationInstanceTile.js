@@ -16,7 +16,6 @@ export const MigrationInstanceTile = ({
   selectInstance
 }) => (
   <Paper className={classes.container}>
-    <h4>{title}</h4>
     {selectedInstance ? (
       <div>
         {databaseURLToProjectName(
@@ -25,7 +24,7 @@ export const MigrationInstanceTile = ({
       </div>
     ) : null}
     <SelectField
-      floatingLabelText="Instance"
+      floatingLabelText={`${title} Instance`}
       value={selectedInstance}
       onChange={selectInstance}>
       {map(environments, (environment, environmentKey) => (

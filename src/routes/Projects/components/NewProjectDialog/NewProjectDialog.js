@@ -19,6 +19,7 @@ export const NewProjectDialog = ({
     title="New Project"
     open={open}
     onRequestClose={onRequestClose}
+    modal={false}
     contentClassName={classes.container}
     actions={[
       <Button color="accent" onTouchTap={onRequestClose}>

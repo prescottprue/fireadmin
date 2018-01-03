@@ -5,14 +5,16 @@ const dataMigration = require('./dist/dataMigration').default
 const indexUsers = require('./dist/search').indexUsers
 const callGoogleApi = require('./dist/callGoogleApi').default
 const authWithGoogle = require('./dist/authWithGoogle').default
-const copyServiceAccountToFirestore = require('./dist/copyServiceAccountToFirestore')
-  .default
+const indexMigrationTemplates = require('./dist/search').indexMigrationTemplates
+// const copyServiceAccountToFirestore = require('./dist/copyServiceAccountToFirestore').default
+
 
 admin.initializeApp(functions.config().firebase)
 
 exports.dataMigration = dataMigration
-exports.copyServiceAccountToFirestore = copyServiceAccountToFirestore
+// exports.copyServiceAccountToFirestore = copyServiceAccountToFirestore
 exports.storageFileToRTDB = storageFileToRTDB
 exports.indexUsers = indexUsers
 exports.callGoogleApi = callGoogleApi
 exports.authWithGoogle = authWithGoogle
+exports.indexMigrationTemplates = indexMigrationTemplates

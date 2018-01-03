@@ -1,14 +1,17 @@
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
+import { reset } from 'redux-form'
 import { withHandlers, withStateHandlers } from 'recompose'
 import { firebaseConnect, getVal, firestoreConnect } from 'react-redux-firebase'
+import { formNames } from 'constants'
 import {
   // logProps,
   // messageWhileEmpty,
   spinnerWhileLoading
 } from 'utils/components'
 import { withNotifications } from 'modules/notification'
+import { trackEvent } from 'utils/analytics'
 
 export default compose(
   firebaseConnect(({ params }) => [`serviceAccounts/${params.projectId}`]),
@@ -52,8 +55,18 @@ export default compose(
         selectedInstance: null,
         selectedKey: null
       }),
-      selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => ({
-        selectedServiceAccount: pickedAccount
+      selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => {
+        if (selectedServiceAccount === pickedAccount) {
+          return {
+            selectedServiceAccount: null
+          }
+        }
+        return {
+          selectedServiceAccount: pickedAccount
+        }
+      },
+      clearServiceAccount: () => () => ({
+        selectedServiceAccount: null
       })
     }
   ),
@@ -71,45 +84,56 @@ export default compose(
         subcollections: [{ collection: 'environments' }]
       }
       const serviceAccount = get(serviceAccounts, selectedServiceAccount, null)
+      // Show error if service account is not selected (not part of form)
       if (!serviceAccount) {
         return props.showError('Please select a service account')
       }
-      const newProject = {
+      // Build new environment object
+      const newEnv = {
         ...newProjectData,
         serviceAccount,
         projectId
       }
 
       try {
-        const newEnvironment = await firestore.add(locationConf, newProject)
+        // Write new environment to firestore
+        const newEnvironmentRes = await firestore.add(locationConf, newEnv)
         // Add service account to service accounts collection
         await firestore.add(
           {
             collection: 'projects',
             doc: projectId,
             subcollections: [
-              { collection: 'environments', doc: newEnvironment.id },
+              { collection: 'environments', doc: newEnvironmentRes.id },
               { collection: 'serviceAccounts' }
             ]
           },
           serviceAccount
         )
+        // Reset form for future use
+        props.dispatch(reset(formNames.newEnvironment))
+        // Close AddEnvironmentDialog
         props.toggleDialog()
-        props.showError('Project added successfully')
+        // Unselect selected service account
+        props.clearServiceAccount()
+        // Show success snackbar
+        props.showSuccess('Environment added successfully')
+        trackEvent({ category: 'Project', action: 'Add Environment' })
       } catch (err) {
         console.error('error', err) // eslint-disable-line no-console
         props.showError('Error: ', err.message || 'Could not add project')
       }
     },
     removeEnvironment: props => async environmentId => {
-      const { firestore, showError, params: { projectId } } = props
+      const { firestore, showError, showSuccess, params: { projectId } } = props
       try {
         await firestore.delete({
           collection: 'projects',
           doc: projectId,
           subcollections: [{ collection: 'environments', doc: environmentId }]
         })
-        showError('Environment deleted successfully')
+        showSuccess('Environment deleted successfully')
+        trackEvent({ category: 'Project', action: 'Remove Environment' })
       } catch (err) {
         console.error('error', err) // eslint-disable-line no-console
         showError('Error: ', err.message || 'Could not remove environment')
@@ -127,7 +151,8 @@ export default compose(
           newValues
         )
         props.toggleDialog()
-        props.showError('Environment updated successfully')
+        props.showSuccess('Environment updated successfully')
+        trackEvent({ category: 'Project', action: 'Update Environment' })
       } catch (err) {
         console.error('error', err) // eslint-disable-line no-console
         props.showError(
@@ -139,7 +164,7 @@ export default compose(
     uploadServiceAccount: props => files => {
       const {
         firebase,
-        showError,
+        showSuccess,
         auth: { uid },
         params: { projectId }
       } = props
@@ -148,7 +173,8 @@ export default compose(
         .uploadFiles(filePath, files, `serviceAccounts/${projectId}`)
         .then(res => {
           props.selectServiceAccount(res)
-          showError('Service Account Uploaded successfully')
+          trackEvent({ category: 'Project', action: 'Upload Service Account' })
+          showSuccess('Service Account Uploaded successfully')
         })
     }
   })
