@@ -1,6 +1,6 @@
 import { invoke, get } from 'lodash'
 import request from 'request-promise'
-import { serviceAccountFromStoragePath } from '../utils/serviceAccounts'
+import { serviceAccountFileFromStorage } from '../utils/serviceAccounts'
 const functions = require('firebase-functions')
 const google = require('googleapis')
 
@@ -16,10 +16,15 @@ const eventPathName = 'googleApi'
  * Get Google APIs auth client. Auth comes from serviceAccount.
  * @return {Promise} Resolves with JWT Auth Client (for attaching to request)
  */
-const authClientFromServiceAccount = serviceAccount => {
-  console.log('auth client from service account')
+const authClientFromServiceAccount = async serviceAccount => {
+  if (
+    !get(serviceAccount, 'client_email') ||
+    !get(serviceAccount, 'private_key')
+  ) {
+    throw new Error('Invalid service account')
+  }
   if (jwtClient) {
-    return Promise.resolve(jwtClient)
+    return jwtClient
   }
   jwtClient = new google.auth.JWT(
     serviceAccount.client_email,
@@ -31,6 +36,7 @@ const authClientFromServiceAccount = serviceAccount => {
     jwtClient.authorize(err => {
       // tokens is second arg
       if (!err) {
+        google.options({ auth: jwtClient })
         resolve(jwtClient)
       } else {
         console.error(
@@ -48,10 +54,19 @@ const authClientFromServiceAccount = serviceAccount => {
  * @param  {Object}  requestWithoutAuth - Request object without auth
  * @return {Promise} Resolves with request that has auth attached
  */
-const addServiceAccountAuthToRequest = (serviceAccount, requestSettings) => {
-  const client = authClientFromServiceAccount(serviceAccount)
-  const request = requestSettings
-  request.auth = client
+const addServiceAccountAuthToRequest = async (
+  serviceAccount,
+  requestSettings
+) => {
+  const client = await authClientFromServiceAccount(serviceAccount)
+  const request = {
+    ...requestSettings,
+    headers: {
+      Authorization: `${client.credentials.token_type} ${
+        client.credentials.access_token
+      }`
+    }
+  }
   return request
 }
 
@@ -63,21 +78,17 @@ const addServiceAccountAuthToRequest = (serviceAccount, requestSettings) => {
  * @return {Promise} Resolves with results of Goggle API request
  */
 export const googleApisRequest = async (serviceAccount, requestSettings) => {
-  console.log('Google API requests request')
   const requestSettingsWithAuth = await addServiceAccountAuthToRequest(
     serviceAccount,
     requestSettings
   )
-  return new Promise((resolve, reject) => {
-    request(requestSettingsWithAuth, (err, response) => {
-      if (err) {
-        console.error(`${name} request had an error`, err)
-        return reject(err)
-      }
-      console.log(`${name} request completed successfully`, response)
-      return resolve(response)
-    })
-  })
+  try {
+    const response = await request(requestSettingsWithAuth)
+    console.log(`Google API Request completed successfully`, response)
+  } catch (err) {
+    console.error(`Google API Responded with an error: \n`, err.message || err)
+    throw err
+  }
 }
 
 /**
@@ -91,20 +102,26 @@ export default functions.database
 
 async function callGoogleApi(event) {
   console.log('call google api', event)
-  const eventData = invoke(get(event, 'data'), 'val')
-  console.log('call google api event data', eventData)
+  const eventData = get(event, 'data')
+  const eventVal = invoke(eventData, 'val')
   const {
     api = 'storage',
-    body = { cors: [{ origin: 'http://mytest.com' }] },
+    method = 'GET',
+    body,
     suffix = `b/${functions.config().firebase.storageBucket}`,
     serviceAccount: { fullPath }
-  } = event.data.val()
-  console.log('getting service account from path', fullPath)
-  const serviceAccount = await serviceAccountFromStoragePath(fullPath)
+  } = eventVal
+  const serviceAccount = await serviceAccountFileFromStorage(
+    fullPath,
+    get(event, 'params.pushId', 'nope')
+  )
   return googleApisRequest(serviceAccount, {
-    method: 'PUT',
-    uri: `https://www.googleapis.com/${api}/v1/${suffix}?alt=json`,
+    method,
+    uri: `https://www.googleapis.com/${api}/v1/${suffix}?cors`,
     body,
+    headers: {
+      'Gdata-Version': '3.0'
+    },
     json: true
   })
 }

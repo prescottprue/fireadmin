@@ -21,7 +21,7 @@
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
     "mkdirp-promise": "^5.0.1",
-    "request": "^2.83.0",
+    "request": "^2.34",
     "request-promise": "^4.2.2",
     "safe-eval": "^0.3.0"
   },

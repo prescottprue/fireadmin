@@ -92,6 +92,12 @@ export async function serviceAccountFromStoragePath(docPath, name) {
   return tempLocalPath
 }
 
+export async function serviceAccountFileFromStorage(docPath, name) {
+  const accountLocalPath = await serviceAccountFromStoragePath(docPath, name)
+  console.log('service account loaded', accountLocalPath)
+  return fs.readJson(accountLocalPath)
+}
+
 // const actionBetweenTwoAppInstances = () => () => {
 //   const app1 = appFromFirestorePath(serviceAccount1Path, 'app1')
 //   const app2 = appFromFirestorePath(serviceAccount2Path, 'app2')

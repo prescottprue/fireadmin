@@ -1,8 +1,9 @@
 import { get, invoke } from 'lodash'
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { withStateHandlers, withHandlers } from 'recompose'
 import { withNotifications } from 'modules/notification'
-import { withFirestore } from 'react-redux-firebase'
+import { firebaseConnect, getVal } from 'react-redux-firebase'
 
 const waitForCompleted = ref => {
   return new Promise((resolve, reject) => {
@@ -21,7 +22,13 @@ const waitForCompleted = ref => {
 }
 
 export default compose(
-  withFirestore,
+  firebaseConnect(({ params }) => [`serviceAccounts/${params.projectId}`]),
+  connect(({ firebase, firestore: { data } }, { params }) => ({
+    serviceAccounts: getVal(
+      firebase,
+      `data/serviceAccounts/${params.projectId}`
+    )
+  })),
   withNotifications,
   withStateHandlers(
     ({ initialSelected = null }) => ({
@@ -51,11 +58,7 @@ export default compose(
       try {
         const pushRef = await firebase.pushWithMeta('requests/googleApi', {
           api: 'storage',
-          body: bucketConfig,
-          serviceAccount: {
-            fullPath:
-              'serviceAccounts/aZJDcgty1Ofske1kusTDEFsjWeh2/ZHg98Qsk8aTDuhqwYIjH/fireadmin-stage-e1ce9e573bd1.json'
-          }
+          ...bucketConfig
         })
         await waitForCompleted(pushRef)
         showSuccess('Stoage Bucket Config Updated Successfully')
