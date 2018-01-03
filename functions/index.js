@@ -8,7 +8,6 @@ const authWithGoogle = require('./dist/authWithGoogle').default
 const indexMigrationTemplates = require('./dist/search').indexMigrationTemplates
 // const copyServiceAccountToFirestore = require('./dist/copyServiceAccountToFirestore').default
 
-
 admin.initializeApp(functions.config().firebase)
 
 exports.dataMigration = dataMigration
