@@ -1,7 +1,8 @@
+import { invoke, get } from 'lodash'
 import request from 'request-promise'
 import { serviceAccountFromStoragePath } from '../utils/serviceAccounts'
 const functions = require('firebase-functions')
-var google = require('googleapis')
+const google = require('googleapis')
 
 const SCOPES = [
   'https://www.googleapis.com/auth/devstorage.full_control',
@@ -16,6 +17,7 @@ const eventPathName = 'googleApi'
  * @return {Promise} Resolves with JWT Auth Client (for attaching to request)
  */
 const authClientFromServiceAccount = serviceAccount => {
+  console.log('auth client from service account')
   if (jwtClient) {
     return Promise.resolve(jwtClient)
   }
@@ -61,6 +63,7 @@ const addServiceAccountAuthToRequest = (serviceAccount, requestSettings) => {
  * @return {Promise} Resolves with results of Goggle API request
  */
 export const googleApisRequest = async (serviceAccount, requestSettings) => {
+  console.log('Google API requests request')
   const requestSettingsWithAuth = await addServiceAccountAuthToRequest(
     serviceAccount,
     requestSettings
@@ -68,10 +71,10 @@ export const googleApisRequest = async (serviceAccount, requestSettings) => {
   return new Promise((resolve, reject) => {
     request(requestSettingsWithAuth, (err, response) => {
       if (err) {
-        console.error(`${name} sheet action returned an error:`, err)
+        console.error(`${name} request had an error`, err)
         return reject(err)
       }
-      console.log(`${name} sheet action completed successfully`, response)
+      console.log(`${name} request completed successfully`, response)
       return resolve(response)
     })
   })
@@ -87,12 +90,16 @@ export default functions.database
   .onCreate(callGoogleApi)
 
 async function callGoogleApi(event) {
+  console.log('call google api', event)
+  const eventData = invoke(get(event, 'data'), 'val')
+  console.log('call google api event data', eventData)
   const {
     api = 'storage',
     body = { cors: [{ origin: 'http://mytest.com' }] },
-    suffix = `b/${functions.config().firebase.storageBucket}`
-  } = event
-  const { serviceAccount: { fullPath } } = event.data.val()
+    suffix = `b/${functions.config().firebase.storageBucket}`,
+    serviceAccount: { fullPath }
+  } = event.data.val()
+  console.log('getting service account from path', fullPath)
   const serviceAccount = await serviceAccountFromStoragePath(fullPath)
   return googleApisRequest(serviceAccount, {
     method: 'PUT',

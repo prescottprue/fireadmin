@@ -51,7 +51,11 @@ export default compose(
       try {
         const pushRef = await firebase.pushWithMeta('requests/googleApi', {
           api: 'storage',
-          body: bucketConfig
+          body: bucketConfig,
+          serviceAccount: {
+            fullPath:
+              'serviceAccounts/aZJDcgty1Ofske1kusTDEFsjWeh2/ZHg98Qsk8aTDuhqwYIjH/fireadmin-stage-e1ce9e573bd1.json'
+          }
         })
         await waitForCompleted(pushRef)
         showSuccess('Stoage Bucket Config Updated Successfully')
