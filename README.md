@@ -3,8 +3,8 @@
 <!-- [![NPM version][npm-image]][npm-url] -->
 [![Build Status][travis-image]][travis-url]
 <!-- [![Dependency Status][daviddm-image]][daviddm-url] -->
-[![Code Coverage][coverage-image]][coverage-url]
-[![Code Climate][climate-image]][climate-url]
+<!-- [![Code Coverage][coverage-image]][coverage-url] -->
+<!-- [![Code Climate][climate-image]][climate-url] -->
 [![License][license-image]][license-url]
 [![Code Style][code-style-image]][code-style-url]
 
@@ -27,15 +27,14 @@
 * Multiple Environments
 * Data Migrations
 * Project Sharing (invite by email coming soon)
+* Get/Set CORS Config of Storage Buckets
+* Multi Step Migrations (with custom code)
 
 *coming soon*
-
-* Set CORS Config of Storage Buckets
-* Multi Step Migrations (with mapping)
-* Custom Code For Migrations
-* Data Viewer
+* Authorized Google API Request Panel
 * Invite new users by email
 * User manager (including role assignment)
+* Data Viewer
 * "Go To Production" checklist
 
 Interested in adding a feature or contributing? Open an issue or [reach out over](https://gitter.im/firebase-admin/Lobby)
@@ -69,8 +68,6 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 
 
 ## Application Structure
-
-The application structure presented in this boilerplate is **fractal**, where functionality is grouped primarily by feature rather than file type. Please note, however, that this structure is only meant to serve as a guide, it is by no means prescriptive. That said, it aims to represent generally accepted guidelines and patterns for building scalable applications. If you wish to read more about this pattern, please check out this [awesome writeup](https://github.com/davezuko/react-redux-starter-kit/wiki/Fractal-Project-Structure) by [Justin Greenberg](https://github.com/justingreenberg).
 
 ```
 .
@@ -140,7 +137,7 @@ For more options on CI settings checkout the [firebase-ci docs](https://github.c
 1. Why node `6.11.5` instead of a newer version? [Cloud Functions runtime is still on `6.11.5`](https://cloud.google.com/functions/docs/writing/#the_cloud_functions_runtime), which is why that is what is used for the travis build version. This will be switched when the functions runtime is updated
 1. Why Yarn over node's `package-lock.json`? - Relates to previous question. Node `6.*.*` and equivalent npm didn't include lock files yet.
 
-## What Happened To The Old Fireadmin Library?
+## What Happened To The Fireadmin NPM Library?
 
 It is now deprecated. It may come back in the future as a support library for Fireadmin.
 

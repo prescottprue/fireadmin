@@ -29,7 +29,7 @@ export const SidebarList = ({
         className={itemIsActive(value) ? classes.activeListItem : undefined}
         onClick={() => goTo(value)}>
         <ListItemIcon>{iconElement || <LayersIcon />}</ListItemIcon>
-        <ListItemText primary={capitalize(value || label)} />
+        <ListItemText primary={label || capitalize(value)} />
       </ListItem>
     ))}
     <Divider />

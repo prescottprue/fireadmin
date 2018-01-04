@@ -1,0 +1,11 @@
+@import 'base';
+
+.container {
+
+}
+.add {
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  @extend .flex-row-center;
+  width: 100%;
+}
