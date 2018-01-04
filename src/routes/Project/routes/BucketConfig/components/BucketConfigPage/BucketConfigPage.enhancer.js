@@ -1,9 +1,9 @@
 import { get, invoke } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withStateHandlers, withHandlers } from 'recompose'
-import { withNotifications } from 'modules/notification'
+import { withHandlers } from 'recompose'
 import { firebaseConnect, firestoreConnect, getVal } from 'react-redux-firebase'
+import { withNotifications } from 'modules/notification'
 
 const waitForCompleted = (ref, firebase) => {
   return new Promise((resolve, reject) => {
@@ -42,30 +42,8 @@ export default compose(
     )
   })),
   withNotifications,
-  withStateHandlers(
-    ({ initialSelected = null }) => ({
-      fromInstance: initialSelected,
-      toInstance: initialSelected,
-      copyPath: null,
-      instances: null
-    }),
-    {
-      selectFrom: ({ selectInstance }) => (e, ind, newSelected) => ({
-        fromInstance: newSelected
-      }),
-      selectTo: ({ selectInstance }) => (e, ind, newSelected) => ({
-        toInstance: newSelected
-      }),
-      setCopyPath: ({ copyPath }) => e => ({
-        copyPath: e.target.value
-      }),
-      setConfig: () => currentConfig => ({
-        currentConfig
-      })
-    }
-  ),
   withHandlers({
-    updateBucketConfig: ({
+    callGoogleApi: ({
       firebase,
       showSuccess,
       showError
@@ -73,31 +51,10 @@ export default compose(
       try {
         const pushRef = await firebase.pushWithMeta('requests/googleApi', {
           api: 'storage',
-          method: 'PUT',
           ...bucketConfig
         })
         await waitForCompleted(pushRef, firebase)
-        showSuccess('Stoage Bucket Config Updated Successfully')
-      } catch (err) {
-        showError('Error Updating Storage Bucket Config')
-        throw err
-      }
-    },
-    getBucketConfig: ({
-      firebase,
-      showSuccess,
-      showError,
-      setConfig
-    }) => async bucketConfig => {
-      try {
-        const pushRef = await firebase.pushWithMeta('requests/googleApi', {
-          api: 'storage',
-          method: 'GET',
-          suffix: `b/${bucketConfig.project}.appspot.com`
-        })
-        const results = await waitForCompleted(pushRef, firebase)
-        setConfig(results)
-        showSuccess('Stoage Bucket Config Get Successful')
+        showSuccess('Storage Bucket Config Updated Successfully')
       } catch (err) {
         showError('Error Updating Storage Bucket Config')
         throw err

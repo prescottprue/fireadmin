@@ -1,128 +1,40 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Button from 'material-ui-next/Button'
-import IconButton from 'material-ui-next/IconButton'
-import Paper from 'material-ui-next/Paper'
-import { map } from 'lodash'
-import { compose } from 'redux'
+import { map, get } from 'lodash'
 import MenuItem from 'material-ui/MenuItem'
-import DeleteIcon from 'material-ui-icons/Delete'
-import { Field, FieldArray, reduxForm, formValues } from 'redux-form'
-import { TextField, SelectField } from 'redux-form-material-ui'
+import { Field, FieldArray } from 'redux-form'
+import { SelectField } from 'redux-form-material-ui'
+import CorsList from '../CorsList'
 import classes from './BucketConfigForm.scss'
-
-const methods = ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS']
-
-const renderOriginsList = ({ fields, meta: { error, submitFailed } }) => (
-  <div style={{ marginBottom: '1rem' }}>
-    <div className={classes.add}>
-      <Button raised color="primary" onClick={() => fields.push()}>
-        Add Origin
-      </Button>
-      {submitFailed && error && <span>{error}</span>}
-    </div>
-    {fields.map((member, index) => (
-      <div className="flex-row" key={`Origin-${index}`}>
-        <Field
-          name={member}
-          type="text"
-          component={TextField}
-          floatingLabelText="Origin"
-        />
-        {index !== 0 && (
-          <IconButton
-            onClick={() => fields.remove(index)}
-            style={{ marginTop: '1.5rem' }}>
-            <DeleteIcon />
-          </IconButton>
-        )}
-      </div>
-    ))}
-  </div>
-)
-
-renderOriginsList.propTypes = {
-  fields: PropTypes.object.isRequired,
-  meta: PropTypes.object.isRequired
-}
-
-const renderCorsList = ({ fields, meta: { error, submitFailed } }) => (
-  <div>
-    {fields.map((member, index) => (
-      <Paper key={index} className={classes.item}>
-        <div className="flex-row">
-          <h4>CORS Config #{index + 1}</h4>
-          <IconButton onClick={() => fields.remove(index)}>
-            <DeleteIcon />
-          </IconButton>
-        </div>
-        <div className="flex-column">
-          <FieldArray name={`${member}.origin`} component={renderOriginsList} />
-          <div className="flex-column">
-            <Field
-              name={`${member}.method`}
-              component={SelectField}
-              floatingLabelText="HTTP Methods to Include"
-              multiple>
-              {methods.map(name => (
-                <MenuItem key={name} value={name} primaryText={name} />
-              ))}
-            </Field>
-          </div>
-          <Field
-            name={`${member}.maxAgeSeconds`}
-            type="number"
-            component={TextField}
-            floatingLabelText="Max Age (in seconds)"
-          />
-        </div>
-      </Paper>
-    ))}
-    <div className={classes.add}>
-      <Button
-        raised
-        color="primary"
-        onClick={() => fields.push({ origin: [''] })}>
-        Add CORS Config
-      </Button>
-      {submitFailed && error && <span>{error}</span>}
-    </div>
-  </div>
-)
-
-renderCorsList.propTypes = {
-  fields: PropTypes.object.isRequired,
-  meta: PropTypes.object.isRequired
-}
 
 export const BucketConfigForm = ({
   handleSubmit,
   pristine,
   serviceAccounts,
   serviceAccount,
+  storageBucket,
+  method,
   reset,
   project,
   currentConfig,
   body,
   submitting
 }) => (
-  <form onSubmit={handleSubmit}>
-    <div>
+  <form onSubmit={handleSubmit} className={classes.container}>
+    <div className={classes.buttons}>
       <Button
         raised
         color="primary"
         type="submit"
-        disabled={pristine || submitting || !serviceAccount}
-        style={{ marginRight: '1rem' }}>
-        Get Bucket Config
-      </Button>
-      <Button
-        raised
-        color="primary"
-        type="submit"
-        disabled={pristine || submitting || !body || !serviceAccount}
-        style={{ marginRight: '1rem' }}>
-        Update Bucket Config
+        disabled={
+          pristine ||
+          submitting ||
+          !serviceAccount ||
+          (method === 'PUT' && !body)
+        }
+        className={classes.button}>
+        Run Bucket Action
       </Button>
       <Button
         raised
@@ -132,9 +44,17 @@ export const BucketConfigForm = ({
         Clear Values
       </Button>
     </div>
-    {currentConfig ? <div>{JSON.stringify(currentConfig, null, 2)}</div> : null}
-
-    <div style={{ marginLeft: '4rem', marginRight: '4rem' }}>
+    <div className={classes.field}>
+      <Field
+        name="method"
+        component={SelectField}
+        floatingLabelText={'Config Action'}
+        fullWidth>
+        <MenuItem value="GET" primaryText="Get Config" />
+        <MenuItem value="PUT" primaryText="Update Config" />
+      </Field>
+    </div>
+    <div className={classes.field}>
       <Field
         name="serviceAccount.fullPath"
         component={SelectField}
@@ -145,37 +65,46 @@ export const BucketConfigForm = ({
         ))}
       </Field>
     </div>
-    <div style={{ marginLeft: '4rem', marginRight: '4rem' }}>
+    <div className={classes.field}>
       <Field
         name="environment"
         component={SelectField}
         floatingLabelText="Environment"
         fullWidth>
-        {map(project.environments, ({ name, fullPath }, key) => (
+        {map(get(project, 'environments'), ({ name, fullPath }, key) => (
           <MenuItem key={key} value={key} primaryText={name} />
         ))}
       </Field>
     </div>
-    <FieldArray name="body.cors" component={renderCorsList} />
+    <div className={classes.field}>
+      <Field
+        name="bucket"
+        disabled
+        component={SelectField}
+        floatingLabelText={
+          storageBucket || 'Storage Bucket (defaults to app bucket)'
+        }
+        fullWidth>
+        <MenuItem value="empty" primaryText="empty" />
+      </Field>
+    </div>
+
+    <FieldArray name="body.cors" component={CorsList} />
   </form>
 )
 
 BucketConfigForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-  pristine: PropTypes.bool.isRequired,
-  submitting: PropTypes.bool.isRequired,
-  reset: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired, // from enhancer (reduxForm)
+  pristine: PropTypes.bool.isRequired, // from enhancer (reduxForm)
+  submitting: PropTypes.bool.isRequired, // from enhancer (reduxForm)
+  reset: PropTypes.func.isRequired, // from enhancer (reduxForm)
   body: PropTypes.object,
+  method: PropTypes.string,
   project: PropTypes.object,
   serviceAccounts: PropTypes.object,
   currentConfig: PropTypes.object,
-  serviceAccount: PropTypes.object
+  serviceAccount: PropTypes.object,
+  storageBucket: PropTypes.string
 }
 
-export default compose(
-  reduxForm({
-    form: 'bucketConfig'
-  }),
-  formValues('serviceAccount'),
-  formValues('body')
-)(BucketConfigForm)
+export default BucketConfigForm

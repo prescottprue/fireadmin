@@ -1,12 +1,12 @@
 import React from 'react'
-import BucketConfigForm from 'components/BucketConfigForm'
+import CorsList from 'routes/project/routes/BucketConfig/components/CorsList'
 import { shallow } from 'enzyme'
 
-describe('(Component) BucketConfigForm', () => {
+describe('(Route: Project Route: BucketConfig Component) CorsList', () => {
   let _component
 
   beforeEach(() => {
-    _component = shallow(<BucketConfigForm bucketConfigForm={{}} />)
+    _component = shallow(<CorsList corsList={{}} />)
   })
 
   it('Renders div', () => {

@@ -1,3 +1,4 @@
 import BucketConfigForm from './BucketConfigForm'
+import enhance from './BucketConfigForm.enhancer'
 
-export default BucketConfigForm
+export default enhance(BucketConfigForm)

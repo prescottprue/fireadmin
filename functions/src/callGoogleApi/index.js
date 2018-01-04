@@ -106,12 +106,17 @@ async function callGoogleApi(event) {
   const eventData = get(event, 'data')
   const eventVal = invoke(eventData, 'val')
   const eventId = get(event, 'params.pushId')
+  console.log('request recieved', eventVal)
+  if (!eventVal) {
+    console.error('No event value?')
+    throw new Error('No value contained within event')
+  }
   const {
     api = 'storage',
     method = 'GET',
     body,
     apiVersion = 'v1',
-    suffix = `b/${functions.config().firebase.storageBucket}`,
+    suffix = eventVal.suffix || `b/${eventVal.storageBucket}`,
     serviceAccount: { fullPath }
   } = eventVal
   try {
@@ -121,7 +126,7 @@ async function callGoogleApi(event) {
     )
     const response = await googleApisRequest(serviceAccount, {
       method,
-      uri: `https://www.googleapis.com/${api}/${apiVersion}/${suffix}?alt=json&cors`,
+      uri: `https://www.googleapis.com/${api}/${apiVersion}/${suffix}?cors`,
       body,
       headers: {
         'Gdata-Version': '3.0'
