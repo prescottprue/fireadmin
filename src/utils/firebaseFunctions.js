@@ -1,12 +1,15 @@
-import { invoke } from 'lodash'
+import { invoke, get } from 'lodash'
 
-export const waitForResponse = (firebase, path) =>
+export const waitForResponseWith = (ref, pathForValue = 'completed', value) =>
   new Promise((resolve, reject) => {
-    firebase.ref(path).on(
+    ref.on(
       'value',
       responseSnap => {
         const response = invoke(responseSnap, 'val')
-        if (response) {
+        if (get(response, pathForValue)) {
+          if (value && get(response, pathForValue) !== value) {
+            return
+          }
           resolve(response)
         }
       },
@@ -16,3 +19,8 @@ export const waitForResponse = (firebase, path) =>
       }
     )
   })
+
+export const createWaitForValue = (...args) => ref =>
+  waitForResponseWith(ref, ...args)
+
+export const waitForCompleted = createWaitForValue('completed', true)

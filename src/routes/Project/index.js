@@ -26,9 +26,10 @@ export default store => ({
           dependencies for bundling   */
       const Environments = require('./routes/Environments').default
       const Migration = require('./routes/Migration').default
+      const BucketConfig = require('./routes/BucketConfig').default
 
       /*  Return getComponent   */
-      cb(null, [Migration(store), Environments(store)])
+      cb(null, [Migration(store), Environments(store), BucketConfig(store)])
     })
   }
 })
