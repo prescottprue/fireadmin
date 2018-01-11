@@ -2,9 +2,23 @@ import { transform } from 'babel-core'
 global.window = {}
 const Firepad = require('firepad')
 
+const babelConfig = {
+  presets: [
+    [
+      'env',
+      {
+        targets: {
+          node: '6.11'
+        }
+      }
+    ]
+  ],
+  plugins: ['transform-object-rest-spread']
+}
+
 function runBabelTransform(stringToTransform) {
   try {
-    return transform(stringToTransform, { presets: ['env'] }).code
+    return transform(stringToTransform, babelConfig).code
   } catch (err) {
     console.log('Error running babel transform:', err.message || err)
     throw err
@@ -34,7 +48,7 @@ function getTextFromFirepad(firebaseRef) {
  * @return {Promise} Resolves with transformed Firepad content
  */
 export async function getFirepadContent(firebaseRef, options = {}) {
-  const { enableTransform = false } = options
+  const { enableTransform = true } = options
   const text = await getTextFromFirepad(firebaseRef)
   return enableTransform ? runBabelTransform(text) : text
 }

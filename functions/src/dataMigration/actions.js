@@ -16,6 +16,10 @@ import {
 } from './utils'
 const functions = require('firebase-functions')
 
+const paths = {
+  customMigrationActions: 'migrationTemplates'
+}
+
 /**
  * Data migration using Service account stored on Firestore
  * @param  {functions.Event} event - Event from cloud function
@@ -38,22 +42,27 @@ export async function runMigrationWithApps(app1, app2, event) {
   console.log(`Running ${totalNumActions} actions`, typeof actions)
   // Run all action promises
   await Promise.all(
-    map(actions, createActionRunner({ app1, app2, event, totalNumActions }))
+    map(
+      actions,
+      createActionRunner({ app1, app2, event, eventData, totalNumActions })
+    )
   )
   cleanup()
   return updateResponseOnRTDB(event)
 }
 
-function createActionRunner({ app1, app2, event, totalNumActions }) {
-  return async function runActionAndUpdateProgress(action, currentAction) {
-    const [err] = await to(runAction(app1, app2, action, currentAction))
+function createActionRunner({ app1, app2, event, eventData, totalNumActions }) {
+  return async function runActionAndUpdateProgress(action, actionIdx) {
+    const [err] = await to(
+      runAction({ app1, app2, action, actionIdx, eventData })
+    )
     if (err) {
       await to(
-        updateResponseWithActionError(event, { totalNumActions, currentAction })
+        updateResponseWithActionError(event, { totalNumActions, actionIdx })
       )
-      throw new Error(`Error running action: ${currentAction} : ${err.message}`)
+      throw new Error(`Error running action: ${actionIdx} : ${err.message}`)
     }
-    return updateResponseWithProgress(event, { totalNumActions, currentAction })
+    return updateResponseWithProgress(event, { totalNumActions, actionIdx })
   }
 }
 
@@ -65,7 +74,7 @@ function createActionRunner({ app1, app2, event, totalNumActions }) {
  * include 'firestore', 'storage', or 'rtdb'
  * @return {Promise}
  */
-export async function runAction(app1, app2, action, actionIdx) {
+export async function runAction({ app1, app2, action, actionIdx, eventData }) {
   console.log('running action:', action)
   if (!action) {
     throw new Error('Event object does not contain a value.')
@@ -73,14 +82,14 @@ export async function runAction(app1, app2, action, actionIdx) {
   const { src, dest, type } = action
 
   if (type === 'custom') {
-    const { templateId } = action
+    const { templateId } = eventData
     console.log(
-      'Data backup complete. Looking for custom mapping...',
-      `migrationsTemplates/${templateId}/actions/${actionIdx}`
+      'Data backup complete. Looking for custom action in location:',
+      `${paths.customMigrationActions}/${templateId}/actions/${actionIdx}`
     )
     const rootRef = admin
       .database()
-      .ref(`migrationsTemplates/${templateId}/actions/${actionIdx}`)
+      .ref(`${paths.customMigrationActions}/${templateId}/actions/${actionIdx}`)
     const firepadContent = await getFirepadContent(rootRef)
     if (!firepadContent) {
       console.log('Custom mapping not found. Skipping.')
