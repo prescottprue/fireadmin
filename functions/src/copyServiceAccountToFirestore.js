@@ -2,6 +2,7 @@
 import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
+import { uniqueId } from 'lodash'
 const functions = require('firebase-functions')
 const gcs = require('@google-cloud/storage')()
 const bucket = gcs.bucket(functions.config().firebase.storageBucket)
@@ -29,14 +30,13 @@ export default functions.firestore
  */
 async function handleServiceAccountCreate(event) {
   // const { fullPath } = event.data.data() // for serviceAccounts as subcollection
-  const { serviceAccount: { fullPath } } = event.data.data()
-  const tempLocalPath = path.join(
-    os.tmpdir(),
-    'copyServiceAccount/serviceAccount.json'
-  )
+  console.log('service account copying to firestore')
+  const eventData = event.data.data()
+  const tempSuffix = `copyServiceAccount/${uniqueId()}/serviceAccount.json`
+  const tempLocalPath = path.join(os.tmpdir(), tempSuffix)
+  const { serviceAccount: { fullPath } } = eventData
   // const fileName = path.basename(fullPath) // File Name
   await bucket.file(fullPath).download({ destination: tempLocalPath })
-  console.log('File downloaded locally to', tempLocalPath)
   // Create Temporary directory and download file to that folder
   const fileData = await fs.readJson(tempLocalPath)
   // Write File data to Service account

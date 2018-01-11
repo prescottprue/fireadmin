@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin'
 import os from 'os'
 import fs from 'fs-extra'
 import path from 'path'
-import { get } from 'lodash'
+import { get, uniqueId } from 'lodash'
 import mkdirp from 'mkdirp-promise'
 const functions = require('firebase-functions')
 const gcs = require('@google-cloud/storage')()
@@ -22,7 +22,9 @@ const serviceAccountGetFuncByType = {
  * @return {String} String name that does not already exist as an app name
  */
 const nameApp = name =>
-  admin.app().apps.indexOf(name) !== -1 ? `project-${Date.now()}` : name
+  !admin.apps || admin.apps.indexOf(name) !== -1
+    ? `${name}-${uniqueId()}`
+    : name
 
 /**
  * Get Firebase app objects from Cloud Function event object.

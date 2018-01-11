@@ -6,13 +6,20 @@ import path from 'path'
 import fs from 'fs-extra'
 import mkdirp from 'mkdirp-promise'
 import { getFirepadContent } from './firepad'
-import { cleanup, updateResponseOnRTDB } from './utils'
+import { to } from '../utils/async'
+import {
+  cleanup,
+  updateResponseOnRTDB,
+  updateResponseWithProgress,
+  updateResponseWithError,
+  updateResponseWithActionError
+} from './utils'
 const functions = require('firebase-functions')
 
 /**
  * Data migration using Service account stored on Firestore
- * @param  {functions.Event} event [description]
- * @param  {object|undefined} event.params [description]
+ * @param  {functions.Event} event - Event from cloud function
+ * @param  {object|undefined} event.params - Parameters from event
  * @param  {String} event.data.serviceAccountType - Type of service accounts, options
  * include 'firestore', 'storage', or 'rtdb'
  * @return {Promise}
@@ -24,19 +31,36 @@ export async function runMigrationWithApps(app1, app2, event) {
   }
   const { actions } = eventData
   if (!isArray(actions)) {
+    updateResponseWithError(event)
     throw new Error('Actions array was not provided to migration request')
   }
-  console.log(`Running ${size(actions)} actions`, typeof actions)
+  const totalNumActions = size(actions)
+  console.log(`Running ${totalNumActions} actions`, typeof actions)
   // Run all action promises
-  await Promise.all(map(actions, action => runAction(app1, app2, action)))
+  await Promise.all(
+    map(actions, createActionRunner({ app1, app2, event, totalNumActions }))
+  )
   cleanup()
   return updateResponseOnRTDB(event)
 }
 
+function createActionRunner({ app1, app2, event, totalNumActions }) {
+  return async function runActionAndUpdateProgress(action, currentAction) {
+    const [err] = await to(runAction(app1, app2, action))
+    if (err) {
+      await to(
+        updateResponseWithActionError(event, { totalNumActions, currentAction })
+      )
+      throw new Error(`Error running action: ${currentAction} : ${err.message}`)
+    }
+    return updateResponseWithProgress(event, { totalNumActions, currentAction })
+  }
+}
+
 /**
  * Data migration using Service account stored on Firestore
- * @param  {functions.Event} event [description]
- * @param  {object|undefined} event.params [description]
+ * @param  {functions.Event} event - Event from cloud function
+ * @param  {object|undefined} event.params - Parameters from event
  * @param  {String} event.data.serviceAccountType - Type of service accounts, options
  * include 'firestore', 'storage', or 'rtdb'
  * @return {Promise}
