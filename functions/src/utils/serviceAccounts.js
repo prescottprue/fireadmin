@@ -15,18 +15,6 @@ const serviceAccountGetFuncByType = {
 }
 
 /**
- * Check the current list of Firebase apps to confirm new name is not already
- * within app list (causes an Error with Firebase library). If name already
- * exists, a unique name containg a timestamp is created.
- * @param  {String} name - Name to be checked for existence
- * @return {String} String name that does not already exist as an app name
- */
-const nameApp = name =>
-  !admin.apps || admin.apps.indexOf(name) !== -1
-    ? `${name}-${uniqueId()}`
-    : name
-
-/**
  * Get Firebase app objects from Cloud Function event object.
  * @param  {Object} event - Function event object containing service account
  * paths
@@ -63,14 +51,14 @@ export async function getAppsFromEvent(event) {
         credential: admin.credential.cert(account1LocalPath),
         databaseURL: database1URL
       },
-      nameApp('app1')
+      `app1-${uniqueId()}`
     ),
     app2: admin.initializeApp(
       {
         credential: admin.credential.cert(account2LocalPath),
         databaseURL: database2URL
       },
-      nameApp('app2')
+      `app2-${uniqueId()}`
     )
   }
 }

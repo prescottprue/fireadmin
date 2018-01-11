@@ -46,7 +46,7 @@ export async function runMigrationWithApps(app1, app2, event) {
 
 function createActionRunner({ app1, app2, event, totalNumActions }) {
   return async function runActionAndUpdateProgress(action, currentAction) {
-    const [err] = await to(runAction(app1, app2, action))
+    const [err] = await to(runAction(app1, app2, action, currentAction))
     if (err) {
       await to(
         updateResponseWithActionError(event, { totalNumActions, currentAction })
@@ -65,24 +65,22 @@ function createActionRunner({ app1, app2, event, totalNumActions }) {
  * include 'firestore', 'storage', or 'rtdb'
  * @return {Promise}
  */
-export async function runAction(app1, app2, action) {
+export async function runAction(app1, app2, action, actionIdx) {
   console.log('running action:', action)
   if (!action) {
     throw new Error('Event object does not contain a value.')
   }
   const { src, dest, type } = action
 
-  if (!src || !dest || !src.resource || !dest.resource) {
-    throw new Error('src, dest and src.resource are required to run migration')
-  }
-
   if (type === 'custom') {
-    const { mappingPath } = action
+    const { templateId } = action
     console.log(
       'Data backup complete. Looking for custom mapping...',
-      mappingPath
+      `migrationsTemplates/${templateId}/actions/${actionIdx}`
     )
-    const rootRef = admin.database().ref(mappingPath)
+    const rootRef = admin
+      .database()
+      .ref(`migrationsTemplates/${templateId}/actions/${actionIdx}`)
     const firepadContent = await getFirepadContent(rootRef)
     if (!firepadContent) {
       console.log('Custom mapping not found. Skipping.')
@@ -93,6 +91,10 @@ export async function runAction(app1, app2, action) {
     )
     const evalContext = { console, functions, admin }
     return safeEval(firepadContent, evalContext)
+  }
+
+  if (!src || !dest || !src.resource || !dest.resource) {
+    throw new Error('src, dest and src.resource are required to run migration')
   }
 
   switch (src.resource) {

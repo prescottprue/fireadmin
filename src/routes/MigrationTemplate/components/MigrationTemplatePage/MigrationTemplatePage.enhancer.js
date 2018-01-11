@@ -44,6 +44,7 @@ export default compose(
       const updatePath = `${firebasePaths.migrationTemplates}/${templateId}`
       const updatesWithMeta = {
         ...updateVals,
+        templateId,
         updatedAt: firestore.FieldValue.serverTimestamp()
       }
       try {
