@@ -14,15 +14,33 @@ const serviceAccountGetFuncByType = {
   storage: serviceAccountFromStoragePath
 }
 
+/**
+ * Check the current list of Firebase apps to confirm new name is not already
+ * within app list (causes an Error with Firebase library). If name already
+ * exists, a unique name containg a timestamp is created.
+ * @param  {String} name - Name to be checked for existence
+ * @return {String} String name that does not already exist as an app name
+ */
+const nameApp = name =>
+  admin.app().apps.indexOf(name) !== -1 ? `project-${Date.now()}` : name
+
+/**
+ * Get Firebase app objects from Cloud Function event object.
+ * @param  {Object} event - Function event object containing service account
+ * paths
+ * @return {Promise} Resolves with an object containing app1 and app2
+ */
 export async function getAppsFromEvent(event) {
   const {
     serviceAccount1Path,
     serviceAccount2Path,
     database1URL,
     database2URL,
-    serviceAccountType = 'firestore'
+    serviceAccountType = 'storage'
   } = event.data.val()
-  console.log('Getting apps from event for type:', database2URL, database1URL)
+  console.log(
+    `Getting apps from service accounts from ${serviceAccountType}...`
+  )
   const getServiceAccount = get(serviceAccountGetFuncByType, serviceAccountType)
   if (!getServiceAccount) {
     const errMessage = 'Invalid service account type in migration request'
@@ -43,14 +61,14 @@ export async function getAppsFromEvent(event) {
         credential: admin.credential.cert(account1LocalPath),
         databaseURL: database1URL
       },
-      'app1'
+      nameApp('app1')
     ),
     app2: admin.initializeApp(
       {
         credential: admin.credential.cert(account2LocalPath),
         databaseURL: database2URL
       },
-      'app2'
+      nameApp('app2')
     )
   }
 }
@@ -74,10 +92,10 @@ export async function serviceAccountFromFirestorePath(docPath, name) {
 }
 
 /**
- * Load service account data from Cloud Storage
+ * Load service account file from Cloud Storage, returning local storage path.
  * @param  {String} docPath - Path to Service Account File on Cloud Storage
  * @param  {String} name - Name under which to store local service account file
- * @return {Promise}
+ * @return {Promise} Resolves with local path of file
  */
 export async function serviceAccountFromStoragePath(docPath, name) {
   console.log('Getting service accounts stored in Cloud Storage')
@@ -92,14 +110,15 @@ export async function serviceAccountFromStoragePath(docPath, name) {
   return tempLocalPath
 }
 
+/**
+ * Load service account data from Cloud storage file (returns file contents as
+ * object)
+ * @param  {String} docPath - Path to Service Account File on Cloud Storage
+ * @param  {String} name - Name under which to store local service account file
+ * @return {Promise} Resolves with JS object containg contents of service
+ * account file
+ */
 export async function serviceAccountFileFromStorage(docPath, name) {
   const accountLocalPath = await serviceAccountFromStoragePath(docPath, name)
-  console.log('service account loaded', accountLocalPath)
   return fs.readJson(accountLocalPath)
 }
-
-// const actionBetweenTwoAppInstances = () => () => {
-//   const app1 = appFromFirestorePath(serviceAccount1Path, 'app1')
-//   const app2 = appFromFirestorePath(serviceAccount2Path, 'app2')
-//   return action(app1, app2)
-// }

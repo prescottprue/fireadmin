@@ -1,5 +1,3 @@
-import { compose } from 'redux'
-import { withHandlers } from 'recompose'
-import { withNotifications } from 'modules/notification'
+import { formValues } from 'redux-form'
 
-export default compose(withNotifications, withHandlers({}))
+export default formValues('actions')
