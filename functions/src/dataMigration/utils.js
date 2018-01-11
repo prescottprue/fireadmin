@@ -28,6 +28,53 @@ export function updateRequestAsStarted(event) {
   return event.data.adminRef.ref.update(response)
 }
 
+export function updateResponseWithProgress(
+  event,
+  { currentAction, totalNumActions }
+) {
+  const response = {
+    status: 'running',
+    stepCompleteStatus: {
+      [currentAction]: true
+    },
+    progress: currentAction / totalNumActions,
+    updatedAt: admin.database.ServerValue.TIMESTAMP
+  }
+  return event.data.adminRef.ref.root
+    .child(`${MIGRATION_RESPONSES_PATH}/${event.params.pushId}`)
+    .update(response)
+}
+
+export function updateResponseWithError(event) {
+  const response = {
+    status: 'error',
+    updatedAt: admin.database.ServerValue.TIMESTAMP
+  }
+  return event.data.adminRef.ref.root
+    .child(`${MIGRATION_RESPONSES_PATH}/${event.params.pushId}`)
+    .update(response)
+}
+
+export function updateResponseWithActionError(
+  event,
+  { currentAction, totalNumActions }
+) {
+  const response = {
+    status: 'error',
+    stepCompleteStatus: {
+      [currentAction]: false
+    },
+    stepErrorStatus: {
+      [currentAction]: true
+    },
+    progress: currentAction / totalNumActions,
+    updatedAt: admin.database.ServerValue.TIMESTAMP
+  }
+  return event.data.adminRef.ref.root
+    .child(`${MIGRATION_RESPONSES_PATH}/${event.params.pushId}`)
+    .update(response)
+}
+
 export function cleanup() {
   cleanupServiceAccount('app1')
   cleanupServiceAccount('app2')

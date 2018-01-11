@@ -1,8 +1,9 @@
 {
-  "name": "functions",
-  "description": "Cloud Functions for Firebase",
+  "name": "fireadmin-functions",
+  "description": "Cloud Functions for Fireadmin application.",
   "scripts": {
-    "test": "npm run build && ./node_modules/.bin/mocha tests/**/*.spec.js --reporter spec --recursive --require babel-core/register",
+    "test": "npm run build && mocha -R spec ./test/unit/**",
+    "test:cov": "istanbul cover ./node_modules/mocha/bin/_mocha ./test/unit/**",
     "lint": "eslint -c .eslintrc ./src",
     "clean": "rimraf dist etc",
     "build": "npm run clean && babel src -d --out-dir dist",

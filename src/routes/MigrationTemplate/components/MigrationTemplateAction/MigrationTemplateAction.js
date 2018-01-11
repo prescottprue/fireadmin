@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { capitalize } from 'lodash'
+import { capitalize, get } from 'lodash'
 import { Field } from 'redux-form'
 import { TextField, SelectField } from 'redux-form-material-ui'
 import ExpansionPanel, {
@@ -30,7 +30,11 @@ const resourcesOptions = [
   { value: 'storage', label: 'Cloud Storage' }
 ]
 
-export const MigrationTemplateAction = ({ fields, mainEditorPath }) => (
+export const MigrationTemplateAction = ({
+  fields,
+  mainEditorPath,
+  actions
+}) => (
   <div>
     <Button
       raised
@@ -84,7 +88,7 @@ export const MigrationTemplateAction = ({ fields, mainEditorPath }) => (
                 ))}
               </Field>
             </Grid>
-            {fields.get(index).type !== 'custom' ? (
+            {get(actions, `${index}.type`) !== 'custom' ? (
               <Grid item xs={12} lg={3}>
                 <h4>Source</h4>
                 <Field
@@ -160,6 +164,7 @@ export const MigrationTemplateAction = ({ fields, mainEditorPath }) => (
 
 MigrationTemplateAction.propTypes = {
   fields: PropTypes.object.isRequired,
+  actions: PropTypes.array,
   mainEditorPath: PropTypes.string.isRequired
 }
 
