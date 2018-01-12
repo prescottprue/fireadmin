@@ -4,7 +4,9 @@ import Button from 'material-ui-next/Button'
 import { map, get } from 'lodash'
 import MenuItem from 'material-ui/MenuItem'
 import { Field, FieldArray } from 'redux-form'
+import Typography from 'material-ui-next/Typography'
 import { SelectField } from 'redux-form-material-ui'
+import Paper from 'material-ui-next/Paper'
 import CorsList from '../CorsList'
 import classes from './BucketConfigForm.scss'
 
@@ -44,52 +46,58 @@ export const BucketConfigForm = ({
         Clear Values
       </Button>
     </div>
-    <div className={classes.field}>
-      <Field
-        name="method"
-        component={SelectField}
-        floatingLabelText={'Config Action'}
-        fullWidth>
-        <MenuItem value="GET" primaryText="Get Config" />
-        <MenuItem value="PUT" primaryText="Update Config" />
-      </Field>
-    </div>
-    <div className={classes.field}>
-      <Field
-        name="serviceAccount.fullPath"
-        component={SelectField}
-        floatingLabelText="Service Account"
-        fullWidth>
-        {map(serviceAccounts, ({ name, fullPath }) => (
-          <MenuItem key={name} value={fullPath} primaryText={name} />
-        ))}
-      </Field>
-    </div>
-    <div className={classes.field}>
-      <Field
-        name="environment"
-        component={SelectField}
-        floatingLabelText="Environment"
-        fullWidth>
-        {map(get(project, 'environments'), ({ name, fullPath }, key) => (
-          <MenuItem key={key} value={key} primaryText={name} />
-        ))}
-      </Field>
-    </div>
-    <div className={classes.field}>
-      <Field
-        name="bucket"
-        disabled
-        component={SelectField}
-        floatingLabelText={
-          storageBucket || 'Storage Bucket (defaults to app bucket)'
-        }
-        fullWidth>
-        <MenuItem value="empty" primaryText="empty" />
-      </Field>
-    </div>
-
-    <FieldArray name="body.cors" component={CorsList} />
+    <Paper className={classes.paper}>
+      <div className={classes.field}>
+        <Field
+          name="environment"
+          component={SelectField}
+          floatingLabelText="Environment"
+          fullWidth>
+          {map(get(project, 'environments'), ({ name, fullPath }, key) => (
+            <MenuItem key={key} value={key} primaryText={name} />
+          ))}
+        </Field>
+      </div>
+      <div className={classes.field}>
+        <Field
+          name="serviceAccount.fullPath"
+          component={SelectField}
+          floatingLabelText="Service Account"
+          fullWidth>
+          {map(serviceAccounts, ({ name, fullPath }) => (
+            <MenuItem key={name} value={fullPath} primaryText={name} />
+          ))}
+        </Field>
+      </div>
+      <div className={classes.field}>
+        <Field
+          name="method"
+          component={SelectField}
+          floatingLabelText="Action"
+          fullWidth>
+          <MenuItem value="GET" primaryText="Get Config" />
+          <MenuItem value="PUT" primaryText="Update Config" />
+        </Field>
+      </div>
+      <div className={classes.field}>
+        <Field
+          name="bucket"
+          disabled
+          component={SelectField}
+          floatingLabelText={
+            storageBucket || 'Storage Bucket (defaults to app bucket)'
+          }
+          fullWidth>
+          <MenuItem value="empty" primaryText="empty" />
+        </Field>
+      </div>
+    </Paper>
+    <Paper className={classes.paper}>
+      <Typography className={classes.subHeader} type="headline" component="h2">
+        CORS Configuration
+      </Typography>
+      <FieldArray name="body.cors" component={CorsList} />
+    </Paper>
   </form>
 )
 

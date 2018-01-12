@@ -25,7 +25,8 @@ export const AddEnvironmentDialog = ({
   ...other
 }) => (
   <Dialog
-    title="Add Environment"
+    title={`${isEditing ? 'Edit' : 'Add'} Environment`}
+    onRequestClose={onRequestClose}
     actions={[
       <Button
         color="accent"
