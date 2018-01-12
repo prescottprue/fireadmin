@@ -33,7 +33,7 @@ export async function getAppsFromEvent(event) {
   )
   const getServiceAccount = get(serviceAccountGetFuncByType, serviceAccountType)
   if (!getServiceAccount) {
-    const errMessage = 'Invalid service account type in migration request'
+    const errMessage = 'Invalid service account type in action request'
     console.error(errMessage)
     throw new Error(errMessage)
   }

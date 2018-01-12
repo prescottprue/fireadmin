@@ -31,13 +31,13 @@ exports.indexUsers = functions.firestore.document('/users/{userId}').onWrite(
   })
 )
 
-// Updates the search index for migration templates when template is created or updated.
-exports.indexMigrationTemplates = functions.firestore
-  .document('/migrationTemplates/{templateId}')
+// Updates the search index for action templates when template is created or updated.
+exports.indexActionTemplates = functions.firestore
+  .document('/actionTemplates/{templateId}')
   .onWrite(
-    // index migration templates with parameter templateId only if template is public
+    // index action templates with parameter templateId only if template is public
     createIndexFunc({
-      indexName: 'migrationTemplates',
+      indexName: 'actionTemplates',
       idParam: 'templateId',
       indexCondition: template => template.public
     })

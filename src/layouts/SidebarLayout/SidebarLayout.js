@@ -11,7 +11,7 @@ import Divider from 'material-ui-next/Divider'
 // import ChevronRightIcon from 'material-ui-icons/ChevronRight'
 import LayersIcon from 'material-ui-icons/Layers'
 import HomeIcon from 'material-ui-icons/Home'
-import DeviceHubIcon from 'material-ui-icons/DeviceHub'
+import DeviceHubIcon from 'material-ui-icons/SettingsEthernet'
 import StorageIcon from 'material-ui-icons/Dns'
 import SidebarList from './SidebarList'
 
@@ -26,7 +26,7 @@ const sidebarOptions = [
     iconElement: <LayersIcon />
   },
   {
-    value: 'migrations',
+    value: 'actions',
     iconElement: <DeviceHubIcon />
   },
   {
