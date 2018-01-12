@@ -48,6 +48,7 @@
   color: $darkGray;
   cursor: pointer;
   transition: all 800ms cubic-bezier(0.25,0.1,0.25,1) 0ms;
+  margin-bottom: .5rem;
   &:hover {
     color: $accentColor;
   }

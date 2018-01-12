@@ -64,13 +64,6 @@ export default compose(
       selectedCollaborators,
       showSuccess
     }) => async newInstance => {
-      // if (!uid) {
-      //   return showError('You must be logged in to add a ')
-      // }
-      // TODO: Support adding collaborators if you have permission
-      // if (project.createdBy !== uid) {
-      //   return showError('You must be the project owner to add a collaborator')
-      // }
       const currentProject = await firestore.get(`projects/${project.id}`)
       const collaborators = {}
       const collaboratorPermissions = {}
@@ -92,10 +85,11 @@ export default compose(
           .doc(`projects/${project.id}`)
           .update({ collaborators, collaboratorPermissions })
         onRequestClose()
-        showError('Collaborator added successfully')
+        showSuccess('Collaborator added successfully')
         trackEvent({ category: 'Projects', action: 'Add Collaborator' })
       } catch (err) {
-        showError('Error adding collaborator')
+        showError('Collaborator could not be added')
+        throw err
       }
     }
   }),

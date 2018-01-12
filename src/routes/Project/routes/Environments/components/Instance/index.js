@@ -1,3 +1,4 @@
 import Instance from './Instance'
+import enhance from './Instance.enhancer'
 
-export default Instance
+export default enhance(Instance)
