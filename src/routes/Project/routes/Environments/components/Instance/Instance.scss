@@ -1,10 +1,10 @@
 @import 'base';
 
-.container {
+.card {
   margin-left: 1rem;
   margin-right: 1rem;
-  height: 190px;
+  width: 15rem;
 }
-.card {
-  height: 100%;
+.title {
+  cursor: pointer;
 }

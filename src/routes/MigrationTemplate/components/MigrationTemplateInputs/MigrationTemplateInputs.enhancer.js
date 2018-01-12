@@ -1,3 +1,3 @@
 import { formValues } from 'redux-form'
 
-export default formValues('actions')
+export default formValues('inputs')

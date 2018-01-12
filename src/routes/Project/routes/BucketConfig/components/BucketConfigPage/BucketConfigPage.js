@@ -10,7 +10,6 @@ export const BucketConfigPage = ({ serviceAccounts, project }) => (
       Storage Bucket Configuration
     </Typography>
     <div className="flex-column-center">
-      <Typography className={classes.subHeader}>CORS Configuration</Typography>
       <BucketConfigForm serviceAccounts={serviceAccounts} project={project} />
     </div>
   </div>

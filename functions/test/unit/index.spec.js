@@ -1,12 +1,4 @@
-/* eslint-disable global-require, no-unused-vars, no-template-curly-in-string */
-// Chai is a commonly used library for creating unit test suites. It is easily extended with plugins.
-const chai = require('chai')
-// Sinon is a library used for mocking or verifying function calls in JavaScript.
-const sinon = require('sinon')
-const assert = chai.assert
-// const expect = chai.expect
-// const chaiAsPromised = require('chai-as-promised')
-// chai.use(chaiAsPromised)
+/* eslint-disable global-require, no-template-curly-in-string */
 
 describe('Cloud Functions', () => {
   let myFunctions
@@ -15,10 +7,7 @@ describe('Cloud Functions', () => {
   let storageFileToRTDB
   let functions
   let admin
-  let databaseStub
-  let req
-  let res
-  console.log('`${__dirname}/../index`', `${__dirname}/../index`)
+
   before(() => {
     // Since index.js makes calls to functions.config and admin.initializeApp at the top of the file,
     // we need to stub both of these functions before requiring index.js. This is because the

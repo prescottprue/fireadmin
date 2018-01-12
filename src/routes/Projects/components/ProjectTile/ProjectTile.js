@@ -10,6 +10,10 @@ import PersonIcon from 'material-ui-icons/Person'
 import SharingDialog from '../SharingDialog'
 import { get, map } from 'lodash'
 import moment from 'moment'
+import Menu, { MenuItem } from 'material-ui-next/Menu'
+import MoreVertIcon from 'material-ui-icons/MoreVert'
+import { ListItemIcon, ListItemText } from 'material-ui-next/List'
+import EditIcon from 'material-ui-icons/ModeEdit'
 import classes from './ProjectTile.scss'
 
 export const ProjectTile = ({
@@ -18,6 +22,9 @@ export const ProjectTile = ({
   onSelect,
   onDelete,
   users,
+  menuClick,
+  closeMenu,
+  anchorEl,
   sharingDialogOpen,
   toggleSharingDialog
 }) => (
@@ -26,13 +33,37 @@ export const ProjectTile = ({
       <span className={classes.name} onClick={() => onSelect(project)}>
         {project.name}
       </span>
-      {onDelete ? (
-        <Tooltip title="Delete Project">
-          <IconButton onClick={onDelete}>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : null}
+      <div>
+        <IconButton onClick={menuClick}>
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={closeMenu}>
+          <MenuItem onClick={() => onSelect(project)}>
+            <ListItemIcon className={classes.icon}>
+              <EditIcon />
+            </ListItemIcon>
+            <ListItemText
+              classes={{ text: classes.text }}
+              inset
+              primary="Edit"
+            />
+          </MenuItem>
+          <MenuItem onClick={onDelete}>
+            <ListItemIcon className={classes.icon}>
+              <DeleteIcon />
+            </ListItemIcon>
+            <ListItemText
+              classes={{ text: classes.text }}
+              inset
+              primary="Delete"
+            />
+          </MenuItem>
+        </Menu>
+      </div>
     </div>
     {project.createdAt ? (
       <span className={classes.createdAt}>
@@ -40,7 +71,7 @@ export const ProjectTile = ({
       </span>
     ) : null}
     <div className="flex-column">
-      <Tooltip title="Add Collaborators">
+      <Tooltip title="Add Collaborators" placement="bottom">
         <IconButton onClick={toggleSharingDialog}>
           <AddPersonIcon />
         </IconButton>
@@ -71,7 +102,10 @@ ProjectTile.propTypes = {
   project: PropTypes.object.isRequired,
   users: PropTypes.object,
   onSelect: PropTypes.func.isRequired,
+  menuClick: PropTypes.func.isRequired,
+  closeMenu: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
+  anchorEl: PropTypes.object,
   toggleSharingDialog: PropTypes.func,
   sharingDialogOpen: PropTypes.bool,
   open: PropTypes.bool

@@ -1,3 +1,4 @@
 import MigrationTemplateAction from './MigrationTemplateAction'
+import enhance from './MigrationTemplateAction.enhancer'
 
-export default MigrationTemplateAction
+export default enhance(MigrationTemplateAction)

@@ -7,8 +7,9 @@ export default compose(
     users
   })),
   withStateHandlers(
-    ({ initialDialogOpen = false }) => ({
-      sharingDialogOpen: initialDialogOpen
+    ({ initialDialogOpen = false, initialAnchorEl = null }) => ({
+      sharingDialogOpen: initialDialogOpen,
+      anchorEl: initialAnchorEl
     }),
     {
       toggleSharingDialog: ({ sharingDialogOpen }) => action => ({
@@ -17,6 +18,12 @@ export default compose(
       }),
       toggleDialog: ({ sharingDialogOpen }) => () => ({
         sharingDialogOpen: !sharingDialogOpen
+      }),
+      closeMenu: () => () => ({
+        anchorEl: null
+      }),
+      menuClick: () => e => ({
+        anchorEl: e.target
       })
     }
   )
