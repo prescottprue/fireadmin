@@ -8,6 +8,7 @@ import IconButton from 'material-ui-next/IconButton'
 import Button from 'material-ui-next/Button'
 import Grid from 'material-ui-next/Grid'
 import MigrationTemplateAction from '../MigrationTemplateAction'
+import MigrationTemplateInputs from '../MigrationTemplateInputs'
 import DeleteIcon from 'material-ui-icons/Delete'
 import { firebasePaths } from 'constants'
 import classes from './MigrationTemplateForm.scss'
@@ -73,6 +74,10 @@ export const MigrationTemplateForm = ({
         </Grid>
       </Grid>
     </Paper>
+    <div className={classes.actions}>
+      <Typography className={classes.header}>Inputs</Typography>
+      <FieldArray name="inputs" component={MigrationTemplateInputs} />
+    </div>
     <div className={classes.actions}>
       <Typography className={classes.header}>Actions</Typography>
       <FieldArray
