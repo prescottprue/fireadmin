@@ -1,44 +1,76 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
-import Card, {
-  CardActions,
-  CardHeader,
-  CardContent
-} from 'material-ui-next/Card'
+import Card, { CardHeader, CardContent } from 'material-ui-next/Card'
 import Typography from 'material-ui-next/Typography'
-import Button from 'material-ui-next/Button'
+import IconButton from 'material-ui-next/IconButton'
+import Menu, { MenuItem } from 'material-ui-next/Menu'
+import { ListItemIcon, ListItemText } from 'material-ui-next/List'
+import MoreVertIcon from 'material-ui-icons/MoreVert'
+import DeleteIcon from 'material-ui-icons/Delete'
+import EditIcon from 'material-ui-icons/ModeEdit'
 import classes from './Instance.scss'
 
 const databaseURLToProjectName = databaseURL =>
   databaseURL.replace('https://', '').replace('.firebaseio.com', '')
 
-export const Instance = ({ instance, onRemoveClick, onEditClick }) => (
-  <div className={classes.container}>
-    <Card className={classes.card}>
-      <CardHeader
-        title={instance.name}
-        subheader={databaseURLToProjectName(get(instance, 'databaseURL', ''))}
-      />
-      <CardContent>
-        <Typography>{get(instance, 'description', null)}</Typography>
-      </CardContent>
-      <CardActions>
-        <Button color="primary" onClick={onEditClick}>
-          Edit
-        </Button>
-        <Button color="accent" onClick={onRemoveClick}>
-          Remove
-        </Button>
-      </CardActions>
-    </Card>
-  </div>
+export const Instance = ({
+  instance,
+  anchorEl,
+  closeMenu,
+  onRemoveClick,
+  menuClick,
+  editAndClose,
+  onEditClick
+}) => (
+  <Card className={classes.card}>
+    <CardHeader
+      title={
+        <span onClick={onEditClick} className={classes.title}>
+          {instance.name}
+        </span>
+      }
+      subheader={databaseURLToProjectName(get(instance, 'databaseURL', ''))}
+      action={
+        <div>
+          <IconButton onClick={menuClick}>
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={closeMenu}>
+            <MenuItem onClick={editAndClose}>
+              <ListItemIcon className={classes.icon}>
+                <EditIcon />
+              </ListItemIcon>
+              <ListItemText inset primary="Edit" />
+            </MenuItem>
+            <MenuItem onClick={closeMenu}>
+              <ListItemIcon className={classes.icon}>
+                <DeleteIcon />
+              </ListItemIcon>
+              <ListItemText inset primary="Remove" />
+            </MenuItem>
+          </Menu>
+        </div>
+      }
+    />
+    <CardContent>
+      <Typography>{get(instance, 'description', null)}</Typography>
+    </CardContent>
+  </Card>
 )
 
 Instance.propTypes = {
   instance: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-  onRemoveClick: PropTypes.func,
-  onEditClick: PropTypes.func
+  onRemoveClick: PropTypes.func.isRequired,
+  onEditClick: PropTypes.func.isRequired,
+  editAndClose: PropTypes.func.isRequired,
+  menuClick: PropTypes.func.isRequired,
+  closeMenu: PropTypes.func.isRequired,
+  anchorEl: PropTypes.object
 }
 
 export default Instance

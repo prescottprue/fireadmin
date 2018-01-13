@@ -31,7 +31,7 @@ const sidebarOptions = [
   },
   {
     value: 'bucketConfig',
-    label: 'Bucket Configuartion',
+    label: 'Bucket Config',
     iconElement: <StorageIcon />
   }
 ]

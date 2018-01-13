@@ -4,8 +4,14 @@
 
 }
 .add {
-  margin-bottom: 2rem;
-  margin-top: 2rem;
-  @extend .flex-row-center;
-  width: 100%;
+  @extend .flex-row;
+  justify-content: flex-end;
+  width: 40%;
+  @include mobile {
+    width: 100%;
+  }
+}
+.originHeader {
+  @extend .header;
+  font-size: .9rem
 }
