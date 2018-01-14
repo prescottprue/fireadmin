@@ -34,7 +34,9 @@ export const paths = {
 
 export const firebasePaths = {
   actions: 'actions',
-  actionTemplates: 'actionTemplates'
+  actionTemplates: 'actionTemplates',
+  actionRunnerRequests: 'requests/actionRunner',
+  actionRunnerResponses: 'responses/actionRunner'
 }
 
 export default { ...paths, ...formNames }

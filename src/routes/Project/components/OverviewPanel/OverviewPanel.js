@@ -32,7 +32,9 @@ export const OverviewPanel = ({
             </div>
           ) : (
             <div className={classes.environments}>
-              Current Environments:
+              <span style={{ marginRight: '.5rem' }}>
+                Current Environments:
+              </span>
               {numberOfEnvironments}
             </div>
           )}
@@ -45,18 +47,18 @@ export const OverviewPanel = ({
       </div>
       <div className={classes.column}>
         <Typography type="headline" component="h2">
-          Migrations
+          Actions
         </Typography>
         <div>
           <p className={classes.description}>
             Moving data is a nessesary part of any real world application.
-            Migrations allow you to move data in a repeatability and reversable
-            way with a complete logs of actions along the way
+            Actions allow you to move data in a repeatability and reversable way
+            with a complete logs of actions along the way
           </p>
         </div>
-        <Link to={`${projectPath}/${paths.projectDataMigration}`}>
+        <Link to={`${projectPath}/${paths.projectActions}`}>
           <Button raised color="primary" disabled={environmentsEmpty}>
-            Go To Migrations
+            Go To Actions
           </Button>
         </Link>
       </div>

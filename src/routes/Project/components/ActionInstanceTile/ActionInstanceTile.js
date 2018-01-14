@@ -2,11 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
 import Paper from 'material-ui/Paper'
-import classes from './MigrationInstanceTile.scss'
+import classes from './ActionInstanceTile.scss'
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 
-export const MigrationInstanceTile = ({
+export const ActionInstanceTile = ({
   title,
   environments,
   selectedInstance,
@@ -29,11 +29,11 @@ export const MigrationInstanceTile = ({
   </Paper>
 )
 
-MigrationInstanceTile.propTypes = {
+ActionInstanceTile.propTypes = {
   title: PropTypes.string,
   environments: PropTypes.object,
   selectedInstance: PropTypes.string,
   selectInstance: PropTypes.func
 }
 
-export default MigrationInstanceTile
+export default ActionInstanceTile

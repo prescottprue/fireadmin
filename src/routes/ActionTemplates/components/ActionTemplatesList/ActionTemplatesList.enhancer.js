@@ -62,7 +62,7 @@ export default compose(
           newTemplateWithMeta
         )
         props.toggleNewDialog()
-        props.showSuccess('New migration template created successfully')
+        props.showSuccess('New action template created successfully')
       } catch (err) {
         props.showError('Error creating new template')
         console.error('Error creating new template:', err.message || err) // eslint-disable-line no-console
@@ -74,8 +74,8 @@ export default compose(
         await props.firestore.delete(firebasePaths.actionTemplates)
         props.showSuccess('Action template deleted successfully')
       } catch (err) {
-        props.showError('Error deleting migration template')
-        console.error('Error deleting migration template:', err.message || err) // eslint-disable-line no-console
+        props.showError('Error deleting action template')
+        console.error('Error deleting action template:', err.message || err) // eslint-disable-line no-console
       }
     },
     goToTemplate: props => id =>

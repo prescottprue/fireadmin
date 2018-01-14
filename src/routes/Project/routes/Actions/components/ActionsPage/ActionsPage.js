@@ -26,7 +26,7 @@ export const ActionsPage = ({
   fromInstance,
   toggleConfig,
   selectTo,
-  migrationProcessing,
+  actionProcessing,
   selectFrom,
   project
 }) => (
@@ -40,7 +40,7 @@ export const ActionsPage = ({
             !selectedTemplate ||
             !toInstance ||
             !fromInstance ||
-            migrationProcessing
+            actionProcessing
           }
           color="primary"
           onTouchTap={runAction}>
@@ -59,8 +59,8 @@ export const ActionsPage = ({
         <Collapse in={templateEditExpanded} timeout="auto" unmountOnExit>
           <CardContent>
             <Typography paragraph>
-              Run a data migration by selecting a template, filling in the
-              template's configuation options, then clicking run migration
+              Run a data action by selecting a template, filling in the
+              template's configuation options, then clicking run action
             </Typography>
             <div className="flex-row-center">
               <Link to={paths.actionTemplates}>
@@ -128,7 +128,7 @@ ActionsPage.propTypes = {
   selectActionTemplate: PropTypes.func.isRequired,
   toggleTemplateEdit: PropTypes.func.isRequired,
   templateEditExpanded: PropTypes.bool.isRequired,
-  migrationProcessing: PropTypes.bool.isRequired,
+  actionProcessing: PropTypes.bool.isRequired,
   selectedTemplate: PropTypes.object,
   configExpanded: PropTypes.bool.isRequired,
   templateName: PropTypes.string.isRequired

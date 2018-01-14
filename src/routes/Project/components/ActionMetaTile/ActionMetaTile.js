@@ -5,12 +5,12 @@ import Paper from 'material-ui-next/Paper'
 import { Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
 import { required } from 'utils/form'
-import MigrationInstanceTile from '../MigrationInstanceTile'
-import classes from './MigrationMetaTile.scss'
+import ActionInstanceTile from '../ActionInstanceTile'
+import classes from './ActionMetaTile.scss'
 
-export const MigrationMetaTile = ({
+export const ActionMetaTile = ({
   environments,
-  runMigration,
+  runAction,
   selectFrom,
   fromInstance,
   toInstance,
@@ -20,10 +20,10 @@ export const MigrationMetaTile = ({
   return (
     <Paper className={classes.container}>
       <form onSubmit={handleSubmit}>
-        <h2>Migration</h2>
+        <h2>Action</h2>
         <div className={classes.button}>
           <Button raised color="primary" type="submit">
-            Run Migration
+            Run Action
           </Button>
         </div>
         <div>
@@ -35,13 +35,13 @@ export const MigrationMetaTile = ({
           />
         </div>
         <div className={classes.tiles}>
-          <MigrationInstanceTile
+          <ActionInstanceTile
             title="From"
             environments={environments}
             selectedInstance={fromInstance}
             selectInstance={selectFrom}
           />
-          <MigrationInstanceTile
+          <ActionInstanceTile
             title="To"
             environments={environments}
             selectedInstance={toInstance}
@@ -53,9 +53,9 @@ export const MigrationMetaTile = ({
   )
 }
 
-MigrationMetaTile.propTypes = {
+ActionMetaTile.propTypes = {
   environments: PropTypes.object,
-  runMigration: PropTypes.func,
+  runAction: PropTypes.func,
   selectFrom: PropTypes.func,
   fromInstance: PropTypes.string,
   toInstance: PropTypes.string,
@@ -63,4 +63,4 @@ MigrationMetaTile.propTypes = {
   handleSubmit: PropTypes.func
 }
 
-export default MigrationMetaTile
+export default ActionMetaTile

@@ -82,7 +82,7 @@ export const ActionTemplateForm = ({
       <Typography className={classes.header}>Actions</Typography>
       <FieldArray
         name="steps"
-        mainEditorPath={`${firebasePaths.migrationTemplates}/${templateId}`}
+        mainEditorPath={`${firebasePaths.actionTemplates}/${templateId}`}
         component={ActionTemplateStep}
       />
     </div>

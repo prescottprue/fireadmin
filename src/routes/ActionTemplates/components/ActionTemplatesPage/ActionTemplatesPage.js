@@ -11,8 +11,4 @@ export const ActionTemplatesPage = () => (
   </div>
 )
 
-ActionTemplatesPage.propTypes = {
-  // migrationTemplates: PropTypes.object
-}
-
 export default ActionTemplatesPage

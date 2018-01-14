@@ -64,10 +64,11 @@ export const Home = ({ goToLogin }) => (
             <p>Manage multiple Firebase Instances as one Project.</p>
           </div>
           <div className={classes.bottomSection}>
-            <h4>Data Migration</h4>
+            <h4>Custom Actions</h4>
             <p>
               Copy data from one instance to another without worrying about
-              selecting the wrong file. Track all migration events.
+              selecting the wrong file. Create reports on the size of data
+              collections of your instances.
             </p>
           </div>
         </div>
@@ -78,9 +79,7 @@ export const Home = ({ goToLogin }) => (
           </div>
           <div className={classes.bottomSection}>
             <h4>Operations Logs</h4>
-            <p>
-              Event tracking for all migrations and other project based actions.
-            </p>
+            <p>Event tracking for all project based actions.</p>
           </div>
         </div>
       </div>

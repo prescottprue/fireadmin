@@ -16,7 +16,7 @@ const styles = theme => ({
 })
 
 export const ActionTemplatesList = ({
-  migrationTemplates,
+  actionTemplates,
   myTemplates,
   classes,
   toggleNewDialog,
@@ -33,13 +33,13 @@ export const ActionTemplatesList = ({
       New Template
     </Button>
     <div>
-      {migrationTemplates && migrationTemplates.length ? (
+      {actionTemplates && actionTemplates.length ? (
         <div>
           <Typography className={classesFromStyles.sectionHeader}>
             Public Templates
           </Typography>
           <Grid container spacing={24} className={classes.root}>
-            {map(migrationTemplates, (template, templateIdx) => (
+            {map(actionTemplates, (template, templateIdx) => (
               <Grid
                 item
                 xs={12}
@@ -89,7 +89,7 @@ export const ActionTemplatesList = ({
 )
 
 ActionTemplatesList.propTypes = {
-  migrationTemplates: PropTypes.array,
+  actionTemplates: PropTypes.array,
   myTemplates: PropTypes.array,
   toggleNewDialog: PropTypes.func.isRequired,
   createNewActionTemplate: PropTypes.func.isRequired,

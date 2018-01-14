@@ -65,7 +65,7 @@ export default compose(
       const updatePath = `${firebasePaths.actionTemplates}/${templateId}`
       try {
         const res = await firestore.delete(updatePath)
-        router.push(paths.dataMigration)
+        router.push(paths.actionTemplates)
         showSuccess('Template deleted successfully')
         return res
       } catch (err) {

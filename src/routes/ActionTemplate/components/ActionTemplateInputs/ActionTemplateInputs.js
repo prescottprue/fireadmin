@@ -57,7 +57,7 @@ export const ActionTemplateInputs = ({ fields, inputs }) => (
                   />
                 ))}
               </Field>
-              {get(inputs, `${index}`).type === 'serviceAccount' ? (
+              {get(inputs, `${index}.type`) === 'serviceAccount' ? (
                 <Field
                   name={`${member}.resource`}
                   component={SelectField}

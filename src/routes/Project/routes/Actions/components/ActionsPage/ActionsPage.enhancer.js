@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { withStateHandlers, withHandlers, withProps } from 'recompose'
 import { withNotifications } from 'modules/notification'
 import { firebaseConnect, firestoreConnect, getVal } from 'react-redux-firebase'
+import { firebasePaths } from 'constants'
 
 export default compose(
   withNotifications,
@@ -32,7 +33,7 @@ export default compose(
       fromInstance: initialSelected,
       toInstance: initialSelected,
       templateEditExpanded: true,
-      migrationProcessing: false,
+      actionProcessing: false,
       copyPath: null,
       configExpanded: true,
       instances: null
@@ -57,8 +58,8 @@ export default compose(
       setCopyPath: ({ copyPath }) => e => ({
         copyPath: e.target.value
       }),
-      toggleActionProcessing: ({ migrationProcessing }) => e => ({
-        migrationProcessing: !migrationProcessing
+      toggleActionProcessing: ({ actionProcessing }) => e => ({
+        actionProcessing: !actionProcessing
       })
     }
   ),
@@ -91,22 +92,25 @@ export default compose(
       }
       try {
         // Push request to real time database
-        const pushRes = await firebase.pushWithMeta('requests/migration', {
-          projectId: get(params, 'projectId'),
-          serviceAccountType: 'storage',
-          database1URL: environment1.databaseURL,
-          database2URL: environment2.databaseURL,
-          serviceAccount1Path: serviceAccount1.fullPath,
-          serviceAccount2Path: serviceAccount2.fullPath,
-          ...selectedTemplate
-        })
+        const pushRes = await firebase.pushWithMeta(
+          firebasePaths.actionRunnerRequests,
+          {
+            projectId: get(params, 'projectId'),
+            serviceAccountType: 'storage',
+            database1URL: environment1.databaseURL,
+            database2URL: environment2.databaseURL,
+            serviceAccount1Path: serviceAccount1.fullPath,
+            serviceAccount2Path: serviceAccount2.fullPath,
+            ...selectedTemplate
+          }
+        )
         toggleActionProcessing()
         const pushKey = pushRes.key
         // TODO: Add watcher for progress
         // wait for response to be set (set by data migraiton function
-        // after migration is complete)
+        // after action is complete)
         await new Promise((resolve, reject) => {
-          firebase.ref(`responses/migration/${pushKey}`).on(
+          firebase.ref(`${firebasePaths.actionRunnerResponses}/${pushKey}`).on(
             'value',
             snap => {
               const refVal = invoke(snap, 'val')
@@ -124,7 +128,7 @@ export default compose(
         return pushKey
       } catch (err) {
         toggleActionProcessing()
-        showError('Error with migration request')
+        showError('Error with action request')
       }
     }
   }),
