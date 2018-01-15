@@ -4,7 +4,7 @@ const storageFileToRTDB = require('./dist/storageFileToRTDB').default
 const actionRunner = require('./dist/actionRunner').default
 const indexUsers = require('./dist/search').indexUsers
 const callGoogleApi = require('./dist/callGoogleApi').default
-const indexActionTemplates = require('./dist/search').indexMigrationTemplates
+const indexActionTemplates = require('./dist/search').indexActionTemplates
 const copyServiceAccountToFirestore = require('./dist/copyServiceAccountToFirestore')
   .default
 

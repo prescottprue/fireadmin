@@ -127,7 +127,9 @@ export async function runAction({
     const rootRef = admin
       .database()
       .ref(`${CUSTOM_STEPS_PATH}/${templateId}/actions/${actionIdx}`)
-    return invokeFirepadContent(rootRef)
+    const res = await invokeFirepadContent(rootRef, { context: { action } })
+    console.log('res', res)
+    return res
   }
 
   // Require src and dest for all other action types

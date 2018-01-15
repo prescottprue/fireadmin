@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Button from 'material-ui-next/Button'
 import Typography from 'material-ui-next/Typography'
+import { map } from 'lodash'
 import { Link } from 'react-router'
 import IconButton from 'material-ui-next/IconButton'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
@@ -31,17 +32,12 @@ export const ActionsPage = ({
   project
 }) => (
   <div>
-    <Typography className={classes.pageHeader}>Data Action</Typography>
+    <Typography className={classes.pageHeader}>Actions</Typography>
     <div>
       <div className={classes.buttons}>
         <Button
           raised
-          disabled={
-            !selectedTemplate ||
-            !toInstance ||
-            !fromInstance ||
-            actionProcessing
-          }
+          disabled={!selectedTemplate || actionProcessing}
           color="primary"
           onTouchTap={runAction}>
           Run Action
@@ -72,17 +68,19 @@ export const ActionsPage = ({
             <div className={classes.or}>
               <Typography className={classes.orFont}>or</Typography>
             </div>
-            <CollectionSearch
-              indexName="actionTemplates"
-              onSuggestionClick={selectActionTemplate}
-            />
+            <div className={classes.search}>
+              <CollectionSearch
+                indexName="actionTemplates"
+                onSuggestionClick={selectActionTemplate}
+              />
+            </div>
           </CardContent>
         </Collapse>
       </Card>
       {selectedTemplate ? (
         <Card className={classes.card}>
           <CardHeader
-            title="Configuration"
+            title="Inputs"
             action={
               <IconButton onClick={toggleConfig}>
                 {configExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -92,6 +90,11 @@ export const ActionsPage = ({
           <Collapse in={configExpanded} timeout="auto" unmountOnExit>
             <CardContent>
               <Grid container spacing={24} style={{ flexGrow: 1 }}>
+                {selectedTemplate && selectedTemplate.inputs
+                  ? map(selectedTemplate.inputs, (input, key) => (
+                      <pre key={key}>{JSON.stringify(input)}</pre>
+                    ))
+                  : null}
                 <Grid item xs={12} lg={6}>
                   <ActionInstanceTile
                     title="From"

@@ -85,30 +85,38 @@ export const ActionTemplateStep = ({ fields, mainEditorPath, steps }) => (
               </Field>
             </Grid>
             {get(steps, `${index}.type`) !== 'custom' ? (
-              <Grid item xs={12} lg={3}>
-                <h4>Source</h4>
-                <Field
-                  name={`${member}.src.resource`}
-                  component={SelectField}
-                  hintText="Select A Resource"
-                  floatingLabelText="Resource"
-                  className={classes.field}>
-                  {resourcesOptions.map((option, idx) => (
-                    <MenuItem
-                      key={`Option-${option.value}-${idx}`}
-                      value={option.value}
-                      primaryText={option.label || capitalize(option.value)}
-                      disabled={option.disabled}
-                    />
-                  ))}
-                </Field>
-                <Field
-                  name={`${member}.src.path`}
-                  component={TextField}
-                  floatingLabelText="Path"
-                  className={classes.field}
-                />
-                {/* <Field
+              <Grid
+                item
+                xs={12}
+                lg={6}
+                container
+                spacing={24}
+                style={{ flexGrow: 1 }}
+                justify="center">
+                <Grid item xs={12} lg={6}>
+                  <h4>Source</h4>
+                  <Field
+                    name={`${member}.src.resource`}
+                    component={SelectField}
+                    hintText="Select A Resource"
+                    floatingLabelText="Resource"
+                    className={classes.field}>
+                    {resourcesOptions.map((option, idx) => (
+                      <MenuItem
+                        key={`Option-${option.value}-${idx}`}
+                        value={option.value}
+                        primaryText={option.label || capitalize(option.value)}
+                        disabled={option.disabled}
+                      />
+                    ))}
+                  </Field>
+                  <Field
+                    name={`${member}.src.path`}
+                    component={TextField}
+                    floatingLabelText="Path"
+                    className={classes.field}
+                  />
+                  {/* <Field
                   name={`${member}.src.pathType`}
                   component={SelectField}
                   hintText="Select A Path Type"
@@ -123,28 +131,31 @@ export const ActionTemplateStep = ({ fields, mainEditorPath, steps }) => (
                     />
                   ))}
                 </Field> */}
-                <h4>Destination</h4>
-                <Field
-                  name={`${member}.dest.resource`}
-                  component={SelectField}
-                  hintText="Select A Resource"
-                  floatingLabelText="Resource"
-                  className={classes.field}>
-                  {resourcesOptions.map((option, idx) => (
-                    <MenuItem
-                      key={`Option-${option.value}-${idx}`}
-                      value={option.value}
-                      primaryText={option.label || capitalize(option.value)}
-                      disabled={option.disabled}
-                    />
-                  ))}
-                </Field>
-                <Field
-                  name={`${member}.dest.path`}
-                  component={TextField}
-                  floatingLabelText="Path"
-                  className={classes.field}
-                />
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                  <h4>Destination</h4>
+                  <Field
+                    name={`${member}.dest.resource`}
+                    component={SelectField}
+                    hintText="Select A Resource"
+                    floatingLabelText="Resource"
+                    className={classes.field}>
+                    {resourcesOptions.map((option, idx) => (
+                      <MenuItem
+                        key={`Option-${option.value}-${idx}`}
+                        value={option.value}
+                        primaryText={option.label || capitalize(option.value)}
+                        disabled={option.disabled}
+                      />
+                    ))}
+                  </Field>
+                  <Field
+                    name={`${member}.dest.path`}
+                    component={TextField}
+                    floatingLabelText="Path"
+                    className={classes.field}
+                  />
+                </Grid>
               </Grid>
             ) : (
               <ActionEditor rtdbPath={`${mainEditorPath}/steps/${index}`} />

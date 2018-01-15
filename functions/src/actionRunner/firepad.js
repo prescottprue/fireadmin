@@ -82,7 +82,8 @@ export async function getFirepadContent(firebaseRef, options = {}) {
  * @param  {Boolean} [options.enableTransform=true] - Enable babel transform
  * @return {Promise} Resolves with transformed Firepad content
  */
-export async function invokeFirepadContent(firebaseRef, options) {
+export async function invokeFirepadContent(firebaseRef, options = {}) {
+  const { context = {} } = options
   const firepadContent = await getFirepadContent(firebaseRef, options)
   if (!firepadContent) {
     console.log('No text content within Firepad')
@@ -92,6 +93,6 @@ export async function invokeFirepadContent(firebaseRef, options) {
     'Content loaded from Firepad. Evaluating within function context...'
   )
   // TODO: Handle removing return from the begginging of code before evaluating
-  const evalContext = { console, functions, admin }
+  const evalContext = { console, functions, admin, output: {}, ...context }
   return safeEval(firepadContent, evalContext)
 }

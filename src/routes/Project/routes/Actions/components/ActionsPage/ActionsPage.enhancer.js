@@ -76,20 +76,27 @@ export default compose(
         toggleActionProcessing,
         showError
       } = props
-      const serviceAccount1 = get(
+      const serviceAccount1Path = get(
         project,
-        `environments.${fromInstance}.serviceAccount`
+        `environments.${fromInstance}.serviceAccount.fullPath`,
+        null
       )
-      const environment1 = get(project, `environments.${fromInstance}`)
-      const serviceAccount2 = get(
+      const database1URL = get(
         project,
-        `environments.${toInstance}.serviceAccount`
+        `environments.${fromInstance}.databaseURL`,
+        null
       )
-      const environment2 = get(project, `environments.${toInstance}`)
-      // Show error notification if either service account is missing
-      if (!serviceAccount1 || !serviceAccount2) {
-        return props.showError('Service Account Not found')
-      }
+      const database2URL = get(
+        project,
+        `environments.${toInstance}.databaseURL`,
+        null
+      )
+      const serviceAccount2Path = get(
+        project,
+        `environments.${toInstance}.serviceAccount.fullPath`,
+        null
+      )
+      // TODO: Show error notification if required action inputs are not selected
       try {
         // Push request to real time database
         const pushRes = await firebase.pushWithMeta(
@@ -97,10 +104,10 @@ export default compose(
           {
             projectId: get(params, 'projectId'),
             serviceAccountType: 'storage',
-            database1URL: environment1.databaseURL,
-            database2URL: environment2.databaseURL,
-            serviceAccount1Path: serviceAccount1.fullPath,
-            serviceAccount2Path: serviceAccount2.fullPath,
+            database1URL,
+            database2URL,
+            serviceAccount1Path,
+            serviceAccount2Path,
             ...selectedTemplate
           }
         )
@@ -129,6 +136,7 @@ export default compose(
       } catch (err) {
         toggleActionProcessing()
         showError('Error with action request')
+        console.error('Error: ', err.message || err) // eslint-disable-line no-console
       }
     }
   }),

@@ -21,3 +21,6 @@
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
+.search {
+  @extend .flex-row-center;
+}
