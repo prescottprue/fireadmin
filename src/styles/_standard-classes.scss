@@ -29,12 +29,19 @@
   overflow-y: scroll;
 }
 
-.pageHeader {
+.header {
   color: rgba(0, 0, 0, 0.54) !important;
+}
+.pageHeader {
+  @extend .header;
   font-size: 2.25rem !important;
   align-self: flex-start;
   margin-bottom: 2rem !important;
 }
-.header {
-  color: rgba(0, 0, 0, 0.54) !important;
+.subHeader {
+  @extend .header;
+  font-size: 1.5rem !important;
+  align-self: flex-start;
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
 }

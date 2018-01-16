@@ -26,7 +26,8 @@ export default compose(
       const fbRef = firebase.ref(rtdbPath)
       window.firebase = firebase // needed for Firepad to access Firebase lib
       const settings = {
-        defaultText: `// run custom code here\n// const someData = await admin.firebase.ref('some/path').once('value')`
+        defaultText: `// run custom code here including promises
+        // admin.firebase.ref('some/path').once('value').then(snap => snap.numChildren())`
       }
       try {
         firepadEditor = Firepad.fromCodeMirror(fbRef, editor, settings)

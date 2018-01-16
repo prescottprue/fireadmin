@@ -28,16 +28,13 @@ export function updateRequestAsStarted(event) {
   return event.data.adminRef.ref.update(response)
 }
 
-export function updateResponseWithProgress(
-  event,
-  { actionIdx, totalNumActions }
-) {
+export function updateResponseWithProgress(event, { stepIdx, totalNumSteps }) {
   const response = {
     status: 'running',
     stepCompleteStatus: {
-      [actionIdx]: true
+      [stepIdx]: true
     },
-    progress: actionIdx / totalNumActions,
+    progress: stepIdx / totalNumSteps,
     updatedAt: admin.database.ServerValue.TIMESTAMP
   }
   return event.data.adminRef.ref.root
@@ -57,17 +54,17 @@ export function updateResponseWithError(event) {
 
 export function updateResponseWithActionError(
   event,
-  { actionIdx, totalNumActions }
+  { stepIdx, totalNumSteps }
 ) {
   const response = {
     status: 'error',
     stepCompleteStatus: {
-      [actionIdx]: false
+      [stepIdx]: false
     },
     stepErrorStatus: {
-      [actionIdx]: true
+      [stepIdx]: true
     },
-    progress: actionIdx / totalNumActions,
+    progress: stepIdx / totalNumSteps,
     updatedAt: admin.database.ServerValue.TIMESTAMP
   }
   return event.data.adminRef.ref.root

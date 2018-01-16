@@ -1,14 +1,17 @@
-import { get, invoke } from 'lodash'
+import { get, pick } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
+import { formValueSelector } from 'redux-form'
 import { withStateHandlers, withHandlers, withProps } from 'recompose'
+import { firestoreConnect } from 'react-redux-firebase'
+import { firebasePaths, formNames } from 'constants'
 import { withNotifications } from 'modules/notification'
-import { firebaseConnect, firestoreConnect, getVal } from 'react-redux-firebase'
-import { firebasePaths } from 'constants'
+import { pushAndWaitForReponse } from 'utils/firebaseFunctions'
+
+const actionRunnerFormSelector = formValueSelector(formNames.actionRunner)
 
 export default compose(
   withNotifications,
-  firebaseConnect(({ params }) => [`serviceAccounts/${params.projectId}`]),
   firestoreConnect(({ params }) => [
     {
       collection: 'projects',
@@ -20,13 +23,10 @@ export default compose(
       doc: params.projectId
     }
   ]),
-  connect(({ firebase, firestore: { data } }, { params }) => ({
-    auth: firebase.auth,
-    project: get(data, `projects.${params.projectId}`),
-    serviceAccounts: getVal(
-      firebase,
-      `data/serviceAccounts/${params.projectId}`
-    )
+  connect((state, { params }) => ({
+    auth: state.firebase.auth,
+    inputValues: actionRunnerFormSelector(state, 'inputValues'),
+    project: get(state.firestore, `data.projects.${params.projectId}`)
   })),
   withStateHandlers(
     ({ initialSelected = null }) => ({
@@ -68,71 +68,32 @@ export default compose(
       const {
         firebase,
         params,
-        project,
-        toInstance,
-        fromInstance,
         selectedTemplate,
         showSuccess,
+        inputValues,
         toggleActionProcessing,
         showError
       } = props
-      const serviceAccount1Path = get(
-        project,
-        `environments.${fromInstance}.serviceAccount.fullPath`,
-        null
-      )
-      const database1URL = get(
-        project,
-        `environments.${fromInstance}.databaseURL`,
-        null
-      )
-      const database2URL = get(
-        project,
-        `environments.${toInstance}.databaseURL`,
-        null
-      )
-      const serviceAccount2Path = get(
-        project,
-        `environments.${toInstance}.serviceAccount.fullPath`,
-        null
-      )
       // TODO: Show error notification if required action inputs are not selected
+      toggleActionProcessing()
       try {
-        // Push request to real time database
-        const pushRes = await firebase.pushWithMeta(
-          firebasePaths.actionRunnerRequests,
-          {
+        // Push request to real time database and wait for response
+        // TODO: Add watcher for progress
+        const res = await pushAndWaitForReponse({
+          firebase,
+          requestPath: firebasePaths.actionRunnerRequests,
+          responsePath: firebasePaths.actionRunnerResponses,
+          pushObj: {
             projectId: get(params, 'projectId'),
             serviceAccountType: 'storage',
-            database1URL,
-            database2URL,
-            serviceAccount1Path,
-            serviceAccount2Path,
-            ...selectedTemplate
-          }
-        )
-        toggleActionProcessing()
-        const pushKey = pushRes.key
-        // TODO: Add watcher for progress
-        // wait for response to be set (set by data migraiton function
-        // after action is complete)
-        await new Promise((resolve, reject) => {
-          firebase.ref(`${firebasePaths.actionRunnerResponses}/${pushKey}`).on(
-            'value',
-            snap => {
-              const refVal = invoke(snap, 'val')
-              if (refVal) {
-                resolve(refVal)
-              }
-            },
-            err => {
-              reject(err)
-            }
-          )
+            inputValues,
+            template: pick(selectedTemplate, ['steps', 'inputs'])
+          },
+          afterPush: toggleActionProcessing
         })
         toggleActionProcessing()
         showSuccess('Action complete!')
-        return pushKey
+        return res
       } catch (err) {
         toggleActionProcessing()
         showError('Error with action request')

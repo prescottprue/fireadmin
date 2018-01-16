@@ -63,6 +63,32 @@ export async function getAppsFromEvent(event) {
   }
 }
 
+export async function getAppFromServiceAccount(opts) {
+  const {
+    databaseURL,
+    serviceAccountPath,
+    serviceAccountType = 'storage'
+  } = opts
+  console.log(`Getting apps from service account from ${serviceAccountType}...`)
+  const getServiceAccount = get(serviceAccountGetFuncByType, serviceAccountType)
+  if (!getServiceAccount) {
+    const errMessage = 'Invalid service account type in action request'
+    console.error(errMessage)
+    throw new Error(errMessage)
+  }
+  // Make unique app name (prevents issue of multiple apps initialized with same name)
+  const appName = `app-${uniqueId()}`
+  // Get Service account data from resource (i.e Storage, Firestore, etc)
+  const account1LocalPath = await getServiceAccount(serviceAccountPath, appName)
+  return admin.initializeApp(
+    {
+      credential: admin.credential.cert(account1LocalPath),
+      databaseURL
+    },
+    appName
+  )
+}
+
 /**
  * Load service account data From Firestore
  * @param  {String} docPath - Path to Firestore document containing service

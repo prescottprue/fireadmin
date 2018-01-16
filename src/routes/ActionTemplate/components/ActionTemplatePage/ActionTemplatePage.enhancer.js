@@ -49,10 +49,11 @@ export default compose(
       }
       try {
         const res = await firestore.update(updatePath, updatesWithMeta)
-        showSuccess('Template updated successfully')
+        showSuccess('Template Updated Successfully')
         return res
       } catch (err) {
         showError('Error updating template')
+        throw err
       }
     },
     deleteTemplate: ({
@@ -66,10 +67,10 @@ export default compose(
       try {
         const res = await firestore.delete(updatePath)
         router.push(paths.actionTemplates)
-        showSuccess('Template deleted successfully')
+        showSuccess('Template Deleted Successfully')
         return res
       } catch (err) {
-        showError('Error updating template')
+        showError('Error Deleting Template')
       }
     }
   }),

@@ -3,15 +3,9 @@
 .button {
   margin-left: 2rem;
 }
-.card {
-  margin-bottom: 2rem;
-}
 .buttons {
   @extend .flex-row;
   margin-bottom: 2rem;
-}
-.paper {
-  padding: 2rem;
 }
 .or {
   @extend .flex-row-center;
@@ -23,4 +17,7 @@
 }
 .search {
   @extend .flex-row-center;
+}
+.sectionHeader {
+  font-size: 1.3rem !important;
 }

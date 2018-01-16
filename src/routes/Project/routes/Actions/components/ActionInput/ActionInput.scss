@@ -1,0 +1,14 @@
+@import 'base';
+
+.title {
+  font-size: 1.2rem !important;
+  flex-basis: 33.33%;
+  flex-shrink: 0;
+}
+.type {
+  color: rgba(0, 0, 0, 0.54) !important;
+}
+.field {
+  margin-left: 4rem;
+  margin-right: 4rem;
+}

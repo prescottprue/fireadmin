@@ -18,7 +18,8 @@ export const formNames = {
   login: LOGIN_FORM_NAME,
   newEnvironment: 'newEnvironment',
   newActionTemplate: 'newActionTemplate',
-  actionTemplate: 'actionTemplate'
+  actionTemplate: 'actionTemplate',
+  actionRunner: 'actionRunner'
 }
 
 export const paths = {

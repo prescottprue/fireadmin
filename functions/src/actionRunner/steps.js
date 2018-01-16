@@ -7,6 +7,7 @@ import mkdirp from 'mkdirp-promise'
 import { CUSTOM_STEPS_PATH } from './constants'
 import { invokeFirepadContent } from './firepad'
 import { to, promiseWaterfall } from '../utils/async'
+import { getAppFromServiceAccount } from '../utils/serviceAccounts'
 import {
   cleanup,
   updateResponseOnRTDB,
@@ -23,160 +24,239 @@ import {
  * options include 'firestore', 'storage', or 'rtdb'
  * @return {Promise}
  */
-export async function runActionWithApps(app1, app2, event) {
+export async function runStepsFromEvent(event) {
   const eventData = invoke(event, 'data.val')
   if (!eventData) {
     throw new Error('Event object does not contain a value.')
   }
-  const { actions } = eventData
-  if (!isArray(actions)) {
-    updateResponseWithError(event)
-    throw new Error('Actions array was not provided to action request')
+  if (!eventData.template) {
+    throw new Error('Action template is required to run steps')
   }
-  const totalNumActions = size(actions)
-  console.log(`Running ${totalNumActions} actions`, typeof actions)
+  const { inputValues, template: { steps, inputs } } = eventData
+  if (!isArray(steps)) {
+    updateResponseWithError(event)
+    throw new Error('Steps array was not provided to action request')
+  }
+  if (!isArray(inputs)) {
+    updateResponseWithError(event)
+    throw new Error('Inputs array was not provided to action request')
+  }
+  if (!isArray(inputValues)) {
+    updateResponseWithError(event)
+    throw new Error('Input values array was not provided to action request')
+  }
+  console.log('Converting inputs of action....')
+  const convertedInputValues = await validateAndConvertInputs(
+    eventData.inputValues,
+    inputs
+  )
+  const totalNumSteps = size(steps)
+  console.log(`Running ${totalNumSteps} actions`, typeof actions)
   // Run all action promises
-  await promiseWaterfall(
-    map(
-      actions,
-      createStepRunner({ app1, app2, event, eventData, totalNumActions })
+  const [actionErr, actionResponse] = await to(
+    promiseWaterfall(
+      map(
+        steps,
+        createStepRunner({
+          convertedInputValues,
+          event,
+          eventData,
+          totalNumSteps
+        })
+      )
     )
   )
-
+  // Cleanup temp directory
   cleanup()
-  return updateResponseOnRTDB(event)
+  if (actionErr) {
+    return updateResponseWithError(event)
+  }
+  // Write response to RTDB
+  await updateResponseOnRTDB(event)
+  return actionResponse
+}
+
+/**
+ * Validate and convert list of inputs to relevant types (i.e. serviceAccount
+ * data replaced with app)
+ * @param  {Array} inputs - List of inputs to convert
+ * @return {Promise} Resolves with an array of results of converting inputs
+ */
+function validateAndConvertInputs(inputsValues, inputsMetas) {
+  return Promise.all(
+    inputsValues.map((inputValues, inputIdx) =>
+      validateAndConvertInputValues(inputValues, get(inputsMetas, inputIdx))
+    )
+  )
+}
+
+/**
+ * Validate and convert a single input to relevant type
+ * (i.e. serviceAccount data replaced with app)
+ * @param  {Object} original - Original input value
+ * @return {Promise} Resolves with firebase app if service account type,
+ * otherwise an dobject
+ */
+async function validateAndConvertInputValues(inputValues, inputMeta) {
+  if (get(inputMeta, 'type') === 'serviceAccount') {
+    if (
+      get(inputMeta, 'required') &&
+      (!get(inputValues, 'serviceAccountPath') ||
+        !get(inputValues, 'databaseURL'))
+    ) {
+      throw new Error(
+        'Input is required and does not contain serviceAccountPath and databaseURL'
+      )
+    }
+    return getAppFromServiceAccount(inputValues)
+  }
+  if (get(inputMeta, 'required') && !size(inputValues)) {
+    throw new Error('Input is required and does not contain a value')
+  }
+  return inputValues
 }
 
 /**
  * Builds an action runner function which accepts an action config object
- * and the actionIdx. Action runner function runs action then updates
+ * and the stepIdx. Action runner function runs action then updates
  * response with progress and/or error.
- * @param  {firebase.App} app1 - First app for the action
- * @param  {firebase.App} app2 - Second app for the action
  * @param  {Object} eventData - Data from event (contains settings for
+ * @param  {Array} inputs - List of inputs
+ * @param  {Array} convertedInputValues - List of inputs converted to relevant types
  * @param  {Object} event - Event object from Cloud Trigger
- * @param  {Integer} totalNumActions - Total number of actions
- * @return {Function} Accepts action and actionIdx (used in Promise.all map)
+ * @param  {Integer} totalNumSteps - Total number of actions
+ * @return {Function} Accepts action and stepIdx (used in Promise.all map)
  */
-function createStepRunner({ app1, app2, event, eventData, totalNumActions }) {
+function createStepRunner({
+  inputs,
+  convertedInputValues,
+  event,
+  eventData,
+  totalNumSteps
+}) {
   /**
    * Recieves results of previous action and calls next action
-   * @param  {Any} previousActionResult - result of previous action
-   * @return {Function} Accepts action and actionIdx (used in Promise.all map)
+   * @param  {Any} previousStepResult - result of previous action
+   * @return {Function} Accepts action and stepIdx (used in Promise.all map)
    *
    */
-  return function runNextAction(previousActionResult) {
+  return function runNextStep(previousStepResult) {
+    console.log('Running next step...')
     /**
      * Run action based on provided settings and update response with progress
      * @param  {Object} action - Action object containing settings for action
-     * @param  {Number} actionIdx - Index of the action (from actions array)
+     * @param  {Number} stepIdx - Index of the action (from actions array)
      * @return {Promise} Resolves with results of progress update call
      */
-    return async function runActionAndUpdateProgress(action, actionIdx) {
+    return async function runStepAndUpdateProgress(step, stepIdx) {
+      console.log(`Starting step: ${stepIdx}...`)
       const [err] = await to(
-        runAction({
-          app1,
-          app2,
-          action,
-          actionIdx,
+        runStep({
+          step,
+          convertedInputValues,
+          stepIdx,
           eventData,
-          previousActionResult
+          previousStepResult
         })
       )
       if (err) {
-        await to(
-          updateResponseWithActionError(event, { totalNumActions, actionIdx })
-        )
-        throw new Error(`Error running action: ${actionIdx} : ${err.message}`)
+        await updateResponseWithActionError(event, { totalNumSteps, stepIdx })
+        throw new Error(`Error running action: ${stepIdx} : ${err.message}`)
       }
-      return updateResponseWithProgress(event, { totalNumActions, actionIdx })
+      return updateResponseWithProgress(event, { totalNumSteps, stepIdx })
     }
   }
 }
 
 /**
  * Data action using Service account stored on Firestore
- * @param  {firebase.App} app1 - First app for the action
- * @param  {firebase.App} app2 - Second app for the action
- * @param  {Object} action - Action object containing settings for action
- * @param  {Number} actionIdx - Index of the action (from actions array)
+ * @param  {Object} step - Object containing settings for step
+ * @param  {Array} inputs - Inputs provided to the action
+ * @param  {Array} convertedInputValues - Inputs provided to the action converted
+ * to relevant data (i.e. service accounts)
+ * @param  {Number} stepIdx - Index of the action (from actions array)
  * @param  {Object} eventData - Data from event (contains settings for
  * action request)
  * @return {Promise} Resolves with results of running the provided action
  */
-export async function runAction({
-  app1,
-  app2,
-  action,
-  actionIdx,
+export async function runStep({
+  inputs,
+  convertedInputValues,
+  step,
+  stepIdx,
   eventData,
-  previousActionResult
+  previousStepResult
 }) {
-  if (!action) {
-    throw new Error('Event object does not contain a value.')
+  if (!step) {
+    throw new Error('Step object does not contain a value.')
   }
-  const { src, dest, type } = action
-
+  const { type } = step
+  // TODO: Get inputs (i.e. apps from service accounts)
   // Run custom action type (i.e. Code written within Firepad)
   if (type === 'custom') {
     const { templateId } = eventData
     console.log(
-      'Data backup complete. Looking for custom action in location:',
-      `${CUSTOM_STEPS_PATH}/${templateId}/actions/${actionIdx}`
+      'Step type is "Custom", gathering custom step code from location:',
+      `${CUSTOM_STEPS_PATH}/${templateId}/steps/${stepIdx}`
     )
     const rootRef = admin
       .database()
-      .ref(`${CUSTOM_STEPS_PATH}/${templateId}/actions/${actionIdx}`)
-    const res = await invokeFirepadContent(rootRef, { context: { action } })
-    console.log('res', res)
+      .ref(`${CUSTOM_STEPS_PATH}/${templateId}/steps/${stepIdx}`)
+    const firepadContext = { step, inputs, previous: previousStepResult }
+    const res = await invokeFirepadContent(rootRef, { context: firepadContext })
+    console.log('Response from executing custom step: ', res)
     return res
   }
+  const input1 = get(inputs, '0')
+  const input2 = get(inputs, '1')
+  const app1 = get(convertedInputValues, '0')
+  const app2 = get(convertedInputValues, '1')
 
-  // Require src and dest for all other action types
-  if (!src || !dest || !src.resource || !dest.resource) {
-    throw new Error('src, dest and src.resource are required to run action')
+  // Require src and dest for all other step types
+  if (!input1 || !input2 || !input1.resource || !input2.resource) {
+    throw new Error(
+      'input1, input2 and input1.resource are required to run step'
+    )
   }
 
-  switch (src.resource) {
+  switch (input1.resource) {
     case 'firestore':
-      if (dest.resource === 'firestore') {
-        await copyBetweenFirestoreInstances(app1, app2, action)
-      } else if (dest.resource === 'rtdb') {
-        await copyFromFirestoreToRTDB(app1, app2, action)
+      if (input2.resource === 'firestore') {
+        await copyBetweenFirestoreInstances(app1, app2, step)
+      } else if (input2.resource === 'rtdb') {
+        await copyFromFirestoreToRTDB(app1, app2, step)
       } else {
         throw new Error(
-          `Invalid dest.resource: ${dest.resource} for event: ${action}`
+          `Invalid input2.resource: ${input2.resource} for step: ${step}`
         )
       }
       break
     case 'rtdb':
-      if (dest.resource === 'firestore') {
-        await copyFromRTDBToFirestore(app1, app2, action)
-      } else if (dest.resource === 'rtdb') {
-        await copyBetweenRTDBInstances(app1, app2, action)
+      if (input2.resource === 'firestore') {
+        await copyFromRTDBToFirestore(app1, app2, step)
+      } else if (input2.resource === 'rtdb') {
+        await copyBetweenRTDBInstances(app1, app2, step)
       } else {
         throw new Error(
-          `Invalid dest.resource: ${dest.resource} for event: ${action}`
+          `Invalid input2.resource: ${input2.resource} for step: ${step}`
         )
       }
       break
     case 'storage':
-      if (dest.resource === 'rtdb') {
-        await copyFromStorageToRTDB(app1, app2, action)
+      if (input2.resource === 'rtdb') {
+        await copyFromStorageToRTDB(app1, app2, step)
       } else {
         throw new Error(
-          `Invalid dest.resource: ${dest.resource} for event: ${action}`
+          `Invalid input2.resource: ${input2.resource} for step: ${step}`
         )
       }
       break
     default:
       throw new Error(
-        'src.resource type not supported. Try firestore, rtdb, or storage'
+        'input1.resource type not supported. Try firestore, rtdb, or storage'
       )
   }
-  console.log(
-    'action successful, cleaning up and updating response within Real Time DB'
-  )
+  console.log('Step successful!')
 }
 
 /**
