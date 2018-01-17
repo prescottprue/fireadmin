@@ -1,7 +1,4 @@
 import * as admin from 'firebase-admin'
-import path from 'path'
-import fs from 'fs'
-import os from 'os'
 import { ACTION_RUNNER_RESPONSES_PATH } from './constants'
 
 export function updateResponseOnRTDB(event, error) {
@@ -70,15 +67,4 @@ export function updateResponseWithActionError(
   return event.data.adminRef.ref.root
     .child(`${ACTION_RUNNER_RESPONSES_PATH}/${event.params.pushId}`)
     .update(response)
-}
-
-export function cleanup() {
-  cleanupServiceAccount('app1')
-  cleanupServiceAccount('app2')
-}
-
-function cleanupServiceAccount(appName) {
-  const localPath = `serviceAccounts/${appName}.json`
-  const tempLocalPath = path.join(os.tmpdir(), localPath)
-  fs.unlinkSync(tempLocalPath)
 }

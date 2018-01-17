@@ -27,6 +27,7 @@
     "mkdirp-promise": "^5.0.1",
     "request": "^2.34",
     "request-promise": "^4.2.2",
+    "rimraf": "^2.6.2",
     "safe-eval": "^0.3.0"
   },
   "private": true,
@@ -35,7 +36,6 @@
     "babel-eslint": "^8.0.2",
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
-    "rimraf": "^2.6.2",
     "sinon": "^4.1.2"
   }
 }

@@ -3,6 +3,7 @@ import * as admin from 'firebase-admin'
 import os from 'os'
 import fs from 'fs-extra'
 import path from 'path'
+import rimraf from 'rimraf'
 import { get, uniqueId } from 'lodash'
 import mkdirp from 'mkdirp-promise'
 const functions = require('firebase-functions')
@@ -137,4 +138,11 @@ export async function serviceAccountFromStoragePath(docPath, name) {
 export async function serviceAccountFileFromStorage(docPath, name) {
   const accountLocalPath = await serviceAccountFromStoragePath(docPath, name)
   return fs.readJson(accountLocalPath)
+}
+
+export function cleanupServiceAccounts(appName) {
+  const tempLocalPath = path.join(os.tmpdir(), 'serviceAccounts')
+  return new Promise((resolve, reject) =>
+    rimraf(tempLocalPath, err => (err ? reject(err) : resolve()))
+  )
 }

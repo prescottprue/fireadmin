@@ -7,9 +7,11 @@ import mkdirp from 'mkdirp-promise'
 import { CUSTOM_STEPS_PATH } from './constants'
 import { invokeFirepadContent } from './firepad'
 import { to, promiseWaterfall } from '../utils/async'
-import { getAppFromServiceAccount } from '../utils/serviceAccounts'
 import {
-  cleanup,
+  getAppFromServiceAccount,
+  cleanupServiceAccounts
+} from '../utils/serviceAccounts'
+import {
   updateResponseOnRTDB,
   updateResponseWithProgress,
   updateResponseWithError,
@@ -51,7 +53,7 @@ export async function runStepsFromEvent(event) {
     inputs
   )
   const totalNumSteps = size(steps)
-  console.log(`Running ${totalNumSteps} actions`, typeof actions)
+  console.log(`Running ${totalNumSteps} actions`)
   // Run all action promises
   const [actionErr, actionResponse] = await to(
     promiseWaterfall(
@@ -67,7 +69,7 @@ export async function runStepsFromEvent(event) {
     )
   )
   // Cleanup temp directory
-  cleanup()
+  cleanupServiceAccounts()
   if (actionErr) {
     return updateResponseWithError(event)
   }
@@ -141,7 +143,7 @@ function createStepRunner({
    *
    */
   return function runNextStep(previousStepResult) {
-    console.log('Running next step...')
+    console.log('Running next step...', previousStepResult)
     /**
      * Run action based on provided settings and update response with progress
      * @param  {Object} action - Action object containing settings for action

@@ -10,7 +10,7 @@ export const ActionInputs = ({
   environments,
   serviceAccounts
 }) => (
-  <div>
+  <div className="flex-column">
     {fields.map((member, index, field) => (
       <ActionInput
         key={index}
