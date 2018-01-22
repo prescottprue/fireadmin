@@ -4,6 +4,7 @@ const storageFileToRTDB = require('./dist/storageFileToRTDB').default
 const actionRunner = require('./dist/actionRunner').default
 const indexUsers = require('./dist/search').indexUsers
 const callGoogleApi = require('./dist/callGoogleApi').default
+const sendInvite = require('./dist/invites').sendInvite
 const indexActionTemplates = require('./dist/search').indexActionTemplates
 const copyServiceAccountToFirestore = require('./dist/copyServiceAccountToFirestore')
   .default
@@ -16,3 +17,4 @@ exports.storageFileToRTDB = storageFileToRTDB
 exports.indexUsers = indexUsers
 exports.callGoogleApi = callGoogleApi
 exports.indexActionTemplates = indexActionTemplates
+exports.sendInvite = sendInvite
