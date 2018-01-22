@@ -44,12 +44,61 @@ Interested in adding a feature or contributing? Open an issue or [reach out over
 If you are just getting started with Fireadmin, it is probably best to checkout the [hosted version at fireadmin.io](http://fireadmin.io). After you become more familiar, feel free to run your own by pulling this source and proceeding to the [run your own section](#run-your-own).
 
 ### Requirements
-* node `^6.0.0` (`6.11.5` suggested)
+* node `^6.0.0` (`6.11.5` suggested to match [Cloud Functions Runtime][functions-runtime-url])
 
 ## Running Your Own
 
 1. Install dependencies: `yarn install` (can also be done with `npm install`)
-1. Change settings in `src/config.js` and `.firebaserc` to match your own Firebase credentials
+1. Create a file `src/config.js` to look like so (generated using [`firebase-ci`](https://www.npmjs.com/package/firebase-ci) in CI environments):
+
+  ```js
+  export const version = "0.1.9"; // matches package.json when using firebase-ci in CI environment
+
+  export const env = "local"; // matches branch/project when using firebase-ci in CI environment
+
+  // Get from Auth Tab with Firebase's Console
+  // matches branch/project settings when using firebase-ci in CI environment
+  export const firebase = {
+    apiKey: "<- api key ->",
+    authDomain: "<- auth domain ->",
+    databaseURL: "<- database URL ->",
+    projectId: "<- project ID ->",
+    storageBucket: "<- storageBucket ->",
+    messagingSenderId: "<- message sender ID ->",
+  };
+
+  export const reduxFirebase = {
+    userProfile: "users",
+    enableLogging: false,
+    updateProfileOnLogin: true,
+    useFirestoreForProfile: true,
+  };
+
+  // Google Analytics Tracking ID (leave blank for no analytics)
+  export const analyticsTrackingId = "";
+
+  // Stackdriver client side error reporting
+  export const googleApis = {
+    apiKey: "",
+  };
+
+  // Algolia project info (for searching of User's Public Info and Public Templates)
+  export const algolia = {
+    appId: "",
+    apiKey: "",
+  };
+
+  export default {
+    version,
+    env,
+    firebase,
+    reduxFirebase,
+    analyticsTrackingId,
+    googleApis,
+    algolia
+  }
+  ```
+1. Change settings in `.firebaserc` to match your own Firebase credentials
 1. Start Development server: `yarn start`
 
 While developing, you will probably rely mostly on `npm start`; however, there are additional scripts at your disposal:
@@ -134,13 +183,14 @@ For more options on CI settings checkout the [firebase-ci docs](https://github.c
 
 ## FAQ
 
-1. Why node `6.11.5` instead of a newer version? [Cloud Functions runtime is still on `6.11.5`](https://cloud.google.com/functions/docs/writing/#the_cloud_functions_runtime), which is why that is what is used for the travis build version. This will be switched when the functions runtime is updated
+1. Why node `6.11.5` instead of a newer version? [Cloud Functions runtime is still on `6.11.5`][functions-runtime-url], which is why that is what is used for the travis build version. This will be switched when the functions runtime is updated
 1. Why Yarn over node's `package-lock.json`? - Relates to previous question. Node `6.*.*` and equivalent npm didn't include lock files yet.
 
 ## What Happened To The Fireadmin NPM Library?
 
 It is now deprecated. It may come back in the future as a support library for Fireadmin.
 
+[functions-runtime-url]: https://cloud.google.com/functions/docs/writing/#the_cloud_functions_runtime
 [npm-image]: https://img.shields.io/npm/v/fireadmin.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/fireadmin
 [travis-image]: https://img.shields.io/travis/prescottprue/fireadmin/master.svg?style=flat-square

@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin'
-import { invoke, get, isArray, size, map } from 'lodash'
+import { invoke, get, isArray, size, map, isObject } from 'lodash'
 import os from 'os'
 import path from 'path'
 import fs from 'fs-extra'
@@ -31,20 +31,20 @@ export async function runStepsFromEvent(event) {
   if (!eventData) {
     throw new Error('Event object does not contain a value.')
   }
-  if (!eventData.template) {
+  if (!isObject(eventData.template)) {
     throw new Error('Action template is required to run steps')
   }
   const { inputValues, template: { steps, inputs } } = eventData
   if (!isArray(steps)) {
-    updateResponseWithError(event)
+    await updateResponseWithError(event)
     throw new Error('Steps array was not provided to action request')
   }
   if (!isArray(inputs)) {
-    updateResponseWithError(event)
+    await updateResponseWithError(event)
     throw new Error('Inputs array was not provided to action request')
   }
   if (!isArray(inputValues)) {
-    updateResponseWithError(event)
+    await updateResponseWithError(event)
     throw new Error('Input values array was not provided to action request')
   }
   console.log('Converting inputs of action....')
@@ -137,22 +137,22 @@ function createStepRunner({
   totalNumSteps
 }) {
   /**
-   * Recieves results of previous action and calls next action
-   * @param  {Any} previousStepResult - result of previous action
-   * @return {Function} Accepts action and stepIdx (used in Promise.all map)
-   *
+   * Run action based on provided settings and update response with progress
+   * @param  {Object} action - Action object containing settings for action
+   * @param  {Number} stepIdx - Index of the action (from actions array)
+   * @return {Promise} Resolves with results of progress update call
    */
-  return function runNextStep(previousStepResult) {
-    console.log('Running next step...', previousStepResult)
+  return function runStepAndUpdateProgress(step, stepIdx) {
+    console.log(`Starting step: ${stepIdx}...`)
     /**
-     * Run action based on provided settings and update response with progress
-     * @param  {Object} action - Action object containing settings for action
-     * @param  {Number} stepIdx - Index of the action (from actions array)
-     * @return {Promise} Resolves with results of progress update call
+     * Recieves results of previous action and calls next action
+     * @param  {Any} previousStepResult - result of previous action
+     * @return {Function} Accepts action and stepIdx (used in Promise.all map)
+     *
      */
-    return async function runStepAndUpdateProgress(step, stepIdx) {
-      console.log(`Starting step: ${stepIdx}...`)
-      const [err] = await to(
+    return async function runNextStep(previousStepResult) {
+      console.log('Running next step...', previousStepResult)
+      const [err, stepResponse] = await to(
         runStep({
           step,
           convertedInputValues,
@@ -165,7 +165,8 @@ function createStepRunner({
         await updateResponseWithActionError(event, { totalNumSteps, stepIdx })
         throw new Error(`Error running action: ${stepIdx} : ${err.message}`)
       }
-      return updateResponseWithProgress(event, { totalNumSteps, stepIdx })
+      await updateResponseWithProgress(event, { totalNumSteps, stepIdx })
+      return stepResponse
     }
   }
 }
@@ -189,9 +190,11 @@ export async function runStep({
   eventData,
   previousStepResult
 }) {
+  console.log('run step called...')
   if (!step) {
     throw new Error('Step object does not contain a value.')
   }
+  console.log('before getting off step:', step)
   const { type } = step
   // TODO: Get inputs (i.e. apps from service accounts)
   // Run custom action type (i.e. Code written within Firepad)
@@ -213,52 +216,48 @@ export async function runStep({
   const input2 = get(inputs, '1')
   const app1 = get(convertedInputValues, '0')
   const app2 = get(convertedInputValues, '1')
-
+  console.log('here we gooooo111', { input1, input2 })
   // Require src and dest for all other step types
   if (!input1 || !input2 || !input1.resource || !input2.resource) {
     throw new Error(
       'input1, input2 and input1.resource are required to run step'
     )
   }
-
+  console.log('here we gooooo', { input1, input2 })
   switch (input1.resource) {
     case 'firestore':
       if (input2.resource === 'firestore') {
-        await copyBetweenFirestoreInstances(app1, app2, step)
+        return copyBetweenFirestoreInstances(app1, app2, step)
       } else if (input2.resource === 'rtdb') {
-        await copyFromFirestoreToRTDB(app1, app2, step)
+        return copyFromFirestoreToRTDB(app1, app2, step)
       } else {
         throw new Error(
           `Invalid input2.resource: ${input2.resource} for step: ${step}`
         )
       }
-      break
     case 'rtdb':
       if (input2.resource === 'firestore') {
-        await copyFromRTDBToFirestore(app1, app2, step)
+        return copyFromRTDBToFirestore(app1, app2, step)
       } else if (input2.resource === 'rtdb') {
-        await copyBetweenRTDBInstances(app1, app2, step)
+        return copyBetweenRTDBInstances(app1, app2, step)
       } else {
         throw new Error(
           `Invalid input2.resource: ${input2.resource} for step: ${step}`
         )
       }
-      break
     case 'storage':
       if (input2.resource === 'rtdb') {
-        await copyFromStorageToRTDB(app1, app2, step)
+        return copyFromStorageToRTDB(app1, app2, step)
       } else {
         throw new Error(
           `Invalid input2.resource: ${input2.resource} for step: ${step}`
         )
       }
-      break
     default:
       throw new Error(
         'input1.resource type not supported. Try firestore, rtdb, or storage'
       )
   }
-  console.log('Step successful!')
 }
 
 /**
@@ -278,7 +277,10 @@ async function copyBetweenFirestoreInstances(app1, app2, eventData) {
     console.log('Copy between Firestore instances successful')
     return updateRes
   } catch (err) {
-    console.log('Error copying between Firestore instances', err.message || err)
+    console.error(
+      'Error copying between Firestore instances',
+      err.message || err
+    )
     throw err
   }
 }
@@ -300,7 +302,7 @@ async function copyFromFirestoreToRTDB(app1, app2, eventData) {
     console.log('copy between firestore instances successful')
     return updateRes
   } catch (err) {
-    console.log('error copying from Firestore to RTDB', err.message || err)
+    console.error('error copying from Firestore to RTDB', err.message || err)
     throw err
   }
 }
@@ -323,7 +325,7 @@ async function copyFromRTDBToFirestore(app1, app2, eventData) {
     console.log('Copy from RTDB to Firestore successful')
     return updateRes
   } catch (err) {
-    console.log('Error copying from RTDB to Firestore', err.message || err)
+    console.error('Error copying from RTDB to Firestore', err.message || err)
     throw err
   }
 }
@@ -336,6 +338,7 @@ async function copyFromRTDBToFirestore(app1, app2, eventData) {
  * @return {Promise} Resolves with result of update call
  */
 async function copyBetweenRTDBInstances(app1, app2, eventData) {
+  console.log('copy copyBetweenRTDBInstances')
   if (!get(app1, 'database') || !get(app2, 'database')) {
     console.error('Database not found on app instance')
     throw new Error(
@@ -348,6 +351,7 @@ async function copyBetweenRTDBInstances(app1, app2, eventData) {
   try {
     const dataSnapFromFirst = await firstRTDB.ref(src.path).once('value')
     const dataFromFirst = invoke(dataSnapFromFirst, 'val')
+    console.log('data from first:', dataFromFirst)
     if (!dataFromFirst) {
       const errorMessage = 'Path does not exist in First source database'
       console.error(errorMessage)

@@ -9,6 +9,7 @@ import Button from 'material-ui-next/Button'
 import Grid from 'material-ui-next/Grid'
 import ActionTemplateStep from '../ActionTemplateStep'
 import ActionTemplateInputs from '../ActionTemplateInputs'
+import ActionTemplateBackups from '../ActionTemplateBackups'
 import DeleteIcon from 'material-ui-icons/Delete'
 import { firebasePaths } from 'constants'
 import classes from './ActionTemplateForm.scss'
@@ -77,6 +78,10 @@ export const ActionTemplateForm = ({
     <div className={classes.actions}>
       <Typography className={classes.header}>Inputs</Typography>
       <FieldArray name="inputs" component={ActionTemplateInputs} />
+    </div>
+    <div className={classes.actions}>
+      <Typography className={classes.header}>Backups</Typography>
+      <FieldArray name="backups" component={ActionTemplateBackups} />
     </div>
     <div className={classes.actions}>
       <Typography className={classes.header}>Steps</Typography>
