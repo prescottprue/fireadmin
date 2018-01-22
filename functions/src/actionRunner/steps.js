@@ -60,6 +60,7 @@ export async function runStepsFromEvent(event) {
       map(
         steps,
         createStepRunner({
+          inputs,
           convertedInputValues,
           event,
           eventData,
@@ -71,7 +72,8 @@ export async function runStepsFromEvent(event) {
   // Cleanup temp directory
   cleanupServiceAccounts()
   if (actionErr) {
-    return updateResponseWithError(event)
+    await updateResponseWithError(event)
+    throw actionErr
   }
   // Write response to RTDB
   await updateResponseOnRTDB(event)
@@ -100,7 +102,9 @@ function validateAndConvertInputs(inputsValues, inputsMetas) {
  * otherwise an dobject
  */
 async function validateAndConvertInputValues(inputValues, inputMeta) {
+  // Convert service account path and databaseURL to a Firebase App
   if (get(inputMeta, 'type') === 'serviceAccount') {
+    // Throw if input is required and is missing serviceAccountPath or databaseURL
     if (
       get(inputMeta, 'required') &&
       (!get(inputValues, 'serviceAccountPath') ||
@@ -143,18 +147,16 @@ function createStepRunner({
    * @return {Promise} Resolves with results of progress update call
    */
   return function runStepAndUpdateProgress(step, stepIdx) {
-    console.log(`Starting step: ${stepIdx}...`)
     /**
      * Recieves results of previous action and calls next action
      * @param  {Any} previousStepResult - result of previous action
      * @return {Function} Accepts action and stepIdx (used in Promise.all map)
-     *
      */
     return async function runNextStep(previousStepResult) {
-      console.log('Running next step...', previousStepResult)
       const [err, stepResponse] = await to(
         runStep({
           step,
+          inputs,
           convertedInputValues,
           stepIdx,
           eventData,
@@ -190,13 +192,12 @@ export async function runStep({
   eventData,
   previousStepResult
 }) {
-  console.log('run step called...')
-  if (!step) {
-    throw new Error('Step object does not contain a value.')
+  // Handle step or step type not existing
+  if (!step || !step.type) {
+    throw new Error('Step object is invalid (i.e. does not contain a type)')
   }
-  console.log('before getting off step:', step)
   const { type } = step
-  // TODO: Get inputs (i.e. apps from service accounts)
+
   // Run custom action type (i.e. Code written within Firepad)
   if (type === 'custom') {
     const { templateId } = eventData
@@ -209,53 +210,57 @@ export async function runStep({
       .ref(`${CUSTOM_STEPS_PATH}/${templateId}/steps/${stepIdx}`)
     const firepadContext = { step, inputs, previous: previousStepResult }
     const res = await invokeFirepadContent(rootRef, { context: firepadContext })
-    console.log('Response from executing custom step: ', res)
     return res
   }
-  const input1 = get(inputs, '0')
-  const input2 = get(inputs, '1')
+
+  // TODO: Enable dynamic src/dest by getting data from convertedInputValues
+  // Source/Dest info loaded from step
+  const src = get(step, 'src')
+  const dest = get(step, 'dest')
+
+  // Service accounts come from converted version of what is selected for inputs
   const app1 = get(convertedInputValues, '0')
   const app2 = get(convertedInputValues, '1')
-  console.log('here we gooooo111', { input1, input2 })
+
   // Require src and dest for all other step types
-  if (!input1 || !input2 || !input1.resource || !input2.resource) {
-    throw new Error(
-      'input1, input2 and input1.resource are required to run step'
-    )
+  if (!src || !dest || !src.resource || !dest.resource) {
+    throw new Error('src, dest and src.resource are required to run step')
   }
-  console.log('here we gooooo', { input1, input2 })
-  switch (input1.resource) {
+
+  switch (src.resource) {
     case 'firestore':
-      if (input2.resource === 'firestore') {
+      if (dest.resource === 'firestore') {
         return copyBetweenFirestoreInstances(app1, app2, step)
-      } else if (input2.resource === 'rtdb') {
+      } else if (dest.resource === 'rtdb') {
         return copyFromFirestoreToRTDB(app1, app2, step)
       } else {
         throw new Error(
-          `Invalid input2.resource: ${input2.resource} for step: ${step}`
+          `Invalid dest.resource: ${dest.resource} for step: ${step}`
         )
       }
     case 'rtdb':
-      if (input2.resource === 'firestore') {
+      if (dest.resource === 'firestore') {
         return copyFromRTDBToFirestore(app1, app2, step)
-      } else if (input2.resource === 'rtdb') {
+      } else if (dest.resource === 'rtdb') {
         return copyBetweenRTDBInstances(app1, app2, step)
+      } else if (dest.resource === 'storage') {
+        return copyFromRTDBToStorage(app1, app2, step)
       } else {
         throw new Error(
-          `Invalid input2.resource: ${input2.resource} for step: ${step}`
+          `Invalid dest.resource: ${dest.resource} for step: ${step}`
         )
       }
     case 'storage':
-      if (input2.resource === 'rtdb') {
+      if (dest.resource === 'rtdb') {
         return copyFromStorageToRTDB(app1, app2, step)
       } else {
         throw new Error(
-          `Invalid input2.resource: ${input2.resource} for step: ${step}`
+          `Invalid dest.resource: ${dest.resource} for step: ${step}`
         )
       }
     default:
       throw new Error(
-        'input1.resource type not supported. Try firestore, rtdb, or storage'
+        'src.resource type not supported. Try firestore, rtdb, or storage'
       )
   }
 }
@@ -299,10 +304,10 @@ async function copyFromFirestoreToRTDB(app1, app2, eventData) {
   try {
     const dataFromFirst = await firestore1.doc(src.path).get()
     const updateRes = await secondRTDB.ref(dest.path).update(dataFromFirst)
-    console.log('copy between firestore instances successful')
+    console.log('Copy from Firestore to RTDB successful')
     return updateRes
   } catch (err) {
-    console.error('error copying from Firestore to RTDB', err.message || err)
+    console.error('Error copying from Firestore to RTDB', err.message || err)
     throw err
   }
 }
@@ -338,7 +343,6 @@ async function copyFromRTDBToFirestore(app1, app2, eventData) {
  * @return {Promise} Resolves with result of update call
  */
 async function copyBetweenRTDBInstances(app1, app2, eventData) {
-  console.log('copy copyBetweenRTDBInstances')
   if (!get(app1, 'database') || !get(app2, 'database')) {
     console.error('Database not found on app instance')
     throw new Error(
@@ -351,7 +355,6 @@ async function copyBetweenRTDBInstances(app1, app2, eventData) {
   try {
     const dataSnapFromFirst = await firstRTDB.ref(src.path).once('value')
     const dataFromFirst = invoke(dataSnapFromFirst, 'val')
-    console.log('data from first:', dataFromFirst)
     if (!dataFromFirst) {
       const errorMessage = 'Path does not exist in First source database'
       console.error(errorMessage)
@@ -396,7 +399,37 @@ async function downloadFromStorage(app, pathInStorage) {
 }
 
 /**
- * Copy JSON from Cloud Storage to Firebase Real Time Database
+ * Upload JSON Object to Google Cloud Storage and return is contents
+ * @param  {firebase.App} app - App from which the storage File should be downloaded
+ * @param  {String} pathInStorage - Path of file within cloud storage bucket
+ * @return {Promise} Resolves with JSON contents of the file
+ */
+async function uploadToStorage(app, pathInStorage, jsonObject) {
+  const localPath = `actions/storage/${Date.now()}/${pathInStorage}.json`
+  const tempLocalPath = path.join(os.tmpdir(), localPath)
+  if (!app.storage) {
+    throw new Error('Storage is not enabled on firebase-admin')
+  }
+  try {
+    // Upload file from bucket to local filesystem
+    await fs.outputJson(tempLocalPath, jsonObject, { spaces: 2 })
+    await app
+      .storage()
+      .bucket()
+      .upload(tempLocalPath, {
+        destination: pathInStorage,
+        contentType: 'application/json',
+        contentLanguage: 'en'
+      })
+    // Return JSON file contents
+  } catch (err) {
+    console.error('Error uploading file to storage', err.message || err)
+    throw err
+  }
+}
+
+/**
+ * Copy JSON from Firebase Real Time Database to Google Cloud Storage
  * @param  {firebase.App} app1 - First app for the action
  * @param  {firebase.App} app2 - Second app for the action
  * @param  {Object} eventData - Data from event (contains settings)
@@ -415,6 +448,33 @@ async function copyFromStorageToRTDB(app1, app2, eventData) {
     return updateRes
   } catch (err) {
     console.log('error copying between firestore instances', err.message || err)
+    throw err
+  }
+}
+
+/**
+ * Copy JSON from Cloud Storage to Firebase Real Time Database
+ * @param  {firebase.App} app1 - First app for the action
+ * @param  {firebase.App} app2 - Second app for the action
+ * @param  {Object} eventData - Data from event (contains settings)
+ * @return {Promise} Resolves with result of update call
+ */
+async function copyFromRTDBToStorage(app1, app2, eventData) {
+  if (!get(app1, 'database')) {
+    throw new Error('Invalid service account, database not defined on app1')
+  }
+  const { src, dest } = eventData
+  try {
+    const firstRTDB = app1.database()
+    const firstDataSnap = await firstRTDB.ref(src.path).once('value')
+    const firstDataVal = invoke(firstDataSnap, 'val')
+    if (!firstDataVal) {
+      throw new Error('Data not found at provided path')
+    }
+    await uploadToStorage(app2, dest.path, firstDataVal)
+    console.log('copy from RTDB to Storage was successful')
+  } catch (err) {
+    console.log('Error copying from RTDB to Storage: ', err.message || err)
     throw err
   }
 }

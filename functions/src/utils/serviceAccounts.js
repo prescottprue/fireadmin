@@ -15,58 +15,10 @@ const serviceAccountGetFuncByType = {
   storage: serviceAccountFromStoragePath
 }
 
-/**
- * Get Firebase app objects from Cloud Function event object.
- * @param  {Object} event - Function event object containing service account
- * paths
- * @return {Promise} Resolves with an object containing app1 and app2
- */
-export async function getAppsFromEvent(event) {
-  const {
-    serviceAccount1Path,
-    serviceAccount2Path,
-    database1URL,
-    database2URL,
-    serviceAccountType = 'storage'
-  } = event.data.val()
-  console.log(
-    `Getting apps from service accounts from ${serviceAccountType}...`
-  )
-  const getServiceAccount = get(serviceAccountGetFuncByType, serviceAccountType)
-  if (!getServiceAccount) {
-    const errMessage = 'Invalid service account type in action request'
-    console.error(errMessage)
-    throw new Error(errMessage)
-  }
-  const account1LocalPath = await serviceAccountFromStoragePath(
-    serviceAccount1Path,
-    'app1'
-  )
-  const account2LocalPath = await serviceAccountFromStoragePath(
-    serviceAccount2Path,
-    'app2'
-  )
-  return {
-    app1: admin.initializeApp(
-      {
-        credential: admin.credential.cert(account1LocalPath),
-        databaseURL: database1URL
-      },
-      `app1-${uniqueId()}`
-    ),
-    app2: admin.initializeApp(
-      {
-        credential: admin.credential.cert(account2LocalPath),
-        databaseURL: database2URL
-      },
-      `app2-${uniqueId()}`
-    )
-  }
-}
-
 export async function getAppFromServiceAccount(opts) {
   const {
     databaseURL,
+    storageBucket,
     serviceAccountPath,
     serviceAccountType = 'storage'
   } = opts
@@ -81,13 +33,14 @@ export async function getAppFromServiceAccount(opts) {
   const appName = `app-${uniqueId()}`
   // Get Service account data from resource (i.e Storage, Firestore, etc)
   const account1LocalPath = await getServiceAccount(serviceAccountPath, appName)
-  return admin.initializeApp(
-    {
-      credential: admin.credential.cert(account1LocalPath),
-      databaseURL
-    },
-    appName
-  )
+  const appCreds = {
+    credential: admin.credential.cert(account1LocalPath),
+    databaseURL
+  }
+  if (storageBucket) {
+    appCreds.storageBucket = storageBucket
+  }
+  return admin.initializeApp(appCreds, appName)
 }
 
 /**
