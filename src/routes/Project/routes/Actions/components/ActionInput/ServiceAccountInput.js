@@ -16,7 +16,7 @@ export const ServiceAccountInput = ({
 }) => (
   <div>
     <Field
-      name={`${name}.databaseURL`}
+      name={`${name}.environmentKey`}
       component={SelectField}
       className={classes.field}
       hintText="Select An Environment"
@@ -25,7 +25,7 @@ export const ServiceAccountInput = ({
       {map(environments, (environment, environmentKey) => (
         <MenuItem
           key={environmentKey}
-          value={environment.databaseURL}
+          value={environmentKey}
           primaryText={environment.name || environmentKey}
           secondaryText={databaseURLToProjectName(environment.databaseURL)}
         />
@@ -35,6 +35,7 @@ export const ServiceAccountInput = ({
       name={`${name}.serviceAccountPath`}
       component={SelectField}
       className={classes.field}
+      disabled
       hintText="Select A Service Account"
       floatingLabelText="Service Account"
       floatingLabelFixed>

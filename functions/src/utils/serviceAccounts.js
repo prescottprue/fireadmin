@@ -16,14 +16,19 @@ const serviceAccountGetFuncByType = {
   storage: serviceAccountFromStoragePath
 }
 
-export async function getAppFromServiceAccount(opts) {
+export async function getAppFromServiceAccount(opts, eventData) {
   const {
     databaseURL,
     storageBucket,
-    serviceAccountPath,
+    environmentKey,
     serviceAccountType = 'firestore'
   } = opts
+  const { projectId } = eventData
+  let { serviceAccountPath } = opts
   console.log(`Getting apps from service account from ${serviceAccountType}...`)
+  if (environmentKey) {
+    serviceAccountPath = `projects/${projectId}/environments/${environmentKey}`
+  }
   const getServiceAccount = get(serviceAccountGetFuncByType, serviceAccountType)
   if (!getServiceAccount) {
     const errMessage = 'Invalid service account type in action request'
@@ -34,14 +39,19 @@ export async function getAppFromServiceAccount(opts) {
   const appName = `app-${uniqueId()}`
   // Get Service account data from resource (i.e Storage, Firestore, etc)
   const account1LocalPath = await getServiceAccount(serviceAccountPath, appName)
-  const appCreds = {
-    credential: admin.credential.cert(account1LocalPath),
-    databaseURL
+  try {
+    const appCreds = {
+      credential: admin.credential.cert(account1LocalPath),
+      databaseURL
+    }
+    if (storageBucket) {
+      appCreds.storageBucket = storageBucket
+    }
+    return admin.initializeApp(appCreds, appName)
+  } catch (err) {
+    console.error('Error initializing app:', err.message || err)
+    throw err
   }
-  if (storageBucket) {
-    appCreds.storageBucket = storageBucket
-  }
-  return admin.initializeApp(appCreds, appName)
 }
 
 /**
@@ -68,13 +78,17 @@ export async function serviceAccountFromFirestorePath(docPath, name) {
     throw new Error(missingCredMsg)
   }
   const serviceAccountStr = decrypt(credential)
-  console.log('service account string:', serviceAccountStr)
   const localPath = `serviceAccounts/${name}.json`
   const tempLocalPath = path.join(os.tmpdir(), localPath)
   const tempLocalDir = path.dirname(tempLocalPath)
-  await mkdirp(tempLocalDir)
-  await fs.writeJson(tempLocalPath, JSON.parse(serviceAccountStr))
-  return tempLocalPath
+  try {
+    await mkdirp(tempLocalDir)
+    await fs.writeJson(tempLocalPath, JSON.parse(serviceAccountStr))
+    return tempLocalPath
+  } catch (err) {
+    console.error('Error getting service account form Firestore')
+    throw err
+  }
 }
 
 /**

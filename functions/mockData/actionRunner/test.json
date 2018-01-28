@@ -3,12 +3,14 @@
   "createdBy" : "FScHm5UzLtfytd014vYBmNIFSTZ2",
   "inputValues" : [ {
     "databaseURL" : "https://fireadmin-stage.firebaseio.com",
+    "environmentKey": "MYm5hX7yaEGI6LmO8z8K",
     "serviceAccountPath" : "projects/qSOr63I5TR9KNPKk7xGq/environments/MYm5hX7yaEGI6LmO8z8K"
   },  {
     "databaseURL" : "https://fireadmin-stage.firebaseio.com",
+    "environmentKey": "MYm5hX7yaEGI6LmO8z8K",
     "serviceAccountPath" : "projects/qSOr63I5TR9KNPKk7xGq/environments/MYm5hX7yaEGI6LmO8z8K"
   }],
-  "projectId" : "ZHg98Qsk8aTDuhqwYIjH",
+  "projectId" : "qSOr63I5TR9KNPKk7xGq",
   "startedAt" : 1517128966709,
   "status" : "started",
   "template" : {

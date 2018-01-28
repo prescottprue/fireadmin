@@ -85,7 +85,7 @@ export default compose(
           responsePath: firebasePaths.actionRunnerResponses,
           pushObj: {
             projectId: get(params, 'projectId'),
-            serviceAccountType: 'storage',
+            serviceAccountType: 'firestore',
             inputValues,
             template: pick(selectedTemplate, ['steps', 'inputs'])
           },

@@ -47,7 +47,7 @@ export async function runStepsFromEvent(event) {
   }
   console.log('Converting inputs of action....')
   const [convertInputsErr, convertedInputValues] = await to(
-    validateAndConvertInputs(eventData.inputValues, inputs)
+    validateAndConvertInputs(eventData, inputs)
   )
   if (convertInputsErr) {
     console.error('Error converting inputs:', convertInputsErr.message)
@@ -87,10 +87,14 @@ export async function runStepsFromEvent(event) {
  * @param  {Array} inputs - List of inputs to convert
  * @return {Promise} Resolves with an array of results of converting inputs
  */
-function validateAndConvertInputs(inputsValues, inputsMetas) {
+function validateAndConvertInputs(eventData, inputsMetas, event) {
   return Promise.all(
-    inputsValues.map((inputValues, inputIdx) =>
-      validateAndConvertInputValues(inputValues, get(inputsMetas, inputIdx))
+    eventData.inputValues.map((inputValue, inputIdx) =>
+      validateAndConvertInputValues(
+        eventData,
+        get(inputsMetas, inputIdx),
+        inputValue
+      )
     )
   )
 }
@@ -102,23 +106,34 @@ function validateAndConvertInputs(inputsValues, inputsMetas) {
  * @return {Promise} Resolves with firebase app if service account type,
  * otherwise an dobject
  */
-async function validateAndConvertInputValues(inputValues, inputMeta) {
+async function validateAndConvertInputValues(eventData, inputMeta, inputValue) {
   // Convert service account path and databaseURL to a Firebase App
   if (get(inputMeta, 'type') === 'serviceAccount') {
     // Throw if input is required and is missing serviceAccountPath or databaseURL
-    const missingParamsForAccountFromStorage = !hasAll(inputValues, ['serviceAccountPath', 'databaseURL'])
-    const missingParamsForAccountFromFirstore = !hasAll(inputValues, ['credential', 'databaseURL'])
-    if (get(inputMeta, 'required') && missingParamsForAccountFromStorage && missingParamsForAccountFromFirstore) {
+    const missingParamsForAccountFromStorage = !hasAll(inputValue, [
+      'serviceAccountPath',
+      'databaseURL'
+    ])
+    const missingParamsForAccountFromFirstore = !hasAll(inputValue, [
+      'credential',
+      'databaseURL'
+    ])
+    if (
+      get(inputMeta, 'required') &&
+      missingParamsForAccountFromStorage &&
+      missingParamsForAccountFromFirstore
+    ) {
       throw new Error(
         'Service Account input is required and does not contain required parameters'
       )
     }
-    return getAppFromServiceAccount(inputValues)
+
+    return getAppFromServiceAccount(inputValue, eventData)
   }
-  if (get(inputMeta, 'required') && !size(inputValues)) {
+  if (get(inputMeta, 'required') && !size(inputValue)) {
     throw new Error('Input is required and does not contain a value')
   }
-  return inputValues
+  return inputValue
 }
 
 /**
@@ -344,12 +359,12 @@ async function copyFromRTDBToFirestore(app1, app2, eventData) {
  * @return {Promise} Resolves with result of update call
  */
 async function copyBetweenRTDBInstances(app1, app2, eventData) {
-  if (!get(app1, 'database') || !get(app2, 'database')) {
-    console.error('Database not found on app instance')
-    throw new Error(
-      'Invalid service account, does not enable access to database'
-    )
-  }
+  // if (!get(app1, 'database') || !get(app2, 'database')) {
+  //   console.error('Database not found on app instance')
+  //   throw new Error(
+  //     'Invalid service account, does not enable access to database'
+  //   )
+  // }
   const firstRTDB = app1.database()
   const secondRTDB = app2.database()
   const { src, dest } = eventData
