@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
 import { uniqueId } from 'lodash'
+import { encrypt } from './utils/encryption'
 const functions = require('firebase-functions')
 const gcs = require('@google-cloud/storage')()
 const bucket = gcs.bucket(functions.config().firebase.storageBucket)
@@ -40,7 +41,9 @@ async function handleServiceAccountCreate(event) {
   // Create Temporary directory and download file to that folder
   const fileData = await fs.readJson(tempLocalPath)
   // Write File data to Service account
-  await event.data.ref.update({ credential: fileData })
+  await event.data.ref.update({
+    credential: encrypt(fileData, { password: 'testing' })
+  })
   console.log('Service account copied to Firestore, cleaning up...')
   // Once the file data hase been added to db delete the local files to free up disk space.
   fs.unlinkSync(tempLocalPath)
