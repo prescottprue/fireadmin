@@ -1,12 +1,7 @@
-/* eslint-disable no-console */
-import fs from 'fs-extra'
-import os from 'os'
-import path from 'path'
-import { uniqueId } from 'lodash'
 import { encrypt } from './utils/encryption'
+import { to } from './utils/async'
+import { downloadFromStorage } from './utils/cloudStorage'
 const functions = require('firebase-functions')
-const gcs = require('@google-cloud/storage')()
-const bucket = gcs.bucket(functions.config().firebase.storageBucket)
 
 /**
  * @name copyServiceAccountToFirestore
@@ -16,36 +11,42 @@ const bucket = gcs.bucket(functions.config().firebase.storageBucket)
  */
 export default functions.firestore
   .document(
-    'projects/{projectId}/environments/{envrionmentId}'
+    'projects/{projectId}/environments/{environmentId}'
     // 'projects/{projectId}/environments/{envrionmentId}/serviceAccounts/{serviceAccountId}' // for serviceAccounts as subcollection
   )
   .onCreate(handleServiceAccountCreate)
 
 /**
- * Handle downloading service account from cloud storage and store it within
- * Firestore. Could be a storage function, but it would require more code
- * due to being triggered for all storage files.
+ * Download service account from Cloud Storage and store it as an encrypted
+ * string within Firestore. Could be a storage function, but it
+ * would require more code due to being triggered for all storage files.
  * @param  {functions.Event} event - Function event triggered when adding a new
  * service account to a project
  * @return {Promise} Resolves with filePath
  */
 async function handleServiceAccountCreate(event) {
   // const { fullPath } = event.data.data() // for serviceAccounts as subcollection
-  console.log('service account copying to firestore')
   const eventData = event.data.data()
-  const tempSuffix = `copyServiceAccount/${uniqueId()}/serviceAccount.json`
-  const tempLocalPath = path.join(os.tmpdir(), tempSuffix)
+  if (!eventData.serviceAccount) {
+    throw new Error(
+      'serviceAccount parameter is required to copy service account to Firestore'
+    )
+  }
   const { serviceAccount: { fullPath } } = eventData
-  // const fileName = path.basename(fullPath) // File Name
-  await bucket.file(fullPath).download({ destination: tempLocalPath })
-  // Create Temporary directory and download file to that folder
-  const fileData = await fs.readJson(tempLocalPath)
-  // Write File data to Service account
-  await event.data.ref.update({
-    credential: encrypt(fileData, { password: 'testing' })
-  })
-  console.log('Service account copied to Firestore, cleaning up...')
-  // Once the file data hase been added to db delete the local files to free up disk space.
-  fs.unlinkSync(tempLocalPath)
-  return tempLocalPath
+  // const fileName = path.basename(tempLocalPath) // File Name
+  const [downloadErr, fileData] = await to(downloadFromStorage(null, fullPath))
+  if (downloadErr) throw downloadErr
+  // Write encrypted service account data to serviceAccount parameter of environment document
+  const [updateErr] = await to(
+    event.data.ref.update('serviceAccount', {
+      ...eventData.serviceAccount,
+      credential: encrypt(fileData)
+    })
+  )
+  if (updateErr) throw updateErr
+  console.log(
+    'Service account copied to Firestore, cleaning up...',
+    event.params
+  )
+  return fileData
 }

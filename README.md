@@ -24,11 +24,15 @@
 1. [Deployment](#deployment)
 
 ## Features
-* Multiple Environments
-* Data Migrations
+* Manage multiple environments as a single project
 * Project Sharing (invite by email coming soon)
+* "Action Runner" for common project tasks such as data migrations, and generating reports
+* Action Features include support for:
+  * Multiple steps
+  * Backup phase (for easy backing up data before running your actions)
+  * Custom logic (JS written in the browser with ESNext features like `async/await`)
+* Project level tracking of actions which have been run through Action Runner
 * Get/Set CORS Config of Storage Buckets
-* Multi Step Migrations (with custom code)
 
 *coming soon*
 * Authorized Google API Request Panel
@@ -185,6 +189,9 @@ For more options on CI settings checkout the [firebase-ci docs](https://github.c
 
 1. Why node `6.11.5` instead of a newer version? [Cloud Functions runtime is still on `6.11.5`][functions-runtime-url], which is why that is what is used for the travis build version. This will be switched when the functions runtime is updated
 1. Why Yarn over node's `package-lock.json`? - Relates to previous question. Node `6.*.*` and equivalent npm didn't include lock files yet.
+1. Uploading service accounts? Where do they go and how are my service accounts stored?
+  Currently on a Google Cloud Storage Bucket which does not have CORS access. There is also the option to store them in Firestore as an encrypted string for quicker reads/writes when running actions.
+
 
 ## What Happened To The Fireadmin NPM Library?
 

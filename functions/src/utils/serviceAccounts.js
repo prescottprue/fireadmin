@@ -6,6 +6,7 @@ import path from 'path'
 import rimraf from 'rimraf'
 import { get, uniqueId } from 'lodash'
 import mkdirp from 'mkdirp-promise'
+import { decrypt } from './encryption'
 const functions = require('firebase-functions')
 const gcs = require('@google-cloud/storage')()
 const bucket = gcs.bucket(functions.config().firebase.storageBucket)
@@ -20,7 +21,7 @@ export async function getAppFromServiceAccount(opts) {
     databaseURL,
     storageBucket,
     serviceAccountPath,
-    serviceAccountType = 'storage'
+    serviceAccountType = 'firestore'
   } = opts
   console.log(`Getting apps from service account from ${serviceAccountType}...`)
   const getServiceAccount = get(serviceAccountGetFuncByType, serviceAccountType)
@@ -51,13 +52,28 @@ export async function getAppFromServiceAccount(opts) {
  * @return {Promise}
  */
 export async function serviceAccountFromFirestorePath(docPath, name) {
+  console.log('Getting service accounts stored in Firestore')
   const firestore = admin.firestore()
-  const serviceAccountData = await firestore.doc(docPath).get()
+  const projectDoc = await firestore.doc(docPath).get()
+  if (!projectDoc.exists) {
+    console.error('Project containing service account not found')
+    throw new Error('Project containing service account not found')
+  }
+  const projectData = projectDoc.data()
+  const { credential } = get(projectData, 'serviceAccount', {})
+  if (!credential) {
+    const missingCredMsg =
+      'Credential parameter is required to load service account from Firestore'
+    console.error(missingCredMsg)
+    throw new Error(missingCredMsg)
+  }
+  const serviceAccountStr = decrypt(credential)
+  console.log('service account string:', serviceAccountStr)
   const localPath = `serviceAccounts/${name}.json`
   const tempLocalPath = path.join(os.tmpdir(), localPath)
   const tempLocalDir = path.dirname(tempLocalPath)
   await mkdirp(tempLocalDir)
-  await fs.writeJson(tempLocalPath, serviceAccountData.serviceAccount)
+  await fs.writeJson(tempLocalPath, JSON.parse(serviceAccountStr))
   return tempLocalPath
 }
 

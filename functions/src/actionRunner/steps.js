@@ -1,12 +1,10 @@
 import * as admin from 'firebase-admin'
 import { invoke, get, isArray, size, map, isObject } from 'lodash'
-import os from 'os'
-import path from 'path'
-import fs from 'fs-extra'
-import mkdirp from 'mkdirp-promise'
 import { CUSTOM_STEPS_PATH } from './constants'
 import { invokeFirepadContent } from './firepad'
 import { to, promiseWaterfall } from '../utils/async'
+import { downloadFromStorage, uploadToStorage } from '../utils/cloudStorage'
+import { hasAll } from '../utils/index'
 import {
   getAppFromServiceAccount,
   cleanupServiceAccounts
@@ -48,10 +46,13 @@ export async function runStepsFromEvent(event) {
     throw new Error('Input values array was not provided to action request')
   }
   console.log('Converting inputs of action....')
-  const convertedInputValues = await validateAndConvertInputs(
-    eventData.inputValues,
-    inputs
+  const [convertInputsErr, convertedInputValues] = await to(
+    validateAndConvertInputs(eventData.inputValues, inputs)
   )
+  if (convertInputsErr) {
+    console.error('Error converting inputs:', convertInputsErr.message)
+    throw convertInputsErr
+  }
   const totalNumSteps = size(steps)
   console.log(`Running ${totalNumSteps} actions`)
   // Run all action promises
@@ -105,13 +106,11 @@ async function validateAndConvertInputValues(inputValues, inputMeta) {
   // Convert service account path and databaseURL to a Firebase App
   if (get(inputMeta, 'type') === 'serviceAccount') {
     // Throw if input is required and is missing serviceAccountPath or databaseURL
-    if (
-      get(inputMeta, 'required') &&
-      (!get(inputValues, 'serviceAccountPath') ||
-        !get(inputValues, 'databaseURL'))
-    ) {
+    const missingParamsForAccountFromStorage = !hasAll(inputValues, ['serviceAccountPath', 'databaseURL'])
+    const missingParamsForAccountFromFirstore = !hasAll(inputValues, ['credential', 'databaseURL'])
+    if (get(inputMeta, 'required') && missingParamsForAccountFromStorage && missingParamsForAccountFromFirstore) {
       throw new Error(
-        'Input is required and does not contain serviceAccountPath and databaseURL'
+        'Service Account input is required and does not contain required parameters'
       )
     }
     return getAppFromServiceAccount(inputValues)
@@ -275,10 +274,12 @@ export async function runStep({
 async function copyBetweenFirestoreInstances(app1, app2, eventData) {
   const firestore1 = app1.firestore()
   const firestore2 = app2.firestore()
-  const { src, dest } = eventData
+  const { src, dest, merge = true } = eventData
   try {
     const dataFromFirst = await firestore1.doc(src.path).get()
-    const updateRes = await firestore2.doc(dest.path).update(dataFromFirst)
+    const updateRes = await firestore2
+      .doc(dest.path)
+      .set(dataFromFirst, { merge })
     console.log('Copy between Firestore instances successful')
     return updateRes
   } catch (err) {
@@ -365,65 +366,6 @@ async function copyBetweenRTDBInstances(app1, app2, eventData) {
     return updateRes
   } catch (err) {
     console.log('Error copying between RTDB instances', err.message || err)
-    throw err
-  }
-}
-
-/**
- * Download JSON File from Google Cloud Storage and return is contents
- * @param  {firebase.App} app - App from which the storage File should be downloaded
- * @param  {String} pathInStorage - Path of file within cloud storage bucket
- * @return {Promise} Resolves with JSON contents of the file
- */
-async function downloadFromStorage(app, pathInStorage) {
-  const localPath = `actions/storage/${pathInStorage}/${Date.now()}.json`
-  const tempLocalPath = path.join(os.tmpdir(), localPath)
-  const tempLocalDir = path.dirname(tempLocalPath)
-  if (!app.storage) {
-    throw new Error('Storage is not enabled on firebase-admin')
-  }
-  try {
-    // Create Temporary directory and download file to that folder
-    await mkdirp(tempLocalDir)
-    // Download file from bucket to local filesystem
-    await app
-      .storage()
-      .bucket.file(pathInStorage)
-      .download({ destination: tempLocalPath })
-    // Return JSON file contents
-    return fs.readJson(tempLocalPath)
-  } catch (err) {
-    console.error('Error downloading file from storage', err.message || err)
-    throw err
-  }
-}
-
-/**
- * Upload JSON Object to Google Cloud Storage and return is contents
- * @param  {firebase.App} app - App from which the storage File should be downloaded
- * @param  {String} pathInStorage - Path of file within cloud storage bucket
- * @return {Promise} Resolves with JSON contents of the file
- */
-async function uploadToStorage(app, pathInStorage, jsonObject) {
-  const localPath = `actions/storage/${Date.now()}/${pathInStorage}.json`
-  const tempLocalPath = path.join(os.tmpdir(), localPath)
-  if (!app.storage) {
-    throw new Error('Storage is not enabled on firebase-admin')
-  }
-  try {
-    // Upload file from bucket to local filesystem
-    await fs.outputJson(tempLocalPath, jsonObject, { spaces: 2 })
-    await app
-      .storage()
-      .bucket()
-      .upload(tempLocalPath, {
-        destination: pathInStorage,
-        contentType: 'application/json',
-        contentLanguage: 'en'
-      })
-    // Return JSON file contents
-  } catch (err) {
-    console.error('Error uploading file to storage', err.message || err)
     throw err
   }
 }
