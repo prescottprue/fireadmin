@@ -42,3 +42,17 @@ export const pushAndWaitForReponse = async ({
   const responseRef = firebase.ref(`${responsePath}/${pushKey}`)
   return waitForCompleted(responseRef)
 }
+
+export const pushAndWaitForStatus = async (
+  { firebase, requestPath, responsePath, pushObj, afterPush },
+  successCb,
+  errorCb
+) => {
+  const pushRes = await firebase.pushWithMeta(requestPath, pushObj)
+  const pushKey = pushRes.key
+  if (isFunction(afterPush)) {
+    afterPush(pushRes)
+  }
+  const responseRef = firebase.ref(`${responsePath}/${pushKey}`)
+  responseRef.on('value', successCb, errorCb)
+}

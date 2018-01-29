@@ -38,6 +38,7 @@ export default compose(
       toInstance: initialSelected,
       templateEditExpanded: true,
       actionProcessing: false,
+      actionProgress: null,
       copyPath: null,
       configExpanded: true,
       instances: null
@@ -59,11 +60,12 @@ export default compose(
         selectedTemplate: newSelectedTemplate,
         templateEditExpanded: false
       }),
-      setCopyPath: ({ copyPath }) => e => ({
-        copyPath: e.target.value
-      }),
+      setCopyPath: ({ copyPath }) => e => ({ copyPath: e.target.value }),
       toggleActionProcessing: ({ actionProcessing }) => e => ({
         actionProcessing: !actionProcessing
+      }),
+      setActionProgress: ({ actionProcessing }) => stepStatus => ({
+        actionProgress: !actionProcessing
       })
     }
   ),

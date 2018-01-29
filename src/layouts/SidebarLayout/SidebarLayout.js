@@ -14,6 +14,7 @@ import HomeIcon from 'material-ui-icons/Home'
 import DeviceHubIcon from 'material-ui-icons/SettingsEthernet'
 import StorageIcon from 'material-ui-icons/Dns'
 import EventIcon from 'material-ui-icons/ViewList'
+import { paths } from 'constants'
 import SidebarList from './SidebarList'
 
 const sidebarOptions = [
@@ -23,21 +24,21 @@ const sidebarOptions = [
     iconElement: <HomeIcon />
   },
   {
-    value: 'environments',
+    value: paths.projectEnvironments,
     iconElement: <LayersIcon />
   },
   {
-    value: 'actions',
+    value: paths.projectActions,
     iconElement: <DeviceHubIcon />
   },
   {
-    value: 'bucketConfig',
+    value: paths.projectBucketConfig,
     label: 'Bucket Config',
     iconElement: <StorageIcon />
   },
   {
-    value: 'events',
-    label: 'Project Events',
+    value: paths.projectEvents,
+    label: 'Events',
     iconElement: <EventIcon />
   }
 ]
@@ -91,7 +92,7 @@ export const SidebarLayout = ({
 SidebarLayout.propTypes = {
   title: PropTypes.string,
   toggleDrawer: PropTypes.func,
-  classes: PropTypes.object, // added by withStyles
+  classes: PropTypes.object, // from enhancer (withStyles)
   drawerOpen: PropTypes.bool,
   children: PropTypes.element.isRequired
 }

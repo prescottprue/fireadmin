@@ -58,11 +58,22 @@ export async function emitProjectEvent(eventData) {
   return writeRes
 }
 
+/**
+ * Update response object within Real Time Database with progress information
+ * about an action.
+ * @param  {Object} event - Functions event object
+ * @param  {Object} actionInfo - Info about action
+ * @param  {Number} actionInfo.stepIdx - Index of current step
+ * @param  {Number} acitonInfo.totalNumSteps - Total number of steps in action
+ * @return {Promise} Resolves with results of database write promise
+ */
 export function updateResponseWithProgress(event, { stepIdx, totalNumSteps }) {
   const response = {
     status: 'running',
-    stepCompleteStatus: {
-      [stepIdx]: true
+    stepStatus: {
+      complete: {
+        [stepIdx]: true
+      }
     },
     progress: stepIdx / totalNumSteps,
     updatedAt: admin.database.ServerValue.TIMESTAMP
@@ -72,9 +83,15 @@ export function updateResponseWithProgress(event, { stepIdx, totalNumSteps }) {
     .update(response)
 }
 
+/**
+ * [updateResponseWithError description]
+ * @param  {[type]} event [description]
+ * @return {Promise} Resolves with results of database write promise
+ */
 export function updateResponseWithError(event) {
   const response = {
     status: 'error',
+    complete: true,
     updatedAt: admin.database.ServerValue.TIMESTAMP
   }
   return event.data.adminRef.ref.root
@@ -82,6 +99,15 @@ export function updateResponseWithError(event) {
     .update(response)
 }
 
+/**
+ * Update response object within Real Time Database with error information about
+ * an action
+ * @param  {Object} event - Functions event object
+ * @param  {Object} actionInfo - Info about action
+ * @param  {Number} actionInfo.stepIdx - Index of current step
+ * @param  {Number} acitonInfo.totalNumSteps - Total number of steps in action
+ * @return {Promise} Resolves with results of database write promise
+ */
 export function updateResponseWithActionError(
   event,
   { stepIdx, totalNumSteps }
@@ -89,10 +115,12 @@ export function updateResponseWithActionError(
   const response = {
     status: 'error',
     stepCompleteStatus: {
-      [stepIdx]: false
-    },
-    stepErrorStatus: {
-      [stepIdx]: true
+      complete: {
+        [stepIdx]: false
+      },
+      error: {
+        [stepIdx]: true
+      }
     },
     progress: stepIdx / totalNumSteps,
     updatedAt: admin.database.ServerValue.TIMESTAMP
