@@ -25,7 +25,9 @@ exports.sendInvite = functions.database
       from: '"Fireadmin" <noreply@fireadmin.io>',
       to: val.email,
       subject: 'Invite To Fireadmin - Firebase Instance Management Application',
-      text: 'Visit <a>fireadmin.io/signup</a> to join'
+      html: val.projectName
+        ? `"${val.projectName}" has been shared with you on fireadmin.io`
+        : 'A user of Fireadmin (a Firebase application management application) would like you to join. Visit <a>fireadmin.io/signup</a> to create an account'
     }
 
     return mailTransport

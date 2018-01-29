@@ -57,7 +57,7 @@ export const ActionInput = ({
 
 ActionInput.propTypes = {
   environments: PropTypes.object,
-  inputs: PropTypes.object,
+  inputs: PropTypes.array,
   inputMeta: PropTypes.object,
   index: PropTypes.number.isRequired,
   serviceAccounts: PropTypes.object,

@@ -13,6 +13,7 @@ import LayersIcon from 'material-ui-icons/Layers'
 import HomeIcon from 'material-ui-icons/Home'
 import DeviceHubIcon from 'material-ui-icons/SettingsEthernet'
 import StorageIcon from 'material-ui-icons/Dns'
+import EventIcon from 'material-ui-icons/ViewList'
 import SidebarList from './SidebarList'
 
 const sidebarOptions = [
@@ -33,6 +34,11 @@ const sidebarOptions = [
     value: 'bucketConfig',
     label: 'Bucket Config',
     iconElement: <StorageIcon />
+  },
+  {
+    value: 'events',
+    label: 'Project Events',
+    iconElement: <EventIcon />
   }
 ]
 

@@ -1,5 +1,7 @@
 import { invoke, get, isFunction } from 'lodash'
 
+export const isPromise = obj => obj && typeof obj.then === 'function'
+
 export const waitForResponseWith = (ref, pathForValue = 'completed', value) =>
   new Promise((resolve, reject) => {
     ref.on(

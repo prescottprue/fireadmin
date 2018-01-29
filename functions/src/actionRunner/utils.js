@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin'
 import { ACTION_RUNNER_RESPONSES_PATH } from './constants'
+import { to } from '../utils/async'
 
 export function updateResponseOnRTDB(event, error) {
   const response = {
@@ -17,12 +18,44 @@ export function updateResponseOnRTDB(event, error) {
     .set(response)
 }
 
-export function updateRequestAsStarted(event) {
+export async function updateRequestAsStarted(event) {
   const response = {
     status: 'started',
     startedAt: admin.database.ServerValue.TIMESTAMP
   }
-  return event.data.adminRef.ref.update(response)
+  const [dbUpdateError, updateRes] = await to(
+    event.data.adminRef.ref.update(response)
+  )
+  if (dbUpdateError) {
+    console.error(
+      'Error updating request as started within RTDB:',
+      dbUpdateError.message || dbUpdateError
+    )
+    throw dbUpdateError
+  }
+  return updateRes
+}
+
+export async function emitProjectEvent(eventData) {
+  const { projectId } = eventData
+  const [writeErr, writeRes] = await to(
+    admin
+      .firestore()
+      .doc(`projects/${projectId}/events`)
+      .add({
+        ...eventData,
+        createdBy: 'system',
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
+      })
+  )
+  if (writeErr) {
+    console.error(
+      'Error writing event to project',
+      writeErr.message || writeErr
+    )
+    throw writeErr
+  }
+  return writeRes
 }
 
 export function updateResponseWithProgress(event, { stepIdx, totalNumSteps }) {
