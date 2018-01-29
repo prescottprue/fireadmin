@@ -36,7 +36,7 @@ export const ActionTemplateBackups = ({ fields, steps }) => (
       <ExpansionPanel key={index}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.title}>
-            {fields.get(index).name || fields.get(index).type}
+            {fields.get(index).name || fields.get(index).type || 'No Name'}
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
@@ -103,30 +103,6 @@ export const ActionTemplateBackups = ({ fields, steps }) => (
                     />
                   ))}
                 </Field> */}
-                </div>
-                <div className="flex-column">
-                  <h4>Destination</h4>
-                  <Field
-                    name={`${member}.inputs.0.resource`}
-                    component={SelectField}
-                    hintText="Select A Resource"
-                    floatingLabelText="Resource"
-                    className={classes.field}>
-                    {resourcesOptions.map((option, idx) => (
-                      <MenuItem
-                        key={`Option-${option.value}-${idx}`}
-                        value={option.value}
-                        primaryText={option.label || capitalize(option.value)}
-                        disabled={option.disabled}
-                      />
-                    ))}
-                  </Field>
-                  <Field
-                    name={`${member}.inputs.0.path`}
-                    component={TextField}
-                    floatingLabelText="Path"
-                    className={classes.field}
-                  />
                 </div>
               </div>
             </Grid>

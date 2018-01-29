@@ -22,7 +22,7 @@ exports.sendInvite = functions.database
     const val = snapshot.val()
 
     const mailOptions = {
-      from: '"Fireadmin" <noreply@fireadmin.io>',
+      from: '"Fireadmin Team" <noreply@fireadmin.io>',
       to: val.email,
       subject: 'Invite To Fireadmin - Firebase Instance Management Application',
       html: val.projectName
