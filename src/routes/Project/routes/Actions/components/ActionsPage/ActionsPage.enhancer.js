@@ -33,9 +33,7 @@ export default compose(
     project: get(state.firestore, `data.projects.${params.projectId}`)
   })),
   withStateHandlers(
-    ({ initialSelected = null }) => ({
-      fromInstance: initialSelected,
-      toInstance: initialSelected,
+    () => ({
       templateEditExpanded: true,
       actionProcessing: false,
       actionProgress: null,
@@ -44,12 +42,6 @@ export default compose(
       instances: null
     }),
     {
-      selectFrom: ({ selectInstance }) => (e, ind, newSelected) => ({
-        fromInstance: newSelected
-      }),
-      selectTo: ({ selectInstance }) => (e, ind, newSelected) => ({
-        toInstance: newSelected
-      }),
       toggleTemplateEdit: ({ templateEditExpanded }) => () => ({
         templateEditExpanded: !templateEditExpanded
       }),

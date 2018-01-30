@@ -13,7 +13,8 @@ export const StepsViewer = ({ steps, activeStep, disabled }) => (
             <StepLabel>{step.name || 'No Name'}</StepLabel>
             <StepContent>
               <Typography>Type: {step.type}</Typography>
-              <Typography>{JSON.stringify(step)}</Typography>
+              <Typography>{step.description}</Typography>
+              <Typography>{JSON.stringify(step.dest)}</Typography>
             </StepContent>
           </Step>
         )

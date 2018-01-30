@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Button from 'material-ui-next/Button'
 import Typography from 'material-ui-next/Typography'
+import { LinearProgress } from 'material-ui-next/Progress'
 import { Link } from 'react-router'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import ExpansionPanel, {
@@ -39,6 +40,7 @@ export const ActionsPage = ({
           Run Action
         </Button>
       </div>
+      {actionProcessing && <LinearProgress color="primary" />}
       <ExpansionPanel
         expanded={templateEditExpanded}
         onChange={toggleTemplateEdit}>

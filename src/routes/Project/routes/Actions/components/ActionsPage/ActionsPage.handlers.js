@@ -1,6 +1,6 @@
 import { get, pick, invoke } from 'lodash'
 import { firebasePaths } from 'constants'
-import { pushAndWaitForReponse } from 'utils/firebaseFunctions'
+import { pushAndWaitForStatus } from 'utils/firebaseFunctions'
 
 export const runAction = props => async () => {
   const {
@@ -13,8 +13,9 @@ export const runAction = props => async () => {
     toggleActionProcessing
   } = props
   // TODO: Show error notification if required action inputs are not selected
-  toggleActionProcessing()
   props.toggleTemplateEdit()
+  toggleActionProcessing()
+  props.showSuccess('Action Run Started!')
   try {
     // Write event to project events
     await firestore.add(
@@ -32,7 +33,7 @@ export const runAction = props => async () => {
       }
     )
     // Push request to real time database and wait for response
-    const res = await pushAndWaitForReponse(
+    const res = await pushAndWaitForStatus(
       {
         firebase,
         requestPath: firebasePaths.actionRunnerRequests,
@@ -42,13 +43,17 @@ export const runAction = props => async () => {
           serviceAccountType: 'firestore',
           inputValues,
           template: pick(selectedTemplate, ['steps', 'inputs'])
-        },
-        afterPush: toggleActionProcessing
+        }
       },
       responseSnap => {
-        const responseVal = invoke(responseSnap, 'val')
-        if (responseVal.progress) {
-          props.setActionProgress(responseVal.progress)
+        const { error, progress, completed } = invoke(responseSnap, 'val') || {}
+        if (error) {
+          toggleActionProcessing()
+          return props.showError(error)
+        }
+        props.setActionProgress(progress)
+        if (completed) {
+          props.showSuccess('Action complete!')
         }
       },
       listenerError => {
@@ -57,9 +62,6 @@ export const runAction = props => async () => {
         props.showError('Error with action request')
       }
     )
-    // TODO: Add watcher for progress
-    toggleActionProcessing()
-    props.showSuccess('Action complete!')
     return res
   } catch (err) {
     console.error('Error: ', err.message || err) // eslint-disable-line no-console
