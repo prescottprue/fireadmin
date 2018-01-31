@@ -7,6 +7,7 @@ import rimraf from 'rimraf'
 import { get, uniqueId } from 'lodash'
 import mkdirp from 'mkdirp-promise'
 import { decrypt } from './encryption'
+import { to } from './async'
 const functions = require('firebase-functions')
 const gcs = require('@google-cloud/storage')()
 const bucket = gcs.bucket(functions.config().firebase.storageBucket)
@@ -15,13 +16,23 @@ const serviceAccountGetFuncByType = {
   firestore: serviceAccountFromFirestorePath,
   storage: serviceAccountFromStoragePath
 }
+const missingCredMsg =
+  'Credential parameter is required to load service account from Firestore'
 
+/**
+ * Get Firebase app from request evvent containing path information for
+ * service account
+ * @param  {Object} opts - Options object
+ * @param  {Object} eventData - Data from event request
+ * @return {Promise} Resolves with Firebase app
+ */
 export async function getAppFromServiceAccount(opts, eventData) {
   const {
     databaseURL,
     storageBucket,
     environmentKey,
-    serviceAccountType = 'firestore'
+    serviceAccountType = 'firestore',
+    fallbackAccountType = 'storage'
   } = opts
   const { projectId } = eventData
   let { serviceAccountPath } = opts
@@ -38,10 +49,31 @@ export async function getAppFromServiceAccount(opts, eventData) {
   // Make unique app name (prevents issue of multiple apps initialized with same name)
   const appName = `app-${uniqueId()}`
   // Get Service account data from resource (i.e Storage, Firestore, etc)
-  const account1LocalPath = await getServiceAccount(serviceAccountPath, appName)
+  const [err, accountPath] = await to(
+    getServiceAccount(serviceAccountPath, appName)
+  )
+  // Attempt to get fallback account type if main does not exist
+  if (err) {
+    console.log(
+      `Service account could not be loaded from ${serviceAccountType} loading from ${fallbackAccountType} instead...`
+    )
+    if (err.message === missingCredMsg) {
+      const getFallbackServiceAccount = get(
+        serviceAccountGetFuncByType,
+        fallbackAccountType
+      )
+      const [err2, fallbackAccountPath] = await to(
+        getFallbackServiceAccount(serviceAccountPath, appName)
+      )
+      if (err2) {
+        throw new Error('Service account could not be loaded')
+      }
+      serviceAccountPath = fallbackAccountPath
+    }
+  }
   try {
     const appCreds = {
-      credential: admin.credential.cert(account1LocalPath),
+      credential: admin.credential.cert(accountPath),
       databaseURL
     }
     if (storageBucket) {
@@ -49,7 +81,7 @@ export async function getAppFromServiceAccount(opts, eventData) {
     }
     return admin.initializeApp(appCreds, appName)
   } catch (err) {
-    console.error('Error initializing app:', err.message || err)
+    console.error('Error initializing firebase app:', err.message || err)
     throw err
   }
 }
@@ -72,8 +104,6 @@ export async function serviceAccountFromFirestorePath(docPath, name) {
   const projectData = projectDoc.data()
   const { credential } = get(projectData, 'serviceAccount', {})
   if (!credential) {
-    const missingCredMsg =
-      'Credential parameter is required to load service account from Firestore'
     console.error(missingCredMsg)
     throw new Error(missingCredMsg)
   }

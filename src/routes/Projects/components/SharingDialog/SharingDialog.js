@@ -62,26 +62,28 @@ export const SharingDialog = ({
           ignoreSuggestions={map(project.collaborators, (val, key) => key)}
         />
       </div>
-      <h4>New Collaborators</h4>
       {selectedCollaborators.length ? (
-        <List>
-          {selectedCollaborators.map((user, i) => (
-            <ListItem key={`SelectedUser-${user.id || user.objectID}-${i}`}>
-              <PersonIcon />
-              <ListItemText primary={user.displayName} />
-              <ListItemSecondaryAction>
-                <Checkbox
-                  onChange={() => selectCollaborator(user)}
-                  checked={
-                    !!find(selectedCollaborators, {
-                      objectID: user.id || user.objectID
-                    })
-                  }
-                />
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
+        <div>
+          <h4>New Collaborators</h4>
+          <List>
+            {selectedCollaborators.map((user, i) => (
+              <ListItem key={`SelectedUser-${user.id || user.objectID}-${i}`}>
+                <PersonIcon />
+                <ListItemText primary={user.displayName} />
+                <ListItemSecondaryAction>
+                  <Checkbox
+                    onChange={() => selectCollaborator(user)}
+                    checked={
+                      !!find(selectedCollaborators, {
+                        objectID: user.id || user.objectID
+                      })
+                    }
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+          </List>
+        </div>
       ) : null}
     </DialogContent>
     <DialogActions>

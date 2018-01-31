@@ -53,6 +53,7 @@ export const runAction = props => async () => {
         }
         props.setActionProgress(progress)
         if (completed) {
+          toggleActionProcessing()
           props.showSuccess('Action complete!')
         }
       },
