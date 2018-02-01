@@ -52,7 +52,7 @@ export const ProjectEventsPage = ({ groupedEvents }) => (
 )
 
 ProjectEventsPage.propTypes = {
-  groupedEvents: PropTypes.array
+  groupedEvents: PropTypes.object
 }
 
 export default ProjectEventsPage
