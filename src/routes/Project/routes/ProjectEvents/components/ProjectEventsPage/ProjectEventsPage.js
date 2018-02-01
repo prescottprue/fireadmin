@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { map } from 'lodash'
+import { map, get, flatMap } from 'lodash'
 import Typography from 'material-ui-next/Typography'
 import Paper from 'material-ui-next/Paper'
 import Table, {
@@ -9,40 +9,50 @@ import Table, {
   TableHead,
   TableRow
 } from 'material-ui-next/Table'
+import { formatTime } from 'utils/formatters'
 import classes from './ProjectEventsPage.scss'
 
-export const ProjectEventsPage = ({ project }) => (
-  <div>
+export const ProjectEventsPage = ({ groupedEvents }) => (
+  <div className={classes.container}>
     <Typography className={classes.pageHeader}>Project Events</Typography>
-    <Paper className={classes.root}>
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Event Id</TableCell>
-            <TableCell>Created At</TableCell>
-            <TableCell>Created By</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {map(project.events, (projectEvent, eventKey) => {
-            return (
-              <TableRow key={eventKey}>
-                <TableCell>{eventKey}</TableCell>
-                <TableCell>{JSON.stringify(projectEvent.createdAt)}</TableCell>
+    <div className={classes.content}>
+      <Paper className={classes.root}>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Time</TableCell>
+              <TableCell>Event Type</TableCell>
+              <TableCell>Created By</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {flatMap(groupedEvents, (eventGroup, groupName) => [
+              <TableRow key={groupName} className={classes.tableRowDivider}>
                 <TableCell>
-                  <span>{projectEvent.createdBy}</span>
+                  <span>{groupName}</span>
                 </TableCell>
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
-    </Paper>
+                <TableCell />
+                <TableCell />
+              </TableRow>,
+              map(eventGroup, (projectEvent, eventKey) => (
+                <TableRow key={eventKey}>
+                  <TableCell>{formatTime(projectEvent.createdAt)}</TableCell>
+                  <TableCell>{get(projectEvent, 'eventType')}</TableCell>
+                  <TableCell>
+                    <span>{projectEvent.createdBy}</span>
+                  </TableCell>
+                </TableRow>
+              ))
+            ])}
+          </TableBody>
+        </Table>
+      </Paper>
+    </div>
   </div>
 )
 
 ProjectEventsPage.propTypes = {
-  project: PropTypes.object
+  groupedEvents: PropTypes.array
 }
 
 export default ProjectEventsPage

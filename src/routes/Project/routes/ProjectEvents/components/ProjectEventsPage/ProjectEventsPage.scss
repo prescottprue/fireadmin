@@ -1,5 +1,14 @@
 @import 'base';
 
+.container {
+  overflow-y: hidden;
+  height: 100%;
+}
+.content {
+  overflow-y: scroll;
+  height: 100%;
+  padding: .5rem;
+}
 .button {
   margin-left: 2rem;
   padding: 2rem;
@@ -21,4 +30,9 @@
 }
 .sectionHeader {
   font-size: 1.3rem !important;
+}
+.tableRowDivider {
+  color: rgba(0,0,0,0.54);
+  border-top: 1px solid rgba(0,0,0,0.12);
+  background-color: #f5f5f5;
 }

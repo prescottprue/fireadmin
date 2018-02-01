@@ -2,6 +2,35 @@
 # yarn lockfile v1
 
 
+"@devexpress/dx-core@1.0.0-rc.2":
+  version "1.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-core/-/dx-core-1.0.0-rc.2.tgz#e2ca6923c3fb4b4d86703ae9d1dc3d86491f2521"
+
+"@devexpress/dx-grid-core@1.0.0-rc.2":
+  version "1.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-grid-core/-/dx-grid-core-1.0.0-rc.2.tgz#e36cf1bf5fe838045dea384d95c0dec0c473e18a"
+
+"@devexpress/dx-react-core@^1.0.0-rc.2":
+  version "1.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-core/-/dx-react-core-1.0.0-rc.2.tgz#61861aa82884b3ff3fe042887d8ae7807d586459"
+  dependencies:
+    "@devexpress/dx-core" "1.0.0-rc.2"
+    prop-types "^15.6.0"
+
+"@devexpress/dx-react-grid-material-ui@^1.0.0-rc.2":
+  version "1.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-grid-material-ui/-/dx-react-grid-material-ui-1.0.0-rc.2.tgz#cac3ce150b6946a728a68774b53a031096269141"
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.0"
+
+"@devexpress/dx-react-grid@^1.0.0-rc.2":
+  version "1.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-grid/-/dx-react-grid-1.0.0-rc.2.tgz#0b49c3e2b867e5a84718acc887f66165d3ec4ae4"
+  dependencies:
+    "@devexpress/dx-grid-core" "1.0.0-rc.2"
+    prop-types "^15.6.0"
+
 "@firebase/app@0.1.4":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@firebase/app/-/app-0.1.4.tgz#595b85390b1dc5846a88933d65d4fae7208f835d"
@@ -2017,6 +2046,10 @@ dashdash@^1.12.0:
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
   dependencies:
     assert-plus "^1.0.0"
+
+date-fns@^1.29.0:
+  version "1.29.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.29.0.tgz#12e609cdcb935127311d04d33334e2960a2a54e6"
 
 date-now@^0.1.4:
   version "0.1.4"
