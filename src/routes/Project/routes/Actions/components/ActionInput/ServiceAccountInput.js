@@ -31,7 +31,7 @@ export const ServiceAccountInput = ({
         />
       ))}
     </Field>
-    <Field
+    {/* <Field
       name={`${name}.serviceAccountPath`}
       component={SelectField}
       className={classes.field}
@@ -42,7 +42,7 @@ export const ServiceAccountInput = ({
       {map(serviceAccounts, ({ name, fullPath }) => (
         <MenuItem key={name} value={fullPath} primaryText={name} />
       ))}
-    </Field>
+    </Field> */}
   </div>
 )
 

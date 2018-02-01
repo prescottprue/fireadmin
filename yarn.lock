@@ -6236,9 +6236,9 @@ react-popper@^0.7.4:
     popper.js "^1.12.5"
     prop-types "^15.5.10"
 
-react-redux-firebase@^2.0.0-rc.2:
-  version "2.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/react-redux-firebase/-/react-redux-firebase-2.0.0-rc.2.tgz#b468e966fd150008116a5c2524a1bd5e3377a92e"
+react-redux-firebase@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-redux-firebase/-/react-redux-firebase-2.0.3.tgz#6f3e09519d46a6d994a40b2cc47ee645b5d95bb3"
   dependencies:
     hoist-non-react-statics "^2.3.1"
     lodash "^4.17.4"
@@ -6459,9 +6459,9 @@ redux-auth-wrapper@^1.0.0:
     lodash.isempty "4.4.0"
     prop-types "15.5.8"
 
-redux-firestore@^0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/redux-firestore/-/redux-firestore-0.2.5.tgz#c0c5ffdbb8759b2a3f61d7df48d61e29d9195377"
+redux-firestore@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/redux-firestore/-/redux-firestore-0.2.6.tgz#3ea35ddd276479abc23638ae437febf35cc9e8b5"
   dependencies:
     lodash "^4.17.4"
     prop-types "^15.6.0"

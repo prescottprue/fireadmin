@@ -31,16 +31,25 @@ export async function getAppFromServiceAccount(opts, eventData) {
     databaseURL,
     storageBucket,
     environmentKey,
+    fullPath,
     serviceAccountType = 'firestore',
     fallbackAccountType = 'storage'
   } = opts
+  if (!databaseURL) {
+    throw new Error(
+      'databaseURL is required for action to authenticate through serviceAccount'
+    )
+  }
   const { projectId } = eventData
-  let { serviceAccountPath } = opts
+  let serviceAccountPath = fullPath
+  let accountFilePath
+  let accountDataPath
   console.log(`Getting apps from service account from ${serviceAccountType}...`)
-  if (environmentKey) {
-    serviceAccountPath = `projects/${projectId}/environments/${environmentKey}`
+  if (environmentKey && serviceAccountType === 'firestore') {
+    accountDataPath = `projects/${projectId}/environments/${environmentKey}`
   }
   const getServiceAccount = get(serviceAccountGetFuncByType, serviceAccountType)
+  // Throw for service account type that does not have a getter function
   if (!getServiceAccount) {
     const errMessage = 'Invalid service account type in action request'
     console.error(errMessage)
@@ -49,31 +58,44 @@ export async function getAppFromServiceAccount(opts, eventData) {
   // Make unique app name (prevents issue of multiple apps initialized with same name)
   const appName = `app-${uniqueId()}`
   // Get Service account data from resource (i.e Storage, Firestore, etc)
-  const [err, accountPath] = await to(
-    getServiceAccount(serviceAccountPath, appName)
+  const [err, firstAccountFilePath] = await to(
+    getServiceAccount(accountDataPath || serviceAccountPath, appName)
   )
-  // Attempt to get fallback account type if main does not exist
-  if (err) {
+  if (!err) {
+    accountFilePath = firstAccountFilePath
+  } else {
+    // Attempt to get fallback account type if main does not exist
     console.log(
-      `Service account could not be loaded from ${serviceAccountType} loading from ${fallbackAccountType} instead...`
+      `Service account for app: "${appName}" could not be loaded from ${serviceAccountType} loading from ${fallbackAccountType} instead...`
     )
     if (err.message === missingCredMsg) {
       const getFallbackServiceAccount = get(
         serviceAccountGetFuncByType,
         fallbackAccountType
       )
-      const [err2, fallbackAccountPath] = await to(
-        getFallbackServiceAccount(serviceAccountPath, appName)
+      const [err2, fallbackAccountFilePath] = await to(
+        getFallbackServiceAccount(
+          fallbackAccountType === 'firestore'
+            ? accountDataPath
+            : serviceAccountPath,
+          appName
+        )
       )
       if (err2) {
-        throw new Error('Service account could not be loaded')
+        console.log(
+          `Service account for app: "${appName}" could also not be loaded from ${fallbackAccountType}. Exiting...`
+        )
+        throw new Error(
+          `Service account could not be loaded for app: "${appName}"`
+        )
       }
-      serviceAccountPath = fallbackAccountPath
+      accountFilePath = fallbackAccountFilePath
     }
   }
+
   try {
     const appCreds = {
-      credential: admin.credential.cert(accountPath),
+      credential: admin.credential.cert(accountFilePath),
       databaseURL
     }
     if (storageBucket) {

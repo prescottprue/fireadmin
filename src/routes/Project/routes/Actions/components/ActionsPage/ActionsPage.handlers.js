@@ -9,13 +9,27 @@ export const runAction = props => async () => {
     params,
     auth,
     selectedTemplate,
+    project,
     inputValues,
     toggleActionProcessing
   } = props
   // TODO: Show error notification if required action inputs are not selected
-  props.toggleTemplateEdit()
+  props.closeTemplateEdit()
   toggleActionProcessing()
   props.showSuccess('Action Run Started!')
+
+  const credentialFromInputValue = value => {
+    const environmentKey = get(value, 'environmentKey')
+    const { serviceAccount, databaseURL } = get(
+      project,
+      `environments.${environmentKey}`,
+      {}
+    )
+    if (serviceAccount && databaseURL) {
+      return { ...value, ...serviceAccount, databaseURL }
+    }
+    return value
+  }
   try {
     // Write event to project events
     await firestore.add(
@@ -27,7 +41,7 @@ export const runAction = props => async () => {
       {
         eventType: 'startAction',
         templateId: get(selectedTemplate, 'templateId'),
-        inputValues,
+        inputValues: inputValues.map(credentialFromInputValue),
         createdBy: auth.uid,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }
@@ -41,7 +55,7 @@ export const runAction = props => async () => {
         pushObj: {
           projectId: get(params, 'projectId'),
           serviceAccountType: 'firestore',
-          inputValues,
+          inputValues: inputValues.map(credentialFromInputValue),
           template: pick(selectedTemplate, ['steps', 'inputs'])
         }
       },

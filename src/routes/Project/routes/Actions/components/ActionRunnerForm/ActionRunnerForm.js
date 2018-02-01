@@ -27,7 +27,7 @@ export const ActionRunnerForm = ({
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography className={classes.heading}>Inputs</Typography>
       </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
+      <ExpansionPanelDetails className={classes.inputs}>
         {selectedTemplate && selectedTemplate.inputs
           ? selectedTemplate.inputs.map((input, index) => (
               <ActionInput

@@ -45,6 +45,9 @@ export default compose(
       toggleTemplateEdit: ({ templateEditExpanded }) => () => ({
         templateEditExpanded: !templateEditExpanded
       }),
+      closeTemplateEdit: ({ templateEditExpanded }) => () => ({
+        templateEditExpanded: false
+      }),
       toggleConfig: ({ templateEditExpanded }) => () => ({
         configExpanded: !templateEditExpanded
       }),

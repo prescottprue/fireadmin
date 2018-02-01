@@ -22,7 +22,7 @@ export const ActionInput = ({
   serviceAccounts,
   selectInstance
 }) => (
-  <ExpansionPanel>
+  <ExpansionPanel defaultExpanded className={classes.container}>
     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
       <Typography className={classes.title}>
         {get(inputMeta, `name`) || `Input ${index + 1}`}
