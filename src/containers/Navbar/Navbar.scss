@@ -1,25 +1,27 @@
 @import 'base';
 .brand {
   font-weight: 200;
-  // .icon {
-  //   height: 50px;
-  //   margin-top: 7px;
-  //   @include mobile {
-  //     // width: 3rem;
-  //     height: 3rem;
-  //     margin-top: 1.1rem;
-  //   }
-  // }
+  .icon {
+    height: 50px;
+    margin-top: 7px;
+    @include mobile {
+      width: 3rem;
+      height: 3rem;
+      margin-top: 1.1rem;
+    }
+  }
+}
+.appBar {
+  background-color: rgb(239, 108, 0) !important;
 }
 // fix button alignment
 .appBar > div {
   @extend .flex-row;
   align-items: center;
   margin-top: 0px !important;
-  // Move words over for icon
-  // @include mobile {
-  //   justify-content: flex-end;
-  // }
+  @include mobile {
+    justify-content: flex-end;
+  }
 }
 .wrapper {
   @extend .flex-row;
@@ -68,4 +70,8 @@
   @include mobile {
     display: none;
   }
+}
+
+.flex {
+  flex: 1 !important;
 }
