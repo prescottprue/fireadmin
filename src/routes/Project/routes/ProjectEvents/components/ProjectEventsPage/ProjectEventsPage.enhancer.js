@@ -19,7 +19,7 @@ export default compose(
   connect(({ firebase, firestore: { data } }, { params }) => ({
     project: get(data, `projects.${params.projectId}`)
   })),
-  spinnerWhileLoading(['project']),
+  spinnerWhileLoading(['project', 'project.events']),
   withProps(({ project }) => {
     const events = get(project, 'events')
     if (events) {

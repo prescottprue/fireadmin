@@ -1,38 +1,12 @@
 @import 'base';
 
-.container {
-  overflow-y: hidden;
-  height: 100%;
-}
-.content {
-  overflow-y: scroll;
-  height: 100%;
-  padding: .5rem;
-}
-.button {
-  margin-left: 2rem;
-  padding: 2rem;
-}
-.buttons {
-  @extend .flex-row;
-  margin-bottom: 2rem;
-}
-.or {
-  @extend .flex-row-center;
-  &Font {
-    font-size: 1.3rem !important;
-  }
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-.search {
-  @extend .flex-row-center;
-}
 .sectionHeader {
   font-size: 1.3rem !important;
 }
 .tableRowDivider {
   color: rgba(0,0,0,0.54);
+  font-size: 1.1rem;
+  font-weight: bold;
   border-top: 1px solid rgba(0,0,0,0.12);
   background-color: #f5f5f5;
 }

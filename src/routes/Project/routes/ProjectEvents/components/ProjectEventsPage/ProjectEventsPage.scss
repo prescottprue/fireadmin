@@ -31,11 +31,6 @@
 .sectionHeader {
   font-size: 1.3rem !important;
 }
-.tableRowDivider {
-  color: rgba(0,0,0,0.54);
-  border-top: 1px solid rgba(0,0,0,0.12);
-  background-color: #f5f5f5;
-}
 .empty {
   @extend .flex-column-center;
   padding: 3rem;

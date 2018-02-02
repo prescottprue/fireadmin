@@ -6,3 +6,10 @@
 .body {
   @extend .flex-column-center;
 }
+.buttons {
+  @extend .flex-row;
+  justify-content: flex-end;
+  flex-grow: 1;
+  width: 100%;
+  margin-top: 2rem;
+}

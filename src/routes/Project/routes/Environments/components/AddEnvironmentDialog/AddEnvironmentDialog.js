@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog from 'material-ui/Dialog'
 import { reduxForm, Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
+import Dialog from 'material-ui/Dialog'
 import Button from 'material-ui-next/Button'
 import { formNames } from 'constants'
 import { required, validateDatabaseUrl } from 'utils/form'
@@ -26,26 +26,9 @@ export const AddEnvironmentDialog = ({
 }) => (
   <Dialog
     title={`${isEditing ? 'Edit' : 'Add'} Environment`}
-    onRequestClose={onRequestClose}
-    actions={[
-      <Button
-        color="accent"
-        disabled={submitting}
-        onTouchTap={() => {
-          reset()
-          onRequestClose && onRequestClose()
-        }}>
-        Cancel
-      </Button>,
-      <Button
-        color="primary"
-        style={{ marginLeft: '1.5rem' }}
-        disabled={pristine || submitting}
-        onTouchTap={submit}>
-        {isEditing ? 'Save' : 'Create'}
-      </Button>
-    ]}
-    open={open}>
+    onClose={onRequestClose}
+    open={open}
+    ignoreBackdropClick={false}>
     <div className={classes.body}>
       <Field
         component={TextField}
@@ -82,6 +65,24 @@ export const AddEnvironmentDialog = ({
           />
         </div>
       ) : null}
+      <div className={classes.buttons}>
+        <Button
+          color="accent"
+          disabled={submitting}
+          onTouchTap={() => {
+            reset()
+            onRequestClose && onRequestClose()
+          }}>
+          Cancel
+        </Button>
+        <Button
+          color="primary"
+          style={{ marginLeft: '1.5rem' }}
+          disabled={pristine || submitting}
+          onTouchTap={submit}>
+          {isEditing ? 'Save' : 'Create'}
+        </Button>
+      </div>
     </div>
   </Dialog>
 )
