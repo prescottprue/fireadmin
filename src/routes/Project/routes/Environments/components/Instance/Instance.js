@@ -47,7 +47,7 @@ export const Instance = ({
               </ListItemIcon>
               <ListItemText inset primary="Edit" />
             </MenuItem>
-            <MenuItem onClick={closeMenu}>
+            <MenuItem onClick={onRemoveClick}>
               <ListItemIcon className={classes.icon}>
                 <DeleteIcon />
               </ListItemIcon>

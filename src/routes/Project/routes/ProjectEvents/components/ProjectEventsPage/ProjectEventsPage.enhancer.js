@@ -20,9 +20,12 @@ export default compose(
     project: get(data, `projects.${params.projectId}`)
   })),
   spinnerWhileLoading(['project']),
-  withProps(({ project }) => ({
-    groupedEvents: groupBy(get(project, 'events'), event =>
-      formatDate(event.createdAt)
-    )
-  }))
+  withProps(({ project }) => {
+    const events = get(project, 'events')
+    if (events) {
+      return {
+        groupedEvents: groupBy(events, event => formatDate(event.createdAt))
+      }
+    }
+  })
 )

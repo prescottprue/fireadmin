@@ -2,7 +2,7 @@ import { withFirebase } from 'react-redux-firebase'
 import { withHandlers, pure, compose } from 'recompose'
 import { UserIsNotAuthenticated } from 'utils/router'
 import { withNotifications } from 'modules/notification'
-import { trackEvent } from 'utils/analytics'
+import { triggerAnalyticsEvent } from 'utils/analytics'
 
 export default compose(
   UserIsNotAuthenticated, // redirect to list page if logged in
@@ -16,7 +16,7 @@ export default compose(
       firebase
         .login({ provider: 'google', type: 'popup' })
         .then(() => {
-          trackEvent({ category: 'Auth', action: 'Signup' })
+          triggerAnalyticsEvent({ category: 'Auth', action: 'Signup' })
         })
         .catch(err => showError(err.message || 'Error with Signup'))
   }),

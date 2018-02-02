@@ -22,7 +22,7 @@ export const AddEnvironmentDialog = ({
   onRequestClose,
   initialValues,
   onAccountClick,
-  ...other
+  open
 }) => (
   <Dialog
     title={`${isEditing ? 'Edit' : 'Add'} Environment`}
@@ -45,7 +45,7 @@ export const AddEnvironmentDialog = ({
         {isEditing ? 'Save' : 'Create'}
       </Button>
     ]}
-    {...other}>
+    open={open}>
     <div className={classes.body}>
       <Field
         component={TextField}

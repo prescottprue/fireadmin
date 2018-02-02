@@ -28,7 +28,8 @@ export default compose(
     }),
     {
       closeAccountMenu: ({ accountMenuOpen }) => () => ({
-        anchorEl: null
+        anchorEl: null,
+        accountMenuOpen: false
       }),
       handleMenu: () => event => ({
         anchorEl: event.target
