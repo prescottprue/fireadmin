@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types'
-import { pick, some } from 'lodash'
+import { pick, some, get } from 'lodash'
 import LoadingSpinner from 'components/LoadingSpinner'
 import { isLoaded } from 'react-redux-firebase'
 import {
@@ -43,7 +43,7 @@ export const spinnerWhile = condition =>
  * @return {HigherOrderComponent}
  */
 export const spinnerWhileLoading = propNames =>
-  spinnerWhile(props => some(propNames, name => !isLoaded(props[name])))
+  spinnerWhile(props => some(propNames, name => !isLoaded(get(props, name))))
 
 /**
  * HOC that logs props using console.log. Accepts an array list of prop names

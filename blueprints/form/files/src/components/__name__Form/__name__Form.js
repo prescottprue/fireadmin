@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
-import Button from 'material-ui-next/Button'
+import Button from 'material-ui/Button'
 import classes from './<%= pascalEntityName %>Form.scss'
 
 export const <%= pascalEntityName %>Form = ({
@@ -14,10 +14,10 @@ export const <%= pascalEntityName %>Form = ({
     <Field
       name="displayName"
       component={TextField}
-      floatingLabelText="Display Name"
+      label="Display Name"
     />
     <Button
-      raised
+      
       disabled={submitting || pristine}
       color="primary"
       type="submit"

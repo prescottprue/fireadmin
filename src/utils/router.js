@@ -53,7 +53,7 @@ export const UserIsNotAuthenticated = UserAuthWrapper({
   // predicate: auth => auth === null,
   predicate: auth => auth.isEmpty,
   redirectAction: newLoc => dispatch => {
-    browserHistory.replace(newLoc)
+    browserHistory.push(newLoc)
     dispatch({ type: AUTHED_REDIRECT })
   }
 })

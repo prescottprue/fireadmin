@@ -4,6 +4,7 @@
   flex-basis: 80%;
   width: 100%;
   margin-bottom: .75rem;
+  margin-top: 1rem;
 }
 .dropzone {
   @extend .flex-column-center;
@@ -11,15 +12,16 @@
   flex-wrap: wrap;
   width: 100%;
   cursor: pointer;
-  min-height: 10.75rem;
+  min-height: 5rem;
   border: 2px dashed grey;
   border-radius: 2px !important;
+  padding: 2rem;
   &Title {
     margin-top: .875rem;
     margin-bottom: .875rem;
     text-align: center;
     font-weight: 700;
-    font-size: 1.875rem;
+    font-size: 1.5rem;
     // color: $scorpion;
   }
   &Text {
@@ -36,14 +38,14 @@
     // color: $scorpion;
   }
   &.two-rows {
-    min-height: 12rem;
+    min-height: 7rem;
     color: red !important;
   }
 }
 
 .icon {
-  width: 5.625rem !important;
-  height: 3.75rem !important;
+  width: 4.625rem !important;
+  height: 2.75rem !important;
   &Compact {
     width: 3.75rem;
     height: 2.5rem;

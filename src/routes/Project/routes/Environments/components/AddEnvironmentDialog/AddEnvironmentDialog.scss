@@ -5,4 +5,19 @@
 
 .body {
   @extend .flex-column-center;
+  padding: 3rem;
+  min-width: 400px;
+}
+.serviceAccounts {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.buttons {
+  @extend .flex-row;
+  justify-content: flex-end;
+  flex-grow: 1;
+  width: 100%;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-right: 1rem;
 }

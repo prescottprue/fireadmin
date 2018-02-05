@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
-import Card, { CardHeader, CardContent } from 'material-ui-next/Card'
-import Typography from 'material-ui-next/Typography'
-import IconButton from 'material-ui-next/IconButton'
-import Menu, { MenuItem } from 'material-ui-next/Menu'
-import { ListItemIcon, ListItemText } from 'material-ui-next/List'
+import Card, { CardHeader, CardContent } from 'material-ui/Card'
+import Typography from 'material-ui/Typography'
+import IconButton from 'material-ui/IconButton'
+import Menu, { MenuItem } from 'material-ui/Menu'
+import { ListItemIcon, ListItemText } from 'material-ui/List'
 import MoreVertIcon from 'material-ui-icons/MoreVert'
 import DeleteIcon from 'material-ui-icons/Delete'
 import EditIcon from 'material-ui-icons/ModeEdit'
@@ -47,7 +47,7 @@ export const Instance = ({
               </ListItemIcon>
               <ListItemText inset primary="Edit" />
             </MenuItem>
-            <MenuItem onClick={closeMenu}>
+            <MenuItem onClick={onRemoveClick}>
               <ListItemIcon className={classes.icon}>
                 <DeleteIcon />
               </ListItemIcon>

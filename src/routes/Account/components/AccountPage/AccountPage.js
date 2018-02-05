@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Paper from 'material-ui-next/Paper'
+import Paper from 'material-ui/Paper'
+import Typography from 'material-ui/Typography'
 import AccountForm from '../AccountForm'
 import defaultUserImageUrl from 'static/User.png'
 import classes from './AccountPage.scss'
@@ -8,6 +9,9 @@ import classes from './AccountPage.scss'
 export const AccountPage = ({ avatarUrl, updateAccount, profile }) => (
   <div className={classes.container}>
     <Paper className={classes.pane}>
+      <Typography variant="title" className={classes.title}>
+        Account
+      </Typography>
       <div className={classes.settings}>
         <div className={classes.avatar}>
           <img

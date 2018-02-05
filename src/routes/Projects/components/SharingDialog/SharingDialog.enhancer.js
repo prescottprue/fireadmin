@@ -4,7 +4,7 @@ import { withFirestore, withFirebase } from 'react-redux-firebase'
 import { withHandlers, withStateHandlers, withProps } from 'recompose'
 import { invoke, get, findIndex } from 'lodash'
 import { withNotifications } from 'modules/notification'
-import { trackEvent } from 'utils/analytics'
+import { triggerAnalyticsEvent } from 'utils/analytics'
 
 export default compose(
   withFirestore,
@@ -86,7 +86,10 @@ export default compose(
           .update({ collaborators, collaboratorPermissions })
         onRequestClose()
         showSuccess('Collaborator added successfully')
-        trackEvent({ category: 'Projects', action: 'Add Collaborator' })
+        triggerAnalyticsEvent({
+          category: 'Projects',
+          action: 'Add Collaborator'
+        })
       } catch (err) {
         showError('Collaborator could not be added')
         throw err

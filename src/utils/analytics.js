@@ -13,12 +13,27 @@ export const initGA = () => {
   }
 }
 
-export const trackEvent = settings => {
+export const triggerAnalyticsEvent = settings => {
   if (analyticsTrackingId && env === 'production') {
     ReactGA.event(settings)
   } else {
     console.debug('Analytics Event:', settings) // eslint-disable-line no-console
   }
+}
+
+export const createProjectEvent = ({ firestore, projectId }, pushObject) => {
+  return firestore.add(
+    {
+      collection: 'projects',
+      doc: projectId,
+      subcollections: [{ collection: 'events' }]
+    },
+    {
+      ...pushObject,
+      createdByType: 'user',
+      createdAt: firestore.FieldValue.serverTimestamp()
+    }
+  )
 }
 
 export const setGAUser = auth => {

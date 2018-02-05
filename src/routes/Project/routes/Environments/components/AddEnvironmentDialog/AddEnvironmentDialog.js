@@ -1,9 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog from 'material-ui/Dialog'
 import { reduxForm, Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
-import Button from 'material-ui-next/Button'
+import Dialog, {
+  DialogTitle,
+  DialogActions,
+  DialogContent
+} from 'material-ui/Dialog'
+import Typography from 'material-ui/Typography'
+import Button from 'material-ui/Button'
 import { formNames } from 'constants'
 import { required, validateDatabaseUrl } from 'utils/form'
 import FilesUploader from '../FilesUploader'
@@ -22,51 +27,39 @@ export const AddEnvironmentDialog = ({
   onRequestClose,
   initialValues,
   onAccountClick,
-  ...other
+  open
 }) => (
-  <Dialog
-    title={`${isEditing ? 'Edit' : 'Add'} Environment`}
-    onRequestClose={onRequestClose}
-    actions={[
-      <Button
-        color="accent"
-        disabled={submitting}
-        onTouchTap={() => {
-          reset()
-          onRequestClose && onRequestClose()
-        }}>
-        Cancel
-      </Button>,
-      <Button
-        color="primary"
-        style={{ marginLeft: '1.5rem' }}
-        disabled={pristine || submitting}
-        onTouchTap={submit}>
-        {isEditing ? 'Save' : 'Create'}
-      </Button>
-    ]}
-    {...other}>
-    <div className={classes.body}>
+  <Dialog onClose={onRequestClose} open={open}>
+    <DialogTitle id="dialog-title">{`${
+      isEditing ? 'Edit' : 'Add'
+    } Environment`}</DialogTitle>
+    <DialogContent className={classes.body}>
       <Field
         component={TextField}
+        className={classes.field}
         name="name"
-        floatingLabelText="Environment Name"
         validate={required}
+        fullWidth
+        label="Environment Name"
       />
       <Field
         component={TextField}
+        className={classes.field}
         name="databaseURL"
+        fullWidth
         validate={[required, validateDatabaseUrl]}
-        floatingLabelText="Database URL"
+        label="Database URL"
       />
       <Field
         component={TextField}
+        className={classes.field}
+        fullWidth
         name="description"
-        floatingLabelText="Instance Description"
+        label="Instance Description"
       />
       {!isEditing ? (
-        <div>
-          <h4>Service Account</h4>
+        <div className={classes.serviceAccounts}>
+          <Typography>Service Account</Typography>
           {serviceAccounts ? (
             <ServiceAccounts
               serviceAccounts={serviceAccounts}
@@ -82,7 +75,24 @@ export const AddEnvironmentDialog = ({
           />
         </div>
       ) : null}
-    </div>
+    </DialogContent>
+    <DialogActions>
+      <Button
+        color="secondary"
+        disabled={submitting}
+        onTouchTap={() => {
+          reset()
+          onRequestClose && onRequestClose()
+        }}>
+        Cancel
+      </Button>
+      <Button
+        color="primary"
+        disabled={pristine || submitting}
+        onTouchTap={submit}>
+        {isEditing ? 'Save' : 'Create'}
+      </Button>
+    </DialogActions>
   </Dialog>
 )
 
