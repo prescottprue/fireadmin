@@ -6534,7 +6534,7 @@ redux-firestore@^0.2.6:
     lodash "^4.17.4"
     prop-types "^15.6.0"
 
-redux-form-material-ui@^5.0.0-beta-2:
+redux-form-material-ui@^5.0.0-beta.2:
   version "5.0.0-beta.2"
   resolved "https://registry.yarnpkg.com/redux-form-material-ui/-/redux-form-material-ui-5.0.0-beta.2.tgz#4a9186d0a6216fbb5871b07156fb0e7f591fb3e8"
 

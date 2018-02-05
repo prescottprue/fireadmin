@@ -56,7 +56,7 @@
     "redux-auth-wrapper": "^1.0.0",
     "redux-firestore": "^0.2.6",
     "redux-form": "^7.2.0",
-    "redux-form-material-ui": "^5.0.0-beta-2",
+    "redux-form-material-ui": "^5.0.0-beta.2",
     "redux-thunk": "^2.2.0",
     "whatwg-fetch": "^2.0.3"
   },
