@@ -2,7 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { reduxForm, Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
-import Dialog from 'material-ui/Dialog'
+import Dialog, {
+  DialogTitle,
+  DialogActions,
+  DialogContent
+} from 'material-ui/Dialog'
+import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
 import { formNames } from 'constants'
 import { required, validateDatabaseUrl } from 'utils/form'
@@ -24,13 +29,14 @@ export const AddEnvironmentDialog = ({
   onAccountClick,
   open
 }) => (
-  <Dialog
-    title={`${isEditing ? 'Edit' : 'Add'} Environment`}
-    onClose={onRequestClose}
-    open={open}>
-    <div className={classes.body}>
+  <Dialog onClose={onRequestClose} open={open}>
+    <DialogTitle id="dialog-title">{`${
+      isEditing ? 'Edit' : 'Add'
+    } Environment`}</DialogTitle>
+    <DialogContent className={classes.body}>
       <Field
         component={TextField}
+        className={classes.field}
         name="name"
         validate={required}
         fullWidth
@@ -38,6 +44,7 @@ export const AddEnvironmentDialog = ({
       />
       <Field
         component={TextField}
+        className={classes.field}
         name="databaseURL"
         fullWidth
         validate={[required, validateDatabaseUrl]}
@@ -45,13 +52,14 @@ export const AddEnvironmentDialog = ({
       />
       <Field
         component={TextField}
+        className={classes.field}
         fullWidth
         name="description"
         label="Instance Description"
       />
       {!isEditing ? (
-        <div>
-          <h4>Service Account</h4>
+        <div className={classes.serviceAccounts}>
+          <Typography>Service Account</Typography>
           {serviceAccounts ? (
             <ServiceAccounts
               serviceAccounts={serviceAccounts}
@@ -67,8 +75,8 @@ export const AddEnvironmentDialog = ({
           />
         </div>
       ) : null}
-    </div>
-    <div className={classes.buttons}>
+    </DialogContent>
+    <DialogActions>
       <Button
         color="secondary"
         disabled={submitting}
@@ -80,12 +88,11 @@ export const AddEnvironmentDialog = ({
       </Button>
       <Button
         color="primary"
-        style={{ marginLeft: '1rem' }}
         disabled={pristine || submitting}
         onTouchTap={submit}>
         {isEditing ? 'Save' : 'Create'}
       </Button>
-    </div>
+    </DialogActions>
   </Dialog>
 )
 

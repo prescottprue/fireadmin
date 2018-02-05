@@ -13,7 +13,7 @@ export default compose(
       doc: get(params, 'projectId'),
       subcollections: [{ collection: 'events' }],
       orderBy: ['createdAt', 'desc'],
-      limit: 40
+      limit: 300
     }
   ]),
   connect(({ firebase, firestore: { data } }, { params }) => ({

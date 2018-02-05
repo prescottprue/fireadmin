@@ -29,7 +29,7 @@ export const EnvironmentsPage = ({
       Environments
     </Typography>
     <div style={{ marginBottom: '2rem' }}>
-      <Button color="primary" onTouchTap={toggleDialog}>
+      <Button variant="raised" color="primary" onTouchTap={toggleDialog}>
         Add Environment
       </Button>
     </div>

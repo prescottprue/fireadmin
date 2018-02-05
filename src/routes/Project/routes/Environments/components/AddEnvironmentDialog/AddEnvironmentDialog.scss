@@ -8,6 +8,10 @@
   padding: 3rem;
   min-width: 400px;
 }
+.serviceAccounts {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
 .buttons {
   @extend .flex-row;
   justify-content: flex-end;

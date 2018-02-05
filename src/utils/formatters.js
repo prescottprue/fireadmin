@@ -16,7 +16,7 @@ export function getDateObject(dateValue = null) {
  * @return {String} Formatted time
  */
 export function formatTime(dateValue) {
-  return format(getDateObject(dateValue), 'h:mm:ss.LL a')
+  return format(getDateObject(dateValue), 'h:mm:ss.SSS A')
 }
 
 /**

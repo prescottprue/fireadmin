@@ -1,23 +1,8 @@
 @import 'base';
 
-.container {
-  padding: 2rem !important;
-}
-.body {
-  @extend .flex-column-center;
-  justify-content: center;
-  width: 100%;
-  padding: 1rem;
-}
 .inputs {
   margin-bottom: 1rem;
   margin-left: 3rem;
   margin-right: 3rem;
   margin-top: 4rem;
-}
-.buttons {
-  @extend .flex-row;
-  justify-content: flex-end;
-  margin-top: 4rem;
-  width: 100%;
 }

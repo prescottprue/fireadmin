@@ -1,7 +1,11 @@
 /* eslint-disable react/no-unused-prop-types */
 import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog from 'material-ui/Dialog'
+import Dialog, {
+  DialogTitle,
+  DialogActions,
+  DialogContent
+} from 'material-ui/Dialog'
 import Button from 'material-ui/Button'
 import { Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
@@ -18,35 +22,35 @@ export const NewProjectDialog = ({
   submitting,
   submit
 }) => (
-  <Dialog title="New Project" open={open} onClose={onRequestClose}>
-    <form onSubmit={handleSubmit} className={classes.body}>
-      <div className={classes.inputs}>
+  <Dialog open={open} onClose={onRequestClose}>
+    <DialogTitle id="new-title">New Project</DialogTitle>
+    <DialogContent>
+      <form onSubmit={handleSubmit} className={classes.inputs}>
         <Field
           name="name"
           component={TextField}
           label="Project Name"
           validate={[required]}
         />
-      </div>
-      <div className={classes.buttons}>
-        <Button
-          color="secondary"
-          disabled={submitting}
-          onTouchTap={() => {
-            reset()
-            onRequestClose && onRequestClose()
-          }}>
-          Cancel
-        </Button>
-        <Button
-          color="primary"
-          style={{ marginLeft: '1.5rem' }}
-          disabled={pristine || submitting}
-          onTouchTap={submit}>
-          Create
-        </Button>
-      </div>
-    </form>
+      </form>
+    </DialogContent>
+    <DialogActions>
+      <Button
+        color="secondary"
+        disabled={submitting}
+        onTouchTap={() => {
+          reset()
+          onRequestClose && onRequestClose()
+        }}>
+        Cancel
+      </Button>
+      <Button
+        color="primary"
+        disabled={pristine || submitting}
+        onTouchTap={submit}>
+        Create
+      </Button>
+    </DialogActions>
   </Dialog>
 )
 

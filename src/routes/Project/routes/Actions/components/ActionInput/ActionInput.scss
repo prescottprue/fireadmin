@@ -15,8 +15,7 @@
   color: rgba(0, 0, 0, 0.54) !important;
 }
 .field {
-  margin-left: 4rem;
-  margin-right: 4rem;
+  @extend .field;
   width: 80%;
 }
 .content {

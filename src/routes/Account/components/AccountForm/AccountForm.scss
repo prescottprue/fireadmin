@@ -7,7 +7,15 @@
   width: 100%;
   margin: .2rem;
 }
-
+.inputs {
+  @extend .flex-column-center;
+  width: 80%;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  @include mobile {
+    width: 100%;
+  };
+}
 .submit {
   @extend .flex-column-center;
   width: 30%;

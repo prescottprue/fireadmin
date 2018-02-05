@@ -40,7 +40,9 @@ export const OverviewPanel = ({
           )}
         </div>
         <Link to={`${projectPath}/${paths.projectEnvironments}`}>
-          <Button color="primary">Go To Environments</Button>
+          <Button variant="raised" color="primary">
+            Go To Environments
+          </Button>
         </Link>
       </div>
       <div className={classes.column}>
@@ -55,7 +57,7 @@ export const OverviewPanel = ({
           </p>
         </div>
         <Link to={`${projectPath}/${paths.projectActions}`}>
-          <Button color="primary" disabled={environmentsEmpty}>
+          <Button variant="raised" color="primary" disabled={environmentsEmpty}>
             Go To Actions
           </Button>
         </Link>

@@ -8,10 +8,26 @@ import classes from './AccountForm.scss'
 
 export const AccountForm = ({ account, handleSubmit, submitting }) => (
   <form className={classes.container} onSubmit={handleSubmit}>
-    <h4>Account</h4>
-    <Field name="displayName" component={TextField} label="Display Name" />
-    <Field name="email" component={TextField} label="Email" />
-    <Field name="avatarUrl" component={TextField} label="Avatar Url" />
+    <div className={classes.inputs}>
+      <Field
+        name="displayName"
+        className={classes.field}
+        component={TextField}
+        label="Display Name"
+      />
+      <Field
+        name="email"
+        className={classes.field}
+        component={TextField}
+        label="Email"
+      />
+      <Field
+        name="avatarUrl"
+        className={classes.field}
+        component={TextField}
+        label="Avatar Url"
+      />
+    </div>
     {!!account &&
       !!account.providerData && (
         <div>
