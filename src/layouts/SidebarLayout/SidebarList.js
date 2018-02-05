@@ -1,12 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize } from 'lodash'
-import Divider from 'material-ui-next/Divider'
-import List, {
-  ListItem,
-  ListItemIcon,
-  ListItemText
-} from 'material-ui-next/List'
+import Divider from 'material-ui/Divider'
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 import ChevronLeftIcon from 'material-ui-icons/ChevronLeft'
 import ChevronRightIcon from 'material-ui-icons/ChevronRight'
 import LayersIcon from 'material-ui-icons/Layers'

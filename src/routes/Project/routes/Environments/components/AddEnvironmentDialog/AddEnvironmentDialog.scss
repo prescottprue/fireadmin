@@ -5,6 +5,7 @@
 
 .body {
   @extend .flex-column-center;
+  padding: 3rem;
 }
 .buttons {
   @extend .flex-row;

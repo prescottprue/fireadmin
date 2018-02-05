@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router'
-import Button from 'material-ui-next/Button'
+import Button from 'material-ui/Button'
 import { LOGIN_PATH } from 'constants'
 import classes from './Navbar.scss'
 

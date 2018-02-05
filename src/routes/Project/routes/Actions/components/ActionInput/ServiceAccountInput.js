@@ -2,8 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
 import { Field } from 'redux-form'
-import { SelectField } from 'redux-form-material-ui'
-import MenuItem from 'material-ui/MenuItem'
+import { Select } from 'redux-form-material-ui'
+import { MenuItem } from 'material-ui/Menu'
+import { ListItemText } from 'material-ui/List'
 import { databaseURLToProjectName } from 'utils'
 import classes from './ActionInput.scss'
 
@@ -17,32 +18,20 @@ export const ServiceAccountInput = ({
   <div>
     <Field
       name={`${name}.environmentKey`}
-      component={SelectField}
+      component={Select}
       className={classes.field}
       hintText="Select An Environment"
-      floatingLabelText="Environment"
+      label="Environment"
       floatingLabelFixed>
       {map(environments, (environment, environmentKey) => (
-        <MenuItem
-          key={environmentKey}
-          value={environmentKey}
-          primaryText={environment.name || environmentKey}
-          secondaryText={databaseURLToProjectName(environment.databaseURL)}
-        />
+        <MenuItem key={environmentKey} value={environmentKey}>
+          <ListItemText
+            primary={environment.name || environmentKey}
+            secondary={databaseURLToProjectName(environment.databaseURL)}
+          />
+        </MenuItem>
       ))}
     </Field>
-    {/* <Field
-      name={`${name}.serviceAccountPath`}
-      component={SelectField}
-      className={classes.field}
-      disabled
-      hintText="Select A Service Account"
-      floatingLabelText="Service Account"
-      floatingLabelFixed>
-      {map(serviceAccounts, ({ name, fullPath }) => (
-        <MenuItem key={name} value={fullPath} primaryText={name} />
-      ))}
-    </Field> */}
   </div>
 )
 

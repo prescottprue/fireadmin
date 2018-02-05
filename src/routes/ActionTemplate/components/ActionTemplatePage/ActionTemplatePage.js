@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
-import Typography from 'material-ui-next/Typography'
-import IconButton from 'material-ui-next/IconButton'
-import Tooltip from 'material-ui-next/Tooltip'
+import Typography from 'material-ui/Typography'
+import IconButton from 'material-ui/IconButton'
+import Tooltip from 'material-ui/Tooltip'
 import DeleteTemplateDialog from '../DeleteTemplateDialog'
 import ActionTemplateForm from '../ActionTemplateForm'
 import BackIcon from 'material-ui-icons/ArrowBack'
@@ -15,6 +15,7 @@ export const ActionTemplatePage = ({
   updateTemplate,
   deleteTemplate,
   startTemplateDelete,
+  goBack,
   deleteDialogOpen,
   params,
   toggleDeleteDialog
@@ -23,7 +24,7 @@ export const ActionTemplatePage = ({
     <Typography className={classes.header}>Action Template</Typography>
     <Link to={paths.dataAction}>
       <Tooltip placement="bottom" title="Back To Templates">
-        <IconButton className={classes.submit}>
+        <IconButton className={classes.submit} onClick={goBack}>
           <BackIcon />
         </IconButton>
       </Tooltip>
@@ -49,6 +50,7 @@ ActionTemplatePage.propTypes = {
   template: PropTypes.object,
   params: PropTypes.object.isRequired,
   deleteTemplate: PropTypes.func.isRequired,
+  goBack: PropTypes.func.isRequired,
   startTemplateDelete: PropTypes.func.isRequired,
   deleteDialogOpen: PropTypes.bool.isRequired,
   updateTemplate: PropTypes.func.isRequired,

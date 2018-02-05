@@ -1,14 +1,14 @@
 import React from 'react'
 import { map } from 'lodash'
 import PropTypes from 'prop-types'
-import { withStyles } from 'material-ui-next/styles'
-import Avatar from 'material-ui-next/Avatar'
+import { withStyles } from 'material-ui/styles'
+import Avatar from 'material-ui/Avatar'
 import List, {
   ListItem,
   ListItemText,
   ListItemSecondaryAction
-} from 'material-ui-next/List'
-import Checkbox from 'material-ui-next/Checkbox'
+} from 'material-ui/List'
+import Checkbox from 'material-ui/Checkbox'
 import ServiceAccountIcon from 'material-ui-icons/SupervisorAccount'
 import { formatDate } from 'utils/formatters'
 // import classes from './ServiceAccounts.scss'

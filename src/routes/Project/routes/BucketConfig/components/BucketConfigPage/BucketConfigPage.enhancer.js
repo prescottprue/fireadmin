@@ -2,6 +2,7 @@ import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, firestoreConnect, getVal } from 'react-redux-firebase'
+import { spinnerWhileLoading } from 'utils/components'
 
 export default compose(
   // create listeners for RTDB
@@ -27,5 +28,7 @@ export default compose(
       firebase,
       `data/serviceAccounts/${params.projectId}`
     )
-  }))
+  })),
+  // Show loading spinner until data has loaded
+  spinnerWhileLoading(['serviceAccounts', 'project'])
 )

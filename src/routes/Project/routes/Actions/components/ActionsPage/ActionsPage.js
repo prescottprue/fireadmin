@@ -1,14 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Button from 'material-ui-next/Button'
-import Typography from 'material-ui-next/Typography'
-import { LinearProgress } from 'material-ui-next/Progress'
+import Button from 'material-ui/Button'
+import Typography from 'material-ui/Typography'
+import { LinearProgress } from 'material-ui/Progress'
 import { Link } from 'react-router'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
-} from 'material-ui-next/ExpansionPanel'
+} from 'material-ui/ExpansionPanel'
 import CollectionSearch from 'components/CollectionSearch'
 import { paths } from 'constants'
 import ActionRunnerForm from '../ActionRunnerForm'
@@ -33,7 +33,6 @@ export const ActionsPage = ({
     <div>
       <div className={classes.buttons}>
         <Button
-          raised
           disabled={!selectedTemplate || actionProcessing}
           color="primary"
           onTouchTap={runAction}>
@@ -56,7 +55,7 @@ export const ActionsPage = ({
           </Typography>
           <div className="flex-row-center">
             <Link to={paths.actionTemplates}>
-              <Button raised color="primary" className={classes.button}>
+              <Button color="primary" className={classes.button}>
                 Create New Action Template
               </Button>
             </Link>

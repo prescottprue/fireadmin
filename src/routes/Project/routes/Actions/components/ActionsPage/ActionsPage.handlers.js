@@ -32,11 +32,15 @@ export const runAction = props => async () => {
   const actionRequest = {
     projectId,
     serviceAccountType: 'firestore',
-    inputValues: inputValues.map(credentialFromInputValue(project)),
     templateId: get(selectedTemplate, 'templateId'),
     template: pick(selectedTemplate, ['steps', 'inputs']),
     createdBy: auth.uid,
     createdAt: firestore.FieldValue.serverTimestamp()
+  }
+  if (inputValues) {
+    actionRequest.inputValues = inputValues.map(
+      credentialFromInputValue(project)
+    )
   }
   // TODO: Show error notification if required action inputs are not selected
   props.closeTemplateEdit()

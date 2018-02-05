@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { map, get, flatMap, startCase } from 'lodash'
-import Paper from 'material-ui-next/Paper'
+import Paper from 'material-ui/Paper'
 import Table, {
   TableBody,
   TableCell,
   TableHead,
   TableRow
-} from 'material-ui-next/Table'
+} from 'material-ui/Table'
 import { formatTime } from 'utils/formatters'
 import classes from './EventsTable.scss'
 

@@ -1,12 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Button from 'material-ui-next/Button'
+import Button from 'material-ui/Button'
 import { map, get } from 'lodash'
-import MenuItem from 'material-ui/MenuItem'
+import { MenuItem } from 'material-ui/Menu'
 import { Field, FieldArray } from 'redux-form'
-import Typography from 'material-ui-next/Typography'
-import { SelectField } from 'redux-form-material-ui'
-import Paper from 'material-ui-next/Paper'
+import Typography from 'material-ui/Typography'
+import { InputLabel } from 'material-ui/Input'
+import { FormControl } from 'material-ui/Form'
+import { Select } from 'redux-form-material-ui'
+import Paper from 'material-ui/Paper'
 import CorsList from '../CorsList'
 import classes from './BucketConfigForm.scss'
 
@@ -26,7 +28,6 @@ export const BucketConfigForm = ({
   <form onSubmit={handleSubmit} className={classes.container}>
     <div className={classes.buttons}>
       <Button
-        raised
         color="primary"
         type="submit"
         disabled={
@@ -39,61 +40,83 @@ export const BucketConfigForm = ({
         Run Bucket Action
       </Button>
       <Button
-        raised
-        color="accent"
+        color="secondary"
         disabled={pristine || submitting}
         onClick={reset}>
         Clear Values
       </Button>
     </div>
     <Paper className={classes.paper}>
-      <div className={classes.field}>
+      <FormControl className={classes.field}>
+        <InputLabel htmlFor="environment">Environment</InputLabel>
         <Field
           name="environment"
-          component={SelectField}
-          floatingLabelText="Environment"
-          fullWidth>
+          component={Select}
+          fullWidth
+          inputProps={{
+            name: 'environment',
+            id: 'environment'
+          }}>
           {map(get(project, 'environments'), ({ name, fullPath }, key) => (
-            <MenuItem key={key} value={key} primaryText={name} />
+            <MenuItem key={key} value={key}>
+              {name}
+            </MenuItem>
           ))}
         </Field>
-      </div>
-      <div className={classes.field}>
+      </FormControl>
+      <FormControl className={classes.field}>
+        <InputLabel htmlFor="serviceAccount">Service Account</InputLabel>
         <Field
           name="serviceAccount.fullPath"
-          component={SelectField}
-          floatingLabelText="Service Account"
-          fullWidth>
+          component={Select}
+          fullWidth
+          inputProps={{
+            name: 'serviceAccount',
+            id: 'serviceAccount'
+          }}>
           {map(serviceAccounts, ({ name, fullPath }) => (
-            <MenuItem key={name} value={fullPath} primaryText={name} />
+            <MenuItem key={fullPath} value={fullPath}>
+              {name}
+            </MenuItem>
           ))}
         </Field>
-      </div>
-      <div className={classes.field}>
+      </FormControl>
+      <FormControl className={classes.field}>
+        <InputLabel htmlFor="method">Method</InputLabel>
         <Field
           name="method"
-          component={SelectField}
-          floatingLabelText="Action"
-          fullWidth>
-          <MenuItem value="GET" primaryText="Get Config" />
-          <MenuItem value="PUT" primaryText="Update Config" />
+          component={Select}
+          placeholder="Action"
+          fullWidth
+          inputProps={{
+            name: 'method',
+            id: 'method'
+          }}>
+          <MenuItem value="GET">Get Config</MenuItem>
+          <MenuItem value="PUT">Update Config</MenuItem>
         </Field>
-      </div>
-      <div className={classes.field}>
+      </FormControl>
+      <FormControl className={classes.field} disabled>
+        <InputLabel htmlFor="bucket">
+          {storageBucket || 'Storage Bucket (defaults to app bucket)'}
+        </InputLabel>
         <Field
           name="bucket"
-          disabled
-          component={SelectField}
-          floatingLabelText={
-            storageBucket || 'Storage Bucket (defaults to app bucket)'
-          }
-          fullWidth>
-          <MenuItem value="empty" primaryText="empty" />
+          component={Select}
+          fullWidth
+          inputProps={{
+            name: 'bucket',
+            id: 'bucket'
+          }}>
+          <MenuItem value="empty">empty</MenuItem>
         </Field>
-      </div>
+      </FormControl>
     </Paper>
     <Paper className={classes.paper}>
-      <Typography className={classes.subHeader} type="headline" component="h2">
+      <Typography
+        className={classes.subHeader}
+        variant="headline"
+        component="h2">
         CORS Configuration
       </Typography>
       <FieldArray name="body.cors" component={CorsList} />

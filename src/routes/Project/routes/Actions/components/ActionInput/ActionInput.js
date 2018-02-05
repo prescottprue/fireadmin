@@ -5,8 +5,8 @@ import { Field } from 'redux-form'
 import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
-} from 'material-ui-next/ExpansionPanel'
-import Typography from 'material-ui-next/Typography'
+} from 'material-ui/ExpansionPanel'
+import Typography from 'material-ui/Typography'
 import { TextField } from 'redux-form-material-ui'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import ServiceAccountInput from './ServiceAccountInput'
@@ -47,7 +47,7 @@ export const ActionInput = ({
         <Field
           name={name}
           component={TextField}
-          floatingLabelText="Name"
+          label="Name"
           className={classes.field}
         />
       )}

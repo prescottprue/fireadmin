@@ -1,18 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Paper from 'material-ui-next/Paper'
-import Tooltip from 'material-ui-next/Tooltip'
-import IconButton from 'material-ui-next/IconButton'
-// import Button from 'material-ui-next/Button'
+import Paper from 'material-ui/Paper'
+import Tooltip from 'material-ui/Tooltip'
+import IconButton from 'material-ui/IconButton'
+// import Button from 'material-ui/Button'
 import DeleteIcon from 'material-ui-icons/Delete'
 import AddPersonIcon from 'material-ui-icons/GroupAdd'
 import PersonIcon from 'material-ui-icons/Person'
 import SharingDialog from '../SharingDialog'
 import { get, map } from 'lodash'
 import moment from 'moment'
-import Menu, { MenuItem } from 'material-ui-next/Menu'
+import Menu, { MenuItem } from 'material-ui/Menu'
 import MoreVertIcon from 'material-ui-icons/MoreVert'
-import { ListItemIcon, ListItemText } from 'material-ui-next/List'
+import { ListItemIcon, ListItemText } from 'material-ui/List'
 import EditIcon from 'material-ui-icons/ModeEdit'
 import classes from './ProjectTile.scss'
 
@@ -46,21 +46,13 @@ export const ProjectTile = ({
             <ListItemIcon className={classes.icon}>
               <EditIcon />
             </ListItemIcon>
-            <ListItemText
-              classes={{ text: classes.text }}
-              inset
-              primary="Edit"
-            />
+            <ListItemText inset primary="Edit" />
           </MenuItem>
           <MenuItem onClick={onDelete}>
             <ListItemIcon className={classes.icon}>
               <DeleteIcon />
             </ListItemIcon>
-            <ListItemText
-              classes={{ text: classes.text }}
-              inset
-              primary="Delete"
-            />
+            <ListItemText inset primary="Delete" />
           </MenuItem>
         </Menu>
       </div>

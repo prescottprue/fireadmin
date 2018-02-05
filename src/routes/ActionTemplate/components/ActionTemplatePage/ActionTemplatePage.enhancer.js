@@ -72,7 +72,8 @@ export default compose(
       } catch (err) {
         showError('Error Deleting Template')
       }
-    }
+    },
+    goBack: props => () => props.router.push(paths.actionTemplates)
   }),
   spinnerWhileLoading(['template'])
 )

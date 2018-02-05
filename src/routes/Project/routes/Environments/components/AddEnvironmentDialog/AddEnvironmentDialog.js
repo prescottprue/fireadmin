@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { reduxForm, Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
 import Dialog from 'material-ui/Dialog'
-import Button from 'material-ui-next/Button'
+import Button from 'material-ui/Button'
 import { formNames } from 'constants'
 import { required, validateDatabaseUrl } from 'utils/form'
 import FilesUploader from '../FilesUploader'
@@ -27,25 +27,24 @@ export const AddEnvironmentDialog = ({
   <Dialog
     title={`${isEditing ? 'Edit' : 'Add'} Environment`}
     onClose={onRequestClose}
-    open={open}
-    ignoreBackdropClick={false}>
+    open={open}>
     <div className={classes.body}>
       <Field
         component={TextField}
         name="name"
-        floatingLabelText="Environment Name"
         validate={required}
+        label="Environment Name"
       />
       <Field
         component={TextField}
         name="databaseURL"
         validate={[required, validateDatabaseUrl]}
-        floatingLabelText="Database URL"
+        label="Database URL"
       />
       <Field
         component={TextField}
         name="description"
-        floatingLabelText="Instance Description"
+        label="Instance Description"
       />
       {!isEditing ? (
         <div>
@@ -65,24 +64,24 @@ export const AddEnvironmentDialog = ({
           />
         </div>
       ) : null}
-      <div className={classes.buttons}>
-        <Button
-          color="accent"
-          disabled={submitting}
-          onTouchTap={() => {
-            reset()
-            onRequestClose && onRequestClose()
-          }}>
-          Cancel
-        </Button>
-        <Button
-          color="primary"
-          style={{ marginLeft: '1.5rem' }}
-          disabled={pristine || submitting}
-          onTouchTap={submit}>
-          {isEditing ? 'Save' : 'Create'}
-        </Button>
-      </div>
+    </div>
+    <div className={classes.buttons}>
+      <Button
+        color="secondary"
+        disabled={submitting}
+        onTouchTap={() => {
+          reset()
+          onRequestClose && onRequestClose()
+        }}>
+        Cancel
+      </Button>
+      <Button
+        color="primary"
+        style={{ marginLeft: '1.5rem' }}
+        disabled={pristine || submitting}
+        onTouchTap={submit}>
+        {isEditing ? 'Save' : 'Create'}
+      </Button>
     </div>
   </Dialog>
 )

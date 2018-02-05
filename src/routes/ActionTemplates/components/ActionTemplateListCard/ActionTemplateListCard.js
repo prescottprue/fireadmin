@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { size } from 'lodash'
-import Card, { CardHeader, CardContent } from 'material-ui-next/Card'
-import IconButton from 'material-ui-next/IconButton'
-import Typography from 'material-ui-next/Typography'
+import Card, { CardHeader, CardContent } from 'material-ui/Card'
+import IconButton from 'material-ui/IconButton'
+import Typography from 'material-ui/Typography'
 import MoreVertIcon from 'material-ui-icons/MoreVert'
 import classes from './ActionTemplateListCard.scss'
 

@@ -2,18 +2,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize, get, startCase } from 'lodash'
 import { Field } from 'redux-form'
-import { SelectField, TextField, Toggle } from 'redux-form-material-ui'
+import { Select, TextField, Switch } from 'redux-form-material-ui'
+import { FormControl, FormControlLabel } from 'material-ui/Form'
+import { InputLabel } from 'material-ui/Input'
 import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
-} from 'material-ui-next/ExpansionPanel'
-import Typography from 'material-ui-next/Typography'
-import MenuItem from 'material-ui/MenuItem'
-import Button from 'material-ui-next/Button'
-import Grid from 'material-ui-next/Grid'
-import Tooltip from 'material-ui-next/Tooltip'
-import Divider from 'material-ui-next/Divider'
-import IconButton from 'material-ui-next/IconButton'
+} from 'material-ui/ExpansionPanel'
+import Typography from 'material-ui/Typography'
+import { ListItemText } from 'material-ui/List'
+import { MenuItem } from 'material-ui/Menu'
+import Button from 'material-ui/Button'
+import Grid from 'material-ui/Grid'
+import Tooltip from 'material-ui/Tooltip'
+import Divider from 'material-ui/Divider'
+import IconButton from 'material-ui/IconButton'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import DeleteIcon from 'material-ui-icons/Delete'
 import classes from './ActionTemplateInputs.scss'
@@ -32,7 +35,6 @@ const resourcesOptions = [
 export const ActionTemplateInputs = ({ fields, inputs }) => (
   <div>
     <Button
-      raised
       onClick={() => fields.push({ type: 'serviceAccount' })}
       color="primary"
       className={classes.addAction}>
@@ -56,62 +58,79 @@ export const ActionTemplateInputs = ({ fields, inputs }) => (
               <Field
                 name={`${member}.name`}
                 component={TextField}
-                floatingLabelText="Name"
+                label="Name"
                 className={classes.field}
               />
               <Field
                 name={`${member}.description`}
                 component={TextField}
-                floatingLabelText="Description"
+                label="Description"
                 className={classes.field}
               />
               <div className={classes.required}>
-                <Field
-                  name={`${member}.required`}
-                  component={Toggle}
+                <FormControlLabel
+                  control={
+                    <Field name={`${member}.required`} component={Switch} />
+                  }
                   label="Required"
                 />
               </div>
             </Grid>
             <Grid item xs={12} lg={3}>
-              <Field
-                name={`${member}.type`}
-                component={SelectField}
-                hintText="Select An Input Type"
-                floatingLabelText="Input Type"
-                className={classes.field}>
-                {inputTypes.map((option, idx) => (
-                  <MenuItem
-                    key={`Option-${option.value}-${idx}`}
-                    value={option.value}
-                    primaryText={option.label || capitalize(option.value)}
-                    disabled={option.disabled}
-                  />
-                ))}
-              </Field>
-              {get(inputs, `${index}.type`) === 'serviceAccount' ? (
+              <FormControl className={classes.field}>
+                <InputLabel htmlFor="inputType">
+                  Select An Input Type
+                </InputLabel>
                 <Field
-                  name={`${member}.resource`}
-                  component={SelectField}
-                  hintText="Select A Source Resource"
-                  floatingLabelText="Source Resource"
-                  className={classes.field}>
-                  {resourcesOptions.map((option, idx) => (
+                  name={`${member}.type`}
+                  component={Select}
+                  fullWidth
+                  inputProps={{
+                    name: 'inputType',
+                    id: 'inputType'
+                  }}>
+                  {inputTypes.map((option, idx) => (
                     <MenuItem
                       key={`Option-${option.value}-${idx}`}
                       value={option.value}
-                      primaryText={option.label || capitalize(option.value)}
-                      disabled={option.disabled}
-                    />
+                      disabled={option.disabled}>
+                      <ListItemText
+                        primary={option.label || capitalize(option.value)}
+                      />
+                    </MenuItem>
                   ))}
                 </Field>
+              </FormControl>
+              {get(inputs, `${index}.type`) === 'serviceAccount' ? (
+                <FormControl className={classes.field}>
+                  <InputLabel htmlFor="resource">Select Resource</InputLabel>
+                  <Field
+                    name={`${member}.resource`}
+                    component={Select}
+                    fullWidth
+                    inputProps={{
+                      name: 'resource',
+                      id: 'resource'
+                    }}>
+                    {resourcesOptions.map((option, idx) => (
+                      <MenuItem
+                        key={`Option-${option.value}-${idx}`}
+                        value={option.value}
+                        disabled={option.disabled}>
+                        <ListItemText
+                          primary={option.label || capitalize(option.value)}
+                        />
+                      </MenuItem>
+                    ))}
+                  </Field>
+                </FormControl>
               ) : null}
             </Grid>
             <Grid item xs={6} lg={2}>
               <Field
                 name={`${member}.variableName`}
                 component={TextField}
-                floatingLabelText="Variable Name"
+                label="Variable Name"
                 className={classes.field}
               />
               <Tooltip placement="bottom" title="Remove Input">

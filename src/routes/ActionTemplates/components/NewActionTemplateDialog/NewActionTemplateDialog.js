@@ -4,9 +4,9 @@ import Dialog, {
   DialogActions,
   DialogContent,
   DialogTitle
-} from 'material-ui-next/Dialog'
+} from 'material-ui/Dialog'
 import NewActionTemplateForm from '../NewActionTemplateForm'
-import Button from 'material-ui-next/Button'
+import Button from 'material-ui/Button'
 import classes from './NewActionTemplateDialog.scss'
 
 export const NewActionTemplateDialog = ({
@@ -25,12 +25,11 @@ export const NewActionTemplateDialog = ({
       <DialogActions>
         <Button
           disabled={submitting}
-          color="accent"
+          color="secondary"
           onTouchTap={onRequestClose}>
           Cancel
         </Button>
         <Button
-          raised
           disabled={submitting || pristine}
           color="primary"
           type="submit"

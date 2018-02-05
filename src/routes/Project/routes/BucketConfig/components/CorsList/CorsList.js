@@ -1,12 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classes from './CorsList.scss'
-import IconButton from 'material-ui-next/IconButton'
-import { TextField, SelectField } from 'redux-form-material-ui'
-import Button from 'material-ui-next/Button'
-import MenuItem from 'material-ui/MenuItem'
-import Typography from 'material-ui-next/Typography'
+import IconButton from 'material-ui/IconButton'
 import { Field, FieldArray } from 'redux-form'
+import { TextField, Select } from 'redux-form-material-ui'
+import Button from 'material-ui/Button'
+import { MenuItem } from 'material-ui/Menu'
+import Typography from 'material-ui/Typography'
+import { InputLabel } from 'material-ui/Input'
+import { FormControl } from 'material-ui/Form'
 import DeleteIcon from 'material-ui-icons/Delete'
 import CorsOriginList from '../CorsOriginList'
 
@@ -19,7 +21,7 @@ export const CorsList = ({ fields, meta: { error, submitFailed } }) => (
         <div className="flex-row">
           <Typography
             className={classes.subHeader}
-            type="headline"
+            variant="headline"
             component="h4">
             CORS Config #{index + 1}
           </Typography>
@@ -29,31 +31,36 @@ export const CorsList = ({ fields, meta: { error, submitFailed } }) => (
         </div>
         <div className="flex-column">
           <FieldArray name={`${member}.origin`} component={CorsOriginList} />
-          <div className="flex-column">
+          <FormControl className={classes.field}>
+            <InputLabel htmlFor="method">HTTP Methods To Include</InputLabel>
             <Field
               name={`${member}.method`}
-              component={SelectField}
-              floatingLabelText="HTTP Methods to Include"
-              multiple>
+              component={Select}
+              format={value => (Array.isArray(value) ? value : [])}
+              fullWidth
+              multiple
+              inputProps={{
+                name: 'method',
+                id: 'method'
+              }}>
               {methods.map(name => (
-                <MenuItem key={name} value={name} primaryText={name} />
+                <MenuItem key={name} value={name}>
+                  {name}
+                </MenuItem>
               ))}
             </Field>
-          </div>
+          </FormControl>
           <Field
             name={`${member}.maxAgeSeconds`}
             type="number"
             component={TextField}
-            floatingLabelText="Max Age (in seconds)"
+            label="Max Age (in seconds)"
           />
         </div>
       </div>
     ))}
     <div className={classes.add}>
-      <Button
-        raised
-        color="primary"
-        onClick={() => fields.push({ origin: [''] })}>
+      <Button color="primary" onClick={() => fields.push({ origin: [''] })}>
         Add CORS Config
       </Button>
       {submitFailed && error && <span>{error}</span>}

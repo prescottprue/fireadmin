@@ -3,12 +3,13 @@ import PropTypes from 'prop-types'
 import { size } from 'lodash'
 import { connect } from 'react-redux'
 import { pure, compose, renderNothing, branch } from 'recompose'
-import Snackbar from 'material-ui-next/Snackbar'
-import IconButton from 'material-ui-next/IconButton'
+import Snackbar from 'material-ui/Snackbar'
+import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui-icons/Close'
-import Fade from 'material-ui-next/transitions/Fade'
+import Fade from 'material-ui/transitions/Fade'
 import * as actions from '../actions'
-const closeIconStyle = { paddingTop: '5px', height: '30px' }
+
+const closeIconStyle = { paddingTop: '5px', height: '30px', color: 'white' }
 
 export const Notifications = ({ allIds, byId, dismissNotification }) => (
   <div>
@@ -18,8 +19,8 @@ export const Notifications = ({ allIds, byId, dismissNotification }) => (
         open
         transition={Fade}
         action={
-          <IconButton color="contrast" onClick={() => dismissNotification(id)}>
-            <CloseIcon color="white" style={closeIconStyle} />
+          <IconButton color="default" onClick={() => dismissNotification(id)}>
+            <CloseIcon style={closeIconStyle} />
           </IconButton>
         }
         message={byId[id].message}

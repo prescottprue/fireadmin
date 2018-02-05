@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Stepper, { Step, StepLabel, StepContent } from 'material-ui-next/Stepper'
-import Typography from 'material-ui-next/Typography'
+import Stepper, { Step, StepLabel, StepContent } from 'material-ui/Stepper'
+import Typography from 'material-ui/Typography'
 // import classes from './StepsViewer.scss'
 
 export const StepsViewer = ({ steps, activeStep, disabled }) => (

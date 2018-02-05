@@ -1,5 +1,5 @@
 import { compose } from 'redux'
-import { withStyles } from 'material-ui-next/styles'
+import { withStyles } from 'material-ui/styles'
 import { withStateHandlers } from 'recompose'
 import styles from './SidebarLayout.styles'
 
@@ -23,5 +23,5 @@ export default compose(
       toggleDrawer: ({ drawerOpen }) => e => ({ drawerOpen: !drawerOpen })
     }
   ),
-  withStyles(styles, { withTheme: true })
+  withStyles(styles)
 )

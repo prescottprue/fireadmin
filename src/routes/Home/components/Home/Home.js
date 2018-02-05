@@ -1,22 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Theme from 'theme'
-import Button from 'material-ui-next/Button'
-import Paper from 'material-ui-next/Paper'
+import Button from 'material-ui/Button'
+import Paper from 'material-ui/Paper'
 // import { Link } from 'react-router'
 // import { paths } from 'constants'
 import classes from './Home.scss'
 
 export const Home = ({ goToLogin }) => (
-  <div
-    className={classes.container}
-    style={{ color: Theme.palette.primary2Color }}>
+  <div className={classes.container}>
     <Paper className={classes.paper}>
       <div className={classes.header}>
         Fireadmin helps you mange Firebase apps while you grow your team
       </div>
       <div className={classes.getStarted}>
-        <Button color="primary" raised onClick={goToLogin}>
+        <Button color="primary" onClick={goToLogin}>
           Get Started
         </Button>
       </div>

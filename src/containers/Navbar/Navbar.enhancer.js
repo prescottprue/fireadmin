@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { withStyles } from 'material-ui-next/styles'
+import { withStyles } from 'material-ui/styles'
 import {
   withHandlers,
   compose,

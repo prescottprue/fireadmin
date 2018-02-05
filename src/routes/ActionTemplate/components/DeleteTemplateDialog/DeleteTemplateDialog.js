@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog, { DialogTitle } from 'material-ui-next/Dialog'
-import Button from 'material-ui-next/Button'
+import Dialog, { DialogTitle } from 'material-ui/Dialog'
+import Button from 'material-ui/Button'
 // import classes from './DeleteTemplateDialog.scss'
 
 export const DeleteTemplateDialog = ({ onClose, onDeleteClick, open }) => (

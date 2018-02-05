@@ -2,16 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize } from 'lodash'
 import { Field } from 'redux-form'
-import { TextField, SelectField } from 'redux-form-material-ui'
+import { TextField, Select } from 'redux-form-material-ui'
+import { FormControl } from 'material-ui/Form'
+import { InputLabel } from 'material-ui/Input'
 import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
-} from 'material-ui-next/ExpansionPanel'
-import Typography from 'material-ui-next/Typography'
-import MenuItem from 'material-ui/MenuItem'
-import IconButton from 'material-ui-next/IconButton'
-import Button from 'material-ui-next/Button'
-import Grid from 'material-ui-next/Grid'
+} from 'material-ui/ExpansionPanel'
+import Typography from 'material-ui/Typography'
+import { ListItemText } from 'material-ui/List'
+import { MenuItem } from 'material-ui/Menu'
+import IconButton from 'material-ui/IconButton'
+import Button from 'material-ui/Button'
+import Grid from 'material-ui/Grid'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import DeleteIcon from 'material-ui-icons/Delete'
 import classes from './ActionTemplateBackups.scss'
@@ -26,7 +29,6 @@ const resourcesOptions = [
 export const ActionTemplateBackups = ({ fields, steps }) => (
   <div>
     <Button
-      raised
       onClick={() => fields.push({ dest: { resource: 'storage' } })}
       color="primary"
       className={classes.addAction}>
@@ -45,20 +47,20 @@ export const ActionTemplateBackups = ({ fields, steps }) => (
               <Field
                 name={`${member}.name`}
                 component={TextField}
-                floatingLabelText="Name"
+                label="Name"
                 className={classes.field}
               />
               <Field
                 name={`${member}.description`}
                 component={TextField}
-                floatingLabelText="Description"
+                label="Description"
                 className={classes.field}
               />
             </Grid>
             <Grid item xs={12} lg={6}>
               <IconButton
                 onClick={() => fields.remove(index)}
-                color="accent"
+                color="secondary"
                 className={classes.submit}>
                 <DeleteIcon />
               </IconButton>
@@ -67,42 +69,36 @@ export const ActionTemplateBackups = ({ fields, steps }) => (
               <div className={classes.sections}>
                 <div className="flex-column">
                   <h4>Source</h4>
-                  <Field
-                    name={`${member}.inputs.0.resource`}
-                    component={SelectField}
-                    hintText="Select A Resource"
-                    floatingLabelText="Resource"
-                    className={classes.field}>
-                    {resourcesOptions.map((option, idx) => (
-                      <MenuItem
-                        key={`Option-${option.value}-${idx}`}
-                        value={option.value}
-                        primaryText={option.label || capitalize(option.value)}
-                        disabled={option.disabled}
-                      />
-                    ))}
-                  </Field>
+                  <FormControl className={classes.field}>
+                    <InputLabel htmlFor="resource">Select Resource</InputLabel>
+                    <Field
+                      name={`${member}.inputs.0.resource`}
+                      component={Select}
+                      format={value => (Array.isArray(value) ? value : [])}
+                      fullWidth
+                      multiple
+                      inputProps={{
+                        name: 'resource',
+                        id: 'resource'
+                      }}>
+                      {resourcesOptions.map((option, idx) => (
+                        <MenuItem
+                          key={`Option-${option.value}-${idx}`}
+                          value={option.value}
+                          disabled={option.disabled}>
+                          <ListItemText
+                            primary={option.label || capitalize(option.value)}
+                          />
+                        </MenuItem>
+                      ))}
+                    </Field>
+                  </FormControl>
                   <Field
                     name={`${member}.inputs.0.path`}
                     component={TextField}
-                    floatingLabelText="Path"
+                    label="Path"
                     className={classes.field}
                   />
-                  {/* <Field
-                  name={`${member}.src.pathType`}
-                  component={SelectField}
-                  hintText="Select A Path Type"
-                  floatingLabelText="Path Type"
-                  className={classes.field}>
-                  {pathTypeOptions.map((option, idx) => (
-                    <MenuItem
-                      key={`Option-${option.value}-${idx}`}
-                      value={option.value}
-                      primaryText={option.label || capitalize(option.value)}
-                      disabled={option.disabled}
-                    />
-                  ))}
-                </Field> */}
                 </div>
               </div>
             </Grid>

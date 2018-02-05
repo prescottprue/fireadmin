@@ -1,9 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router'
 import PropTypes from 'prop-types'
-import Paper from 'material-ui-next/Paper'
-import Button from 'material-ui-next/Button'
-import Typography from 'material-ui-next/Typography'
+import Paper from 'material-ui/Paper'
+import Button from 'material-ui/Button'
+import Typography from 'material-ui/Typography'
 import { paths } from 'constants'
 import classes from './OverviewPanel.scss'
 
@@ -17,7 +17,7 @@ export const OverviewPanel = ({
     <span className={classes.name}>{name}</span>
     <div className={classes.columns}>
       <div className={classes.column}>
-        <Typography type="headline" component="h2">
+        <Typography variant="headline" component="h2">
           Environments
         </Typography>
         <div className={classes.columnInner}>
@@ -40,13 +40,11 @@ export const OverviewPanel = ({
           )}
         </div>
         <Link to={`${projectPath}/${paths.projectEnvironments}`}>
-          <Button raised color="primary">
-            Go To Environments
-          </Button>
+          <Button color="primary">Go To Environments</Button>
         </Link>
       </div>
       <div className={classes.column}>
-        <Typography type="headline" component="h2">
+        <Typography variant="headline" component="h2">
           Actions
         </Typography>
         <div>
@@ -57,7 +55,7 @@ export const OverviewPanel = ({
           </p>
         </div>
         <Link to={`${projectPath}/${paths.projectActions}`}>
-          <Button raised color="primary" disabled={environmentsEmpty}>
+          <Button color="primary" disabled={environmentsEmpty}>
             Go To Actions
           </Button>
         </Link>

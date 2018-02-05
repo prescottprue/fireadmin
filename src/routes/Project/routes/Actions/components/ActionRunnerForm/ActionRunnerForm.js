@@ -2,12 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
-import Grid from 'material-ui-next/Grid'
-import Typography from 'material-ui-next/Typography'
+import Grid from 'material-ui/Grid'
+import Typography from 'material-ui/Typography'
 import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
-} from 'material-ui-next/ExpansionPanel'
+} from 'material-ui/ExpansionPanel'
 import ActionInput from '../ActionInput'
 import StepsViewer from '../StepsViewer'
 import classes from './ActionRunnerForm.scss'

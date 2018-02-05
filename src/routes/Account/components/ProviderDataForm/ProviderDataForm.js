@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { List, ListItem } from 'material-ui-next/List'
+import { List, ListItem } from 'material-ui/List'
 import classes from './ProviderDataForm.scss'
 import AccountCircle from 'material-ui-icons/AccountCircle'
 

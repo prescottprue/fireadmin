@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Menu, { MenuItem } from 'material-ui-next/Menu'
-import IconButton from 'material-ui-next/IconButton'
-import Avatar from 'material-ui-next/Avatar'
+import Menu, { MenuItem } from 'material-ui/Menu'
+import IconButton from 'material-ui/IconButton'
+import Avatar from 'material-ui/Avatar'
 import AccountCircle from 'material-ui-icons/AccountCircle'
 
 export const AccountMenu = ({

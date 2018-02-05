@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
-import Button from 'material-ui-next/Button'
-import Grid from 'material-ui-next/Grid'
-import Typography from 'material-ui-next/Typography'
+import Button from 'material-ui/Button'
+import Grid from 'material-ui/Grid'
+import Typography from 'material-ui/Typography'
 import NewActionTemplateDialog from '../NewActionTemplateDialog'
-import { withStyles } from 'material-ui-next/styles'
+import { withStyles } from 'material-ui/styles'
 import ActionTemplateListCard from '../ActionTemplateListCard'
 import classesFromStyles from './ActionTemplatesList.scss'
 
@@ -26,7 +26,6 @@ export const ActionTemplatesList = ({
 }) => (
   <div className={classesFromStyles.container}>
     <Button
-      raised
       color="primary"
       onClick={toggleNewDialog}
       className={classesFromStyles.new}>

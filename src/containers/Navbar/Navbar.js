@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
-import AppBar from 'material-ui-next/AppBar'
-import Toolbar from 'material-ui-next/Toolbar'
-import Typography from 'material-ui-next/Typography'
+import AppBar from 'material-ui/AppBar'
+import Toolbar from 'material-ui/Toolbar'
+import Typography from 'material-ui/Typography'
 import AccountMenu from './AccountMenu'
 import LoginMenu from './LoginMenu'
 import { LIST_PATH } from 'constants'
@@ -22,7 +22,7 @@ export const Navbar = ({
   <AppBar position="static" className={classes.appBar} elevation={24}>
     <Toolbar>
       <Typography
-        type="title"
+        variant="title"
         color="inherit"
         className={classes.flex}
         component={Link}

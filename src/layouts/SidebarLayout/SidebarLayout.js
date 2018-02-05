@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import Drawer from 'material-ui-next/Drawer'
-import AppBar from 'material-ui-next/AppBar'
-import Toolbar from 'material-ui-next/Toolbar'
-import Typography from 'material-ui-next/Typography'
-import Divider from 'material-ui-next/Divider'
-// import IconButton from 'material-ui-next/IconButton'
+import Drawer from 'material-ui/Drawer'
+import AppBar from 'material-ui/AppBar'
+import Toolbar from 'material-ui/Toolbar'
+import Typography from 'material-ui/Typography'
+import Divider from 'material-ui/Divider'
+// import IconButton from 'material-ui/IconButton'
 // import ChevronLeftIcon from 'material-ui-icons/ChevronLeft'
 // import ChevronRightIcon from 'material-ui-icons/ChevronRight'
 import LayersIcon from 'material-ui-icons/Layers'
@@ -54,13 +54,13 @@ export const SidebarLayout = ({
     <AppBar
       className={classNames(classes.appBar, drawerOpen && classes.appBarShift)}>
       <Toolbar>
-        <Typography type="title" color="inherit" noWrap>
+        <Typography variant="title" color="inherit" noWrap>
           {title || 'Project'}
         </Typography>
       </Toolbar>
     </AppBar>
     <Drawer
-      type="permanent"
+      variant="permanent"
       classes={{
         paper: classNames(
           classes.drawerPaper,

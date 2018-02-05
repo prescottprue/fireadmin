@@ -4,11 +4,8 @@ import { browserHistory, Router } from 'react-router'
 import { Provider } from 'react-redux'
 import { withContext } from 'recompose'
 import { handleRouteUpdate } from 'utils/router'
-import { MuiThemeProvider, createMuiTheme } from 'material-ui-next/styles'
-
-// Themeing/Styling
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import Theme from 'theme'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 const theme = createMuiTheme(Theme)
 
@@ -32,6 +29,6 @@ export default withContext(
     muiTheme: PropTypes.object
   },
   () => ({
-    muiTheme: getMuiTheme(Theme)
+    muiTheme: theme
   })
 )(App)
