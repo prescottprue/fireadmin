@@ -33,16 +33,19 @@ export const AddEnvironmentDialog = ({
         component={TextField}
         name="name"
         validate={required}
+        fullWidth
         label="Environment Name"
       />
       <Field
         component={TextField}
         name="databaseURL"
+        fullWidth
         validate={[required, validateDatabaseUrl]}
         label="Database URL"
       />
       <Field
         component={TextField}
+        fullWidth
         name="description"
         label="Instance Description"
       />
@@ -77,7 +80,7 @@ export const AddEnvironmentDialog = ({
       </Button>
       <Button
         color="primary"
-        style={{ marginLeft: '1.5rem' }}
+        style={{ marginLeft: '1rem' }}
         disabled={pristine || submitting}
         onTouchTap={submit}>
         {isEditing ? 'Save' : 'Create'}

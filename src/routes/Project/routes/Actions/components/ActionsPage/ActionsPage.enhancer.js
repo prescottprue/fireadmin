@@ -32,14 +32,12 @@ export default compose(
     inputValues: actionRunnerFormSelector(state, 'inputValues'),
     project: get(state.firestore, `data.projects.${params.projectId}`)
   })),
+  // State handlers as props
   withStateHandlers(
     () => ({
       templateEditExpanded: true,
       actionProcessing: false,
-      actionProgress: null,
-      copyPath: null,
-      configExpanded: true,
-      instances: null
+      actionProgress: null
     }),
     {
       toggleTemplateEdit: ({ templateEditExpanded }) => () => ({
@@ -48,14 +46,10 @@ export default compose(
       closeTemplateEdit: ({ templateEditExpanded }) => () => ({
         templateEditExpanded: false
       }),
-      toggleConfig: ({ templateEditExpanded }) => () => ({
-        configExpanded: !templateEditExpanded
-      }),
       selectActionTemplate: ({ selectInstance }) => newSelectedTemplate => ({
         selectedTemplate: newSelectedTemplate,
         templateEditExpanded: false
       }),
-      setCopyPath: ({ copyPath }) => e => ({ copyPath: e.target.value }),
       toggleActionProcessing: ({ actionProcessing }) => e => ({
         actionProcessing: !actionProcessing
       }),
@@ -64,6 +58,7 @@ export default compose(
       })
     }
   ),
+  // Handlers as props
   withHandlers(handlers),
   withProps(({ selectedTemplate }) => ({
     templateName: selectedTemplate

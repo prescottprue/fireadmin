@@ -29,7 +29,7 @@ const resourcesOptions = [
 export const ActionTemplateBackups = ({ fields, steps }) => (
   <div>
     <Button
-      onClick={() => fields.push({ dest: { resource: 'storage' } })}
+      onClick={() => fields.push({ dest: { resource: 'firestore' } })}
       color="primary"
       className={classes.addAction}>
       Add Backup
@@ -74,9 +74,7 @@ export const ActionTemplateBackups = ({ fields, steps }) => (
                     <Field
                       name={`${member}.inputs.0.resource`}
                       component={Select}
-                      format={value => (Array.isArray(value) ? value : [])}
                       fullWidth
-                      multiple
                       inputProps={{
                         name: 'resource',
                         id: 'resource'

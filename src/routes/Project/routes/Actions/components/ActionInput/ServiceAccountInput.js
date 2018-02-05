@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { map } from 'lodash'
 import { Field } from 'redux-form'
 import { Select } from 'redux-form-material-ui'
+import { FormControl } from 'material-ui/Form'
+import { InputLabel } from 'material-ui/Input'
 import { MenuItem } from 'material-ui/Menu'
 import { ListItemText } from 'material-ui/List'
 import { databaseURLToProjectName } from 'utils'
@@ -15,14 +17,16 @@ export const ServiceAccountInput = ({
   serviceAccounts,
   selectedInstance
 }) => (
-  <div>
+  <FormControl className={classes.field}>
+    <InputLabel htmlFor="environment">Select An Environment</InputLabel>
     <Field
       name={`${name}.environmentKey`}
       component={Select}
-      className={classes.field}
-      hintText="Select An Environment"
-      label="Environment"
-      floatingLabelFixed>
+      fullWidth
+      inputProps={{
+        name: 'environment',
+        id: 'environment'
+      }}>
       {map(environments, (environment, environmentKey) => (
         <MenuItem key={environmentKey} value={environmentKey}>
           <ListItemText
@@ -32,7 +36,7 @@ export const ServiceAccountInput = ({
         </MenuItem>
       ))}
     </Field>
-  </div>
+  </FormControl>
 )
 
 ServiceAccountInput.propTypes = {

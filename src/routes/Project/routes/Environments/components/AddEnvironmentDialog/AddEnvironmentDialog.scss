@@ -6,6 +6,7 @@
 .body {
   @extend .flex-column-center;
   padding: 3rem;
+  min-width: 400px;
 }
 .buttons {
   @extend .flex-row;
@@ -13,4 +14,6 @@
   flex-grow: 1;
   width: 100%;
   margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-right: 1rem;
 }
