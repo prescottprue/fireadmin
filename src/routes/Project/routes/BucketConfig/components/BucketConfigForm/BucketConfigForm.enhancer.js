@@ -2,17 +2,22 @@ import { compose } from 'redux'
 import { withProps, withHandlers, withStateHandlers } from 'recompose'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
-import { databaseURLToProjectName } from 'utils'
-import { withFirebase } from 'react-redux-firebase'
+import { withFirebase, withFirestore } from 'react-redux-firebase'
 import { formValues, reduxForm } from 'redux-form'
+import { databaseURLToProjectName } from 'utils'
 import { waitForCompleted } from 'utils/firebaseFunctions'
 import { withNotifications } from 'modules/notification'
 import { spinnerWhile } from 'utils/components'
+import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 const formName = 'bucketConfig'
 
 export default compose(
+  // add props.showSuccess and props.showError
   withNotifications,
+  // Add props.firebase
   withFirebase,
+  withFirestore,
+  // State handlers as props
   withStateHandlers(
     ({ initialSelected = null }) => ({
       currentConfig: null
@@ -21,15 +26,18 @@ export default compose(
       setConfig: () => currentConfig => ({ currentConfig })
     }
   ),
+  // Handlers as props
   withHandlers({
     callGoogleApi: ({
       firebase,
+      firestore,
       showSuccess,
       showError,
       setConfig,
       storageBucket,
       serviceAccount,
-      project
+      project,
+      projectId
     }) => async bucketConfig => {
       try {
         const databaseURL = get(
@@ -49,22 +57,44 @@ export default compose(
         )
         setConfig(results.responseData)
         showSuccess('Storage Bucket Config Get Successful')
+        triggerAnalyticsEvent({
+          category: 'Project',
+          action: `${bucketConfig.method || 'GET'} Bucket Config`
+        })
+        await createProjectEvent(
+          { firestore, projectId },
+          {
+            eventType: `${
+              bucketConfig.method ? bucketConfig.method.toLowerCase() : 'get'
+            }BucketConfig`,
+            eventData: { bucketConfig },
+            createdBy: firebase._.authUid
+          }
+        )
+        showSuccess(
+          `Storage Bucket ${bucketConfig.method ||
+            'UPDATE'} completed Successfully`
+        )
       } catch (err) {
         showError('Error Updating Storage Bucket Config')
         throw err
       }
     }
   }),
+  // Add props
   withProps(({ callGoogleApi }) => {
     return {
-      onSubmit: callGoogleApi
+      onSubmit: callGoogleApi // so redux-form submit calls callGoogleApi
     }
   }),
+  // map redux state to props
   connect((state, props) => ({
     initialValues: {
-      body: props.currentConfig
+      body: props.currentConfig,
+      method: 'GET'
     }
   })),
+  // form capability including submit
   reduxForm({
     form: formName,
     enableReinitialize: true,
@@ -74,6 +104,7 @@ export default compose(
   formValues('environment'),
   formValues('body'),
   formValues('method'),
+  // Add more props
   withProps(({ project, environment }) => {
     const databaseURL = get(project, `environments.${environment}.databaseURL`)
     const databaseName = databaseURL && databaseURLToProjectName(databaseURL)
@@ -82,5 +113,6 @@ export default compose(
       storageBucket: databaseName && `${databaseName}.appspot.com`
     }
   }),
+  // Show a loading spinner while submitting
   spinnerWhile(({ submitting }) => submitting)
 )

@@ -1,7 +1,7 @@
 import React, { cloneElement } from 'react'
 import PropTypes from 'prop-types'
 import { isEmpty } from 'react-redux-firebase'
-import Typography from 'material-ui-next/Typography'
+import Typography from 'material-ui/Typography'
 import SidebarLayout from 'layouts/SidebarLayout'
 import OverviewPanel from '../OverviewPanel'
 import classes from './ProjectPage.scss'

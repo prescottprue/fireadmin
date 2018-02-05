@@ -4,10 +4,8 @@ import {
   InstantSearch,
   PoweredBy,
   SearchBox,
-  Panel,
   Configure
 } from 'react-instantsearch/dom'
-import { capitalize, startCase } from 'lodash'
 import SearchResults from './SearchResults'
 import classes from './CollectionSearch.scss'
 import { algolia } from '../../config'
@@ -27,9 +25,7 @@ export const CollectionSearch = ({
       <PoweredBy />
     </div>
     <div className={classes.spacer} />
-    <Panel title={capitalize(startCase(indexName))}>
-      <SearchResults onSuggestionClick={onSuggestionClick} />
-    </Panel>
+    <SearchResults onSuggestionClick={onSuggestionClick} />
     <Configure filters={filterString} />
   </InstantSearch>
 )

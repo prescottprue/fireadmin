@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
-import Typography from 'material-ui-next/Typography'
-import Button from 'material-ui-next/Button'
-import Paper from 'material-ui-next/Paper'
+import Typography from 'material-ui/Typography'
+import Button from 'material-ui/Button'
+import Paper from 'material-ui/Paper'
 import Instance from '../Instance'
 import AddEnvironmentDialog from '../AddEnvironmentDialog'
 import classesFromStyles from './EnvironmentsPage.scss'
@@ -29,7 +29,7 @@ export const EnvironmentsPage = ({
       Environments
     </Typography>
     <div style={{ marginBottom: '2rem' }}>
-      <Button raised color="primary" onTouchTap={toggleDialog}>
+      <Button variant="raised" color="primary" onTouchTap={toggleDialog}>
         Add Environment
       </Button>
     </div>

@@ -1,22 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Theme from 'theme'
-import Button from 'material-ui-next/Button'
-import Paper from 'material-ui-next/Paper'
+import Button from 'material-ui/Button'
+import Paper from 'material-ui/Paper'
 // import { Link } from 'react-router'
 // import { paths } from 'constants'
 import classes from './Home.scss'
 
 export const Home = ({ goToLogin }) => (
-  <div
-    className={classes.container}
-    style={{ color: Theme.palette.primary2Color }}>
+  <div className={classes.container}>
     <Paper className={classes.paper}>
       <div className={classes.header}>
         Fireadmin helps you mange Firebase apps while you grow your team
       </div>
       <div className={classes.getStarted}>
-        <Button color="primary" raised onClick={goToLogin}>
+        <Button color="primary" onClick={goToLogin}>
           Get Started
         </Button>
       </div>
@@ -64,10 +61,11 @@ export const Home = ({ goToLogin }) => (
             <p>Manage multiple Firebase Instances as one Project.</p>
           </div>
           <div className={classes.bottomSection}>
-            <h4>Data Migration</h4>
+            <h4>Custom Actions</h4>
             <p>
               Copy data from one instance to another without worrying about
-              selecting the wrong file. Track all migration events.
+              selecting the wrong file. Create reports on the size of data
+              collections of your instances.
             </p>
           </div>
         </div>
@@ -78,9 +76,7 @@ export const Home = ({ goToLogin }) => (
           </div>
           <div className={classes.bottomSection}>
             <h4>Operations Logs</h4>
-            <p>
-              Event tracking for all migrations and other project based actions.
-            </p>
+            <p>Event tracking for all project based actions.</p>
           </div>
         </div>
       </div>

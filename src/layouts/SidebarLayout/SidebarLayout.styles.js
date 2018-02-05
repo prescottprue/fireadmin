@@ -16,7 +16,7 @@ export default theme => ({
   },
   appBar: {
     position: 'absolute',
-    zIndex: theme.zIndex.navDrawer + 1,
+    zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
@@ -76,9 +76,5 @@ export default theme => ({
       height: 'calc(100% - 64px)',
       marginTop: 64
     }
-  },
-  activeListItem: {
-    background: 'rgba(0, 0, 0, 0.12)',
-    fontWeight: 'bold'
   }
 })

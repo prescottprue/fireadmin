@@ -10,10 +10,19 @@
   justify-content: space-around;
   flex-basis: 60%;
 }
+.title {
+  margin-top: 2.5rem !important;
+  @include mobile {
+    margin-bottom: 2.5rem !important;
+  }
+}
 .settings {
   @extend .flex-row-center;
   align-items: center;
   width: 100%;
+  @include mobile {
+    flex-direction: column;
+  }
 }
 .avatar {
   &Current {

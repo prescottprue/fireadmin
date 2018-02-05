@@ -9,14 +9,14 @@ export default store => ({
     require.ensure(
       [],
       require => {
-        const Migration = require('./components/BucketConfigPage').default
+        const BucketConfig = require('./components/BucketConfigPage').default
 
         /*  Return getComponent   */
-        cb(null, Migration)
+        cb(null, BucketConfig)
 
         /* Webpack named bundle   */
       },
-      'Migration'
+      'BucketConfig'
     )
   }
 })

@@ -1,15 +1,16 @@
 import React from 'react'
 import { map } from 'lodash'
 import PropTypes from 'prop-types'
-import { withStyles } from 'material-ui-next/styles'
-import Avatar from 'material-ui-next/Avatar'
+import { withStyles } from 'material-ui/styles'
+import Avatar from 'material-ui/Avatar'
 import List, {
   ListItem,
   ListItemText,
   ListItemSecondaryAction
-} from 'material-ui-next/List'
-import Checkbox from 'material-ui-next/Checkbox'
-import PersonIcon from 'material-ui-icons/Person'
+} from 'material-ui/List'
+import Checkbox from 'material-ui/Checkbox'
+import ServiceAccountIcon from 'material-ui-icons/SupervisorAccount'
+import { formatDate } from 'utils/formatters'
 // import classes from './ServiceAccounts.scss'
 
 const styles = theme => ({
@@ -32,9 +33,12 @@ export const ServiceAccounts = ({
       {map(serviceAccounts, (account, key) => (
         <ListItem button key={key} onClick={() => onAccountClick(key, account)}>
           <Avatar>
-            <PersonIcon />
+            <ServiceAccountIcon />
           </Avatar>
-          <ListItemText primary={account.name} secondary={account.createdAt} />
+          <ListItemText
+            primary={account.name}
+            secondary={`Uploaded On: ${formatDate(account.createdAt)}`}
+          />
           <ListItemSecondaryAction>
             <Checkbox
               onChange={() => onAccountClick(key, account)}

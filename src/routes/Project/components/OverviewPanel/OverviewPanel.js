@@ -1,9 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router'
 import PropTypes from 'prop-types'
-import Paper from 'material-ui-next/Paper'
-import Button from 'material-ui-next/Button'
-import Typography from 'material-ui-next/Typography'
+import Paper from 'material-ui/Paper'
+import Button from 'material-ui/Button'
+import Typography from 'material-ui/Typography'
 import { paths } from 'constants'
 import classes from './OverviewPanel.scss'
 
@@ -17,7 +17,7 @@ export const OverviewPanel = ({
     <span className={classes.name}>{name}</span>
     <div className={classes.columns}>
       <div className={classes.column}>
-        <Typography type="headline" component="h2">
+        <Typography variant="headline" component="h2">
           Environments
         </Typography>
         <div className={classes.columnInner}>
@@ -32,31 +32,33 @@ export const OverviewPanel = ({
             </div>
           ) : (
             <div className={classes.environments}>
-              Current Environments:
+              <span style={{ marginRight: '.5rem' }}>
+                Current Environments:
+              </span>
               {numberOfEnvironments}
             </div>
           )}
         </div>
         <Link to={`${projectPath}/${paths.projectEnvironments}`}>
-          <Button raised color="primary">
+          <Button variant="raised" color="primary">
             Go To Environments
           </Button>
         </Link>
       </div>
       <div className={classes.column}>
-        <Typography type="headline" component="h2">
-          Migrations
+        <Typography variant="headline" component="h2">
+          Actions
         </Typography>
         <div>
           <p className={classes.description}>
             Moving data is a nessesary part of any real world application.
-            Migrations allow you to move data in a repeatability and reversable
-            way with a complete logs of actions along the way
+            Actions allow you to move data in a repeatability and reversable way
+            with a complete logs of actions along the way
           </p>
         </div>
-        <Link to={`${projectPath}/${paths.projectDataMigration}`}>
-          <Button raised color="primary" disabled={environmentsEmpty}>
-            Go To Migrations
+        <Link to={`${projectPath}/${paths.projectActions}`}>
+          <Button variant="raised" color="primary" disabled={environmentsEmpty}>
+            Go To Actions
           </Button>
         </Link>
       </div>

@@ -1,0 +1,42 @@
+{
+  "createdAt" : 1517128955690,
+  "createdBy" : "FScHm5UzLtfytd014vYBmNIFSTZ2",
+  "inputValues" : [ {
+    "databaseURL" : "https://fireadmin-stage.firebaseio.com",
+    "environmentKey": "MYm5hX7yaEGI6LmO8z8K",
+    "serviceAccountPath" : "projects/qSOr63I5TR9KNPKk7xGq/environments/MYm5hX7yaEGI6LmO8z8K"
+  },  {
+    "databaseURL" : "https://fireadmin-stage.firebaseio.com",
+    "environmentKey": "MYm5hX7yaEGI6LmO8z8K",
+    "serviceAccountPath" : "projects/qSOr63I5TR9KNPKk7xGq/environments/MYm5hX7yaEGI6LmO8z8K"
+  }],
+  "projectId" : "qSOr63I5TR9KNPKk7xGq",
+  "startedAt" : 1517128966709,
+  "status" : "started",
+  "template" : {
+    "inputs" : [ {
+      "description" : "Creds for first RTDB",
+      "name" : "Service Account 1",
+      "type" : "serviceAccount",
+      "variableName" : "serviceAccount1"
+    }, {
+      "description" : "Creds for second RTDB instance",
+      "name" : "Service Account 2",
+      "type" : "serviceAccount",
+      "variableName" : "serviceAccount2"
+    } ],
+    "steps" : [ {
+      "description" : "Copy users from one RTDB instance to another under archived collection",
+      "dest" : {
+        "path" : "archived/users",
+        "resource" : "rtdb"
+      },
+      "name" : "Archive Users From RTDB",
+      "src" : {
+        "path" : "users",
+        "resource" : "rtdb"
+      },
+      "type" : "copy"
+    } ]
+  }
+}

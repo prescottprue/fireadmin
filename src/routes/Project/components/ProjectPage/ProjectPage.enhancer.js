@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withStyles } from 'material-ui-next/styles'
+import { withStyles } from 'material-ui/styles'
 import { withStateHandlers } from 'recompose'
 import { firebaseConnect, firestoreConnect } from 'react-redux-firebase'
 import { spinnerWhileLoading } from 'utils/components'

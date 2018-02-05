@@ -4,17 +4,17 @@ import Dialog, {
   DialogActions,
   DialogContent,
   DialogTitle
-} from 'material-ui-next/Dialog'
+} from 'material-ui/Dialog'
 import { get, map, find } from 'lodash'
 import PersonIcon from 'material-ui-icons/Person'
-import Button from 'material-ui-next/Button'
-import Checkbox from 'material-ui-next/Checkbox'
+import Button from 'material-ui/Button'
+import Checkbox from 'material-ui/Checkbox'
 import List, {
   ListItem,
   ListItemSecondaryAction,
   ListItemText
-} from 'material-ui-next/List'
-import Slide from 'material-ui-next/transitions/Slide'
+} from 'material-ui/List'
+import Slide from 'material-ui/transitions/Slide'
 import UsersSearch from 'components/UsersSearch'
 import classes from './SharingDialog.scss'
 
@@ -62,30 +62,32 @@ export const SharingDialog = ({
           ignoreSuggestions={map(project.collaborators, (val, key) => key)}
         />
       </div>
-      <h4>New Collaborators</h4>
       {selectedCollaborators.length ? (
-        <List>
-          {selectedCollaborators.map((user, i) => (
-            <ListItem key={`SelectedUser-${user.id || user.objectID}-${i}`}>
-              <PersonIcon />
-              <ListItemText primary={user.displayName} />
-              <ListItemSecondaryAction>
-                <Checkbox
-                  onChange={() => selectCollaborator(user)}
-                  checked={
-                    !!find(selectedCollaborators, {
-                      objectID: user.id || user.objectID
-                    })
-                  }
-                />
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
+        <div>
+          <h4>New Collaborators</h4>
+          <List>
+            {selectedCollaborators.map((user, i) => (
+              <ListItem key={`SelectedUser-${user.id || user.objectID}-${i}`}>
+                <PersonIcon />
+                <ListItemText primary={user.displayName} />
+                <ListItemSecondaryAction>
+                  <Checkbox
+                    onChange={() => selectCollaborator(user)}
+                    checked={
+                      !!find(selectedCollaborators, {
+                        objectID: user.id || user.objectID
+                      })
+                    }
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+          </List>
+        </div>
       ) : null}
     </DialogContent>
     <DialogActions>
-      <Button color="accent" onTouchTap={onRequestClose}>
+      <Button color="secondary" onTouchTap={onRequestClose}>
         Cancel
       </Button>
       <Button color="primary" onTouchTap={saveCollaborators}>

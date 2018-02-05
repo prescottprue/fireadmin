@@ -1,0 +1,24 @@
+@import 'base';
+
+.container {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+  margin-left: .5rem !important;
+  margin-right: .5rem !important;
+}
+.title {
+  font-size: 1.2rem !important;
+  flex-basis: 33.33%;
+  flex-shrink: 0;
+}
+.type {
+  color: rgba(0, 0, 0, 0.54) !important;
+}
+.field {
+  @extend .field;
+  width: 80%;
+}
+.content {
+  @extend .flex-row;
+  align-items: center !important;
+}
