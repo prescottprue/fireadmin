@@ -2,9 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize, get } from 'lodash'
 import { Field } from 'redux-form'
-import { TextField, Select } from 'redux-form-material-ui'
-import { FormControl } from 'material-ui/Form'
+import { TextField, Select, Switch, RadioGroup } from 'redux-form-material-ui'
+import { FormControl, FormControlLabel, FormLabel } from 'material-ui/Form'
 import { InputLabel } from 'material-ui/Input'
+import Radio from 'material-ui/Radio'
 import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
@@ -33,7 +34,12 @@ const resourcesOptions = [
   { value: 'storage', label: 'Cloud Storage' }
 ]
 
-export const ActionTemplateStep = ({ fields, mainEditorPath, steps }) => (
+export const ActionTemplateStep = ({
+  fields,
+  mainEditorPath,
+  steps,
+  inputs
+}) => (
   <div>
     <Button
       onClick={() => fields.push({ type: 'copy' })}
@@ -131,12 +137,63 @@ export const ActionTemplateStep = ({ fields, mainEditorPath, steps }) => (
                       ))}
                     </Field>
                   </FormControl>
-                  <Field
-                    name={`${member}.src.path`}
-                    component={TextField}
-                    label="Path"
-                    className={classes.field}
-                  />
+                  <FormControl
+                    component="fieldset"
+                    required
+                    className={classes.formControl}>
+                    <FormLabel component="legend">Path Type</FormLabel>
+                    <Field
+                      component={RadioGroup}
+                      name={`${member}.src.pathType`}>
+                      <FormControlLabel
+                        value="constant"
+                        control={<Radio />}
+                        label="Constant (part of template)"
+                      />
+                      <FormControlLabel
+                        value="input"
+                        control={<Radio />}
+                        label="User Input"
+                      />
+                    </Field>
+                  </FormControl>
+                  {get(steps, `${index}.src.pathType`) === 'input' ? (
+                    <FormControl className={classes.field}>
+                      <InputLabel htmlFor="resource">
+                        Select An Input
+                      </InputLabel>
+                      <Field
+                        name={`${member}.src.path`}
+                        component={Select}
+                        fullWidth
+                        inputProps={{
+                          name: 'pathType',
+                          id: 'pathType'
+                        }}>
+                        {inputs.map((option, idx) => (
+                          <MenuItem
+                            key={`Option-${option.value}-${idx}`}
+                            value={option.value}
+                            disabled={option.disabled}>
+                            <ListItemText
+                              primary={get(
+                                option,
+                                'variableName',
+                                `Input ${idx}`
+                              )}
+                            />
+                          </MenuItem>
+                        ))}
+                      </Field>
+                    </FormControl>
+                  ) : (
+                    <Field
+                      name={`${member}.src.path`}
+                      component={TextField}
+                      label="Path"
+                      className={classes.field}
+                    />
+                  )}
                 </Grid>
                 <Grid item xs={12} lg={6}>
                   <h4>Destination</h4>
@@ -185,6 +242,7 @@ export const ActionTemplateStep = ({ fields, mainEditorPath, steps }) => (
 ActionTemplateStep.propTypes = {
   fields: PropTypes.object.isRequired,
   steps: PropTypes.array,
+  inputs: PropTypes.array,
   mainEditorPath: PropTypes.string.isRequired
 }
 
