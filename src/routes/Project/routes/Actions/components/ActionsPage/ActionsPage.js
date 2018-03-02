@@ -17,14 +17,16 @@ export const ActionsPage = ({
   actionProcessing,
   project
 }) => (
-  <div>
+  <div className={classes.container}>
     <Typography className={classes.pageHeader}>Actions</Typography>
     <Typography className={classes.subHeader}>Action Runner</Typography>
-    <div>
+    <div className={classes.container}>
       <div className={classes.buttons}>
         <Button
           disabled={!selectedTemplate || actionProcessing}
           color="primary"
+          variant="raised"
+          aria-label="Run Action"
           onTouchTap={runAction}>
           Run Action
         </Button>

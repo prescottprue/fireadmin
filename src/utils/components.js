@@ -47,12 +47,28 @@ export const spinnerWhile = condition =>
 export const spinnerWhileLoading = propNames =>
   spinnerWhile(props => some(propNames, name => !isLoaded(get(props, name))))
 
-// HOC that shows a component while condition is true
+/**
+ * HOC that shows a component while condition is true
+ * @param  {Function} condition - function which returns a boolean indicating
+ * whether to render the provided component or not
+ * @param  {React.Component} component - React component to render if condition
+ * is true
+ * @return {HigherOrderComponent}
+ */
 export const renderWhile = (condition, component) =>
   branch(condition, renderComponent(component))
 
-// HOC that shows a component while any of a list of props isEmpty
-export const renderIfEmpty = (propsNames, component) =>
+/**
+ * HOC that shows a component while any of a list of props loaded from Firebase
+ * is empty (uses react-redux-firebase's isEmpty).
+ * @param  {Array} propNames - List of prop names to check loading for
+ * @param  {React.Component} component - React component to render if prop loaded
+ * from Firebase is empty
+ * @return {HigherOrderComponent}
+ * @example
+ * renderWhileEmpty(['todos'], () => <div>Todos Not Found</div>),
+ */
+export const renderWhileEmpty = (propsNames, component) =>
   renderWhile(
     // Any of the listed prop name correspond to empty props (supporting dot path names)
     props =>
@@ -63,20 +79,28 @@ export const renderIfEmpty = (propsNames, component) =>
     component
   )
 
-// HOC that shows a component while any of a list of props isEmpty
-export const renderIfError = (listenerNames, component) =>
+/**
+ * HOC that shows a component while any of a list of props isEmpty
+ * @param  {Array} listenerPaths - List of listener paths which to check for errors
+ * withing Firestore
+ * @param  {React.Component} component - React component to render if any of
+ * the provied listener paths have errors
+ * @return {HigherOrderComponent}
+ */
+export const renderIfError = (listenerPaths, component) =>
   compose(
     connect((state, props) => {
       const { firestore: { errors } } = state
-      console.log('errors', errors, listenerNames)
       const listenerErrors = reduce(
-        listenerNames,
+        listenerPaths,
         (acc, listenerConfig) => {
           const listenerName = isFunction(listenerConfig)
             ? listenerConfig(state, props)
             : listenerConfig
-          const listenerError = get(errors, `byQuery.${toPath(listenerName).join('/')}`);
-            console.log('here we go:', `byQuery.${listenerName}`, listenerError);
+          const listenerError = get(
+            errors,
+            `byQuery.${toPath(listenerName).join('/')}`
+          )
           if (listenerError) {
             return acc.concat({ name: listenerName, error: listenerError })
           }

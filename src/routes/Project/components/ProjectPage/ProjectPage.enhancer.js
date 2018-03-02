@@ -6,7 +6,7 @@ import { withStateHandlers } from 'recompose'
 import { firebaseConnect, firestoreConnect } from 'react-redux-firebase'
 import {
   spinnerWhileLoading,
-  renderIfEmpty,
+  renderWhileEmpty,
   renderIfError
 } from 'utils/components'
 import styles from './ProjectPage.styles'
@@ -32,7 +32,7 @@ export default compose(
     project: get(data, `projects.${params.projectId}`)
   })),
   spinnerWhileLoading(['project']),
-  renderIfEmpty(['project'], ProjectNotFoundPage),
+  renderWhileEmpty(['project'], ProjectNotFoundPage),
   renderIfError(
     [
       (state, { params }) => `projects.${params.projectId}`,

@@ -37,7 +37,10 @@ export const EventsTable = ({ groupedEvents }) => (
                 {startCase(get(projectEvent, 'eventType', ''))}
               </TableCell>
               <TableCell>
-                <span>{projectEvent.createdBy}</span>
+                <span>
+                  {projectEvent.createdBy ||
+                    startCase(projectEvent.createdByType)}
+                </span>
               </TableCell>
             </TableRow>
           ))

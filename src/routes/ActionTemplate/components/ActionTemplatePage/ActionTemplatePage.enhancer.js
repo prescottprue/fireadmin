@@ -9,7 +9,7 @@ import { withNotifications } from 'modules/notification'
 import {
   spinnerWhileLoading,
   withRouter,
-  renderIfEmpty,
+  renderWhileEmpty,
   renderIfError
 } from 'utils/components'
 
@@ -34,7 +34,7 @@ export default compose(
     (state, { params }) => [`${firebasePaths.actionTemplates}.${params}`],
     ({ errorMessage }) => <div>Error loading templates: {errorMessage}</div>
   ),
-  renderIfEmpty(['template'], () => <div>Template Not Found</div>),
+  renderWhileEmpty(['template'], () => <div>Template Not Found</div>),
   withStateHandlers(
     ({ deleteDialogInitial = false }) => ({
       deleteDialogOpen: false
