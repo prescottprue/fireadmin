@@ -1,13 +1,15 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types'
-import { pick, some, get } from 'lodash'
+import { pick, some, get, reduce, isFunction, toPath } from 'lodash'
+import { connect } from 'react-redux'
 import LoadingSpinner from 'components/LoadingSpinner'
-import { isLoaded } from 'react-redux-firebase'
+import { isLoaded, isEmpty } from 'react-redux-firebase'
 import {
   compose,
   withContext,
   getContext,
   mapProps,
+  setDisplayName,
   branch,
   renderComponent
 } from 'recompose'
@@ -44,6 +46,80 @@ export const spinnerWhile = condition =>
  */
 export const spinnerWhileLoading = propNames =>
   spinnerWhile(props => some(propNames, name => !isLoaded(get(props, name))))
+
+/**
+ * HOC that shows a component while condition is true
+ * @param  {Function} condition - function which returns a boolean indicating
+ * whether to render the provided component or not
+ * @param  {React.Component} component - React component to render if condition
+ * is true
+ * @return {HigherOrderComponent}
+ */
+export const renderWhile = (condition, component) =>
+  branch(condition, renderComponent(component))
+
+/**
+ * HOC that shows a component while any of a list of props loaded from Firebase
+ * is empty (uses react-redux-firebase's isEmpty).
+ * @param  {Array} propNames - List of prop names to check loading for
+ * @param  {React.Component} component - React component to render if prop loaded
+ * from Firebase is empty
+ * @return {HigherOrderComponent}
+ * @example
+ * renderWhileEmpty(['todos'], () => <div>Todos Not Found</div>),
+ */
+export const renderWhileEmpty = (propsNames, component) =>
+  renderWhile(
+    // Any of the listed prop name correspond to empty props (supporting dot path names)
+    props =>
+      some(propsNames, name => {
+        const propValue = get(props, name)
+        return isLoaded(propValue) && isEmpty(propValue)
+      }),
+    component
+  )
+
+/**
+ * HOC that shows a component while any of a list of props isEmpty
+ * @param  {Array} listenerPaths - List of listener paths which to check for errors
+ * withing Firestore
+ * @param  {React.Component} component - React component to render if any of
+ * the provied listener paths have errors
+ * @return {HigherOrderComponent}
+ */
+export const renderIfError = (listenerPaths, component) =>
+  compose(
+    connect((state, props) => {
+      const { firestore: { errors } } = state
+      const listenerErrors = reduce(
+        listenerPaths,
+        (acc, listenerConfig) => {
+          const listenerName = isFunction(listenerConfig)
+            ? listenerConfig(state, props)
+            : listenerConfig
+          const listenerError = get(
+            errors,
+            `byQuery.${toPath(listenerName).join('/')}`
+          )
+          if (listenerError) {
+            return acc.concat({ name: listenerName, error: listenerError })
+          }
+          return acc
+        },
+        []
+      )
+      return {
+        listenerErrors,
+        errorMessage: get(listenerErrors, '0.error.code')
+      }
+    }),
+    renderWhile(
+      // Any of the listed prop name correspond to empty props (supporting dot path names)
+      ({ listenerErrors }) => listenerErrors.length,
+      component
+    ),
+    setDisplayName('renderIfError')
+  )
 
 /**
  * HOC that logs props using console.log. Accepts an array list of prop names
