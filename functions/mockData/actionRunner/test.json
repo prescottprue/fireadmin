@@ -1,16 +1,18 @@
 {
   "createdAt" : 1517128955690,
   "createdBy" : "FScHm5UzLtfytd014vYBmNIFSTZ2",
-  "inputValues" : [ {
+  "inputValues" : [
+    {
+      "databaseURL" : "https://fireadmin-33d82.firebaseio.com",
+      "environmentKey": "LGxjF9f9BXcBMyAHHIWH",
+      "fullPath" : "serviceAccounts/aZJDcgty1Ofske1kusTDEFsjWeh2/ZHg98Qsk8aTDuhqwYIjH/fireadmin-be0f35bca620.json"
+    },{
     "databaseURL" : "https://fireadmin-stage.firebaseio.com",
-    "environmentKey": "MYm5hX7yaEGI6LmO8z8K",
-    "serviceAccountPath" : "projects/qSOr63I5TR9KNPKk7xGq/environments/MYm5hX7yaEGI6LmO8z8K"
-  },  {
-    "databaseURL" : "https://fireadmin-stage.firebaseio.com",
-    "environmentKey": "MYm5hX7yaEGI6LmO8z8K",
-    "serviceAccountPath" : "projects/qSOr63I5TR9KNPKk7xGq/environments/MYm5hX7yaEGI6LmO8z8K"
-  }],
-  "projectId" : "qSOr63I5TR9KNPKk7xGq",
+    "environmentKey": "GVoP6U8NZkG47DTrawgX",
+    "fullPath" : "serviceAccounts/aZJDcgty1Ofske1kusTDEFsjWeh2/ZHg98Qsk8aTDuhqwYIjH/fireadmin-stage-e1ce9e573bd1.json"
+  },
+  "archived"],
+  "projectId" : "ZHg98Qsk8aTDuhqwYIjH",
   "startedAt" : 1517128966709,
   "status" : "started",
   "template" : {
@@ -24,16 +26,24 @@
       "name" : "Service Account 2",
       "type" : "serviceAccount",
       "variableName" : "serviceAccount2"
+    },
+    {
+      "description" : "Path to copy",
+      "name" : "Copy Path",
+      "type" : "userInput",
+      "variableName" : "copyPath"
     } ],
     "steps" : [ {
       "description" : "Copy users from one RTDB instance to another under archived collection",
       "dest" : {
-        "path" : "archived/users",
+        "path" : 2,
+        "pathType": "input",
         "resource" : "rtdb"
       },
       "name" : "Archive Users From RTDB",
       "src" : {
-        "path" : "users",
+        "path" : 2,
+        "pathType": "input",
         "resource" : "rtdb"
       },
       "type" : "copy"

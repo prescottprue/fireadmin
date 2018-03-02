@@ -1,0 +1,33 @@
+@import 'base';
+
+.container {
+  @extend .flex-column;
+}
+.buttons {
+  @extend .flex-row;
+  justify-content: flex-start;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+.paper {
+  padding: 2rem;
+  width: 60%;
+  @include mobile {
+    width: 100%;
+  }
+}
+.actions {
+  margin-top: 2rem;
+}
+.header {
+  color: rgba(0, 0, 0, 0.54) !important;
+  font-size: 1.6rem !important;
+  margin-right: 2rem !important;
+}
+.addAction {
+  margin-top: 0.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+.title {
+  font-size: 1.2rem !important;
+}

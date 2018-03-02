@@ -2,10 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize, get } from 'lodash'
 import { Field } from 'redux-form'
-import { TextField, Select, RadioGroup } from 'redux-form-material-ui'
-import { FormControl, FormControlLabel, FormLabel } from 'material-ui/Form'
+import { TextField, Select } from 'redux-form-material-ui'
+import { FormControl } from 'material-ui/Form'
 import { InputLabel } from 'material-ui/Input'
-import Radio from 'material-ui/Radio'
 import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
@@ -20,6 +19,7 @@ import Grid from 'material-ui/Grid'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import DeleteIcon from 'material-ui-icons/Delete'
 import ActionEditor from '../ActionEditor'
+import ActionStepLocation from '../ActionStepLocation'
 import classes from './ActionTemplateStep.scss'
 
 const typeOptions = [
@@ -27,12 +27,6 @@ const typeOptions = [
   { value: 'map', disabled: true },
   { value: 'delete', disabled: true },
   { value: 'custom' }
-]
-// const pathTypeOptions = [{ value: 'only' }, { value: 'all but' }]
-const resourcesOptions = [
-  { value: 'rtdb', label: 'Real Time Database' },
-  { value: 'firestore' },
-  { value: 'storage', label: 'Cloud Storage' }
 ]
 
 export const ActionTemplateStep = ({
@@ -43,7 +37,9 @@ export const ActionTemplateStep = ({
 }) => (
   <div>
     <Button
-      onClick={() => fields.push({ type: 'copy', src: { pathType: 'input' } })}
+      onClick={() =>
+        fields.push({ type: 'copy', src: { pathType: 'userInpu' } })
+      }
       color="primary"
       variant="raised"
       className={classes.addAction}>
@@ -115,176 +111,16 @@ export const ActionTemplateStep = ({
                 spacing={24}
                 style={{ flexGrow: 1 }}
                 justify="center">
-                <Grid item xs={12} lg={6}>
-                  <h4>Source</h4>
-                  <FormControl className={classes.field}>
-                    <InputLabel htmlFor="resource">
-                      Select A Resource
-                    </InputLabel>
-                    <Field
-                      name={`${member}.src.resource`}
-                      component={Select}
-                      fullWidth
-                      inputProps={{
-                        name: 'resource',
-                        id: 'resource'
-                      }}>
-                      {resourcesOptions.map((option, idx) => (
-                        <MenuItem
-                          key={`Option-${option.value}-${idx}`}
-                          value={option.value}
-                          disabled={option.disabled}>
-                          <ListItemText
-                            primary={option.label || capitalize(option.value)}
-                          />
-                        </MenuItem>
-                      ))}
-                    </Field>
-                  </FormControl>
-                  <FormControl
-                    component="fieldset"
-                    required
-                    className={classes.formControl}
-                    style={{ marginTop: '2rem' }}>
-                    <FormLabel component="legend">Path Type</FormLabel>
-                    <Field
-                      component={RadioGroup}
-                      name={`${member}.src.pathType`}>
-                      <FormControlLabel
-                        value="constant"
-                        control={<Radio />}
-                        label="Constant (part of template)"
-                      />
-                      <FormControlLabel
-                        value="input"
-                        control={<Radio />}
-                        label="User Input"
-                      />
-                    </Field>
-                  </FormControl>
-                  {get(steps, `${index}.src.pathType`) === 'input' ? (
-                    <FormControl className={classes.field}>
-                      <InputLabel htmlFor="resource">
-                        Select An Input
-                      </InputLabel>
-                      <Field
-                        name={`${member}.src.path`}
-                        component={Select}
-                        fullWidth
-                        inputProps={{
-                          name: 'pathType',
-                          id: 'pathType'
-                        }}>
-                        {inputs.map((option, idx) => (
-                          <MenuItem
-                            key={`Option-${option.value}-${idx}`}
-                            value={option.value}
-                            disabled={option.disabled}>
-                            <ListItemText
-                              primary={get(
-                                option,
-                                'variableName',
-                                `Input ${idx}`
-                              )}
-                            />
-                          </MenuItem>
-                        ))}
-                      </Field>
-                    </FormControl>
-                  ) : (
-                    <Field
-                      name={`${member}.src.path`}
-                      component={TextField}
-                      label="Path"
-                      className={classes.field}
-                    />
-                  )}
-                </Grid>
-                <Grid item xs={12} lg={6}>
-                  <h4>Destination</h4>
-                  <FormControl className={classes.field}>
-                    <InputLabel htmlFor="destResource">
-                      Select A Resource
-                    </InputLabel>
-                    <Field
-                      name={`${member}.dest.resource`}
-                      component={Select}
-                      fullWidth
-                      inputProps={{
-                        name: 'destResource',
-                        id: 'destResource'
-                      }}>
-                      {resourcesOptions.map((option, idx) => (
-                        <MenuItem
-                          key={`Option-${option.value}-${idx}`}
-                          value={option.value}
-                          disabled={option.disabled}>
-                          <ListItemText
-                            primary={option.label || capitalize(option.value)}
-                          />
-                        </MenuItem>
-                      ))}
-                    </Field>
-                  </FormControl>
-                  <FormControl
-                    component="fieldset"
-                    required
-                    className={classes.formControl}
-                    style={{ marginTop: '2rem' }}>
-                    <FormLabel component="legend">Path Type</FormLabel>
-                    <Field
-                      component={RadioGroup}
-                      name={`${member}.dest.pathType`}>
-                      <FormControlLabel
-                        value="constant"
-                        control={<Radio />}
-                        label="Constant (part of template)"
-                      />
-                      <FormControlLabel
-                        value="input"
-                        control={<Radio />}
-                        label="User Input"
-                      />
-                    </Field>
-                  </FormControl>
-                  {get(steps, `${index}.dest.pathType`) === 'input' ? (
-                    <FormControl className={classes.field}>
-                      <InputLabel htmlFor="resource">
-                        Select An Input
-                      </InputLabel>
-                      <Field
-                        name={`${member}.dest.path`}
-                        component={Select}
-                        fullWidth
-                        inputProps={{
-                          name: 'pathType',
-                          id: 'pathType'
-                        }}>
-                        {inputs.map((option, idx) => (
-                          <MenuItem
-                            key={`Option-${option.value}-${idx}`}
-                            value={option.value}
-                            disabled={option.disabled}>
-                            <ListItemText
-                              primary={get(
-                                option,
-                                'variableName',
-                                `Input ${idx}`
-                              )}
-                            />
-                          </MenuItem>
-                        ))}
-                      </Field>
-                    </FormControl>
-                  ) : (
-                    <Field
-                      name={`${member}.dest.path`}
-                      component={TextField}
-                      label="Path"
-                      className={classes.field}
-                    />
-                  )}
-                </Grid>
+                <ActionStepLocation
+                  title="Source"
+                  name={`${member}.src`}
+                  indexName={`${index}.src`}
+                />
+                <ActionStepLocation
+                  title="Destination"
+                  name={`${member}.dest`}
+                  indexName={`${index}.dest`}
+                />
               </Grid>
             ) : (
               <ActionEditor rtdbPath={`${mainEditorPath}/steps/${index}`} />
