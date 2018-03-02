@@ -5,14 +5,20 @@
   margin-bottom: 1rem !important;
   margin-left: .5rem !important;
   margin-right: .5rem !important;
+  min-width: 270px;
 }
 .title {
   font-size: 1.2rem !important;
-  flex-basis: 33.33%;
   flex-shrink: 0;
+  display: block;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
 }
 .type {
   color: rgba(0, 0, 0, 0.54) !important;
+  display: block;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
 }
 .field {
   @extend .field;

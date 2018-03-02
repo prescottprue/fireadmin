@@ -52,8 +52,8 @@ export const OverviewPanel = ({
         <div>
           <p className={classes.description}>
             Moving data is a nessesary part of any real world application.
-            Actions allow you to move data in a repeatability and reversable way
-            with a complete logs of actions along the way
+            Actions allow you to move data in a repeatable way with complete
+            logs of everything along the way
           </p>
         </div>
         <Link to={`${projectPath}/${paths.projectActions}`}>

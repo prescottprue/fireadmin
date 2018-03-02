@@ -28,7 +28,8 @@ export const ActionTemplatesList = ({
     <Button
       color="primary"
       onClick={toggleNewDialog}
-      className={classesFromStyles.new}>
+      className={classesFromStyles.new}
+      variant="raised">
       New Template
     </Button>
     <div>

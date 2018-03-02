@@ -1,3 +1,4 @@
+import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
@@ -5,7 +6,12 @@ import { firebasePaths, paths } from 'constants'
 import { withHandlers, withStateHandlers } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
-import { spinnerWhileLoading, withRouter } from 'utils/components'
+import {
+  spinnerWhileLoading,
+  withRouter,
+  renderWhileEmpty,
+  renderIfError
+} from 'utils/components'
 
 export default compose(
   withNotifications,
@@ -21,6 +27,14 @@ export default compose(
   connect(({ firestore: { data: { actionTemplates } } }, { params }) => ({
     template: get(actionTemplates, params.templateId)
   })),
+  // Show spinner while template is loading
+  spinnerWhileLoading(['template']),
+  // Render Error page if there is an error in the
+  renderIfError(
+    (state, { params }) => [`${firebasePaths.actionTemplates}.${params}`],
+    ({ errorMessage }) => <div>Error loading templates: {errorMessage}</div>
+  ),
+  renderWhileEmpty(['template'], () => <div>Template Not Found</div>),
   withStateHandlers(
     ({ deleteDialogInitial = false }) => ({
       deleteDialogOpen: false
@@ -74,6 +88,5 @@ export default compose(
       }
     },
     goBack: props => () => props.router.push(paths.actionTemplates)
-  }),
-  spinnerWhileLoading(['template'])
+  })
 )

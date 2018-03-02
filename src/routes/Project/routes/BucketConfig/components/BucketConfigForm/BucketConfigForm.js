@@ -30,6 +30,7 @@ export const BucketConfigForm = ({
       <Button
         color="primary"
         type="submit"
+        variant="raised"
         disabled={
           pristine ||
           submitting ||
@@ -41,9 +42,10 @@ export const BucketConfigForm = ({
       </Button>
       <Button
         color="secondary"
+        variant="raised"
         disabled={pristine || submitting}
         onClick={reset}>
-        Clear Values
+        Cancel
       </Button>
     </div>
     <Paper className={classes.paper}>

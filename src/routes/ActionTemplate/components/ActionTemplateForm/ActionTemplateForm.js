@@ -28,13 +28,16 @@ export const ActionTemplateForm = ({
       <Button
         disabled={pristine || submitting}
         color="secondary"
-        onTouchTap={reset}>
+        onTouchTap={reset}
+        variant="raised"
+        style={{ marginRight: '2rem' }}>
         Cancel
       </Button>
       <Button
         disabled={submitting || pristine}
         color="primary"
         type="submit"
+        variant="raised"
         className={classes.submit}>
         Save
       </Button>
@@ -61,20 +64,19 @@ export const ActionTemplateForm = ({
             className={classes.field}
             label="Description"
           />
-          <Field
-            name="tags"
-            component={TextField}
-            disabled
-            label="Tags (seperated by commas)"
-          />
-        </Grid>
-        <Grid item xs>
-          <div style={{ maxWidth: '5rem' }}>
+          <div className={classes.publicToggle}>
             <FormControlLabel
               control={<Field name="name" component={Switch} />}
               label="Public"
             />
           </div>
+          <Field
+            name="tags"
+            component={TextField}
+            disabled
+            label="Tags (seperated by commas)"
+            className={classes.field}
+          />
         </Grid>
       </Grid>
     </Paper>

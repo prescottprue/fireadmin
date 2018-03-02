@@ -24,14 +24,16 @@ export const ActionInput = ({
 }) => (
   <ExpansionPanel defaultExpanded className={classes.container}>
     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-      <Typography className={classes.title}>
-        {get(inputMeta, `name`) || `Input ${index + 1}`}
-      </Typography>
-      {get(inputMeta, `type`, null) && (
-        <Typography className={classes.type}>
-          Type: {startCase(get(inputMeta, `type`))}
+      <div style={{ display: 'block' }}>
+        <Typography className={classes.title}>
+          {get(inputMeta, `name`) || `Input ${index + 1}`}
         </Typography>
-      )}
+        {get(inputMeta, `type`, null) && (
+          <Typography className={classes.type}>
+            Type: {startCase(get(inputMeta, `type`))}
+          </Typography>
+        )}
+      </div>
     </ExpansionPanelSummary>
     <ExpansionPanelDetails>
       {get(inputMeta, 'type') === 'serviceAccount' ? (
