@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classes from './<%= pascalEntityName %>.scss'
 
 export const <%= pascalEntityName %> = ({ children }) => (
-  <div className={classes['<%= pascalEntityName %>']}>
+  <div className={classes.container}>
     {children}
   </div>
 )
