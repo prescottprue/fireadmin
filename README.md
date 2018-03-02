@@ -41,7 +41,7 @@
 * Data Viewer
 * "Go To Production" checklist
 
-Interested in adding a feature or contributing? Open an issue or [reach out over](https://gitter.im/firebase-admin/Lobby)
+Interested in adding a feature or contributing? Open an issue or [reach out over gitter](https://gitter.im/firebase-admin/Lobby).
 
 ## Getting Started
 
@@ -152,7 +152,6 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 │   │   ├── createStore.js   # Create and instrument redux store
 │   │   └── reducers.js      # Reducer registry and injection
 │   └── styles               # Application-wide styles (generally settings)
-├── project.config.js        # Project configuration settings (includes ci settings)
 └── tests                    # Unit tests
 ```
 
