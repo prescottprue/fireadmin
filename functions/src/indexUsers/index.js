@@ -1,3 +1,4 @@
+import * as admin from 'firebase-admin'
 import { get, invoke } from 'lodash'
 import { createIndexFunc } from '../utils/search'
 const functions = require('firebase-functions')
@@ -19,6 +20,13 @@ export default functions.firestore.document('/users/{userId}').onWrite(
         )
       }
       return nameChanged
-    }
+    },
+    otherPromises: [
+      (user, objectID) =>
+        admin
+          .database()
+          .ref(`displayNames/${objectID}`)
+          .set(get(user, 'displayName'))
+    ]
   })
 )

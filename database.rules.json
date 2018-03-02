@@ -2,6 +2,10 @@
   "rules": {
     ".read": "auth !== null",
     ".write": "auth !== null",
+    "displayNames": {
+      ".read": true,
+      ".write": false
+    },
     "serviceAccounts": {
       "$serviceAccountId": {
         ".read": "auth !== null",

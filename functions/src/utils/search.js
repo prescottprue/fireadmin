@@ -58,7 +58,9 @@ export function createIndexFunc({
         )
         return algoliaResponse
       }),
-      ...otherPromises
+      ...otherPromises.map(otherPromiseCreator =>
+        otherPromiseCreator(data, objectID)
+      )
     ]).then(() => firebaseObject)
   }
 }
