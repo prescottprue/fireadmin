@@ -28,7 +28,7 @@ cache:
 install:
   - yarn install
   # TODO: Use npm i -g once functions runtime is updated to a node verion with lock files
-  - npm i -g firebase-ci # install firebase-ci for use in creating config and deploying
+  - npm i -g firebase-ci@alpha # install firebase-ci for use in creating config and deploying
 
 script:
   - firebase-ci createConfig # create env specific src/config.js

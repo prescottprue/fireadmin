@@ -1,5 +1,5 @@
-import { get } from 'lodash'
-import { compose, withHandlers } from 'recompose'
+import { get, orderBy } from 'lodash'
+import { compose, withHandlers, withProps } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
 import { connect } from 'react-redux'
 import { initialize } from 'redux-form'
@@ -15,21 +15,28 @@ export default compose(
       collection: 'projects',
       doc: params.projectId,
       subcollections: [{ collection: 'events' }],
-      // where: ['eventType', '==', 'requestActionRun'],
-      orderBy: ['createdAt'],
+      where: ['eventType', '==', 'requestActionRun'],
       limit: 3,
       storeAs: 'recentActions'
     }
   ]),
   // Map redux state to props
   connect((state, { params }) => ({
-    recentActions: get(state.firestore, `data.recentActions`)
+    recentActions: get(state.firestore, `ordered.recentActions`)
   })),
   spinnerWhileLoading(['recentActions']),
+  withProps(({ recentActions }) => ({
+    orderedActions: orderBy(recentActions, ['createdAt'], ['desc'])
+  })),
   withHandlers({
     rerunAction: props => action => {
-      // TODO: Initialize with the right data
-      initialize(formNames.actionRunner, action.eventData)
+      const templateWithValues = {
+        ...action.eventData,
+        ...action.eventData.template,
+        inputValues: action.eventData.inputValues
+      }
+      props.selectActionTemplate(templateWithValues)
+      initialize(formNames.actionRunner, templateWithValues)
     }
   })
 )

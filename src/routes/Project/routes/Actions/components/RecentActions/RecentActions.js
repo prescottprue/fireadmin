@@ -11,10 +11,10 @@ import Table, {
 import IconButton from 'material-ui/IconButton'
 import Tooltip from 'material-ui/Tooltip'
 import RedoIcon from 'material-ui-icons/Redo'
-import { formatTime } from 'utils/formatters'
+import { formatDateTime } from 'utils/formatters'
 import classes from './RecentActions.scss'
 
-export const RecentActions = ({ recentActions, rerunAction }) => (
+export const RecentActions = ({ orderedActions, rerunAction }) => (
   <div className={classes.container}>
     <Paper>
       <Table className={classes.table}>
@@ -26,9 +26,9 @@ export const RecentActions = ({ recentActions, rerunAction }) => (
           </TableRow>
         </TableHead>
         <TableBody>
-          {map(recentActions, (action, groupName) => [
+          {map(orderedActions, (action, groupName) => [
             <TableRow key={groupName} className={classes.tableRowDivider}>
-              <TableCell>{formatTime(action.createdAt)}</TableCell>
+              <TableCell>{formatDateTime(action.createdAt)}</TableCell>
               <TableCell>
                 <span>
                   {action.createdBy || startCase(action.createdByType)}
@@ -60,7 +60,7 @@ export const RecentActions = ({ recentActions, rerunAction }) => (
 )
 
 RecentActions.propTypes = {
-  recentActions: PropTypes.object,
+  orderedActions: PropTypes.array,
   rerunAction: PropTypes.func.isRequired
 }
 

@@ -27,3 +27,12 @@ export function formatTime(dateValue) {
 export function formatDate(dateValue) {
   return format(getDateObject(dateValue), 'MM/DD/YY')
 }
+
+/**
+ * Format date string or object into date string with format 1/22/2018
+ * @param  {Object} dateValue - Date value which to format
+ * @return {String} Formatted date
+ */
+export function formatDateTime(dateValue) {
+  return format(getDateObject(dateValue), 'MM/DD/YY - h:mm:ss.SSS A')
+}
