@@ -37,7 +37,8 @@ export const ActionTemplateInputs = ({ fields, inputs }) => (
     <Button
       onClick={() => fields.push({ type: 'serviceAccount' })}
       color="primary"
-      className={classes.addAction}>
+      className={classes.addAction}
+      variant="raised">
       Add Input
     </Button>
     {fields.map((member, index, field) => (

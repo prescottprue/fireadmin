@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize, get } from 'lodash'
 import { Field } from 'redux-form'
-import { TextField, Select, Switch, RadioGroup } from 'redux-form-material-ui'
+import { TextField, Select, RadioGroup } from 'redux-form-material-ui'
 import { FormControl, FormControlLabel, FormLabel } from 'material-ui/Form'
 import { InputLabel } from 'material-ui/Input'
 import Radio from 'material-ui/Radio'
@@ -15,6 +15,7 @@ import Typography from 'material-ui/Typography'
 import { MenuItem } from 'material-ui/Menu'
 import IconButton from 'material-ui/IconButton'
 import Button from 'material-ui/Button'
+import Tooltip from 'material-ui/Tooltip'
 import Grid from 'material-ui/Grid'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import DeleteIcon from 'material-ui-icons/Delete'
@@ -42,8 +43,9 @@ export const ActionTemplateStep = ({
 }) => (
   <div>
     <Button
-      onClick={() => fields.push({ type: 'copy' })}
+      onClick={() => fields.push({ type: 'copy', src: { pathType: 'input' } })}
       color="primary"
+      variant="raised"
       className={classes.addAction}>
       Add Step
     </Button>
@@ -56,7 +58,17 @@ export const ActionTemplateStep = ({
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Grid container spacing={24} style={{ flexGrow: 1 }}>
-            <Grid item xs={12} lg={6}>
+            <Grid item xs={12} lg={12}>
+              <Tooltip title="Remove Step">
+                <IconButton
+                  onClick={() => fields.remove(index)}
+                  color="secondary"
+                  className={classes.submit}>
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+            <Grid item xs={12} lg={12}>
               <Field
                 name={`${member}.name`}
                 component={TextField}
@@ -69,18 +81,10 @@ export const ActionTemplateStep = ({
                 label="Description"
                 className={classes.field}
               />
-            </Grid>
-            <Grid item xs={12} lg={6}>
-              <IconButton
-                onClick={() => fields.remove(index)}
-                color="secondary"
-                className={classes.submit}>
-                <DeleteIcon />
-              </IconButton>
-              <FormControl className={classes.field}>
-                <InputLabel htmlFor="actionType">
-                  Select An Action Type
-                </InputLabel>
+              <FormControl
+                className={classes.field}
+                style={{ marginTop: '2rem' }}>
+                <InputLabel htmlFor="actionType">Action Type</InputLabel>
                 <Field
                   name={`${member}.type`}
                   component={Select}
@@ -106,7 +110,7 @@ export const ActionTemplateStep = ({
               <Grid
                 item
                 xs={12}
-                lg={6}
+                lg={12}
                 container
                 spacing={24}
                 style={{ flexGrow: 1 }}
@@ -140,7 +144,8 @@ export const ActionTemplateStep = ({
                   <FormControl
                     component="fieldset"
                     required
-                    className={classes.formControl}>
+                    className={classes.formControl}
+                    style={{ marginTop: '2rem' }}>
                     <FormLabel component="legend">Path Type</FormLabel>
                     <Field
                       component={RadioGroup}
@@ -221,12 +226,64 @@ export const ActionTemplateStep = ({
                       ))}
                     </Field>
                   </FormControl>
-                  <Field
-                    name={`${member}.dest.path`}
-                    component={TextField}
-                    label="Path"
-                    className={classes.field}
-                  />
+                  <FormControl
+                    component="fieldset"
+                    required
+                    className={classes.formControl}
+                    style={{ marginTop: '2rem' }}>
+                    <FormLabel component="legend">Path Type</FormLabel>
+                    <Field
+                      component={RadioGroup}
+                      name={`${member}.dest.pathType`}>
+                      <FormControlLabel
+                        value="constant"
+                        control={<Radio />}
+                        label="Constant (part of template)"
+                      />
+                      <FormControlLabel
+                        value="input"
+                        control={<Radio />}
+                        label="User Input"
+                      />
+                    </Field>
+                  </FormControl>
+                  {get(steps, `${index}.dest.pathType`) === 'input' ? (
+                    <FormControl className={classes.field}>
+                      <InputLabel htmlFor="resource">
+                        Select An Input
+                      </InputLabel>
+                      <Field
+                        name={`${member}.dest.path`}
+                        component={Select}
+                        fullWidth
+                        inputProps={{
+                          name: 'pathType',
+                          id: 'pathType'
+                        }}>
+                        {inputs.map((option, idx) => (
+                          <MenuItem
+                            key={`Option-${option.value}-${idx}`}
+                            value={option.value}
+                            disabled={option.disabled}>
+                            <ListItemText
+                              primary={get(
+                                option,
+                                'variableName',
+                                `Input ${idx}`
+                              )}
+                            />
+                          </MenuItem>
+                        ))}
+                      </Field>
+                    </FormControl>
+                  ) : (
+                    <Field
+                      name={`${member}.dest.path`}
+                      component={TextField}
+                      label="Path"
+                      className={classes.field}
+                    />
+                  )}
                 </Grid>
               </Grid>
             ) : (
