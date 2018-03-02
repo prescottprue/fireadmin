@@ -31,7 +31,8 @@ export const ActionTemplateBackups = ({ fields, steps }) => (
     <Button
       onClick={() => fields.push({ dest: { resource: 'firestore' } })}
       color="primary"
-      className={classes.addAction}>
+      className={classes.addAction}
+      variant="raised">
       Add Backup
     </Button>
     {fields.map((member, index, field) => (

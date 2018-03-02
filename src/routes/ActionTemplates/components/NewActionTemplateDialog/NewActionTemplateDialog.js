@@ -16,7 +16,7 @@ export const NewActionTemplateDialog = ({
   pristine,
   open
 }) => (
-  <Dialog open={open} onClose={onRequestClose} className={classes.container}>
+  <Dialog open={open} onClose={onRequestClose}>
     <DialogTitle>New Action Template</DialogTitle>
     <form className={classes.container} onSubmit={handleSubmit}>
       <DialogContent className={classes.content}>
