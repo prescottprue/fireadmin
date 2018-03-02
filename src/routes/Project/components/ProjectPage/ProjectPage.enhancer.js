@@ -4,8 +4,14 @@ import { connect } from 'react-redux'
 import { withStyles } from 'material-ui/styles'
 import { withStateHandlers } from 'recompose'
 import { firebaseConnect, firestoreConnect } from 'react-redux-firebase'
-import { spinnerWhileLoading } from 'utils/components'
+import {
+  spinnerWhileLoading,
+  renderIfEmpty,
+  renderIfError
+} from 'utils/components'
 import styles from './ProjectPage.styles'
+import ProjectNotFoundPage from './ProjectNotFoundPage'
+import ProjectErrorPage from './ProjectErrorPage'
 import { withNotifications } from 'modules/notification'
 
 export default compose(
@@ -26,6 +32,15 @@ export default compose(
     project: get(data, `projects.${params.projectId}`)
   })),
   spinnerWhileLoading(['project']),
+  renderIfEmpty(['project'], ProjectNotFoundPage),
+  renderIfError(
+    [
+      (state, { params }) => `projects.${params.projectId}`,
+      (state, { params }) => `projects.${params.projectId}.events`,
+      (state, { params }) => `projects.${params.projectId}.environments`
+    ],
+    ProjectErrorPage
+  ),
   withNotifications,
   withStateHandlers(
     ({ initialActions = [] }) => ({

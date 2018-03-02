@@ -1,13 +1,15 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types'
-import { pick, some, get } from 'lodash'
+import { pick, some, get, reduce, isFunction, toPath } from 'lodash'
+import { connect } from 'react-redux'
 import LoadingSpinner from 'components/LoadingSpinner'
-import { isLoaded } from 'react-redux-firebase'
+import { isLoaded, isEmpty } from 'react-redux-firebase'
 import {
   compose,
   withContext,
   getContext,
   mapProps,
+  setDisplayName,
   branch,
   renderComponent
 } from 'recompose'
@@ -44,6 +46,56 @@ export const spinnerWhile = condition =>
  */
 export const spinnerWhileLoading = propNames =>
   spinnerWhile(props => some(propNames, name => !isLoaded(get(props, name))))
+
+// HOC that shows a component while condition is true
+export const renderWhile = (condition, component) =>
+  branch(condition, renderComponent(component))
+
+// HOC that shows a component while any of a list of props isEmpty
+export const renderIfEmpty = (propsNames, component) =>
+  renderWhile(
+    // Any of the listed prop name correspond to empty props (supporting dot path names)
+    props =>
+      some(propsNames, name => {
+        const propValue = get(props, name)
+        return isLoaded(propValue) && isEmpty(propValue)
+      }),
+    component
+  )
+
+// HOC that shows a component while any of a list of props isEmpty
+export const renderIfError = (listenerNames, component) =>
+  compose(
+    connect((state, props) => {
+      const { firestore: { errors } } = state
+      console.log('errors', errors, listenerNames)
+      const listenerErrors = reduce(
+        listenerNames,
+        (acc, listenerConfig) => {
+          const listenerName = isFunction(listenerConfig)
+            ? listenerConfig(state, props)
+            : listenerConfig
+          const listenerError = get(errors, `byQuery.${toPath(listenerName).join('/')}`);
+            console.log('here we go:', `byQuery.${listenerName}`, listenerError);
+          if (listenerError) {
+            return acc.concat({ name: listenerName, error: listenerError })
+          }
+          return acc
+        },
+        []
+      )
+      return {
+        listenerErrors,
+        errorMessage: get(listenerErrors, '0.error.code')
+      }
+    }),
+    renderWhile(
+      // Any of the listed prop name correspond to empty props (supporting dot path names)
+      ({ listenerErrors }) => listenerErrors.length,
+      component
+    ),
+    setDisplayName('renderIfError')
+  )
 
 /**
  * HOC that logs props using console.log. Accepts an array list of prop names
