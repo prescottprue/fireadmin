@@ -4,6 +4,7 @@ import Button from 'material-ui/Button'
 import Typography from 'material-ui/Typography'
 import { LinearProgress } from 'material-ui/Progress'
 import ActionRunnerForm from '../ActionRunnerForm'
+import RecentActions from '../RecentActions'
 import classes from './ActionsPage.scss'
 
 export const ActionsPage = ({
@@ -19,6 +20,11 @@ export const ActionsPage = ({
 }) => (
   <div className={classes.container}>
     <Typography className={classes.pageHeader}>Actions</Typography>
+    <Typography className={classes.subHeader}>Recently Run Actions</Typography>
+    <RecentActions
+      params={params}
+      selectActionTemplate={selectActionTemplate}
+    />
     <Typography className={classes.subHeader}>Action Runner</Typography>
     <div className={classes.container}>
       <div className={classes.buttons}>
@@ -39,6 +45,7 @@ export const ActionsPage = ({
         project={project}
         projectId={params.projectId}
         selectedTemplate={selectedTemplate}
+        initialValues={selectedTemplate}
         templateName={templateName}
         templateEditExpanded={templateEditExpanded}
         toggleTemplateEdit={toggleTemplateEdit}

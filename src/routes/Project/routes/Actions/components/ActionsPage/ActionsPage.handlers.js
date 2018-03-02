@@ -52,7 +52,11 @@ export const runAction = props => async () => {
       { firestore, projectId },
       {
         eventType: 'requestActionRun',
-        eventData: actionRequest,
+        eventData: {
+          ...actionRequest,
+          inputValues,
+          template: { ...selectedTemplate, inputValues }
+        },
         createdBy: auth.uid
       }
     )

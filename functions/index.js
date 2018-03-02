@@ -1,20 +1,25 @@
-const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-const storageFileToRTDB = require('./dist/storageFileToRTDB').default
-const actionRunner = require('./dist/actionRunner').default
-const indexUsers = require('./dist/search').indexUsers
-const callGoogleApi = require('./dist/callGoogleApi').default
-const sendInvite = require('./dist/invites').sendInvite
-const indexActionTemplates = require('./dist/search').indexActionTemplates
-const copyServiceAccountToFirestore = require('./dist/copyServiceAccountToFirestore')
-  .default
+const functions = require('firebase-functions')
+const glob = require('glob')
+const path = require('path')
 
-admin.initializeApp(functions.config().firebase)
+try {
+  admin.initializeApp(functions.config().firebase)
+} catch (err) {}
 
-exports.actionRunner = actionRunner
-exports.copyServiceAccountToFirestore = copyServiceAccountToFirestore
-exports.storageFileToRTDB = storageFileToRTDB
-exports.indexUsers = indexUsers
-exports.callGoogleApi = callGoogleApi
-exports.indexActionTemplates = indexActionTemplates
-exports.sendInvite = sendInvite
+// Load all folders within dist directory (mirrors layout of src)
+const files = glob.sync('./dist/**/index.js', {
+  cwd: __dirname,
+  ignore: ['./node_modules/**', './dist/utils/**', './dist/constants']
+})
+
+// Loop over all folders found within dist loading only the relevant function
+files.forEach(functionFile => {
+  const folderName = path
+    .basename(path.dirname(functionFile))
+    .replace(/[-]/g, '.')
+  // Load single function from default
+  !process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === folderName // eslint-disable-line no-unused-expressions
+    ? (exports[folderName] = require(functionFile).default) // eslint-disable-line global-require
+    : () => {}
+})
