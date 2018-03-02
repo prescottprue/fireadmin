@@ -1,6 +1,5 @@
 import React, { cloneElement } from 'react'
 import PropTypes from 'prop-types'
-import { isEmpty } from 'react-redux-firebase'
 import Typography from 'material-ui/Typography'
 import SidebarLayout from 'layouts/SidebarLayout'
 import OverviewPanel from '../OverviewPanel'
@@ -13,8 +12,6 @@ export const ProjectPage = ({ project, params, children }) => (
         <Typography className={classes.pageHeader}>Overview</Typography>
         <OverviewPanel project={project} params={params} />
       </div>
-    ) : isEmpty(project) ? (
-      <div className={classes.container}>Project Not Found</div>
     ) : (
       cloneElement(children, { project, params })
     )}

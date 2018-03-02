@@ -51,7 +51,7 @@ export const runAction = props => async () => {
     createProjectEvent(
       { firestore, projectId },
       {
-        eventType: 'startActionRun',
+        eventType: 'requestActionRun',
         eventData: actionRequest,
         createdBy: auth.uid
       }

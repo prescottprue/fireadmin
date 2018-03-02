@@ -27,3 +27,18 @@
   @extend .flex-row-center;
   padding-bottom: 4rem;
 }
+.errorPage {
+  @extend .flex-column-center;
+  margin-top: 3rem;
+  font-size: 1.8rem;
+  width: 80%;
+  margin-left: 10%;
+}
+.errorPaper {
+  @extend .flex-column-center;
+  padding: 2rem;
+  width: 60%;
+}
+.errorMessage {
+  font-size: 1.2rem;
+}

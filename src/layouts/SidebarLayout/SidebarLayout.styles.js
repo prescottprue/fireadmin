@@ -68,6 +68,8 @@ export default theme => ({
   content: {
     width: '100%',
     flexGrow: 1,
+    flexWrap: 'wrap',
+    overflowY: 'scroll',
     backgroundColor: theme.palette.background.default,
     padding: 24,
     height: 'calc(100% - 56px)',

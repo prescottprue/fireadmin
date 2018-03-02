@@ -6,7 +6,7 @@ import AccountForm from '../AccountForm'
 import defaultUserImageUrl from 'static/User.png'
 import classes from './AccountPage.scss'
 
-export const AccountPage = ({ avatarUrl, updateAccount, profile }) => (
+export const AccountPage = ({ avatarUrl, updateAccount, cleanProfile }) => (
   <div className={classes.container}>
     <Paper className={classes.pane}>
       <Typography variant="title" className={classes.title}>
@@ -22,8 +22,8 @@ export const AccountPage = ({ avatarUrl, updateAccount, profile }) => (
         <div className={classes.meta}>
           <AccountForm
             onSubmit={updateAccount}
-            account={profile}
-            initialValues={profile}
+            account={cleanProfile}
+            initialValues={cleanProfile}
           />
         </div>
       </div>
@@ -33,7 +33,7 @@ export const AccountPage = ({ avatarUrl, updateAccount, profile }) => (
 
 AccountPage.propTypes = {
   avatarUrl: PropTypes.string,
-  profile: PropTypes.object,
+  cleanProfile: PropTypes.object,
   updateAccount: PropTypes.func
 }
 

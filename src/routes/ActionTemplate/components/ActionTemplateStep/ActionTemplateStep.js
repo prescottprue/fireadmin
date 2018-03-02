@@ -14,10 +14,12 @@ import Typography from 'material-ui/Typography'
 import { MenuItem } from 'material-ui/Menu'
 import IconButton from 'material-ui/IconButton'
 import Button from 'material-ui/Button'
+import Tooltip from 'material-ui/Tooltip'
 import Grid from 'material-ui/Grid'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import DeleteIcon from 'material-ui-icons/Delete'
 import ActionEditor from '../ActionEditor'
+import ActionStepLocation from '../ActionStepLocation'
 import classes from './ActionTemplateStep.scss'
 
 const typeOptions = [
@@ -26,18 +28,20 @@ const typeOptions = [
   { value: 'delete', disabled: true },
   { value: 'custom' }
 ]
-// const pathTypeOptions = [{ value: 'only' }, { value: 'all but' }]
-const resourcesOptions = [
-  { value: 'rtdb', label: 'Real Time Database' },
-  { value: 'firestore' },
-  { value: 'storage', label: 'Cloud Storage' }
-]
 
-export const ActionTemplateStep = ({ fields, mainEditorPath, steps }) => (
+export const ActionTemplateStep = ({
+  fields,
+  mainEditorPath,
+  steps,
+  inputs
+}) => (
   <div>
     <Button
-      onClick={() => fields.push({ type: 'copy' })}
+      onClick={() =>
+        fields.push({ type: 'copy', src: { pathType: 'userInpu' } })
+      }
       color="primary"
+      variant="raised"
       className={classes.addAction}>
       Add Step
     </Button>
@@ -50,7 +54,17 @@ export const ActionTemplateStep = ({ fields, mainEditorPath, steps }) => (
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Grid container spacing={24} style={{ flexGrow: 1 }}>
-            <Grid item xs={12} lg={6}>
+            <Grid item xs={12} lg={12}>
+              <Tooltip title="Remove Step">
+                <IconButton
+                  onClick={() => fields.remove(index)}
+                  color="secondary"
+                  className={classes.submit}>
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+            <Grid item xs={12} lg={12}>
               <Field
                 name={`${member}.name`}
                 component={TextField}
@@ -63,18 +77,10 @@ export const ActionTemplateStep = ({ fields, mainEditorPath, steps }) => (
                 label="Description"
                 className={classes.field}
               />
-            </Grid>
-            <Grid item xs={12} lg={6}>
-              <IconButton
-                onClick={() => fields.remove(index)}
-                color="secondary"
-                className={classes.submit}>
-                <DeleteIcon />
-              </IconButton>
-              <FormControl className={classes.field}>
-                <InputLabel htmlFor="actionType">
-                  Select An Action Type
-                </InputLabel>
+              <FormControl
+                className={classes.field}
+                style={{ marginTop: '2rem' }}>
+                <InputLabel htmlFor="actionType">Action Type</InputLabel>
                 <Field
                   name={`${member}.type`}
                   component={Select}
@@ -100,77 +106,21 @@ export const ActionTemplateStep = ({ fields, mainEditorPath, steps }) => (
               <Grid
                 item
                 xs={12}
-                lg={6}
+                lg={12}
                 container
                 spacing={24}
                 style={{ flexGrow: 1 }}
                 justify="center">
-                <Grid item xs={12} lg={6}>
-                  <h4>Source</h4>
-                  <FormControl className={classes.field}>
-                    <InputLabel htmlFor="resource">
-                      Select A Resource
-                    </InputLabel>
-                    <Field
-                      name={`${member}.src.resource`}
-                      component={Select}
-                      fullWidth
-                      inputProps={{
-                        name: 'resource',
-                        id: 'resource'
-                      }}>
-                      {resourcesOptions.map((option, idx) => (
-                        <MenuItem
-                          key={`Option-${option.value}-${idx}`}
-                          value={option.value}
-                          disabled={option.disabled}>
-                          <ListItemText
-                            primary={option.label || capitalize(option.value)}
-                          />
-                        </MenuItem>
-                      ))}
-                    </Field>
-                  </FormControl>
-                  <Field
-                    name={`${member}.src.path`}
-                    component={TextField}
-                    label="Path"
-                    className={classes.field}
-                  />
-                </Grid>
-                <Grid item xs={12} lg={6}>
-                  <h4>Destination</h4>
-                  <FormControl className={classes.field}>
-                    <InputLabel htmlFor="destResource">
-                      Select A Resource
-                    </InputLabel>
-                    <Field
-                      name={`${member}.dest.resource`}
-                      component={Select}
-                      fullWidth
-                      inputProps={{
-                        name: 'destResource',
-                        id: 'destResource'
-                      }}>
-                      {resourcesOptions.map((option, idx) => (
-                        <MenuItem
-                          key={`Option-${option.value}-${idx}`}
-                          value={option.value}
-                          disabled={option.disabled}>
-                          <ListItemText
-                            primary={option.label || capitalize(option.value)}
-                          />
-                        </MenuItem>
-                      ))}
-                    </Field>
-                  </FormControl>
-                  <Field
-                    name={`${member}.dest.path`}
-                    component={TextField}
-                    label="Path"
-                    className={classes.field}
-                  />
-                </Grid>
+                <ActionStepLocation
+                  title="Source"
+                  name={`${member}.src`}
+                  indexName={`${index}.src`}
+                />
+                <ActionStepLocation
+                  title="Destination"
+                  name={`${member}.dest`}
+                  indexName={`${index}.dest`}
+                />
               </Grid>
             ) : (
               <ActionEditor rtdbPath={`${mainEditorPath}/steps/${index}`} />
@@ -185,6 +135,7 @@ export const ActionTemplateStep = ({ fields, mainEditorPath, steps }) => (
 ActionTemplateStep.propTypes = {
   fields: PropTypes.object.isRequired,
   steps: PropTypes.array,
+  inputs: PropTypes.array,
   mainEditorPath: PropTypes.string.isRequired
 }
 
