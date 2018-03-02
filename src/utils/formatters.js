@@ -29,7 +29,8 @@ export function formatDate(dateValue) {
 }
 
 /**
- * Format date string or object into date string with format 1/22/2018
+ * Format date string or object into date string with format
+ * 1/22/2018 - 3:30:25.123 AM
  * @param  {Object} dateValue - Date value which to format
  * @return {String} Formatted date
  */
