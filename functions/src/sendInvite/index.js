@@ -1,26 +1,39 @@
+import { get } from 'lodash'
 const functions = require('firebase-functions')
 const nodemailer = require('nodemailer')
 
 // Configure the email transport using the default SMTP transport and a GMail account.
 // For other types of transports such as Sendgrid see https://nodemailer.com/transports/
 // TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
-const gmailEmail = functions.config().gmail.email
-const gmailPassword = functions.config().gmail.password
-const mailTransport = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: gmailEmail,
-    pass: gmailPassword
-  }
-})
+const gmailEmail = get(functions.config(), 'gmail.email')
+const gmailPassword = get(functions.config(), 'gmail.password')
+let mailTransport
+
+if (gmailEmail && gmailPassword) {
+  mailTransport = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: gmailEmail,
+      pass: gmailPassword
+    }
+  })
+} else {
+  console.error(
+    'Gmail Email or Password not set in function environment. Invite function will not work!'
+  )
+}
 
 // Sends an email confirmation when a user changes his mailing list subscription.
 export default functions.database
   .ref('/requests/invite/{uid}')
   .onCreate(event => {
+    if (!mailTransport) {
+      return Promise.reject(
+        new Error('Gmail Email not set. Email can not be sent.')
+      )
+    }
     const snapshot = event.data
     const val = snapshot.val()
-
     const mailOptions = {
       from: '"Fireadmin Team" <noreply@fireadmin.io>',
       to: val.email,
