@@ -4,7 +4,6 @@ import { ACTION_RUNNER_REQUESTS_PATH } from './constants'
 import { runStepsFromEvent } from './steps'
 import { to } from '../utils/async'
 import * as admin from 'firebase-admin'
-
 const functions = require('firebase-functions')
 
 async function writeProjectEvent(projectId, extraEventAttributes) {

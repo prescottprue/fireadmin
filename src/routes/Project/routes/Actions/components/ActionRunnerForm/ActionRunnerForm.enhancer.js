@@ -19,6 +19,7 @@ export default compose(
     }
   ),
   reduxForm({
-    form: formNames.actionRunner
+    form: formNames.actionRunner,
+    enableReinitialize: true
   })
 )

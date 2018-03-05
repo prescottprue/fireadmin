@@ -1,6 +1,6 @@
-import { encrypt } from './utils/encryption'
-import { to } from './utils/async'
-import { downloadFromStorage } from './utils/cloudStorage'
+import { encrypt } from '../utils/encryption'
+import { to } from '../utils/async'
+import { downloadFromStorage } from '../utils/cloudStorage'
 const functions = require('firebase-functions')
 
 /**
