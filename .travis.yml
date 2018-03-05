@@ -17,6 +17,7 @@ branches:
     - master
     - stage
     - prod
+    - test
 
 cache:
   # bundler: true
@@ -28,17 +29,17 @@ cache:
 install:
   - yarn install
   # TODO: Use npm i -g once functions runtime is updated to a node verion with lock files
-  - npm i -g firebase-ci # install firebase-ci for use in creating config and deploying
+  - npm i -g firebase-ci@alpha # install firebase-ci for use in creating config and deploying
 
 script:
   - firebase-ci createConfig # create env specific src/config.js
-  - npm run lint
+  # - npm run lint
   # - npm run test
   - npm run build
-
-addons:
-  code_climate:
-    repo_token: $CODE_CLIMATE
+# 
+# addons:
+#   code_climate:
+#     repo_token: $CODE_CLIMATE
 
 after_success:
   # deploy hosting, RTDB rules, firestore rules, functions, and
