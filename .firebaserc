@@ -1,6 +1,7 @@
 {
   "projects": {
     "master": "fireadmin-stage",
+    "test": "fireadmin-stage",
     "prod": "fireadmin-33d82",
     "stage": "fireadmin-stage",
     "default": "fireadmin-stage"
@@ -8,6 +9,32 @@
   "ci": {
     "createConfig": {
       "master": {
+        "version": "${npm_package_version}",
+        "env": "stage",
+        "firebase": {
+          "apiKey": "${STAGE_FIREBASE_API_KEY}",
+          "authDomain": "fireadmin-stage.firebaseapp.com",
+          "databaseURL": "https://fireadmin-stage.firebaseio.com",
+          "projectId": "fireadmin-stage",
+          "storageBucket": "fireadmin-stage.appspot.com",
+          "messagingSenderId": "566109548798"
+        },
+        "reduxFirebase": {
+          "userProfile": "users",
+          "enableLogging": false,
+          "updateProfileOnLogin": false,
+          "useFirestoreForProfile": true
+        },
+        "analyticsTrackingId": "${GA_TRACKING_ID}",
+        "googleApis": {
+          "apiKey": "${STAGE_GOOGLE_API_KEY}"
+        },
+        "algolia": {
+          "appId": "${STAGE_ALGOLIA_APP_ID}",
+          "apiKey": "${STAGE_ALGOLIA_BROWSER_KEY}"
+        }
+      },
+      "test": {
         "version": "${npm_package_version}",
         "env": "stage",
         "firebase": {
