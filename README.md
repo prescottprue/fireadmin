@@ -86,17 +86,17 @@ If you are just getting started with Fireadmin, it is probably best to checkout 
     };
 
     // Google Analytics Tracking ID (leave blank for no analytics)
-    export const analyticsTrackingId = "";
+    export const analyticsTrackingId = "<- Google Analytics Tracking Id ->";
 
     // Stackdriver client side error reporting (leave blank for no client side error reporting)
     export const googleApis = {
-      apiKey: "",
+      apiKey: "<- Google Cloud API Key ->",
     };
 
     // Algolia project info (for searching of User's Public Info and Public Templates)
     export const algolia = {
-      appId: "",
-      apiKey: "",
+      appId: "<- Algolia APP ID ->",
+      apiKey: "<- Algolia API Key ->",
     };
 
     export default {
@@ -114,8 +114,8 @@ If you are just getting started with Fireadmin, it is probably best to checkout 
     ```json
     {
       "algolia": {
-        "api_key": "<- your API KEY ->",
-        "app_id": "<- your Algolia APP ID ->"
+        "api_key": "<- Algolia API Key ->",
+        "app_id": "<- Algolia APP ID ->"
       },
       "gmail": {
         "email": "<- gmail account for sending invite emails ->",
@@ -140,10 +140,23 @@ If you are just getting started with Fireadmin, it is probably best to checkout 
     firebase functions:config:set gmail.email="<- inviter gmail account ->" gmail.password="<- password of inviter account ->"
     ```
 1. Build Project: `npm run build`
+1. Set to current project `firebase use myProject`
 1. Deploy to Firebase: `firebase deploy`
 1. Start Development server: `yarn start`
   **NOTE:** You can also use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
 1. View the deployed version of the site by running `firebase open hosting:site`
+
+#### CI Deployment (recommended)
+**Note**: Config for this is located within `travis.yml`
+`firebase-ci` has been added to simplify the CI deployment process. All that is required is providing authentication with Firebase:
+
+1. Login: `firebase login:ci` to generate an authentication token (will be used to give Travis-CI rights to deploy on your behalf)
+1. Set `FIREBASE_TOKEN` environment variable within Travis-CI environment
+1. Run a build on Travis-CI
+
+If you would like to deploy to different Firebase instances for different branches (i.e. `prod`), change `ci` settings within `.firebaserc`.
+
+For more options on CI settings checkout the [firebase-ci docs](https://github.com/prescottprue/firebase-ci)
 
 ## NPM Scripts
 
@@ -197,47 +210,12 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 └── tests                    # Unit tests
 ```
 
-### Before Deploying
-
-1. Make sure you have enabled billing on your Firebase account - external API communication requires setting up a payment method (you are only charged based on usage)
-1. Create an account on Algolia - Create a new app, you will need the API keys later
-1. Install Firebase Command Line Tools: `npm i -g firebase-tools`
-1. Set firebase
-
-### Deployment
-
-#### CI Deploy (recommended)
-**Note**: Config for this is located within `travis.yml`
-`firebase-ci` has been added to simplify the CI deployment process. All that is required is providing authentication with Firebase:
-
-1. Login: `firebase login:ci` to generate an authentication token (will be used to give Travis-CI rights to deploy on your behalf)
-1. Set `FIREBASE_TOKEN` environment variable within Travis-CI environment
-1. Run a build on Travis-CI
-
-If you would like to deploy to different Firebase instances for different branches (i.e. `prod`), change `ci` settings within `.firebaserc`.
-
-For more options on CI settings checkout the [firebase-ci docs](https://github.com/prescottprue/firebase-ci)
-
-#### Manual deploy
-
-1. Run `firebase:login`
-1. Initialize project with `firebase init` then answer:
-  * What file should be used for Database Rules?  -> `database.rules.json`
-  * What do you want to use as your public directory? -> `build`
-  * Configure as a single-page app (rewrite all urls to /index.html)? -> `Yes`
-  * What Firebase project do you want to associate as default?  -> **your Firebase project name**
-1. Build Project: `npm run build`
-1. Confirm Firebase config by running locally: `firebase serve`
-1. Deploy to firebase: `firebase deploy`
-**NOTE:** You can use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
-
 ## FAQ
 
 1. Why node `6.11.5` instead of a newer version? [Cloud Functions runtime is still on `6.11.5`][functions-runtime-url], which is why that is what is used for the travis build version. This will be switched when the functions runtime is updated
 1. Why Yarn over node's `package-lock.json`? - Relates to previous question. Node `6.*.*` and equivalent npm didn't include lock files yet.
 1. Uploading service accounts? Where do they go and how are my service accounts stored?
   Currently on a Google Cloud Storage Bucket which does not have CORS access. There is also the option to store them in Firestore as an encrypted string for quicker reads/writes when running actions.
-
 
 ## What Happened To The Fireadmin NPM Library?
 
