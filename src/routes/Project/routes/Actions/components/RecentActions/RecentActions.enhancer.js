@@ -3,7 +3,8 @@ import { compose, withHandlers, withProps } from 'recompose'
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
 import { connect } from 'react-redux'
 import { initialize } from 'redux-form'
-import { spinnerWhileLoading } from 'utils/components'
+import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
+import NoRecentActions from './NoRecentActions'
 import { formNames } from 'constants'
 
 export default compose(
@@ -25,6 +26,7 @@ export default compose(
     displayNames: get(state.firebase, 'data.displayNames'),
     recentActions: get(state.firestore, `ordered.recentActions`)
   })),
+  renderWhileEmpty(['recentActions'], NoRecentActions),
   spinnerWhileLoading(['recentActions']),
   withProps(({ recentActions, displayNames }) => ({
     orderedActions: map(

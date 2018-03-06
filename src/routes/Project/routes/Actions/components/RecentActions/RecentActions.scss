@@ -3,3 +3,8 @@
 .container {
 
 }
+.empty {
+  @extend .flex-row-center;
+  padding: 2rem;
+  font-size: 1.4rem;
+}
