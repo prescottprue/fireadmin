@@ -29,22 +29,28 @@ export async function runStepsFromEvent(event) {
   if (!eventData) {
     throw new Error('Event object does not contain a value.')
   }
+
   if (!isObject(eventData.template)) {
     throw new Error('Action template is required to run steps')
   }
-  const { inputValues, template: { steps, inputs } } = eventData
-  if (!isArray(steps)) {
+
+  const { inputValues, template: { steps, inputs, backups } } = eventData
+
+  if (!isArray(steps) && !isArray(backups)) {
     await updateResponseWithError(event)
-    throw new Error('Steps array was not provided to action request')
+    throw new Error('Steps or Backups are required to run action.')
   }
+
   if (!isArray(inputs)) {
     await updateResponseWithError(event)
     throw new Error('Inputs array was not provided to action request')
   }
+
   if (!isArray(inputValues)) {
     await updateResponseWithError(event)
     throw new Error('Input values array was not provided to action request')
   }
+
   console.log('Converting inputs of action....')
   const [convertInputsErr, convertedInputValues] = await to(
     validateAndConvertInputs(eventData, inputs)
@@ -53,9 +59,33 @@ export async function runStepsFromEvent(event) {
     console.error('Error converting inputs:', convertInputsErr.message)
     throw convertInputsErr
   }
-  const totalNumSteps = size(steps)
-  console.log(`Running ${totalNumSteps} actions`)
+
+  // Run all backup promises
+  if (size(backups)) {
+    const [backupsErr] = await to(
+      promiseWaterfall(
+        map(
+          backups,
+          createStepRunner({
+            inputs,
+            convertedInputValues,
+            event,
+            eventData,
+            totalNumSteps: size(backups)
+          })
+        )
+      )
+    )
+    if (backupsErr) {
+      console.error('Error running backups:', backupsErr.message || backupsErr)
+      await updateResponseWithError(event)
+      throw backupsErr
+    }
+  }
+
   // Run all action promises
+  const totalNumSteps = size(steps)
+  console.log(`Running ${totalNumSteps} steps`)
   const [actionErr, actionResponse] = await to(
     promiseWaterfall(
       map(
@@ -70,12 +100,14 @@ export async function runStepsFromEvent(event) {
       )
     )
   )
+
   // Cleanup temp directory
   cleanupServiceAccounts()
   if (actionErr) {
     await updateResponseWithError(event)
     throw actionErr
   }
+
   // Write response to RTDB
   await updateResponseOnRTDB(event)
   return actionResponse
