@@ -1,4 +1,4 @@
-import { get, orderBy, map } from 'lodash'
+import { get, map } from 'lodash'
 import { compose, withHandlers, withProps } from 'recompose'
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
 import { connect } from 'react-redux'
@@ -8,8 +8,8 @@ import NoRecentActions from './NoRecentActions'
 import { formNames } from 'constants'
 
 export default compose(
-  // Map redux state to props
   firebaseConnect(['displayNames']),
+  // Map redux state to props
   firestoreConnect(({ params, auth }) => [
     // Project environments
     {
@@ -17,6 +17,7 @@ export default compose(
       doc: params.projectId,
       subcollections: [{ collection: 'events' }],
       where: ['eventType', '==', 'requestActionRun'],
+      orderBy: ['createdAt', 'desc'],
       limit: 3,
       storeAs: 'recentActions'
     }
@@ -29,19 +30,16 @@ export default compose(
   renderWhileEmpty(['recentActions'], NoRecentActions),
   spinnerWhileLoading(['recentActions']),
   withProps(({ recentActions, displayNames }) => ({
-    orderedActions: map(
-      orderBy(recentActions, ['createdAt'], ['desc']),
-      event => {
-        const createdBy = get(event, 'createdBy')
-        if (createdBy) {
-          return {
-            ...event,
-            createdBy: get(displayNames, createdBy, createdBy)
-          }
+    orderedActions: map(recentActions, event => {
+      const createdBy = get(event, 'createdBy')
+      if (createdBy) {
+        return {
+          ...event,
+          createdBy: get(displayNames, createdBy, createdBy)
         }
-        return event
       }
-    )
+      return event
+    })
   })),
   withHandlers({
     rerunAction: props => action => {
