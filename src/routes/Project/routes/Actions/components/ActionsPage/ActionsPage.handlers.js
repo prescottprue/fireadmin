@@ -1,4 +1,4 @@
-import { get, pick, invoke } from 'lodash'
+import { get, invoke, omit } from 'lodash'
 import { firebasePaths } from 'constants'
 import { pushAndWaitForStatus } from 'utils/firebaseFunctions'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
@@ -28,12 +28,13 @@ export const runAction = props => async () => {
     inputValues,
     toggleActionProcessing
   } = props
+
   // Build request object for action run
   const actionRequest = {
     projectId,
     serviceAccountType: 'firestore',
     templateId: get(selectedTemplate, 'templateId'),
-    template: pick(selectedTemplate, ['steps', 'inputs']),
+    template: omit(selectedTemplate, ['_highlightResult']),
     createdBy: auth.uid,
     createdAt: firestore.FieldValue.serverTimestamp()
   }
@@ -54,8 +55,10 @@ export const runAction = props => async () => {
         eventType: 'requestActionRun',
         eventData: {
           ...actionRequest,
-          inputValues,
-          template: { ...selectedTemplate, inputValues }
+          template: {
+            ...omit(selectedTemplate, ['_highlightResult']),
+            inputValues: actionRequest.inputValues || []
+          }
         },
         createdBy: auth.uid
       }

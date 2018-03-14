@@ -1,6 +1,15 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types'
-import { pick, some, get, reduce, isFunction, toPath } from 'lodash'
+import {
+  pick,
+  some,
+  get,
+  reduce,
+  isFunction,
+  toPath,
+  size,
+  isArray
+} from 'lodash'
 import { connect } from 'react-redux'
 import LoadingSpinner from 'components/LoadingSpinner'
 import { isLoaded, isEmpty } from 'react-redux-firebase'
@@ -74,7 +83,10 @@ export const renderWhileEmpty = (propsNames, component) =>
     props =>
       some(propsNames, name => {
         const propValue = get(props, name)
-        return isLoaded(propValue) && isEmpty(propValue)
+        return (
+          isLoaded(propValue) &&
+          (isEmpty(propValue) || (isArray(propValue) && !size(propValue)))
+        )
       }),
     component
   )

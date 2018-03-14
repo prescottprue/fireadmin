@@ -55,6 +55,9 @@ export default compose(
         const results = await waitForCompleted(
           firebase.ref(`responses/googleApi/${pushKey}`)
         )
+        if (results.error) {
+          throw new Error(results.error)
+        }
         setConfig(results.responseData)
         showSuccess('Storage Bucket Config Get Successful')
         triggerAnalyticsEvent({
@@ -76,6 +79,10 @@ export default compose(
             'UPDATE'} completed Successfully`
         )
       } catch (err) {
+        if (err.message.indexOf('access to') !== -1) {
+          showError('Error: Service Account Does Not Have Access')
+          throw new Error('Service Account does not have Access')
+        }
         showError('Error Updating Storage Bucket Config')
         throw err
       }
