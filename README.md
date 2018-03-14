@@ -86,17 +86,17 @@ If you are just getting started with Fireadmin, it is probably best to checkout 
     };
 
     // Google Analytics Tracking ID (leave blank for no analytics)
-    export const analyticsTrackingId = "";
+    export const analyticsTrackingId = "<- your analytics tracking id ->";
 
     // Stackdriver client side error reporting (leave blank for no client side error reporting)
     export const googleApis = {
-      apiKey: "",
+      apiKey: "<- your API Key for Google APIs ->",
     };
 
     // Algolia project info (for searching of User's Public Info and Public Templates)
     export const algolia = {
-      appId: "",
-      apiKey: "",
+      appId: "<- your algolia app id ->",
+      apiKey: "<- your algolia apiKey ->",
     };
 
     export default {
@@ -197,26 +197,18 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 └── tests                    # Unit tests
 ```
 
-### Before Deploying
-
-1. Make sure you have enabled billing on your Firebase account - external API communication requires setting up a payment method (you are only charged based on usage)
-1. Create an account on Algolia - Create a new app, you will need the API keys later
-1. Install Firebase Command Line Tools: `npm i -g firebase-tools`
-1. Set firebase
-
 ### Deployment
 
 #### CI Deploy (recommended)
-**Note**: Config for this is located within `travis.yml`
-`firebase-ci` has been added to simplify the CI deployment process. All that is required is providing authentication with Firebase:
+**Note**: Config for this is located within `travis.yml`. `firebase-ci` has been added to simplify the CI deployment process by getting settings from the `.firebaserc`. All that is required is providing authentication with Firebase:
 
 1. Login: `firebase login:ci` to generate an authentication token (will be used to give Travis-CI rights to deploy on your behalf)
 1. Set `FIREBASE_TOKEN` environment variable within Travis-CI environment
-1. Run a build on Travis-CI
+1. Run a build on Travis-CI by pushing code to your Git remote (most likely Github)
 
 If you would like to deploy to different Firebase instances for different branches (i.e. `prod`), change `ci` settings within `.firebaserc`.
 
-For more options on CI settings checkout the [firebase-ci docs](https://github.com/prescottprue/firebase-ci)
+For more options on CI settings checkout the [firebase-ci docs](https://github.com/prescottprue/firebase-ci).
 
 #### Manual deploy
 
