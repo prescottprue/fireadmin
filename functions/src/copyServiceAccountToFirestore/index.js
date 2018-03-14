@@ -1,7 +1,7 @@
+import * as functions from 'firebase-functions'
 import { encrypt } from '../utils/encryption'
 import { to } from '../utils/async'
 import { downloadFromStorage } from '../utils/cloudStorage'
-const functions = require('firebase-functions')
 
 /**
  * @name copyServiceAccountToFirestore
@@ -34,8 +34,18 @@ async function handleServiceAccountCreate(event) {
   }
   const { serviceAccount: { fullPath } } = eventData
   // const fileName = path.basename(tempLocalPath) // File Name
+  // Download service account from Cloud Storage
   const [downloadErr, fileData] = await to(downloadFromStorage(null, fullPath))
-  if (downloadErr) throw downloadErr
+
+  // Handle errors downloading service account
+  if (downloadErr) {
+    console.error(
+      'Error downloading service account from storage:',
+      downloadErr.message || downloadErr
+    )
+    throw downloadErr
+  }
+
   // Write encrypted service account data to serviceAccount parameter of environment document
   const [updateErr] = await to(
     event.data.ref.update('serviceAccount', {
@@ -43,7 +53,16 @@ async function handleServiceAccountCreate(event) {
       credential: encrypt(fileData)
     })
   )
-  if (updateErr) throw updateErr
+
+  // Handle errors updating Firestore with service account
+  if (updateErr) {
+    console.error(
+      'Error updating Firestore with service account:',
+      updateErr.message || updateErr
+    )
+    throw updateErr
+  }
+
   console.log(
     'Service account copied to Firestore, cleaning up...',
     event.params

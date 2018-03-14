@@ -61,12 +61,77 @@ export async function runStepsFromEvent(event) {
     throw convertInputsErr
   }
   const totalNumSteps = size(steps)
-  console.log(`Running ${totalNumSteps} actions`)
+  console.log(`Running ${totalNumSteps} action(s)`)
   // Run all action promises
   const [actionErr, actionResponse] = await to(
     promiseWaterfall(
       map(
         steps,
+        createStepRunner({
+          inputs,
+          convertedInputValues,
+          event,
+          eventData,
+          totalNumSteps
+        })
+      )
+    )
+  )
+  // Cleanup temp directory
+  cleanupServiceAccounts()
+  if (actionErr) {
+    await updateResponseWithError(event)
+    throw actionErr
+  }
+  // Write response to RTDB
+  await updateResponseOnRTDB(event)
+  return actionResponse
+}
+
+/**
+ * Data action using Service account stored on Firestore
+ * @param  {functions.Event} event - Event from cloud function
+ * @param  {object|undefined} event.params - Parameters from event
+ * @param  {String} event.data.serviceAccountType - Type of service accounts,
+ * options include 'firestore', 'storage', or 'rtdb'
+ * @return {Promise}
+ */
+export async function runBackupsFromEvent(event) {
+  const eventData = invoke(event, 'data.val')
+  if (!eventData) {
+    throw new Error('Event object does not contain a value.')
+  }
+  if (!isObject(eventData.template)) {
+    throw new Error('Action template is required to run steps')
+  }
+  const { inputValues, template: { backups, inputs } } = eventData
+  if (!isArray(backups)) {
+    await updateResponseWithError(event)
+    throw new Error('Steps array was not provided to action request')
+  }
+  if (!isArray(inputs)) {
+    await updateResponseWithError(event)
+    throw new Error('Inputs array was not provided to action request')
+  }
+  if (!isArray(inputValues)) {
+    await updateResponseWithError(event)
+    throw new Error('Input values array was not provided to action request')
+  }
+  console.log('Converting inputs of action....')
+  const [convertInputsErr, convertedInputValues] = await to(
+    validateAndConvertInputs(eventData, inputs)
+  )
+  if (convertInputsErr) {
+    console.error('Error converting inputs:', convertInputsErr.message)
+    throw convertInputsErr
+  }
+  const totalNumSteps = size(backups)
+  console.log(`Running ${totalNumSteps} backup(s)`)
+  // Run all action promises
+  const [actionErr, actionResponse] = await to(
+    promiseWaterfall(
+      map(
+        backups,
         createStepRunner({
           inputs,
           convertedInputValues,
