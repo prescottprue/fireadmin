@@ -1,6 +1,6 @@
+import * as functions from 'firebase-functions'
 import { get } from 'lodash'
-const functions = require('firebase-functions')
-const nodemailer = require('nodemailer')
+import nodemailer from 'nodemailer'
 
 // Configure the email transport using the default SMTP transport and a GMail account.
 // For other types of transports such as Sendgrid see https://nodemailer.com/transports/

@@ -129,3 +129,29 @@ export function updateResponseWithActionError(
     .child(`${ACTION_RUNNER_RESPONSES_PATH}/${event.params.pushId}`)
     .update(response)
 }
+
+/**
+ * Write an event to a project's "events" subcollection
+ * @param  {String} projectId - id of project in which event should be placed
+ * @param  {Object} extraEventAttributes - Data to attach to the event
+ * @return {Promise} Resolves with results of pushing event object
+ */
+export async function writeProjectEvent(projectId, extraEventAttributes = {}) {
+  const eventObject = {
+    createdByType: 'system',
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    ...extraEventAttributes
+  }
+  const eventsRef = admin
+    .firestore()
+    .collection('projects')
+    .doc(projectId)
+    .collection('events')
+  const [addErr, addRes] = await to(eventsRef.add(eventObject))
+  if (addErr) {
+    const errMsg = `Error adding event data to Project events for project: ${projectId}`
+    console.error(errMsg, addErr.message || addErr)
+    throw new Error(errMsg)
+  }
+  return addRes
+}

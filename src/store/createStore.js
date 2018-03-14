@@ -48,8 +48,8 @@ export default (initialState = {}) => {
     initialState,
     compose(
       applyMiddleware(...middleware),
-      reactReduxFirebase(firebase, reduxConfig),
       reduxFirestore(firebase),
+      reactReduxFirebase(firebase, reduxConfig),
       ...enhancers
     )
   )
