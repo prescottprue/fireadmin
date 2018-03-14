@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { initialize } from 'redux-form'
 import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
 import NoRecentActions from './NoRecentActions'
+import { databaseURLToProjectName } from 'utils'
 import { formNames } from 'constants'
 
 export default compose(
@@ -39,6 +40,14 @@ export default compose(
         }
       }
       return event
+    }),
+    actionToEnvironments: action => ({
+      src: databaseURLToProjectName(
+        get(action, 'eventData.inputValues.0.databaseURL', '')
+      ),
+      dest: databaseURLToProjectName(
+        get(action, 'eventData.inputValues.1.databaseURL', '')
+      )
     })
   })),
   withHandlers({
