@@ -41,5 +41,9 @@
   max-width: 120px;
 }
 .delete {
+  @extend .flex-row;
+  justify-content: flex-end;
+}
+.deleteButton {
   align-self: flex-end;
 }

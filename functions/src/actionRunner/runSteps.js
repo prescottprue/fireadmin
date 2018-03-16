@@ -52,7 +52,7 @@ export async function runStepsFromEvent(event) {
     await updateResponseWithError(event)
     throw new Error('Input values array was not provided to action request')
   }
-  console.log('Converting inputs of action....')
+  console.log('Converting inputs of step....')
   const [convertInputsErr, convertedInputValues] = await to(
     validateAndConvertInputs(eventData, inputs)
   )
@@ -61,7 +61,7 @@ export async function runStepsFromEvent(event) {
     throw convertInputsErr
   }
   const totalNumSteps = size(steps)
-  console.log(`Running ${totalNumSteps} action(s)`)
+  console.log(`Running ${totalNumSteps} steps(s)`)
   // Run all action promises
   const [actionErr, actionResponse] = await to(
     promiseWaterfall(
@@ -258,7 +258,7 @@ function createStepRunner({
       )
       if (err) {
         await updateResponseWithActionError(event, { totalNumSteps, stepIdx })
-        throw new Error(`Error running action: ${stepIdx} : ${err.message}`)
+        throw new Error(`Error running step: ${stepIdx} : ${err.message}`)
       }
       await updateResponseWithProgress(event, { totalNumSteps, stepIdx })
       return stepResponse
