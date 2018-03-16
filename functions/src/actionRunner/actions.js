@@ -125,11 +125,11 @@ export async function copyBetweenRTDBInstances(
       'Invalid service account, does not enable access to database'
     )
   }
-  const firstRTDB = app1.database()
-  const secondRTDB = app2.database()
-  const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
-  const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
   try {
+    const firstRTDB = app1.database()
+    const secondRTDB = app2.database()
+    const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
+    const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
     const dataSnapFromFirst = await firstRTDB.ref(srcPath).once('value')
     const dataFromFirst = invoke(dataSnapFromFirst, 'val')
     if (!dataFromFirst) {
