@@ -55,7 +55,7 @@ export const ActionTemplateInputs = ({ fields, inputs }) => (
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Grid container spacing={24} style={{ flexGrow: 1 }}>
-            <Grid item xs={12} lg={3}>
+            <Grid item xs={10} lg={2}>
               <Field
                 name={`${member}.name`}
                 component={TextField}
@@ -75,6 +75,17 @@ export const ActionTemplateInputs = ({ fields, inputs }) => (
                   }
                   label="Required"
                 />
+              </div>
+            </Grid>
+            <Grid item xs={2} lg={1}>
+              <div className={classes.delete}>
+                <Tooltip placement="bottom" title="Remove Input">
+                  <IconButton
+                    onClick={() => fields.remove(index)}
+                    className={classes.deleteButton}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
               </div>
             </Grid>
             <Grid item xs={12} lg={3}>
@@ -128,19 +139,14 @@ export const ActionTemplateInputs = ({ fields, inputs }) => (
               ) : null}
             </Grid>
             <Grid item xs={6} lg={2}>
-              <Field
-                name={`${member}.variableName`}
-                component={TextField}
-                label="Variable Name"
-                className={classes.field}
-              />
-              <Tooltip placement="bottom" title="Remove Input">
-                <IconButton
-                  onClick={() => fields.remove(index)}
-                  className={classes.delete}>
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
+              {get(inputs, `${index}.type`) === 'userInput' && (
+                <Field
+                  name={`${member}.variableName`}
+                  component={TextField}
+                  label="Variable Name"
+                  className={classes.field}
+                />
+              )}
             </Grid>
           </Grid>
         </ExpansionPanelDetails>

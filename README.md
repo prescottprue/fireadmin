@@ -210,6 +210,32 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 └── tests                    # Unit tests
 ```
 
+### Deployment
+
+#### CI Deploy (recommended)
+**Note**: Config for this is located within `travis.yml`. `firebase-ci` has been added to simplify the CI deployment process by getting settings from the `.firebaserc`. All that is required is providing authentication with Firebase:
+
+1. Login: `firebase login:ci` to generate an authentication token (will be used to give Travis-CI rights to deploy on your behalf)
+1. Set `FIREBASE_TOKEN` environment variable within Travis-CI environment
+1. Run a build on Travis-CI by pushing code to your Git remote (most likely Github)
+
+If you would like to deploy to different Firebase instances for different branches (i.e. `prod`), change `ci` settings within `.firebaserc`.
+
+For more options on CI settings checkout the [firebase-ci docs](https://github.com/prescottprue/firebase-ci).
+
+#### Manual deploy
+
+1. Run `firebase:login`
+1. Initialize project with `firebase init` then answer:
+  * What file should be used for Database Rules?  -> `database.rules.json`
+  * What do you want to use as your public directory? -> `build`
+  * Configure as a single-page app (rewrite all urls to /index.html)? -> `Yes`
+  * What Firebase project do you want to associate as default?  -> **your Firebase project name**
+1. Build Project: `npm run build`
+1. Confirm Firebase config by running locally: `firebase serve`
+1. Deploy to firebase: `firebase deploy`
+**NOTE:** You can use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
+
 ## FAQ
 
 1. Why node `6.11.5` instead of a newer version? [Cloud Functions runtime is still on `6.11.5`][functions-runtime-url], which is why that is what is used for the travis build version. This will be switched when the functions runtime is updated

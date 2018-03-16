@@ -7,6 +7,8 @@ import runAction from './runAction'
  * Run action based on action template. Multiple Service Account Types
  * supported (i.e. stored on Firestore or cloud storage)
  * @type {functions.CloudFunction}
+ * @example functions shell with json file
+ * actionRunner(require('./functions/test.json'))
  */
 export default functions.database
   .ref(`${ACTION_RUNNER_REQUESTS_PATH}/{pushId}`)
