@@ -65,9 +65,13 @@ export default compose(
       showSuccess
     }) => async newInstance => {
       const currentProject = await firestore.get(`projects/${project.id}`)
-      const collaborators = {}
-      const collaboratorPermissions = {}
       const projectData = invoke(currentProject, 'data')
+      const collaborators = get(projectData, 'collaborators', {})
+      const collaboratorPermissions = get(
+        projectData,
+        'collaboratorPermissions',
+        {}
+      )
       selectedCollaborators.forEach(currentCollaborator => {
         if (
           !get(projectData, `collaborators.${currentCollaborator.objectID}`)
