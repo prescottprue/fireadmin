@@ -116,7 +116,6 @@ export async function getAppFromServiceAccount(opts, eventData) {
  * @return {Promise}
  */
 export async function serviceAccountFromFirestorePath(docPath, name) {
-  console.log('Getting service accounts stored in Firestore')
   const firestore = admin.firestore()
   const projectDoc = await firestore.doc(docPath).get()
   if (!projectDoc.exists) {

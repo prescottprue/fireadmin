@@ -16,7 +16,6 @@ import { formatDate } from 'utils/formatters'
 const styles = theme => ({
   root: {
     width: '100%',
-    maxWidth: 360,
     background: theme.palette.background.paper,
     marginBottom: '1.5rem'
   }

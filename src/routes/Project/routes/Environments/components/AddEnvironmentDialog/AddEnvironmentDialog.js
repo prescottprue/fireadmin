@@ -34,32 +34,40 @@ export const AddEnvironmentDialog = ({
       isEditing ? 'Edit' : 'Add'
     } Environment`}</DialogTitle>
     <DialogContent className={classes.body}>
-      <Field
-        component={TextField}
-        className={classes.field}
-        name="name"
-        validate={required}
-        fullWidth
-        label="Environment Name"
-      />
-      <Field
-        component={TextField}
-        className={classes.field}
-        name="databaseURL"
-        fullWidth
-        validate={[required, validateDatabaseUrl]}
-        label="Database URL"
-      />
-      <Field
-        component={TextField}
-        className={classes.field}
-        fullWidth
-        name="description"
-        label="Instance Description"
-      />
+      <div className={classes.inputs}>
+        <Field
+          component={TextField}
+          className={classes.field}
+          name="name"
+          validate={required}
+          fullWidth
+          label="Environment Name"
+        />
+        <Field
+          component={TextField}
+          className={classes.field}
+          name="databaseURL"
+          fullWidth
+          validate={[required, validateDatabaseUrl]}
+          label="Database URL"
+        />
+        <Field
+          component={TextField}
+          className={classes.field}
+          fullWidth
+          name="description"
+          label="Instance Description"
+        />
+      </div>
       {!isEditing ? (
         <div className={classes.serviceAccounts}>
-          <Typography>Service Account</Typography>
+          <Typography style={{ fontSize: '1.1rem' }}>
+            Service Account
+          </Typography>
+          <FilesUploader
+            onFilesDrop={onFilesDrop}
+            label="to upload service account"
+          />
           {serviceAccounts ? (
             <ServiceAccounts
               serviceAccounts={serviceAccounts}
@@ -69,10 +77,6 @@ export const AddEnvironmentDialog = ({
           ) : (
             <div>No Service Accounts </div>
           )}
-          <FilesUploader
-            onFilesDrop={onFilesDrop}
-            label="to upload Service Account"
-          />
         </div>
       ) : null}
     </DialogContent>

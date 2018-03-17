@@ -1,5 +1,12 @@
 import { invoke, get } from 'lodash'
 import { downloadFromStorage, uploadToStorage } from '../utils/cloudStorage'
+import {
+  slashPathToFirestoreRef,
+  dataArrayFromSnap,
+  writeDocsInBatches,
+  dataByIdSnapshot
+} from './utils'
+import { to } from '../utils/async'
 
 /**
  * Copy data between Firestore instances with different service accounts
@@ -17,22 +24,41 @@ export async function copyBetweenFirestoreInstances(
   const firestore1 = app1.firestore()
   const firestore2 = app2.firestore()
   const { merge = true } = eventData
-  const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
   const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
-  try {
-    const dataFromFirst = await firestore1.doc(srcPath).get()
-    const updateRes = await firestore2
-      .doc(destPath)
-      .set(dataFromFirst, { merge })
-    console.log('Copy between Firestore instances successful')
-    return updateRes
-  } catch (err) {
+  // Get Firestore instance from slash path (handling both doc and collection)
+  const srcRef = slashPathToFirestoreRef(firestore1, srcPath)
+  // Get data from first instance
+  const [getErr, firstSnap] = await to(srcRef.get())
+  // Handle errors getting original data
+  if (getErr) {
     console.error(
-      'Error copying between Firestore instances',
-      err.message || err
+      'Error getting data from first instance: ',
+      getErr.message || getErr
     )
-    throw err
+    throw getErr
   }
+  // Get data into array (regardless of single doc or collection)
+  const dataFromSrc = dataArrayFromSnap(firstSnap)
+  if (!dataFromSrc) {
+    console.error('No data exists within source path')
+    throw new Error('No data exists within source path')
+  }
+  const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
+  // Run in multiple batches if there are more that 500 documents since
+  // batch processes are limited to 500 documents
+  const [writeErr, writeRes] = await to(
+    writeDocsInBatches(firestore2, destPath, dataFromSrc, { merge })
+  )
+  // Handle errors running write action
+  if (writeErr) {
+    console.error(
+      'Error getting data from first instance: ',
+      writeErr.message || writeErr
+    )
+    throw writeErr
+  }
+  console.log('Copy between Firestore instances successful')
+  return writeRes
 }
 
 /**
@@ -52,15 +78,36 @@ export async function copyFromFirestoreToRTDB(
   const secondRTDB = app2.database()
   const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
   const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
-  try {
-    const dataFromFirst = await firestore1.doc(srcPath).get()
-    const updateRes = await secondRTDB.ref(destPath).update(dataFromFirst)
-    console.log('Copy from Firestore to RTDB successful')
-    return updateRes
-  } catch (err) {
-    console.error('Error copying from Firestore to RTDB', err.message || err)
-    throw err
+  // Get Firestore instance from slash path (handling both doc and collection)
+  const srcRef = slashPathToFirestoreRef(firestore1, srcPath)
+  // Get data from first instance
+  const [getErr, firstSnap] = await to(srcRef.get())
+  // Handle errors getting original data
+  if (getErr) {
+    console.error(
+      'Error getting data from first instance: ',
+      getErr.message || getErr
+    )
+    throw getErr
   }
+  // Get data into array (regardless of single doc or collection)
+  const dataFromSrc = dataByIdSnapshot(firstSnap)
+  if (!dataFromSrc) {
+    console.error('No data exists within source path')
+    throw new Error('No data exists within source path')
+  }
+  const [updateErr, updateRes] = await to(
+    secondRTDB.ref(destPath).update(dataFromSrc)
+  )
+  if (updateErr) {
+    console.error(
+      'Error copying from Firestore to RTDB',
+      updateErr.message || updateErr
+    )
+    throw updateErr
+  }
+  console.log('Copy from Firestore to RTDB successful')
+  return updateRes
 }
 
 /**
