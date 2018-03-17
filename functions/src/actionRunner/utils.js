@@ -40,6 +40,24 @@ export function dataArrayFromSnap(snap) {
       data.push({ id: doc.id, data: doc.data() || doc })
     })
   }
+  return data
+}
+
+/**
+ * Create data object with values for each document with keys being doc.id.
+ * @param  {firebase.database.DataSnapshot} snapshot - Data for which to create
+ * an ordered array.
+ * @return {Object|Null} Object documents from snapshot or null
+ */
+export function dataByIdSnapshot(snap) {
+  const data = {}
+  if (snap.data && snap.exists) {
+    data[snap.id] = snap.data()
+  } else if (snap.forEach) {
+    snap.forEach(doc => {
+      data[doc.id] = doc.data() || doc
+    })
+  }
   return size(data) ? data : null
 }
 
