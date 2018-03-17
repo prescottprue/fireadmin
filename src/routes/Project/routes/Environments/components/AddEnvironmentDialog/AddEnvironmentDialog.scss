@@ -4,13 +4,15 @@
 }
 
 .body {
-  @extend .flex-column-center;
+  @extend .flex-column;
+  align-items: center;
   padding: 3rem;
   min-width: 400px;
 }
 .serviceAccounts {
   margin-top: 1rem;
   margin-bottom: 1rem;
+  min-height: 10rem;
 }
 .buttons {
   @extend .flex-row;
@@ -20,4 +22,7 @@
   margin-top: 2rem;
   margin-bottom: 1rem;
   padding-right: 1rem;
+}
+.inputs {
+  margin-bottom: 1rem;
 }
