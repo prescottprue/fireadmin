@@ -70,13 +70,6 @@ export const ActionTemplateForm = ({
               label="Public"
             />
           </div>
-          <Field
-            name="tags"
-            component={TextField}
-            disabled
-            label="Tags (seperated by commas)"
-            className={classes.field}
-          />
         </Grid>
       </Grid>
     </Paper>

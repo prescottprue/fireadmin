@@ -10,7 +10,7 @@ import classes from './ActionTemplateListCard.scss'
 export const ActionTemplateListCard = ({
   name,
   description,
-  actions,
+  steps,
   expanded,
   onClick
 }) => (
@@ -25,7 +25,7 @@ export const ActionTemplateListCard = ({
       subheader={description}
     />
     <CardContent>
-      <Typography component="p">{size(actions)} Steps</Typography>
+      <Typography component="p">{size(steps)} Steps</Typography>
     </CardContent>
   </Card>
 )
@@ -35,7 +35,7 @@ ActionTemplateListCard.propTypes = {
   onClick: PropTypes.func,
   name: PropTypes.string, // from enhancer (flattenProp - template)
   description: PropTypes.string, // from enhancer (flattenProp - template)
-  actions: PropTypes.array // from enhancer (flattenProp - template)
+  steps: PropTypes.array // from enhancer (flattenProp - template)
 }
 
 export default ActionTemplateListCard
