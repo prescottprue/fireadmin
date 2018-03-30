@@ -7,7 +7,7 @@
   padding-bottom: 4rem;
 }
 .button {
-  margin-left: 2rem;
+  margin-left: 2rem !important;
 }
 .buttons {
   @extend .flex-row;

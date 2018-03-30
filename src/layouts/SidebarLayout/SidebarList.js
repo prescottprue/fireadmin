@@ -23,7 +23,8 @@ export const SidebarList = ({
         key={`SidebarItem-${i}-${value}`}
         selected={itemIsActive(value)}
         className={itemIsActive(value) ? classes.activeListItem : undefined}
-        onClick={() => goTo(value)}>
+        onClick={() => goTo(value)}
+        style={{ paddingLeft: '20px' }}>
         <ListItemIcon>{iconElement || <LayersIcon />}</ListItemIcon>
         <ListItemText primary={label || capitalize(value)} />
       </ListItem>

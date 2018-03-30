@@ -31,7 +31,7 @@
     "firebase": "^4.6.0",
     "firepad": "^1.4.0",
     "lodash": "^4.17.4",
-    "material-ui": "next",
+    "material-ui": "1.0.0-beta.39",
     "material-ui-icons": "^1.0.0-beta.17",
     "moment": "^2.19.2",
     "normalize.css": "^7.0.0",

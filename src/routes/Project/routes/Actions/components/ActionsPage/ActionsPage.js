@@ -42,7 +42,8 @@ export const ActionsPage = ({
             color="secondary"
             variant="raised"
             aria-label="Clear"
-            onTouchTap={runAction}>
+            onTouchTap={runAction}
+            className={classes.button}>
             Clear
           </Button>
         )}
