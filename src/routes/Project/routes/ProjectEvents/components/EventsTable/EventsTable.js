@@ -21,7 +21,7 @@ export const EventsTable = ({ groupedEvents }) => (
           <TableCell>Created By</TableCell>
         </TableRow>
       </TableHead>
-      <TableBody>
+      <TableBody className={classes.body}>
         {flatMap(groupedEvents, (eventGroup, groupName) => [
           <TableRow key={groupName} className={classes.tableRowDivider}>
             <TableCell>
