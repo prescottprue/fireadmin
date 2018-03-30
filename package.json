@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "main": "index.js",
   "scripts": {
@@ -31,7 +31,7 @@
     "firebase": "^4.6.0",
     "firepad": "^1.4.0",
     "lodash": "^4.17.4",
-    "material-ui": "^1.0.0-beta.23",
+    "material-ui": "1.0.0-beta.39",
     "material-ui-icons": "^1.0.0-beta.17",
     "moment": "^2.19.2",
     "normalize.css": "^7.0.0",

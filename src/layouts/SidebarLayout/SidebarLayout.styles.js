@@ -2,11 +2,12 @@ const drawerWidth = 240
 
 export default theme => ({
   root: {
-    width: '100%',
+    flexGrow: 1,
     height: 430,
-    marginTop: theme.spacing.unit * 3,
     zIndex: 1,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    position: 'relative',
+    display: 'flex'
   },
   appFrame: {
     position: 'relative',
@@ -59,6 +60,13 @@ export default theme => ({
     width: drawerWidth
   },
   drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 8px',
+    ...theme.mixins.toolbar
+  },
+  toolbar: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',

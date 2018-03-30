@@ -33,7 +33,8 @@ export const ActionRunnerForm = ({
   <div className={classes.container}>
     <ExpansionPanel
       expanded={templateEditExpanded}
-      onChange={toggleTemplateEdit}>
+      onChange={toggleTemplateEdit}
+      className={classes.panel}>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography className={classes.sectionHeader}>
           {templateName}

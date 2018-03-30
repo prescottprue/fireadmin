@@ -21,6 +21,7 @@ export const Instance = ({
   onRemoveClick,
   menuClick,
   editAndClose,
+  instanceDescription,
   onEditClick
 }) => (
   <Card className={classes.card}>
@@ -57,9 +58,11 @@ export const Instance = ({
         </div>
       }
     />
-    <CardContent>
-      <Typography>{get(instance, 'description', null)}</Typography>
-    </CardContent>
+    {instanceDescription && (
+      <CardContent>
+        <Typography>{instanceDescription}</Typography>
+      </CardContent>
+    )}
   </Card>
 )
 
@@ -68,6 +71,7 @@ Instance.propTypes = {
   onRemoveClick: PropTypes.func.isRequired,
   onEditClick: PropTypes.func.isRequired,
   editAndClose: PropTypes.func.isRequired,
+  instanceDescription: PropTypes.string,
   menuClick: PropTypes.func.isRequired,
   closeMenu: PropTypes.func.isRequired,
   anchorEl: PropTypes.object

@@ -50,6 +50,10 @@ export default compose(
         selectedTemplate: newSelectedTemplate,
         templateEditExpanded: false
       }),
+      clearRunner: () => () => ({
+        selectedTemplate: null,
+        templateEditExpanded: true
+      }),
       toggleActionProcessing: ({ actionProcessing }) => e => ({
         actionProcessing: !actionProcessing
       }),

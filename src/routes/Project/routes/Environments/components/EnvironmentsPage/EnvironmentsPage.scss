@@ -20,6 +20,9 @@
 .instances {
   @extend .flex-row-center;
   padding-bottom: 4rem;
+  -webkit-flex-flow: row wrap;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 .paragraph {
   margin-top: 1rem !important;

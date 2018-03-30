@@ -60,7 +60,7 @@ If you are just getting started with Fireadmin, it is probably best to checkout 
 
 ### Local Environment Setup
 1. Install dependencies: `yarn install` (can also be done with `npm install`)
-1. Create a file `src/config.js` to look like so (generated using [`firebase-ci`](https://www.npmjs.com/package/firebase-ci) in CI environments):
+1. Look for a `src/config.js` file. If one doesn't exist, create it to look like so (generated using [`firebase-ci`](https://www.npmjs.com/package/firebase-ci) in CI environments):
 
     ```js
     export const version = "0.*.*"; // matches package.json when using firebase-ci in CI environment
@@ -109,7 +109,7 @@ If you are just getting started with Fireadmin, it is probably best to checkout 
       algolia
     }
     ```
-1. Create a functions config file within the functions folder that looks like so:
+1. Create `functions/.runtimeconfig.json` file that looks like so:
 
     ```json
     {
@@ -125,7 +125,6 @@ If you are just getting started with Fireadmin, it is probably best to checkout 
         "password": "<- your own made up encryption password for service accounts -> "
       }
     }
-
     ```
 1. Set Functions config variables to match the file you just made (for the deployed version of your functions):
 
