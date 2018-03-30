@@ -10,6 +10,7 @@ import classes from './ActionsPage.scss'
 export const ActionsPage = ({
   selectActionTemplate,
   runAction,
+  clearRunner,
   selectedTemplate,
   toggleTemplateEdit,
   templateEditExpanded,
@@ -42,7 +43,7 @@ export const ActionsPage = ({
             color="secondary"
             variant="raised"
             aria-label="Clear"
-            onTouchTap={runAction}
+            onTouchTap={clearRunner}
             className={classes.button}>
             Clear
           </Button>
@@ -71,6 +72,7 @@ ActionsPage.propTypes = {
   selectedTemplate: PropTypes.object,
   params: PropTypes.object.isRequired, // from react-router
   runAction: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  clearRunner: PropTypes.func.isRequired, // from enhancer (withHandlers)
   selectActionTemplate: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   toggleTemplateEdit: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   templateEditExpanded: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
