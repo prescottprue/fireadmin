@@ -36,6 +36,16 @@ export const ActionsPage = ({
           onTouchTap={runAction}>
           Run Action
         </Button>
+        {selectedTemplate && (
+          <Button
+            disabled={actionProcessing}
+            color="secondary"
+            variant="raised"
+            aria-label="Clear"
+            onTouchTap={runAction}>
+            Clear
+          </Button>
+        )}
       </div>
       <div className={classes.progress}>
         {actionProcessing && <LinearProgress color="primary" />}
