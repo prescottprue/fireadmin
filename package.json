@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "main": "index.js",
   "scripts": {
