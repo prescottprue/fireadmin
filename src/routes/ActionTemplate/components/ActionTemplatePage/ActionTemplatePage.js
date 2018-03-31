@@ -32,7 +32,7 @@ export const ActionTemplatePage = ({
     <ActionTemplateForm
       onSubmit={updateTemplate}
       initialValues={{
-        inputs: [{ type: 'serviceAccount', resource: 'storage' }],
+        environments: [{ type: 'serviceAccount' }],
         ...template
       }}
       templateId={params.templateId}

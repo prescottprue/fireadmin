@@ -1,12 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
+import { get, map } from 'lodash'
 import Button from 'material-ui/Button'
+import { Field } from 'redux-form'
 import { Link } from 'react-router'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import Grid from 'material-ui/Grid'
 import CollectionSearch from 'components/CollectionSearch'
 import Typography from 'material-ui/Typography'
+import { Select } from 'redux-form-material-ui'
+import { FormControl } from 'material-ui/Form'
+import { InputLabel } from 'material-ui/Input'
+import { MenuItem } from 'material-ui/Menu'
+import { ListItemText } from 'material-ui/List'
+import { databaseURLToProjectName } from 'utils'
 import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
@@ -66,10 +73,66 @@ export const ActionRunnerForm = ({
     {selectedTemplate ? (
       <ExpansionPanel expanded={inputsExpanded} onChange={toggleInputs}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography className={classes.heading}>Environments</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails className={classes.inputs}>
+          {selectedTemplate.environments
+            ? selectedTemplate.environments.map((input, index) => (
+                <ExpansionPanel
+                  defaultExpanded
+                  className={classes.panel}
+                  key={index}>
+                  <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <div style={{ display: 'block' }}>
+                      <Typography className={classes.title}>
+                        {get(input, `name`) || `Environment ${index + 1}`}
+                      </Typography>
+                    </div>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                    <FormControl className={classes.field}>
+                      <InputLabel htmlFor="environment">
+                        Select An Environment
+                      </InputLabel>
+                      <Field
+                        name={`environments.${index}`}
+                        component={Select}
+                        fullWidth
+                        inputProps={{
+                          name: 'environment',
+                          id: 'environment'
+                        }}>
+                        {map(environments, (environment, environmentKey) => (
+                          <MenuItem
+                            key={environmentKey}
+                            value={{
+                              environmentKey,
+                              databaseURL: environment.databaseURL
+                            }}>
+                            <ListItemText
+                              primary={environment.name || environmentKey}
+                              secondary={databaseURLToProjectName(
+                                environment.databaseURL
+                              )}
+                            />
+                          </MenuItem>
+                        ))}
+                      </Field>
+                    </FormControl>
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
+              ))
+            : null}
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    ) : null}
+    {selectedTemplate ? (
+      <ExpansionPanel expanded={inputsExpanded} onChange={toggleInputs}>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>Inputs</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className={classes.inputs}>
-          {selectedTemplate && selectedTemplate.inputs
+          {selectedTemplate.inputs
             ? selectedTemplate.inputs.map((input, index) => (
                 <ActionInput
                   key={index}

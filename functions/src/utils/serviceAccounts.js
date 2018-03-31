@@ -1,21 +1,17 @@
 /* eslint-disable no-console */
 import * as admin from 'firebase-admin'
+import * as functions from 'firebase-functions'
 import os from 'os'
 import fs from 'fs-extra'
 import path from 'path'
 import rimraf from 'rimraf'
-import { get, uniqueId } from 'lodash'
+import { get, uniqueId, isObject } from 'lodash'
 import mkdirp from 'mkdirp-promise'
 import { decrypt } from './encryption'
 import { to } from './async'
-const functions = require('firebase-functions')
 const gcs = require('@google-cloud/storage')()
 const bucket = gcs.bucket(functions.config().firebase.storageBucket)
 
-const serviceAccountGetFuncByType = {
-  firestore: serviceAccountFromFirestorePath,
-  storage: serviceAccountFromStoragePath
-}
 const missingCredMsg =
   'Credential parameter is required to load service account from Firestore'
 
@@ -27,72 +23,44 @@ const missingCredMsg =
  * @return {Promise} Resolves with Firebase app
  */
 export async function getAppFromServiceAccount(opts, eventData) {
-  const {
-    databaseURL,
-    storageBucket,
-    environmentKey,
-    fullPath,
-    serviceAccountType = 'firestore',
-    fallbackAccountType = 'storage'
-  } = opts
+  const { databaseURL, storageBucket, environmentKey } = opts
   if (!databaseURL) {
     throw new Error(
       'databaseURL is required for action to authenticate through serviceAccount'
     )
   }
+  if (!environmentKey) {
+    throw new Error(
+      'environmentKey is required for action to authenticate through serviceAccount'
+    )
+  }
+  console.log(`Getting service account from Firestore...`)
+
   const { projectId } = eventData
-  let serviceAccountPath = fullPath
-  let accountFilePath
-  let accountDataPath
-  console.log(`Getting apps from service account from ${serviceAccountType}...`)
-  if (environmentKey && serviceAccountType === 'firestore') {
-    accountDataPath = `projects/${projectId}/environments/${environmentKey}`
-  }
-  const getServiceAccount = get(serviceAccountGetFuncByType, serviceAccountType)
-  // Throw for service account type that does not have a getter function
-  if (!getServiceAccount) {
-    const errMessage = 'Invalid service account type in action request'
-    console.error(errMessage)
-    throw new Error(errMessage)
-  }
+  console.log('projectid:', projectId)
   // Make unique app name (prevents issue of multiple apps initialized with same name)
   const appName = `app-${uniqueId()}`
   // Get Service account data from resource (i.e Storage, Firestore, etc)
-  const [err, firstAccountFilePath] = await to(
-    getServiceAccount(accountDataPath || serviceAccountPath, appName)
-  )
-  if (!err) {
-    accountFilePath = firstAccountFilePath
-  } else {
-    // Attempt to get fallback account type if main does not exist
-    console.log(
-      `Service account for app: "${appName}" could not be loaded from ${serviceAccountType} loading from ${fallbackAccountType} instead...`
+  const [err, accountFilePath] = await to(
+    serviceAccountFromFirestorePath(
+      `projects/${projectId}/environments/${environmentKey}`,
+      appName
     )
-    if (err.message === missingCredMsg) {
-      const getFallbackServiceAccount = get(
-        serviceAccountGetFuncByType,
-        fallbackAccountType
-      )
-      const [err2, fallbackAccountFilePath] = await to(
-        getFallbackServiceAccount(
-          fallbackAccountType === 'firestore'
-            ? accountDataPath
-            : serviceAccountPath,
-          appName
-        )
-      )
-      if (err2) {
-        console.log(
-          `Service account for app: "${appName}" could also not be loaded from ${fallbackAccountType}. Exiting...`
-        )
-        throw new Error(
-          `Service account could not be loaded for app: "${appName}"`
-        )
-      }
-      accountFilePath = fallbackAccountFilePath
-    }
+  )
+
+  if (err) {
+    console.error(`Error getting service account: ${err.message || ''}`, err)
+    throw err
   }
 
+  const serviceAccountFromStorage = await fs.readJson(accountFilePath)
+  if (!isObject(serviceAccountFromStorage)) {
+    console.error(
+      'service account is not a valid object:',
+      serviceAccountFromStorage
+    )
+    throw new Error('Service account is not a valid.')
+  }
   try {
     const appCreds = {
       credential: admin.credential.cert(accountFilePath),
@@ -125,16 +93,23 @@ export async function serviceAccountFromFirestorePath(docPath, name) {
   const projectData = projectDoc.data()
   const { credential } = get(projectData, 'serviceAccount', {})
   if (!credential) {
+    console.log('credential not found')
     console.error(missingCredMsg)
     throw new Error(missingCredMsg)
   }
   const serviceAccountStr = decrypt(credential)
+  console.log('decrypted service account:', serviceAccountStr)
   const localPath = `serviceAccounts/${name}.json`
   const tempLocalPath = path.join(os.tmpdir(), localPath)
   const tempLocalDir = path.dirname(tempLocalPath)
   try {
     await mkdirp(tempLocalDir)
-    await fs.writeJson(tempLocalPath, JSON.parse(serviceAccountStr))
+    const serviceAccountData = JSON.parse(serviceAccountStr)
+    if (!isObject(serviceAccountData)) {
+      throw new Error('Invalid service account data')
+    }
+    console.log('writing service account:', serviceAccountData)
+    await fs.writeJson(tempLocalPath, serviceAccountData)
     return tempLocalPath
   } catch (err) {
     console.error('Error getting service account form Firestore')

@@ -8,7 +8,6 @@ import {
 } from './utils'
 
 /**
- * @name actionRunner
  * Run action based on action template. Multiple Service Account Types
  * supported (i.e. stored on Firestore or cloud storage)
  */

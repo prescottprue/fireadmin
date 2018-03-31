@@ -16,26 +16,26 @@ import Divider from 'material-ui/Divider'
 import IconButton from 'material-ui/IconButton'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import DeleteIcon from 'material-ui-icons/Delete'
-import classes from './ActionTemplateInputs.scss'
+import classes from './ActionTemplateEnvs.scss'
 
-export const ActionTemplateInputs = ({ fields, inputs }) => (
+export const ActionTemplateEnvs = ({ fields, environments }) => (
   <div>
     <Button
       onClick={() => fields.push({ type: 'serviceAccount' })}
       color="primary"
       className={classes.addAction}
       variant="raised">
-      Add Input
+      Add Environment
     </Button>
     {fields.map((member, index, field) => (
       <ExpansionPanel key={index}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.title}>
-            {get(inputs, `${index}.name`) || `Input ${index + 1}`}
+            {get(environments, `${index}.name`) || `Environment ${index + 1}`}
           </Typography>
-          {get(inputs, `${index}.description`, null) && (
+          {get(environments, `${index}.description`, null) && (
             <Typography className={classes.type}>
-              {get(inputs, `${index}.description`).substring(0, 100)}
+              {get(environments, `${index}.description`).substring(0, 100)}
             </Typography>
           )}
         </ExpansionPanelSummary>
@@ -65,7 +65,7 @@ export const ActionTemplateInputs = ({ fields, inputs }) => (
             </Grid>
             <Grid item xs={2} lg={1}>
               <div className={classes.delete}>
-                <Tooltip placement="bottom" title="Remove Input">
+                <Tooltip placement="bottom" title="Remove Environment">
                   <IconButton
                     onClick={() => fields.remove(index)}
                     className={classes.deleteButton}>
@@ -74,8 +74,34 @@ export const ActionTemplateInputs = ({ fields, inputs }) => (
                 </Tooltip>
               </div>
             </Grid>
-            <Grid item xs={6} lg={2}>
-              {get(inputs, `${index}.type`) === 'userInput' && (
+            {/* <Grid item xs={12} lg={3}>
+              {get(environments, `${index}.type`) === 'serviceAccount' ? (
+                <FormControl className={classes.field}>
+                  <InputLabel htmlFor="resource">Select Resource</InputLabel>
+                  <Field
+                    name={`${member}.resource`}
+                    component={Select}
+                    fullWidth
+                    inputProps={{
+                      name: 'resource',
+                      id: 'resource'
+                    }}>
+                    {resourcesOptions.map((option, idx) => (
+                      <MenuItem
+                        key={`Option-${option.value}-${idx}`}
+                        value={option.value}
+                        disabled={option.disabled}>
+                        <ListItemText
+                          primary={option.label || capitalize(option.value)}
+                        />
+                      </MenuItem>
+                    ))}
+                  </Field>
+                </FormControl>
+              ) : null}
+            </Grid> */}
+            {/* <Grid item xs={6} lg={2}>
+              {get(environments, `${index}.type`) === 'userInput' && (
                 <Field
                   name={`${member}.variableName`}
                   component={TextField}
@@ -83,7 +109,7 @@ export const ActionTemplateInputs = ({ fields, inputs }) => (
                   className={classes.field}
                 />
               )}
-            </Grid>
+            </Grid> */}
           </Grid>
         </ExpansionPanelDetails>
         <Divider />
@@ -92,9 +118,9 @@ export const ActionTemplateInputs = ({ fields, inputs }) => (
   </div>
 )
 
-ActionTemplateInputs.propTypes = {
+ActionTemplateEnvs.propTypes = {
   fields: PropTypes.object.isRequired,
-  inputs: PropTypes.array
+  environments: PropTypes.array
 }
 
-export default ActionTemplateInputs
+export default ActionTemplateEnvs
