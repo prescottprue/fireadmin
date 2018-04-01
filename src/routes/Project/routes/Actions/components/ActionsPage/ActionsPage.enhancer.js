@@ -1,14 +1,10 @@
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { formValueSelector } from 'redux-form'
 import { withStateHandlers, withHandlers, withProps } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
-import { formNames } from 'constants'
 import { withNotifications } from 'modules/notification'
 import * as handlers from './ActionsPage.handlers'
-
-const actionRunnerFormSelector = formValueSelector(formNames.actionRunner)
 
 export default compose(
   withNotifications,
@@ -29,7 +25,6 @@ export default compose(
   // Map redux state to props
   connect((state, { params }) => ({
     auth: state.firebase.auth,
-    ...actionRunnerFormSelector(state, 'inputValues', 'environments'),
     project: get(state.firestore, `data.projects.${params.projectId}`)
   })),
   // State handlers as props

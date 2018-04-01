@@ -6,15 +6,24 @@
       ".read": true,
       ".write": false
     },
-    "serviceAccounts": {
-      "$serviceAccountId": {
-        ".read": "auth !== null",
-        ".write": "auth !== null"
+    "requests": {
+      "$requestId": {
+        ".read": "data.child('createdBy').val() == auth.uid",
+        ".write": "newData.child('createdBy').val() == auth.uid"
       }
     },
-    "users": {
-      "$uid": {
-        ".write": "auth !== null && $uid === auth.uid"
+    "responses": {
+      "$responseId": {
+        ".read": "root.child('requests').child($responseId).child('createdBy').val() == auth.uid",
+        ".write": "root.child('requests').child($responseId).child('createdBy').val() == auth.uid"
+      }
+    },
+    "serviceAccounts": {
+      "$projectId": {
+        "$serviceAccountId": {
+          ".read": "auth !== null",
+          ".write": "auth !== null"
+        }
       }
     }
   }

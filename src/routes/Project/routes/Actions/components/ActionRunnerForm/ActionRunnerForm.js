@@ -40,14 +40,15 @@ export const ActionRunnerForm = ({
   templateEditExpanded,
   project,
   environments,
+  environmentsExpanded,
+  toggleEnvironments,
   selectTab,
   selectedTab
 }) => (
   <div className={classes.container}>
     <ExpansionPanel
       expanded={templateEditExpanded}
-      onChange={toggleTemplateEdit}
-      className={classes.panel}>
+      onChange={toggleTemplateEdit}>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography className={classes.sectionHeader}>
           {templateName}
@@ -94,7 +95,9 @@ export const ActionRunnerForm = ({
       </ExpansionPanelDetails>
     </ExpansionPanel>
     {selectedTemplate ? (
-      <ExpansionPanel expanded={inputsExpanded} onChange={toggleInputs}>
+      <ExpansionPanel
+        expanded={environmentsExpanded}
+        onChange={toggleEnvironments}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>Environments</Typography>
         </ExpansionPanelSummary>
@@ -118,7 +121,7 @@ export const ActionRunnerForm = ({
                       Select An Environment
                     </InputLabel>
                     <Field
-                      name={`environments.${index}`}
+                      name={`environmentValues.${index}`}
                       component={Select}
                       fullWidth
                       inputProps={{
@@ -126,12 +129,7 @@ export const ActionRunnerForm = ({
                         id: 'environment'
                       }}>
                       {map(environments, (environment, environmentKey) => (
-                        <MenuItem
-                          key={environmentKey}
-                          value={{
-                            environmentKey,
-                            databaseURL: environment.databaseURL
-                          }}>
+                        <MenuItem key={environmentKey} value={environmentKey}>
                           <ListItemText
                             primary={environment.name || environmentKey}
                             secondary={databaseURLToProjectName(
@@ -201,6 +199,8 @@ ActionRunnerForm.propTypes = {
   selectActionTemplate: PropTypes.func.isRequired,
   toggleTemplateEdit: PropTypes.func.isRequired,
   inputsExpanded: PropTypes.bool.isRequired,
+  environmentsExpanded: PropTypes.bool.isRequired,
+  toggleEnvironments: PropTypes.func.isRequired,
   templateEditExpanded: PropTypes.bool.isRequired,
   stepsExpanded: PropTypes.bool.isRequired,
   selectedTemplate: PropTypes.object,

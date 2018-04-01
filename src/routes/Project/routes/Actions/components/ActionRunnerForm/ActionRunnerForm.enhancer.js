@@ -8,11 +8,15 @@ export default compose(
     ({ initialExpanded = true }) => ({
       inputsExpanded: true,
       stepsExpanded: true,
+      environmentsExpanded: true,
       selectedTab: 0
     }),
     {
       toggleInputs: ({ inputsExpanded }) => () => ({
         inputsExpanded: !inputsExpanded
+      }),
+      toggleEnvironments: ({ environmentsExpanded }) => () => ({
+        environmentsExpanded: !environmentsExpanded
       }),
       toggleSteps: ({ stepsExpanded }) => () => ({
         stepsExpanded: !stepsExpanded
