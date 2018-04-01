@@ -29,6 +29,7 @@ cache:
 install:
   - yarn install
   - yarn add firebase-ci
+  - yarn install --cwd functions
 
 script:
   - npm run build:config # create env specific src/config.js
