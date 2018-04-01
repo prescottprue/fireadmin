@@ -3,7 +3,11 @@
 .container {
   padding: .125rem;
 }
-
+.tabs {
+  text-align: center;
+  width: 60%;
+  margin-left: 20%;
+}
 .heading {
   font-size: 1.3rem !important;
 }
@@ -19,12 +23,15 @@
   margin-bottom: 2rem;
 }
 .or {
-  @extend .flex-row-center;
+  text-align: center;
+  width: 60%;
+  margin-left: 20%;
   &Font {
-    font-size: 1.3rem !important;
+    font-weight: 300;
+    font-size: 1.2rem !important;
   }
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 .search {
   @extend .flex-row-center;
@@ -38,8 +45,6 @@
 .panel {
   margin-top: 1rem !important;
   margin-bottom: 1rem !important;
-  margin-left: .5rem !important;
-  margin-right: .5rem !important;
   min-width: 270px;
 }
 .title {

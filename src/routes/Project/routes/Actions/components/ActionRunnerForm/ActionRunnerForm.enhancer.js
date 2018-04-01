@@ -7,7 +7,8 @@ export default compose(
   withStateHandlers(
     ({ initialExpanded = true }) => ({
       inputsExpanded: true,
-      stepsExpanded: true
+      stepsExpanded: true,
+      selectedTab: 0
     }),
     {
       toggleInputs: ({ inputsExpanded }) => () => ({
@@ -15,6 +16,9 @@ export default compose(
       }),
       toggleSteps: ({ stepsExpanded }) => () => ({
         stepsExpanded: !stepsExpanded
+      }),
+      selectTab: () => (e, selectedTab) => ({
+        selectedTab
       })
     }
   ),
