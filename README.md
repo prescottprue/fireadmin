@@ -229,7 +229,6 @@ For more options on CI settings checkout the [firebase-ci docs](https://github.c
 1. Uploading service accounts? Where do they go and how are my service accounts stored?
   Currently on a Google Cloud Storage Bucket which does not have CORS access. There is also the option to store them in Firestore as an encrypted string for quicker reads/writes when running actions.
 
-
 ## What Happened To The Fireadmin NPM Library?
 
 It is now deprecated. It may come back in the future as a support library for Fireadmin.
