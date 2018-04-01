@@ -95,7 +95,7 @@ export const runAction = props => async formValues => {
       // When completed, mark the action as no longer processing and show success
       if (completed) {
         toggleActionProcessing()
-        props.clearRunner()
+        // props.clearRunner()
         props.showSuccess('Action complete!')
       }
     },
