@@ -7,6 +7,10 @@
   text-align: center;
   width: 60%;
   margin-left: 20%;
+  @include mobile {
+    width: 95%;
+    margin-left: 2.5%;
+  };
 }
 .heading {
   font-size: 1.3rem !important;

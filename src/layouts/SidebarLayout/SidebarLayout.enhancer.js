@@ -1,6 +1,7 @@
 import { compose } from 'redux'
 import { withStyles } from 'material-ui/styles'
 import { withStateHandlers } from 'recompose'
+import { isMobileUserAgent } from 'utils/device'
 import styles from './SidebarLayout.styles'
 
 export default compose(
@@ -8,7 +9,7 @@ export default compose(
     ({ initialActions = [] }) => ({
       selectedActions: initialActions,
       envDialogOpen: false,
-      drawerOpen: false
+      drawerOpen: !isMobileUserAgent()
     }),
     {
       addAction: ({ selectedActions }) => action => ({

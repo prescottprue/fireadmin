@@ -16,6 +16,10 @@
   @extend .flex-row;
   justify-content: space-between;
   width: 70%;
+  @include mobile {
+    flex-direction: column;
+    width: 100%;
+  };
 }
 .column {
   @extend .flex-column-center;
@@ -23,7 +27,14 @@
   min-height: 18rem;
   &Inner {
     @extend .flex-column-center;
+    @include mobile {
+      align-items: flex-start;
+    };
   }
+  @include mobile {
+    min-height: 12rem;
+    padding-top: 2rem;
+  };
 }
 .description {
   max-width: 18rem;
