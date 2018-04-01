@@ -20,8 +20,9 @@ branches:
 
 cache:
   # bundler: true
-  # directories:
-  #   - node_modules # NPM packages
+  directories:
+    - node_modules # NPM packages
+    - functions/node_modules
   # TODO: Use npm once functions runtime is updated to a node verion with lock files
   yarn: true
 
