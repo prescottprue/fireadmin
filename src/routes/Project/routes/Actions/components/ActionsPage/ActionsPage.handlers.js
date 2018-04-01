@@ -1,23 +1,27 @@
 import { get, invoke, omit } from 'lodash'
-import { firebasePaths } from 'constants'
+import { firebasePaths, formNames } from 'constants'
 import { pushAndWaitForStatus } from 'utils/firebaseFunctions'
+import { submit } from 'redux-form'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 import { to } from 'utils/async'
 
-const credentialFromInputValue = project => value => {
-  const environmentKey = get(value, 'environmentKey')
+const credentialFromInputValue = project => environmentKey => {
   const { serviceAccount, databaseURL } = get(
     project,
     `environments.${environmentKey}`,
     {}
   )
   if (serviceAccount && databaseURL) {
-    return { ...value, ...serviceAccount, databaseURL }
+    return { environmentKey, ...serviceAccount, databaseURL }
   }
-  return value
+  return environmentKey
 }
 
-export const runAction = props => async () => {
+export const submitActionRunner = ({ dispatch }) => () => {
+  dispatch(submit(formNames.actionRunner))
+}
+
+export const runAction = props => async formValues => {
   const {
     firebase,
     firestore,
@@ -25,27 +29,25 @@ export const runAction = props => async () => {
     auth,
     selectedTemplate,
     project,
-    inputValues,
-    environments,
     toggleActionProcessing
   } = props
-
+  const { environmentValues } = formValues
   // Build request object for action run
   const actionRequest = {
     projectId,
     serviceAccountType: 'firestore',
     templateId: get(selectedTemplate, 'templateId'),
-    environments,
     template: omit(selectedTemplate, ['_highlightResult']),
+    ...formValues,
     createdBy: auth.uid,
     createdAt: firestore.FieldValue.serverTimestamp()
   }
-  if (inputValues) {
-    actionRequest.inputValues = inputValues.map(
+  if (environmentValues) {
+    actionRequest.environments = environmentValues.map(
       credentialFromInputValue(project)
     )
   }
-  // TODO: Show error notification if required action inputs are not selected
+  // // TODO: Show error notification if required action inputs are not selected
   props.closeTemplateEdit()
   toggleActionProcessing()
   triggerAnalyticsEvent({ category: 'Project', action: 'Start Action Run' })

@@ -15,6 +15,7 @@ export const ActionsPage = ({
   toggleTemplateEdit,
   templateEditExpanded,
   templateName,
+  submitActionRunner,
   params,
   actionProcessing,
   project
@@ -34,7 +35,7 @@ export const ActionsPage = ({
           color="primary"
           variant="raised"
           aria-label="Run Action"
-          onTouchTap={runAction}>
+          onTouchTap={submitActionRunner}>
           Run Action
         </Button>
         {selectedTemplate && (
@@ -62,6 +63,7 @@ export const ActionsPage = ({
         templateEditExpanded={templateEditExpanded}
         toggleTemplateEdit={toggleTemplateEdit}
         selectActionTemplate={selectActionTemplate}
+        onSubmit={runAction}
       />
     </div>
   </div>
@@ -69,15 +71,16 @@ export const ActionsPage = ({
 
 ActionsPage.propTypes = {
   project: PropTypes.object,
-  selectedTemplate: PropTypes.object,
   params: PropTypes.object.isRequired, // from react-router
+  selectedTemplate: PropTypes.object, // from enhancer (withStateHandlers)
   runAction: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  submitActionRunner: PropTypes.func.isRequired, // from enhancer (withHandlers)
   clearRunner: PropTypes.func.isRequired, // from enhancer (withHandlers)
   selectActionTemplate: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   toggleTemplateEdit: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   templateEditExpanded: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
   actionProcessing: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
-  templateName: PropTypes.string.isRequired
+  templateName: PropTypes.string.isRequired // from enhancer (withProps)
 }
 
 export default ActionsPage

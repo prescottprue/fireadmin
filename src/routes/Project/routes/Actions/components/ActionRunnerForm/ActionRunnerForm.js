@@ -46,8 +46,7 @@ export const ActionRunnerForm = ({
   <div className={classes.container}>
     <ExpansionPanel
       expanded={templateEditExpanded}
-      onChange={toggleTemplateEdit}
-      className={classes.panel}>
+      onChange={toggleTemplateEdit}>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography className={classes.sectionHeader}>
           {templateName}
@@ -118,7 +117,7 @@ export const ActionRunnerForm = ({
                       Select An Environment
                     </InputLabel>
                     <Field
-                      name={`environments.${index}`}
+                      name={`environmentValues.${index}`}
                       component={Select}
                       fullWidth
                       inputProps={{
@@ -126,12 +125,7 @@ export const ActionRunnerForm = ({
                         id: 'environment'
                       }}>
                       {map(environments, (environment, environmentKey) => (
-                        <MenuItem
-                          key={environmentKey}
-                          value={{
-                            environmentKey,
-                            databaseURL: environment.databaseURL
-                          }}>
+                        <MenuItem key={environmentKey} value={environmentKey}>
                           <ListItemText
                             primary={environment.name || environmentKey}
                             secondary={databaseURLToProjectName(

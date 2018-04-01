@@ -178,6 +178,9 @@ export async function runBackupsFromEvent(event) {
  * @return {Promise} Resolves with an array of results of converting inputs
  */
 function validateAndConvertEnvironments(eventData, envsMetas, event) {
+  if (!eventData.environments) {
+    return []
+  }
   return Promise.all(
     eventData.environments.map((envValue, envIdx) =>
       validateAndConvertEnvironment(eventData, get(envsMetas, envIdx), envValue)
