@@ -28,7 +28,7 @@ export const Instance = ({
     <CardHeader
       title={
         <span onClick={onEditClick} className={classes.title}>
-          {instance.name}
+          {get(instance, 'name', '')}
         </span>
       }
       subheader={databaseURLToProjectName(get(instance, 'databaseURL', ''))}

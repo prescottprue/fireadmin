@@ -9,7 +9,6 @@ import ExpansionPanel, {
 import Typography from 'material-ui/Typography'
 import { TextField } from 'redux-form-material-ui'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
-import ServiceAccountInput from './ServiceAccountInput'
 import classes from './ActionInput.scss'
 
 export const ActionInput = ({
@@ -35,22 +34,12 @@ export const ActionInput = ({
       </div>
     </ExpansionPanelSummary>
     <ExpansionPanelDetails>
-      {get(inputMeta, 'type') === 'serviceAccount' ? (
-        <ServiceAccountInput
-          name={name}
-          inputMeta={inputMeta}
-          environments={environments}
-          serviceAccounts={serviceAccounts}
-          selectedInstance={selectedInstance}
-        />
-      ) : (
-        <Field
-          name={name}
-          component={TextField}
-          label="Name"
-          className={classes.field}
-        />
-      )}
+      <Field
+        name={name}
+        component={TextField}
+        label="Name"
+        className={classes.field}
+      />
     </ExpansionPanelDetails>
   </ExpansionPanel>
 )
