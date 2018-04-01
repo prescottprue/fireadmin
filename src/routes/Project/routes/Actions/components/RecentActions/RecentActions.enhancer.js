@@ -43,10 +43,18 @@ export default compose(
     }),
     actionToEnvironments: action => ({
       src: databaseURLToProjectName(
-        get(action, 'eventData.inputValues.0.databaseURL', '')
+        get(
+          action,
+          'eventData.environments.0.databaseURL',
+          get(action, 'eventData.inputValues.0.databaseURL', '')
+        )
       ),
       dest: databaseURLToProjectName(
-        get(action, 'eventData.inputValues.1.databaseURL', '')
+        get(
+          action,
+          'eventData.environments.1.databaseURL',
+          get(action, 'eventData.inputValues.1.databaseURL', '')
+        )
       )
     })
   })),

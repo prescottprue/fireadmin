@@ -26,6 +26,7 @@ export const runAction = props => async () => {
     selectedTemplate,
     project,
     inputValues,
+    environments,
     toggleActionProcessing
   } = props
 
@@ -34,6 +35,7 @@ export const runAction = props => async () => {
     projectId,
     serviceAccountType: 'firestore',
     templateId: get(selectedTemplate, 'templateId'),
+    environments,
     template: omit(selectedTemplate, ['_highlightResult']),
     createdBy: auth.uid,
     createdAt: firestore.FieldValue.serverTimestamp()

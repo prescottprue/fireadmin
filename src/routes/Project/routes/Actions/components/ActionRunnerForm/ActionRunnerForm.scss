@@ -3,8 +3,14 @@
 .container {
   padding: .125rem;
 }
-.panel {
-
+.tabs {
+  text-align: center;
+  width: 60%;
+  margin-left: 20%;
+  @include mobile {
+    width: 95%;
+    margin-left: 2.5%;
+  };
 }
 .heading {
   font-size: 1.3rem !important;
@@ -21,12 +27,15 @@
   margin-bottom: 2rem;
 }
 .or {
-  @extend .flex-row-center;
+  text-align: center;
+  width: 60%;
+  margin-left: 20%;
   &Font {
-    font-size: 1.3rem !important;
+    font-weight: 300;
+    font-size: 1.2rem !important;
   }
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 .search {
   @extend .flex-row-center;
@@ -36,4 +45,30 @@
 }
 .progress {
   margin-bottom: 1rem;
+}
+.panel {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+  min-width: 270px;
+}
+.title {
+  font-size: 1.2rem !important;
+  flex-shrink: 0;
+  display: block;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+.type {
+  color: rgba(0, 0, 0, 0.54) !important;
+  display: block;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+.field {
+  @extend .field;
+  width: 80%;
+}
+.content {
+  @extend .flex-row;
+  align-items: center !important;
 }

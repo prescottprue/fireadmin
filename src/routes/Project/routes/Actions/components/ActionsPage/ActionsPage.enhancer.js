@@ -29,7 +29,7 @@ export default compose(
   // Map redux state to props
   connect((state, { params }) => ({
     auth: state.firebase.auth,
-    inputValues: actionRunnerFormSelector(state, 'inputValues'),
+    ...actionRunnerFormSelector(state, 'inputValues', 'environments'),
     project: get(state.firestore, `data.projects.${params.projectId}`)
   })),
   // State handlers as props
@@ -43,10 +43,10 @@ export default compose(
       toggleTemplateEdit: ({ templateEditExpanded }) => () => ({
         templateEditExpanded: !templateEditExpanded
       }),
-      closeTemplateEdit: ({ templateEditExpanded }) => () => ({
+      closeTemplateEdit: () => () => ({
         templateEditExpanded: false
       }),
-      selectActionTemplate: ({ selectInstance }) => newSelectedTemplate => ({
+      selectActionTemplate: () => newSelectedTemplate => ({
         selectedTemplate: newSelectedTemplate,
         templateEditExpanded: false
       }),

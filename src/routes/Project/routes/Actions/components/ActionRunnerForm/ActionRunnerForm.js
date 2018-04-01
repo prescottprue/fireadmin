@@ -1,19 +1,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
+import { get, map } from 'lodash'
 import Button from 'material-ui/Button'
+import { Field } from 'redux-form'
 import { Link } from 'react-router'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import Grid from 'material-ui/Grid'
-import CollectionSearch from 'components/CollectionSearch'
+import AppBar from 'material-ui/AppBar'
+import Tabs, { Tab } from 'material-ui/Tabs'
 import Typography from 'material-ui/Typography'
+import CollectionSearch from 'components/CollectionSearch'
+import { Select } from 'redux-form-material-ui'
+import { FormControl } from 'material-ui/Form'
+import { InputLabel } from 'material-ui/Input'
+import { MenuItem } from 'material-ui/Menu'
+import { ListItemText } from 'material-ui/List'
+import { databaseURLToProjectName } from 'utils'
 import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
 } from 'material-ui/ExpansionPanel'
+import TabContainer from 'components/TabContainer'
 import { paths } from 'constants'
 import ActionInput from '../ActionInput'
 import StepsViewer from '../StepsViewer'
+import PrivateActionTemplates from '../PrivateActionTemplates'
 import classes from './ActionRunnerForm.scss'
 
 export const ActionRunnerForm = ({
@@ -28,7 +39,9 @@ export const ActionRunnerForm = ({
   selectActionTemplate,
   templateEditExpanded,
   project,
-  environments
+  environments,
+  selectTab,
+  selectedTab
 }) => (
   <div className={classes.container}>
     <ExpansionPanel
@@ -42,34 +55,109 @@ export const ActionRunnerForm = ({
       </ExpansionPanelSummary>
       <ExpansionPanelDetails className="flex-column">
         <Typography paragraph>
-          Run a data action by selecting a template, filling in the template's
-          configuation options, then clicking run action
+          Run an action by selecting a template, filling in the template's
+          configuation options, then clicking <strong>run action</strong>.
         </Typography>
-        <div className="flex-row-center">
+        <div className={classes.tabs}>
           <Link to={paths.actionTemplates}>
             <Button color="primary" className={classes.button}>
               Create New Action Template
             </Button>
           </Link>
-        </div>
-        <div className={classes.or}>
-          <Typography className={classes.orFont}>or</Typography>
-        </div>
-        <div className={classes.search}>
-          <CollectionSearch
-            indexName="actionTemplates"
-            onSuggestionClick={selectActionTemplate}
-          />
+          <div className={classes.or}>
+            <Typography className={classes.orFont}>
+              or select existing
+            </Typography>
+          </div>
+          <AppBar position="static">
+            <Tabs value={selectedTab} onChange={selectTab} fullWidth>
+              <Tab label="Public" />
+              <Tab label="Private" />
+            </Tabs>
+          </AppBar>
+          {selectedTab === 0 && (
+            <TabContainer>
+              <div className={classes.search}>
+                <CollectionSearch
+                  indexName="actionTemplates"
+                  onSuggestionClick={selectActionTemplate}
+                />
+              </div>
+            </TabContainer>
+          )}
+          {selectedTab === 1 && (
+            <TabContainer>
+              <PrivateActionTemplates onTemplateClick={selectActionTemplate} />
+            </TabContainer>
+          )}
         </div>
       </ExpansionPanelDetails>
     </ExpansionPanel>
     {selectedTemplate ? (
       <ExpansionPanel expanded={inputsExpanded} onChange={toggleInputs}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography className={classes.heading}>Environments</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails className={classes.inputs}>
+          {selectedTemplate.environments ? (
+            selectedTemplate.environments.map((input, index) => (
+              <ExpansionPanel
+                defaultExpanded
+                className={classes.panel}
+                key={index}>
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <div style={{ display: 'block' }}>
+                    <Typography className={classes.title}>
+                      {get(input, `name`) || `Environment ${index + 1}`}
+                    </Typography>
+                  </div>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <FormControl className={classes.field}>
+                    <InputLabel htmlFor="environment">
+                      Select An Environment
+                    </InputLabel>
+                    <Field
+                      name={`environments.${index}`}
+                      component={Select}
+                      fullWidth
+                      inputProps={{
+                        name: 'environment',
+                        id: 'environment'
+                      }}>
+                      {map(environments, (environment, environmentKey) => (
+                        <MenuItem
+                          key={environmentKey}
+                          value={{
+                            environmentKey,
+                            databaseURL: environment.databaseURL
+                          }}>
+                          <ListItemText
+                            primary={environment.name || environmentKey}
+                            secondary={databaseURLToProjectName(
+                              environment.databaseURL
+                            )}
+                          />
+                        </MenuItem>
+                      ))}
+                    </Field>
+                  </FormControl>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            ))
+          ) : (
+            <div className="flex-row-center">No Environments</div>
+          )}
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    ) : null}
+    {selectedTemplate ? (
+      <ExpansionPanel expanded={inputsExpanded} onChange={toggleInputs}>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>Inputs</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className={classes.inputs}>
-          {selectedTemplate && selectedTemplate.inputs
+          {selectedTemplate.inputs
             ? selectedTemplate.inputs.map((input, index) => (
                 <ActionInput
                   key={index}
@@ -104,6 +192,8 @@ export const ActionRunnerForm = ({
 
 ActionRunnerForm.propTypes = {
   project: PropTypes.object,
+  selectTab: PropTypes.func.isRequired,
+  selectedTab: PropTypes.number,
   templateName: PropTypes.string.isRequired,
   projectId: PropTypes.string.isRequired,
   toggleInputs: PropTypes.func.isRequired,

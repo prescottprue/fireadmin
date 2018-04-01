@@ -12,6 +12,7 @@
 .buttons {
   @extend .flex-row;
   margin-bottom: 2rem;
+  margin-left: .75rem;
 }
 .or {
   @extend .flex-row-center;

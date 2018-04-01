@@ -59,6 +59,10 @@ export default theme => ({
     // Make the items inside not wrap when transitioning:
     width: drawerWidth
   },
+  activeListItem: {
+    background: 'rgba(0, 0, 0, 0.12)',
+    fontWeight: 'bold'
+  },
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',

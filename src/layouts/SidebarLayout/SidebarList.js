@@ -8,6 +8,11 @@ import ChevronRightIcon from 'material-ui-icons/ChevronRight'
 import LayersIcon from 'material-ui-icons/Layers'
 import enhance from './SidebarList.enhnacer'
 
+// Fix issue with padding
+const listItemStyle = {
+  paddingLeft: '18px'
+}
+
 export const SidebarList = ({
   classes,
   drawerOpen,
@@ -24,14 +29,14 @@ export const SidebarList = ({
         selected={itemIsActive(value)}
         className={itemIsActive(value) ? classes.activeListItem : undefined}
         onClick={() => goTo(value)}
-        style={{ paddingLeft: '18px' }}>
+        style={listItemStyle}>
         <ListItemIcon>{iconElement || <LayersIcon />}</ListItemIcon>
         <ListItemText primary={label || capitalize(value)} />
       </ListItem>
     ))}
     <Divider />
     <Divider />
-    <ListItem button selected onClick={toggleDrawer}>
+    <ListItem button selected onClick={toggleDrawer} style={listItemStyle}>
       <ListItemIcon>
         {drawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
       </ListItemIcon>

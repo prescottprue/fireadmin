@@ -27,7 +27,7 @@ export const RecentActions = ({
           <TableCell>Created By</TableCell>
           <TableCell>Template</TableCell>
           <TableCell>Source/Dest</TableCell>
-          <TableCell>Path</TableCell>
+          <TableCell>Input 1 Value</TableCell>
           <TableCell>Redo</TableCell>
         </TableRow>
       </TableHead>
@@ -49,7 +49,13 @@ export const RecentActions = ({
               </span>
             </TableCell>
             <TableCell>
-              <span>{get(action, 'eventData.inputValues.2', 'No Path')}</span>
+              <span>
+                {get(
+                  action,
+                  'eventData.inputValues.2',
+                  get(action, 'eventData.inputValues.0', 'No Path')
+                )}
+              </span>
             </TableCell>
             <TableCell>
               <Tooltip

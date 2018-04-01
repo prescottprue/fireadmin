@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "main": "index.js",
   "scripts": {
@@ -8,6 +8,8 @@
     "compile": "node build/scripts/compile",
     "build": "npm run clean && cross-env NODE_ENV=production npm run compile",
     "build:functions": "npm run build --prefix functions",
+    "build:config": "firebase-ci createConfig",
+    "deploy": "firebase-ci deploy",
     "start": "cross-env NODE_ENV=development webpack-dashboard -p 1334 -c cyan -m -t fireadmin -- node build/scripts/start",
     "start:simple": "cross-env NODE_ENV=development node build/scripts/start",
     "test": "cross-env NODE_ENV=test karma start build/karma.config",
