@@ -1,5 +1,5 @@
 import { withHandlers, pure, compose } from 'recompose'
-import { firebaseConnect } from 'react-redux-firebase'
+import { withFirebase } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 import { UserIsNotAuthenticated } from 'utils/router'
 import { triggerAnalyticsEvent } from 'utils/analytics'
@@ -7,7 +7,7 @@ import { triggerAnalyticsEvent } from 'utils/analytics'
 export default compose(
   UserIsNotAuthenticated, // redirect to /projects if user is already authed
   withNotifications, // add props.showError
-  firebaseConnect(), // add props.firebase
+  withFirebase, // add props.firebase
   // Handlers as props
   withHandlers({
     onSubmitFail: props => (formErrs, dispatch, err) =>

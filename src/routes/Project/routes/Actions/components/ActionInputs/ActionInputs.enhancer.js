@@ -1,14 +1,21 @@
+import { get } from 'lodash'
 import { compose } from 'redux'
 import { formValues } from 'redux-form'
 import { connect } from 'react-redux'
-import { firebaseConnect, getVal } from 'react-redux-firebase'
+import { firestoreConnect } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 
 export default compose(
   withNotifications,
-  firebaseConnect(({ projectId }) => [`serviceAccounts/${projectId}`]),
-  connect(({ firebase }, { projectId }) => ({
-    serviceAccounts: getVal(firebase, `data/serviceAccounts/${projectId}`)
+  firestoreConnect(({ params }) => [
+    {
+      collection: 'projects',
+      doc: params.projectId,
+      subcollections: [{ collection: 'serviceAccounts' }]
+    }
+  ]),
+  connect(({ firestore: { data } }, { params }) => ({
+    serviceAccounts: get(data, `projects.${params.projectId}.serviceAccounts`)
   })),
   formValues('inputs')
 )

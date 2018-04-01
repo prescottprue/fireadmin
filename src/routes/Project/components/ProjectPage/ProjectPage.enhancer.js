@@ -3,7 +3,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withStyles } from 'material-ui/styles'
 import { withStateHandlers } from 'recompose'
-import { firebaseConnect, firestoreConnect } from 'react-redux-firebase'
+import { firestoreConnect } from 'react-redux-firebase'
 import {
   spinnerWhileLoading,
   renderWhileEmpty,
@@ -15,12 +15,16 @@ import ProjectErrorPage from './ProjectErrorPage'
 import { withNotifications } from 'modules/notification'
 
 export default compose(
-  firebaseConnect(({ params }) => [`serviceAccounts/${params.projectId}`]),
   firestoreConnect(({ params }) => [
     {
       collection: 'projects',
       doc: params.projectId,
       subcollections: [{ collection: 'environments' }]
+    },
+    {
+      collection: 'projects',
+      doc: params.projectId,
+      subcollections: [{ collection: 'serviceAccounts' }]
     },
     {
       collection: 'projects',
@@ -36,7 +40,7 @@ export default compose(
   renderIfError(
     [
       (state, { params }) => `projects.${params.projectId}`,
-      (state, { params }) => `projects.${params.projectId}.events`,
+      (state, { params }) => `projects.${params.projectId}.serviceAccounts`,
       (state, { params }) => `projects.${params.projectId}.environments`
     ],
     ProjectErrorPage
