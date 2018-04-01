@@ -16,7 +16,6 @@ export const ActionInput = ({
   inputMeta,
   name,
   index,
-  inputs,
   environments,
   selectedInstance,
   serviceAccounts,
@@ -41,7 +40,6 @@ export const ActionInput = ({
           name={name}
           inputMeta={inputMeta}
           environments={environments}
-          inputs={inputs}
           serviceAccounts={serviceAccounts}
           selectedInstance={selectedInstance}
         />
@@ -59,7 +57,6 @@ export const ActionInput = ({
 
 ActionInput.propTypes = {
   environments: PropTypes.object,
-  inputs: PropTypes.array,
   inputMeta: PropTypes.object,
   index: PropTypes.number.isRequired,
   serviceAccounts: PropTypes.object,

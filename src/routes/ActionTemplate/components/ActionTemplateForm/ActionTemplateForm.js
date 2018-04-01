@@ -10,7 +10,9 @@ import Button from 'material-ui/Button'
 import Grid from 'material-ui/Grid'
 import ActionTemplateStep from '../ActionTemplateStep'
 import ActionTemplateInputs from '../ActionTemplateInputs'
+import ActionTemplateEnvs from '../ActionTemplateEnvs'
 import ActionTemplateBackups from '../ActionTemplateBackups'
+// import LoadIntoProjectButton from '../LoadIntoProjectButton'
 import DeleteIcon from 'material-ui-icons/Delete'
 import { firebasePaths } from 'constants'
 import classes from './ActionTemplateForm.scss'
@@ -41,6 +43,7 @@ export const ActionTemplateForm = ({
         className={classes.submit}>
         Save
       </Button>
+      {/* <LoadIntoProjectButton templateId={templateId} /> */}
       <IconButton
         onClick={startTemplateDelete}
         color="secondary"
@@ -73,6 +76,10 @@ export const ActionTemplateForm = ({
         </Grid>
       </Grid>
     </Paper>
+    <div className={classes.actions}>
+      <Typography className={classes.header}>Environments</Typography>
+      <FieldArray name="environments" component={ActionTemplateEnvs} />
+    </div>
     <div className={classes.actions}>
       <Typography className={classes.header}>Inputs</Typography>
       <FieldArray name="inputs" component={ActionTemplateInputs} />
