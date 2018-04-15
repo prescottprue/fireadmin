@@ -2,15 +2,13 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get, map, groupBy } from 'lodash'
 import { withProps } from 'recompose'
-import { firestoreConnect } from 'react-redux-firebase'
+import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
 import { formatDate } from 'utils/formatters'
 import { spinnerWhileLoading } from 'utils/components'
 
 export default compose(
+  firebaseConnect(['displayNames']),
   firestoreConnect(({ params }) => [
-    {
-      collection: 'displayNames'
-    },
     {
       collection: 'projects',
       doc: get(params, 'projectId'),
@@ -19,9 +17,9 @@ export default compose(
       limit: 300
     }
   ]),
-  connect(({ firebase, firestore: { data } }, { params }) => ({
-    project: get(data, `projects.${params.projectId}`),
-    displayNames: get(data, 'displayNames')
+  connect(({ firebase, firestore }, { params }) => ({
+    project: get(firestore, `data.projects.${params.projectId}`),
+    displayNames: get(firebase, 'data.displayNames')
   })),
   spinnerWhileLoading(['project', 'project.events']),
   withProps(({ project, displayNames }) => {

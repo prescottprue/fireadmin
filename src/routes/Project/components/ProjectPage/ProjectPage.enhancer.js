@@ -35,7 +35,7 @@ export default compose(
     auth: firebase.auth,
     project: get(data, `projects.${params.projectId}`)
   })),
-  spinnerWhileLoading(['project']),
+  spinnerWhileLoading(['project', 'project.environments']),
   renderWhileEmpty(['project'], ProjectNotFoundPage),
   renderIfError(
     [
