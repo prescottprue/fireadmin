@@ -1,8 +1,8 @@
 import * as functions from 'firebase-functions'
+import * as admin from 'firebase-admin'
 import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
-import * as admin from 'firebase-admin'
 import mkdirp from 'mkdirp-promise'
 
 const gcs = require('@google-cloud/storage')()

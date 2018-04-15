@@ -1,7 +1,6 @@
 describe('onUserOnlineStatusChange RTDB Cloud Function (RTDB:onUpdate)', () => {
   let onUserOnlineStatusChange
   let adminInitStub
-  let functions
   let admin
 
   before(() => {
@@ -10,7 +9,6 @@ describe('onUserOnlineStatusChange RTDB Cloud Function (RTDB:onUpdate)', () => {
     // Stub Firebase's admin.initializeApp
     adminInitStub = sinon.stub(admin, 'initializeApp')
     // Stub Firebase's functions.config()
-    functions = require('firebase-functions')
     onUserOnlineStatusChange = functionsTest.wrap(
       require(`${__dirname}/../../index`).onUserOnlineStatusChange
     )
@@ -23,17 +21,17 @@ describe('onUserOnlineStatusChange RTDB Cloud Function (RTDB:onUpdate)', () => {
   })
 
   it('invokes successfully', async () => {
-    const fakeEvent = {
-      data: new functions.database.DeltaSnapshot(
-        adminInitStub,
-        adminInitStub,
-        null,
-        { some: 'thing' }, // data object
-        'requests/fileToDb/123ABC'
-      )
+    const snap = {
+      val: () => ({ displayName: 'some', filePath: 'some' })
+    }
+    const fakeContext = {
+      params: { filePath: 'testing', userId: 1 }
     }
     // Invoke with fake event object
-    const result = await onUserOnlineStatusChange(fakeEvent)
+    const result = await onUserOnlineStatusChange(
+      { before: snap, after: snap },
+      fakeContext
+    )
     expect(result).to.exist
   })
 })

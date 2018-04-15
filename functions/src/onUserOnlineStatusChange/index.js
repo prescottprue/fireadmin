@@ -20,9 +20,9 @@ async function onUserOnlineStatusChangeEvent(change, context) {
 
   // Then use other event data to create a reference to the
   // corresponding Firestore document.
-  const userStatusFirestoreRef = admin.firestore.doc(
-    `status/${context.params.uid}`
-  )
+  const userStatusFirestoreRef = admin
+    .firestore()
+    .doc(`status/${context.params.uid}`)
 
   // It is likely that the Realtime Database change that triggered
   // this event has already been overwritten by a fast change in

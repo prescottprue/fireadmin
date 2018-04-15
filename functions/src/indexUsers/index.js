@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin'
+import * as functions from 'firebase-functions'
 import { get } from 'lodash'
 import { createIndexFunc } from '../utils/search'
-const functions = require('firebase-functions')
 
 // Updates the search index when users are created or displayName is updated
 export default functions.firestore.document('/users/{userId}').onWrite(
