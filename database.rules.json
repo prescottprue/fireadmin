@@ -1,29 +1,27 @@
 {
   "rules": {
-    ".read": "auth !== null",
-    ".write": "auth !== null",
+    ".read": false,
+    ".write": false,
     "displayNames": {
       ".read": true,
       ".write": false
     },
     "requests": {
       "$requestId": {
-        ".read": "data.child('createdBy').val() == auth.uid",
-        ".write": "newData.child('createdBy').val() == auth.uid"
+        ".read": "auth !== null && data.child('createdBy').val() == auth.uid",
+        ".write": "auth !== null && newData.child('createdBy').val() == auth.uid"
       }
     },
     "responses": {
       "$responseId": {
-        ".read": "root.child('requests').child($responseId).child('createdBy').val() == auth.uid",
-        ".write": "root.child('requests').child($responseId).child('createdBy').val() == auth.uid"
+        ".read": "auth !== null && root.child('requests').child($responseId).child('createdBy').val() == auth.uid",
+        ".write": "auth !== null && root.child('requests').child($responseId).child('createdBy').val() == auth.uid"
       }
     },
     "serviceAccounts": {
       "$projectId": {
-        "$serviceAccountId": {
-          ".read": "auth !== null",
-          ".write": "auth !== null"
-        }
+        ".read": "auth !== null",
+        ".write": "auth !== null"
       }
     }
   }

@@ -33,7 +33,6 @@ async function handleServiceAccountCreate(event) {
     )
   }
   const { serviceAccount: { fullPath } } = eventData
-  // const fileName = path.basename(tempLocalPath) // File Name
   // Download service account from Cloud Storage
   const [downloadErr, fileData] = await to(downloadFromStorage(null, fullPath))
 
