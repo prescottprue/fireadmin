@@ -1,10 +1,9 @@
 const admin = require('firebase-admin')
-const functions = require('firebase-functions')
 const glob = require('glob')
 const path = require('path')
 
 try {
-  admin.initializeApp(functions.config().firebase)
+  admin.initializeApp()
 } catch (err) {}
 
 // Load all folders within dist directory (mirrors layout of src)

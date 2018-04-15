@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import { isString } from 'lodash'
-const functions = require('firebase-functions')
+import * as functions from 'firebase-functions'
 
 export const encrypt = (text, options = {}) => {
   const { algorithm = 'aes-256-ctr', password } = options

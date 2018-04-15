@@ -3,7 +3,8 @@ import path from 'path'
 import fs from 'fs-extra'
 import mkdirp from 'mkdirp-promise'
 const gcs = require('@google-cloud/storage')()
-const functions = require('firebase-functions')
+
+const functionsConfig = JSON.parse(process.env.FIREBASE_CONFIG)
 
 /**
  * Download JSON File from Google Cloud Storage and return is contents
@@ -17,7 +18,7 @@ export async function downloadFromStorage(app, pathInStorage) {
   }
   // Handle default app
   const bucket = !app
-    ? gcs.bucket(functions.config().firebase.storageBucket)
+    ? gcs.bucket(functionsConfig.storageBucket)
     : app.storage().bucket
   const localPath = `actions/storage/${pathInStorage}/${Date.now()}.json`
   const tempLocalPath = path.join(os.tmpdir(), localPath)

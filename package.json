@@ -15,6 +15,7 @@
     "test": "cross-env NODE_ENV=test karma start build/karma.config",
     "test:watch": "npm test -- --watch",
     "functions:build": "npm run build:functions",
+    "functions:test": "npm run test --prefix functions",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "codecov": "cat coverage/*/lcov.info | codecov",

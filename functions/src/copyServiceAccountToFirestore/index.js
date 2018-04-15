@@ -24,9 +24,9 @@ export default functions.firestore
  * service account to a project
  * @return {Promise} Resolves with filePath
  */
-async function handleServiceAccountCreate(event) {
+async function handleServiceAccountCreate(snap, context) {
   // const { fullPath } = event.data.data() // for serviceAccounts as subcollection
-  const eventData = event.data.data()
+  const eventData = snap.val()
   if (!eventData.serviceAccount) {
     throw new Error(
       'serviceAccount parameter is required to copy service account to Firestore'
@@ -47,7 +47,7 @@ async function handleServiceAccountCreate(event) {
 
   // Write encrypted service account data to serviceAccount parameter of environment document
   const [updateErr] = await to(
-    event.data.ref.update('serviceAccount', {
+    snap.ref.update('serviceAccount', {
       ...eventData.serviceAccount,
       credential: encrypt(fileData)
     })

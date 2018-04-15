@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin'
-import { invoke, get } from 'lodash'
+import { get } from 'lodash'
 import request from 'request-promise'
 import google from 'googleapis'
 import { serviceAccountFileFromStorage } from '../utils/serviceAccounts'
@@ -88,10 +88,9 @@ export async function googleApisRequest(serviceAccount, requestSettings) {
  * @param  {[type]} event - Functions event
  * @return {Promise} Resolves with results of calling Google API
  */
-export default async function callGoogleApi(event) {
-  const eventData = get(event, 'data')
-  const eventVal = invoke(eventData, 'val')
-  const eventId = get(event, 'params.pushId')
+export default async function callGoogleApi(snap, context) {
+  const eventVal = snap.val()
+  const eventId = get(context, 'params.pushId')
   console.log('Request recieved', eventVal)
   if (!eventVal) {
     console.error('No event value?')

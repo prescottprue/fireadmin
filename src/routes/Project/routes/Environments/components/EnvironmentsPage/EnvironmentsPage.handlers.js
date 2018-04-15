@@ -76,6 +76,10 @@ export const addEnvironment = props => async newProjectData => {
     props.showSuccess('Environment added successfully')
   } catch (err) {
     console.error('error', err) // eslint-disable-line no-console
+    triggerAnalyticsEvent({
+      category: 'Project',
+      action: 'Error - Add Environment'
+    })
     props.showError('Error: ', err.message || 'Could not add project')
   }
 }
@@ -114,7 +118,7 @@ export const removeEnvironment = props => async environmentId => {
     console.error('error', err) // eslint-disable-line no-console
     triggerAnalyticsEvent({
       category: 'Project',
-      action: 'Error Remove Environment'
+      action: 'Error - Remove Environment'
     })
     showError('Error: ', err.message || 'Could not remove environment')
   }
@@ -171,7 +175,6 @@ export const uploadServiceAccount = props => async files => {
     params: { projectId }
   } = props
   const filePath = `serviceAccounts/${uid}/${projectId}`
-  console.log('files:', files)
   const res = await firebase.uploadFile(
     filePath,
     files[0],

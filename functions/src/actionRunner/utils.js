@@ -121,7 +121,7 @@ export function writeDocsInBatches(firestoreInstance, destPath, docData, opts) {
   )
 }
 
-export function updateResponseOnRTDB(event, error) {
+export function updateResponseOnRTDB(snap, context, error) {
   const response = {
     completed: true,
     completedAt: admin.database.ServerValue.TIMESTAMP
@@ -132,8 +132,8 @@ export function updateResponseOnRTDB(event, error) {
   } else {
     response.status = 'success'
   }
-  return event.data.adminRef.ref.root
-    .child(`${ACTION_RUNNER_RESPONSES_PATH}/${event.params.pushId}`)
+  return snap.ref.root
+    .child(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
     .set(response)
 }
 
@@ -142,9 +142,7 @@ export async function updateRequestAsStarted(event) {
     status: 'started',
     startedAt: admin.database.ServerValue.TIMESTAMP
   }
-  const [dbUpdateError, updateRes] = await to(
-    event.data.adminRef.ref.update(response)
-  )
+  const [dbUpdateError, updateRes] = await to(event.ref.update(response))
   if (dbUpdateError) {
     console.error(
       'Error updating request as started within RTDB:',
@@ -186,7 +184,11 @@ export async function emitProjectEvent(eventData) {
  * @param  {Number} acitonInfo.totalNumSteps - Total number of steps in action
  * @return {Promise} Resolves with results of database write promise
  */
-export function updateResponseWithProgress(event, { stepIdx, totalNumSteps }) {
+export function updateResponseWithProgress(
+  snap,
+  context,
+  { stepIdx, totalNumSteps }
+) {
   const response = {
     status: 'running',
     stepStatus: {
@@ -197,31 +199,32 @@ export function updateResponseWithProgress(event, { stepIdx, totalNumSteps }) {
     progress: stepIdx / totalNumSteps,
     updatedAt: admin.database.ServerValue.TIMESTAMP
   }
-  return event.data.adminRef.ref.root
-    .child(`${ACTION_RUNNER_RESPONSES_PATH}/${event.params.pushId}`)
+  return snap.ref.root
+    .child(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
     .update(response)
 }
 
 /**
- * [updateResponseWithError description]
- * @param  {[type]} event [description]
+ * Write error to response object within Database
+ * @param  {Object} snap - Functions snapshot object
+ * @param  {Object} context - Functions context object
  * @return {Promise} Resolves with results of database write promise
  */
-export function updateResponseWithError(event) {
+export function updateResponseWithError(snap, context) {
   const response = {
     status: 'error',
     complete: true,
     updatedAt: admin.database.ServerValue.TIMESTAMP
   }
-  return event.data.adminRef.ref.root
-    .child(`${ACTION_RUNNER_RESPONSES_PATH}/${event.params.pushId}`)
+  return event.ref.root
+    .child(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
     .update(response)
 }
 
 /**
  * Update response object within Real Time Database with error information about
  * an action
- * @param  {Object} event - Functions event object
+ * @param  {Object} snap - Functions snapshot object
  * @param  {Object} actionInfo - Info about action
  * @param  {Number} actionInfo.stepIdx - Index of current step
  * @param  {Number} acitonInfo.totalNumSteps - Total number of steps in action
