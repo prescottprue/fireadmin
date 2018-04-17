@@ -6,10 +6,31 @@
       ".read": true,
       ".write": false
     },
+    "sessions": {
+      "$sessionId": {
+        ".validate": "newData.hasChildren(['user', 'startedAt']) || newData.hasChildren(['endedAt'])",
+        ".write": "auth !== null && ((!data.exists() && newData.child('user').val() === auth.uid) || (data.child('user').val() === auth.uid))",
+        "user": {
+          ".validate": "newData.isString()"
+        },
+        "startedAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "endedAt": {
+          ".write": "!data.exists()"
+        }
+      }
+    },
+    "presence": {
+      "$userId": {
+        ".validate": "newData.isBoolean()",
+        ".write": "$userId === auth.uid || (!newData.exists() && data.exists())"
+      }
+    },
     "requests": {
       "$requestId": {
-        ".read": "auth !== null && data.child('createdBy').val() == auth.uid",
-        ".write": "auth !== null && newData.child('createdBy').val() == auth.uid"
+        ".read": "auth !== null && data.child('createdBy').val() === auth.uid",
+        ".write": "auth !== null && newData.child('createdBy').val() === auth.uid"
       }
     },
     "responses": {
