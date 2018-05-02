@@ -1,3 +1,4 @@
 import ServiceAccounts from './ServiceAccounts'
+import enhance from './ServiceAccount.enhnacer'
 
-export default ServiceAccounts
+export default enhance(ServiceAccounts)
