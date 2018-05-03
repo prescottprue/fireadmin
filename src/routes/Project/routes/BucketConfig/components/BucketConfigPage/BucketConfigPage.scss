@@ -1,9 +1,9 @@
 @import 'base';
 
 .container {
-  @extend .flex-row-center;
-  padding-top: 3rem;
+  margin-bottom: 3rem;
 }
+
 .subHeader {
   color: rgba(0, 0, 0, 0.54) !important;
   font-size: 1.5rem !important;

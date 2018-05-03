@@ -54,7 +54,7 @@ export const ServiceAccounts = ({
 )
 
 ServiceAccounts.propTypes = {
-  serviceAccounts: PropTypes.object, // from enhancer
+  serviceAccounts: PropTypes.array.isRequired, // from enhancer
   selectedAccountKey: PropTypes.string,
   classes: PropTypes.object, // from withStyles
   onAccountClick: PropTypes.func.isRequired
