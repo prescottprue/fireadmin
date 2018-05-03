@@ -1,12 +1,10 @@
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { firebaseConnect, firestoreConnect } from 'react-redux-firebase'
+import { firestoreConnect } from 'react-redux-firebase'
 import { spinnerWhileLoading } from 'utils/components'
 
 export default compose(
-  // create listeners for RTDB
-  firebaseConnect(({ params }) => [`serviceAccounts/${params.projectId}`]),
   // create listeners for Firestore
   firestoreConnect(({ params }) => [
     // Environments subcollection of project
