@@ -34,7 +34,7 @@ install:
 script:
   - npm run build:config # create env specific src/config.js
   - npm run lint
-  # - npm run test
+  # - npm run test # Removed for now due to too many deps. Jest coming soon.
   - npm run build
 
 after_success:
