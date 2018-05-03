@@ -32,7 +32,9 @@ async function handleServiceAccountCreate(snap, context) {
       'serviceAccount parameter is required to copy service account to Firestore'
     )
   }
-  const { serviceAccount: { fullPath } } = eventData
+  const {
+    serviceAccount: { fullPath }
+  } = eventData
   // Download service account from Cloud Storage
   const [downloadErr, fileData] = await to(downloadFromStorage(null, fullPath))
 

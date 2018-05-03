@@ -4,7 +4,8 @@ import { get, map, groupBy } from 'lodash'
 import { withProps } from 'recompose'
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
 import { formatDate } from 'utils/formatters'
-import { spinnerWhileLoading } from 'utils/components'
+import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
+import NoProjectEvents from './NoProjectEvents'
 
 export default compose(
   firebaseConnect(['displayNames']),
@@ -22,6 +23,7 @@ export default compose(
     displayNames: get(firebase, 'data.displayNames')
   })),
   spinnerWhileLoading(['project', 'project.events']),
+  renderWhileEmpty(['project', 'project.events'], NoProjectEvents),
   withProps(({ project, displayNames }) => {
     const events = map(get(project, 'events'), event => {
       const createdBy = get(event, 'createdBy')

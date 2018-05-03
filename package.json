@@ -104,7 +104,7 @@
     "husky": "^0.14.3",
     "ip": "^1.1.5",
     "node-sass": "^4.5.3",
-    "prettier": "^1.5.3",
+    "prettier": "^1.12.1",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.5",
     "style-loader": "^0.17.0",
