@@ -24,7 +24,7 @@
           "updateProfileOnLogin": false,
           "useFirestoreForProfile": true,
           "useFirestoreForStorageMeta": true,
-          "presence": true,
+          "presence": "presence",
           "sessions": null
         },
         "analyticsTrackingId": "${GA_TRACKING_ID}",
@@ -52,7 +52,7 @@
           "updateProfileOnLogin": false,
           "useFirestoreForProfile": true,
           "useFirestoreForStorageMeta": true,
-          "presence": true,
+          "presence": "presence",
           "sessions": null
         },
         "analyticsTrackingId": "${GA_TRACKING_ID}",

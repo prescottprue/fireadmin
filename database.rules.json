@@ -28,15 +28,19 @@
       }
     },
     "requests": {
-      "$requestId": {
-        ".read": "auth !== null && data.child('createdBy').val() === auth.uid",
-        ".write": "auth !== null && newData.child('createdBy').val() === auth.uid"
+      "$requestGroup": {
+        "$requestId": {
+          ".read": "auth !== null && data.child('createdBy').val() === auth.uid",
+          ".write": "auth !== null && newData.child('createdBy').val() === auth.uid"
+        }
       }
     },
     "responses": {
-      "$responseId": {
-        ".read": "auth !== null && root.child('requests').child($responseId).child('createdBy').val() == auth.uid",
-        ".write": "auth !== null && root.child('requests').child($responseId).child('createdBy').val() == auth.uid"
+      "$responseGroup": {
+        "$responseId": {
+          ".read": "auth !== null && root.child('requests').child($responseGroup).child($responseId).child('createdBy').val() == auth.uid",
+          ".write": "auth !== null && root.child('requests').child($responseGroup).child($responseId).child('createdBy').val() == auth.uid"
+        }
       }
     },
     "serviceAccounts": {
