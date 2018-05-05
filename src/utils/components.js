@@ -102,9 +102,7 @@ export const renderWhileEmpty = (propsNames, component) =>
 export const renderIfError = (listenerPaths, component) =>
   compose(
     connect((state, props) => {
-      const {
-        firestore: { errors }
-      } = state
+      const { firestore: { errors } } = state
       const listenerErrors = reduce(
         listenerPaths,
         (acc, listenerConfig) => {

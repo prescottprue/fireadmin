@@ -41,11 +41,7 @@ export async function runStepsFromEvent(snap, context) {
     throw new Error('Action template is required to run steps')
   }
 
-  const {
-    inputValues,
-    environments,
-    template: { steps, inputs }
-  } = eventData
+  const { inputValues, environments, template: { steps, inputs } } = eventData
 
   if (!isArray(steps)) {
     await updateResponseWithError(snap, context)
@@ -127,10 +123,7 @@ export async function runBackupsFromEvent(snap, context) {
   if (!isObject(eventData.template)) {
     throw new Error('Action template is required to run steps')
   }
-  const {
-    inputValues,
-    template: { backups, inputs }
-  } = eventData
+  const { inputValues, template: { backups, inputs } } = eventData
   if (!isArray(backups)) {
     await updateResponseWithError(snap, context)
     throw new Error('Steps array was not provided to action request')
