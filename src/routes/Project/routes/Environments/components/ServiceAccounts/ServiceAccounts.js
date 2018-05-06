@@ -29,8 +29,11 @@ export const ServiceAccounts = ({
 }) => (
   <div className={classes.root}>
     <List>
-      {map(serviceAccounts, (account, key) => (
-        <ListItem button key={key} onClick={() => onAccountClick(key, account)}>
+      {map(serviceAccounts, (account, idx) => (
+        <ListItem
+          button
+          key={`${account.id}-${idx}`}
+          onClick={() => onAccountClick(account.id, account)}>
           <Avatar>
             <ServiceAccountIcon />
           </Avatar>
@@ -40,8 +43,8 @@ export const ServiceAccounts = ({
           />
           <ListItemSecondaryAction>
             <Checkbox
-              onChange={() => onAccountClick(key, account)}
-              checked={selectedAccountKey === key}
+              onChange={() => onAccountClick(account.id, account)}
+              checked={selectedAccountKey === account.id}
             />
           </ListItemSecondaryAction>
         </ListItem>
@@ -51,7 +54,7 @@ export const ServiceAccounts = ({
 )
 
 ServiceAccounts.propTypes = {
-  serviceAccounts: PropTypes.object,
+  serviceAccounts: PropTypes.array.isRequired, // from enhancer
   selectedAccountKey: PropTypes.string,
   classes: PropTypes.object, // from withStyles
   onAccountClick: PropTypes.func.isRequired

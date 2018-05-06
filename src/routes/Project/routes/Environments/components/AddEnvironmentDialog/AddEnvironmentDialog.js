@@ -20,6 +20,7 @@ export const AddEnvironmentDialog = ({
   submit,
   reset,
   submitting,
+  projectId,
   pristine,
   isEditing,
   serviceAccounts,
@@ -68,15 +69,12 @@ export const AddEnvironmentDialog = ({
             onFilesDrop={onFilesDrop}
             label="to upload service account"
           />
-          {serviceAccounts ? (
-            <ServiceAccounts
-              serviceAccounts={serviceAccounts}
-              selectedAccountKey={selectedServiceAccount}
-              onAccountClick={onAccountClick}
-            />
-          ) : (
-            <div>No Service Accounts </div>
-          )}
+          <ServiceAccounts
+            projectId={projectId}
+            serviceAccounts={serviceAccounts}
+            selectedAccountKey={selectedServiceAccount}
+            onAccountClick={onAccountClick}
+          />
         </div>
       ) : null}
     </DialogContent>
@@ -107,6 +105,7 @@ AddEnvironmentDialog.propTypes = {
   onAccountClick: PropTypes.func,
   onFilesDrop: PropTypes.func.isRequired,
   isEditing: PropTypes.bool,
+  projectId: PropTypes.string,
   open: PropTypes.bool.isRequired, // captured in other
   initialValues: PropTypes.object, // from reduxForm
   submit: PropTypes.func.isRequired, // from reduxForm

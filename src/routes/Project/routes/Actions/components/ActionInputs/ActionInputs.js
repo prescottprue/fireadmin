@@ -7,6 +7,7 @@ export const ActionInputs = ({
   fields,
   inputs,
   name,
+  projectId,
   environments,
   serviceAccounts
 }) => (
@@ -16,7 +17,13 @@ export const ActionInputs = ({
         key={index}
         name={`${name}.${member}`}
         inputMeta={get(inputs, index)}
-        {...{ index, inputs, serviceAccounts, environments }}
+        {...{
+          index,
+          inputs,
+          serviceAccounts,
+          environments,
+          projectId
+        }}
       />
     ))}
   </div>

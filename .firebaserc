@@ -22,7 +22,10 @@
           "userProfile": "users",
           "enableLogging": false,
           "updateProfileOnLogin": false,
-          "useFirestoreForProfile": true
+          "useFirestoreForProfile": true,
+          "useFirestoreForStorageMeta": true,
+          "presence": "presence",
+          "sessions": null
         },
         "analyticsTrackingId": "${GA_TRACKING_ID}",
         "googleApis": {
@@ -47,7 +50,10 @@
           "userProfile": "users",
           "enableLogging": false,
           "updateProfileOnLogin": false,
-          "useFirestoreForProfile": true
+          "useFirestoreForProfile": true,
+          "useFirestoreForStorageMeta": true,
+          "presence": "presence",
+          "sessions": null
         },
         "analyticsTrackingId": "${GA_TRACKING_ID}",
         "googleApis": {

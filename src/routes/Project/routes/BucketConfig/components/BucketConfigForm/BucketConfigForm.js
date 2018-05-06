@@ -134,7 +134,7 @@ BucketConfigForm.propTypes = {
   body: PropTypes.object,
   method: PropTypes.string,
   project: PropTypes.object,
-  serviceAccounts: PropTypes.object,
+  serviceAccounts: PropTypes.array,
   currentConfig: PropTypes.object,
   serviceAccount: PropTypes.object,
   storageBucket: PropTypes.string

@@ -26,14 +26,13 @@ if (gmailEmail && gmailPassword) {
 // Sends an email confirmation when a user changes his mailing list subscription.
 export default functions.database
   .ref('/requests/invite/{uid}')
-  .onCreate(event => {
+  .onCreate((snap, context) => {
     if (!mailTransport) {
       return Promise.reject(
         new Error('Gmail Email not set. Email can not be sent.')
       )
     }
-    const snapshot = event.data
-    const val = snapshot.val()
+    const val = snap.val()
     const mailOptions = {
       from: '"Fireadmin Team" <noreply@fireadmin.io>',
       to: val.email,

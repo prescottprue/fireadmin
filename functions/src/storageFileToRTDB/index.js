@@ -1,8 +1,8 @@
 import * as functions from 'firebase-functions'
+import * as admin from 'firebase-admin'
 import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
-import * as admin from 'firebase-admin'
 import mkdirp from 'mkdirp-promise'
 
 const gcs = require('@google-cloud/storage')()
@@ -18,31 +18,31 @@ export default functions.database
   .ref(`/requests/${eventPathName}/{pushId}`)
   .onCreate(copyFileToRTDB)
 
-async function copyFileToRTDB(event) {
-  const eventData = event.data.val()
-  const { filePath, databasePath, keepPushKey = false } = eventData
+async function copyFileToRTDB(snap, context) {
+  const { filePath, databasePath, keepPushKey = false } = snap.val()
   const tempLocalFile = path.join(os.tmpdir(), filePath)
   // Create temp directory
   const tempLocalDir = path.dirname(tempLocalFile)
   await mkdirp(tempLocalDir)
+  const functionsConfig = JSON.parse(process.env.FIREBASE_CONFIG)
 
-  const bucket = gcs.bucket(functions.config().firebase.storageBucket)
+  const bucket = gcs.bucket(functionsConfig.storageBucket)
 
   // Download file to temporary directory
   await bucket.file(filePath).download({ destination: tempLocalFile })
 
   // Read the file
   const fileData = await fs.readJson(filePath)
-  console.log('File data loaded, writing to database', event.data.val())
+  console.log('File data loaded, writing to database...')
 
   // Write File data to DB
-  await event.data.adminRef.ref.root
-    .child(`${databasePath}/${keepPushKey ? event.params.pushId : ''}`)
+  await snap.ref.root
+    .child(`${databasePath}/${keepPushKey ? context.params.pushId : ''}`)
     .set(fileData)
 
   // Mark request as complete
-  await event.data.adminRef.ref.root
-    .child(`responses/${eventPathName}/${event.params.pushId}`)
+  await snap.ref.root
+    .child(`responses/${eventPathName}/${context.params.pushId}`)
     .set({
       completed: true,
       completedAt: admin.database.ServerValue.TIMESTAMP

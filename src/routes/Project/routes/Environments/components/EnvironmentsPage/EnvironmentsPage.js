@@ -12,7 +12,6 @@ export const EnvironmentsPage = ({
   project,
   params,
   toggleDialog,
-  serviceAccounts,
   selectServiceAccount,
   selectedAccounts,
   selectedInstance,
@@ -66,6 +65,7 @@ export const EnvironmentsPage = ({
     <AddEnvironmentDialog
       selectedInstance={selectedInstance}
       open={envDialogOpen}
+      projectId={params.projectId}
       initialValues={selectedInstance}
       isEditing={!!selectedInstance}
       onFilesDrop={uploadServiceAccount}
@@ -74,7 +74,6 @@ export const EnvironmentsPage = ({
       selectedAccounts={selectedAccounts}
       selectedServiceAccount={selectedServiceAccount}
       onAccountClick={selectServiceAccount}
-      serviceAccounts={serviceAccounts}
     />
   </div>
 )
@@ -82,7 +81,6 @@ export const EnvironmentsPage = ({
 EnvironmentsPage.propTypes = {
   project: PropTypes.object,
   params: PropTypes.object,
-  serviceAccounts: PropTypes.object, // from enhancer
   selectedAccounts: PropTypes.array, // from enhancer
   selectedInstance: PropTypes.object, // from enhancer
   toggleDialogWithData: PropTypes.func, // from enhancer

@@ -1,15 +1,15 @@
 import * as admin from 'firebase-admin'
-import { get, invoke } from 'lodash'
+import * as functions from 'firebase-functions'
+import { get } from 'lodash'
 import { createIndexFunc } from '../utils/search'
-const functions = require('firebase-functions')
 
 // Updates the search index when users are created or displayName is updated
 export default functions.firestore.document('/users/{userId}').onWrite(
   createIndexFunc({
     indexName: 'users',
     idParam: 'userId',
-    indexCondition: (user, data) => {
-      const previousData = invoke(data, 'previous.data')
+    indexCondition: (user, change) => {
+      const previousData = change.before.data()
       const nameChanged =
         get(user, 'displayName') !== get(previousData, 'displayName')
       if (nameChanged) {

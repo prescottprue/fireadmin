@@ -30,8 +30,12 @@ export default compose(
   // map redux state to props
   connect(
     ({
-      firestore: { ordered: { actionTemplates, myTemplates } },
-      firebase: { auth: { uid } }
+      firestore: {
+        ordered: { actionTemplates, myTemplates }
+      },
+      firebase: {
+        auth: { uid }
+      }
     }) => ({
       uid,
       actionTemplates,

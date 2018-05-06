@@ -4,7 +4,6 @@ import {
   InstantSearch,
   PoweredBy,
   SearchBox,
-  Panel,
   Configure
 } from 'react-instantsearch/dom'
 import SearchResults from './SearchResults'
@@ -12,7 +11,11 @@ import classes from './UsersSearch.scss'
 import { algolia } from '../../config'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 
-export const UsersSearch = ({ onSuggestionClick, filterString }) => (
+export const UsersSearch = ({
+  onSuggestionClick,
+  resultsTitle,
+  filterString
+}) => (
   <InstantSearch
     appId={algolia.appId}
     apiKey={algolia.apiKey}
@@ -22,16 +25,18 @@ export const UsersSearch = ({ onSuggestionClick, filterString }) => (
       <PoweredBy />
     </div>
     <div className={classes.spacer} />
-    <Panel title="Users">
-      <SearchResults onSuggestionClick={onSuggestionClick} />
-    </Panel>
+    <SearchResults
+      onSuggestionClick={onSuggestionClick}
+      resultsTitle={resultsTitle}
+    />
     <Configure filters={filterString} />
   </InstantSearch>
 )
 
 UsersSearch.propTypes = {
   onSuggestionClick: PropTypes.func,
-  filterString: PropTypes.string
+  filterString: PropTypes.string,
+  resultsTitle: PropTypes.string
 }
 
 export default UsersSearch

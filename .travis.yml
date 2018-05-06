@@ -18,6 +18,10 @@ branches:
     - stage
     - prod
 
+env:
+  # Enable colors within logs
+  - FORCE_COLOR=true
+
 cache:
   # bundler: true
   directories:
@@ -34,7 +38,7 @@ install:
 script:
   - npm run build:config # create env specific src/config.js
   - npm run lint
-  # - npm run test
+  # - npm run test # Removed for now due to too many deps. Jest coming soon.
   - npm run build
 
 after_success:

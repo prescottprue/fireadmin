@@ -1,14 +1,19 @@
 import { compose } from 'redux'
-import { withHandlers } from 'recompose'
+import { get } from 'lodash'
+import { firestoreConnect } from 'react-redux-firebase'
 import { connect } from 'react-redux'
-import { firebaseConnect, getVal } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 
 export default compose(
   withNotifications,
-  firebaseConnect(({ projectId }) => [`serviceAccounts/${projectId}`]),
-  connect(({ firebase }, { projectId }) => ({
-    serviceAccounts: getVal(firebase, `data/serviceAccounts/${projectId}`)
-  })),
-  withHandlers({})
+  firestoreConnect(({ projectId }) => [
+    {
+      collection: 'projects',
+      doc: projectId,
+      subcollections: [{ collection: 'serviceAccounts' }]
+    }
+  ]),
+  connect(({ firebase, firestore: { data } }, { projectId }) => ({
+    project: get(data, `projects.${projectId}.serviceAccounts`)
+  }))
 )

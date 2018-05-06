@@ -1,23 +1,12 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, map } from 'lodash'
+import { get } from 'lodash'
 import { withHandlers, withStateHandlers, pure } from 'recompose'
-import { firestoreConnect } from 'react-redux-firebase'
+import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 import { withRouter, spinnerWhileLoading } from 'utils/components'
 import { UserIsAuthenticated } from 'utils/router'
 import * as handlers from './ProjectsPage.handlers'
-
-// TODO: Do this using populate instead once it is supported
-const populateUsers = (path, { ordered, data }) => {
-  if (!get(ordered, path) && !get(data, 'users')) {
-    return undefined
-  }
-  return map(get(ordered, path), project => ({
-    ...project,
-    createdBy: get(data.users, project.createdBy)
-  }))
-}
 
 export default compose(
   // redirect to /login if user is not logged in
@@ -26,6 +15,7 @@ export default compose(
   connect(({ firebase: { auth: { uid } } }) => ({ uid })),
   // Wait for uid to exist before going further
   spinnerWhileLoading(['uid']),
+  firebaseConnect(['displayNames']),
   // Create listeners based on current users UID
   firestoreConnect(({ params, uid }) => [
     // Listener for projects the current user created
@@ -38,17 +28,12 @@ export default compose(
       collection: 'projects',
       where: [`collaborators.${uid}`, '==', true],
       storeAs: 'collabProjects'
-    },
-    // Listener for all users
-    // TODO: Load this data through populate instead
-    {
-      collection: 'users'
     }
   ]),
   // Map projects from state to props (populating them in the process)
-  connect(({ firestore: { ordered, data } }) => ({
-    projects: populateUsers('projects', { ordered, data }),
-    collabProjects: populateUsers('collabProjects', { ordered, data })
+  connect(({ firebase, firestore: { ordered, data } }) => ({
+    projects: get(ordered, 'projects'),
+    collabProjects: get(ordered, 'collabProjects')
   })),
   // Show loading spinner while projects and collabProjects are loading
   spinnerWhileLoading(['projects', 'collabProjects']),

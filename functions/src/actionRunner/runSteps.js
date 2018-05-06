@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin'
-import { invoke, get, isArray, size, map, isObject } from 'lodash'
+import { get, isArray, size, map, isObject } from 'lodash'
 import { CUSTOM_STEPS_PATH } from './constants'
 import { invokeFirepadContent } from './firepad'
 import {
@@ -31,8 +31,8 @@ import {
  * options include 'firestore', 'storage', or 'rtdb'
  * @return {Promise}
  */
-export async function runStepsFromEvent(event) {
-  const eventData = invoke(event, 'data.val')
+export async function runStepsFromEvent(snap, context) {
+  const eventData = snap.val()
   if (!eventData) {
     throw new Error('Event object does not contain a value.')
   }
@@ -41,20 +41,24 @@ export async function runStepsFromEvent(event) {
     throw new Error('Action template is required to run steps')
   }
 
-  const { inputValues, environments, template: { steps, inputs } } = eventData
+  const {
+    inputValues,
+    environments,
+    template: { steps, inputs }
+  } = eventData
 
   if (!isArray(steps)) {
-    await updateResponseWithError(event)
+    await updateResponseWithError(snap, context)
     throw new Error('Steps array was not provided to action request')
   }
 
   if (!isArray(inputs)) {
-    await updateResponseWithError(event)
+    await updateResponseWithError(snap, context)
     throw new Error('Inputs array was not provided to action request')
   }
 
   if (!isArray(inputValues)) {
-    await updateResponseWithError(event)
+    await updateResponseWithError(snap, context)
     throw new Error('Input values array was not provided to action request')
   }
 
@@ -88,7 +92,8 @@ export async function runStepsFromEvent(event) {
           inputs,
           convertedInputValues,
           convertedEnvs,
-          event,
+          snap,
+          context,
           eventData,
           totalNumSteps
         })
@@ -98,11 +103,11 @@ export async function runStepsFromEvent(event) {
   // Cleanup temp directory
   cleanupServiceAccounts()
   if (actionErr) {
-    await updateResponseWithError(event)
+    await updateResponseWithError(snap, context)
     throw actionErr
   }
   // Write response to RTDB
-  await updateResponseOnRTDB(event)
+  await updateResponseOnRTDB(snap, context)
   return actionResponse
 }
 
@@ -114,25 +119,28 @@ export async function runStepsFromEvent(event) {
  * options include 'firestore', 'storage', or 'rtdb'
  * @return {Promise}
  */
-export async function runBackupsFromEvent(event) {
-  const eventData = invoke(event, 'data.val')
+export async function runBackupsFromEvent(snap, context) {
+  const eventData = snap.val()
   if (!eventData) {
     throw new Error('Event object does not contain a value.')
   }
   if (!isObject(eventData.template)) {
     throw new Error('Action template is required to run steps')
   }
-  const { inputValues, template: { backups, inputs } } = eventData
+  const {
+    inputValues,
+    template: { backups, inputs }
+  } = eventData
   if (!isArray(backups)) {
-    await updateResponseWithError(event)
+    await updateResponseWithError(snap, context)
     throw new Error('Steps array was not provided to action request')
   }
   if (!isArray(inputs)) {
-    await updateResponseWithError(event)
+    await updateResponseWithError(snap, context)
     throw new Error('Inputs array was not provided to action request')
   }
   if (!isArray(inputValues)) {
-    await updateResponseWithError(event)
+    await updateResponseWithError(snap, context)
     throw new Error('Input values array was not provided to action request')
   }
   console.log('Converting inputs of action....')
@@ -163,11 +171,11 @@ export async function runBackupsFromEvent(event) {
   // Cleanup temp directory
   cleanupServiceAccounts()
   if (actionErr) {
-    await updateResponseWithError(event)
+    await updateResponseWithError(snap, context)
     throw actionErr
   }
   // Write response to RTDB
-  await updateResponseOnRTDB(event)
+  await updateResponseOnRTDB(snap, context)
   return actionResponse
 }
 
@@ -289,7 +297,8 @@ function createStepRunner({
   inputs,
   convertedInputValues,
   convertedEnvs,
-  event,
+  snap,
+  context,
   eventData,
   totalNumSteps
 }) {
@@ -318,10 +327,16 @@ function createStepRunner({
         })
       )
       if (err) {
-        await updateResponseWithActionError(event, { totalNumSteps, stepIdx })
+        await updateResponseWithActionError(snap, context, {
+          totalNumSteps,
+          stepIdx
+        })
         throw new Error(`Error running step: ${stepIdx} : ${err.message}`)
       }
-      await updateResponseWithProgress(event, { totalNumSteps, stepIdx })
+      await updateResponseWithProgress(snap, context, {
+        totalNumSteps,
+        stepIdx
+      })
       return stepResponse
     }
   }
