@@ -132,7 +132,12 @@ export const removeEnvironment = props => async environmentId => {
  * success message has been displayed to user
  */
 export const updateEnvironment = props => async newValues => {
-  const { firestore, params: { projectId }, auth: { uid }, selectedKey } = props
+  const {
+    firestore,
+    params: { projectId },
+    auth: { uid },
+    selectedKey
+  } = props
   try {
     await props.firestore.update(
       {
