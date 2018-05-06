@@ -20,13 +20,13 @@ export default compose(
       where: ['eventType', '==', 'requestActionRun'],
       orderBy: ['createdAt', 'desc'],
       limit: 3,
-      storeAs: 'recentActions'
+      storeAs: `recentActions-${params.projectId}`
     }
   ]),
   // Map redux state to props
-  connect((state, { params }) => ({
-    displayNames: get(state.firebase, 'data.displayNames'),
-    recentActions: get(state.firestore, `ordered.recentActions`)
+  connect(({ firebase, firestore }, { params: { projectId } }) => ({
+    displayNames: get(firebase, 'data.displayNames'),
+    recentActions: get(firestore, `ordered.recentActions-${projectId}`)
   })),
   renderWhileEmpty(['recentActions'], NoRecentActions),
   spinnerWhileLoading(['recentActions']),

@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import { withStateHandlers } from 'recompose'
 
 export default compose(
-  connect(({ firestore: { data: { users } } }, { params }) => ({
-    users
+  connect(({ firebase: { data: { displayNames } } }, { params }) => ({
+    displayNames
   })),
   withStateHandlers(
     ({ initialDialogOpen = false, initialAnchorEl = null }) => ({

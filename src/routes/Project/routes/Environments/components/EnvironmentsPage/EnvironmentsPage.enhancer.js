@@ -2,17 +2,16 @@ import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withHandlers, withStateHandlers } from 'recompose'
-import { firebaseConnect, getVal, firestoreConnect } from 'react-redux-firebase'
+import { firestoreConnect } from 'react-redux-firebase'
 import {
   // logProps,
-  // messageWhileEmpty,
   spinnerWhileLoading
 } from 'utils/components'
 import { withNotifications } from 'modules/notification'
 import * as handlers from './EnvironmentsPage.handlers'
 
 export default compose(
-  firebaseConnect(({ params }) => [`serviceAccounts/${params.projectId}`]),
+  // Create Firestore listeners
   firestoreConnect(({ params }) => [
     {
       collection: 'projects',
@@ -24,17 +23,14 @@ export default compose(
       doc: params.projectId
     }
   ]),
+  // Map redux state to props
   connect(({ firebase, firestore: { data } }, { params }) => ({
     auth: firebase.auth,
-    project: get(data, `projects.${params.projectId}`),
-    serviceAccounts: getVal(
-      firebase,
-      `data/serviceAccounts/${params.projectId}`
-    )
+    project: get(data, `projects.${params.projectId}`)
   })),
-  // logProps(['project', 'auth']),
-  // messageWhileEmpty(['project']),
+  // Show a loading spinner while project data is loading
   spinnerWhileLoading(['project']),
+  // Add props.showSuccess and props.showError
   withNotifications,
   withStateHandlers(
     ({ initialEnvDialogOpen = false }) => ({
@@ -53,16 +49,10 @@ export default compose(
         selectedInstance: null,
         selectedKey: null
       }),
-      selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => {
-        if (selectedServiceAccount === pickedAccount) {
-          return {
-            selectedServiceAccount: null
-          }
-        }
-        return {
-          selectedServiceAccount: pickedAccount
-        }
-      },
+      selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => ({
+        selectedServiceAccount:
+          selectedServiceAccount === pickedAccount ? null : pickedAccount
+      }),
       clearServiceAccount: () => () => ({
         selectedServiceAccount: null
       })

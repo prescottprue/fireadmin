@@ -95,9 +95,10 @@ export default compose(
     }
   }),
   // map redux state to props
-  connect((state, props) => ({
+  connect(({ firestore: { ordered } }, { projectId, currentConfig }) => ({
+    serviceAccounts: get(ordered, `serviceAccounts-${projectId}`),
     initialValues: {
-      body: props.currentConfig,
+      body: currentConfig,
       method: 'GET'
     }
   })),

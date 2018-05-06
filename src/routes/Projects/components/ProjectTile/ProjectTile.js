@@ -21,7 +21,7 @@ export const ProjectTile = ({
   project,
   onSelect,
   onDelete,
-  users,
+  displayNames,
   menuClick,
   closeMenu,
   anchorEl,
@@ -73,7 +73,7 @@ export const ProjectTile = ({
           {map(project.collaborators, (collab, collabId) => (
             <Tooltip
               key={`collab-${collabId}`}
-              title={get(users, `${collabId}.displayName`, 'Collaborator')}>
+              title={get(displayNames, collabId, 'Collaborator')}>
               <IconButton onClick={toggleSharingDialog}>
                 <PersonIcon />
               </IconButton>
@@ -92,7 +92,7 @@ export const ProjectTile = ({
 
 ProjectTile.propTypes = {
   project: PropTypes.object.isRequired,
-  users: PropTypes.object,
+  displayNames: PropTypes.object,
   onSelect: PropTypes.func.isRequired,
   menuClick: PropTypes.func.isRequired,
   closeMenu: PropTypes.func.isRequired,

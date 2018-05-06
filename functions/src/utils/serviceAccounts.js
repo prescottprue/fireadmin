@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import * as admin from 'firebase-admin'
-import * as functions from 'firebase-functions'
 import os from 'os'
 import fs from 'fs-extra'
 import path from 'path'
@@ -10,7 +9,9 @@ import mkdirp from 'mkdirp-promise'
 import { decrypt } from './encryption'
 import { to } from './async'
 const gcs = require('@google-cloud/storage')()
-const bucket = gcs.bucket(functions.config().firebase.storageBucket)
+
+const functionsConfig = JSON.parse(process.env.FIREBASE_CONFIG)
+const bucket = gcs.bucket(functionsConfig.storageBucket)
 
 const missingCredMsg =
   'Credential parameter is required to load service account from Firestore'

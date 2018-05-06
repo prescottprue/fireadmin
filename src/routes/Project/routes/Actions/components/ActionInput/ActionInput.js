@@ -11,15 +11,7 @@ import { TextField } from 'redux-form-material-ui'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import classes from './ActionInput.scss'
 
-export const ActionInput = ({
-  inputMeta,
-  name,
-  index,
-  environments,
-  selectedInstance,
-  serviceAccounts,
-  selectInstance
-}) => (
+export const ActionInput = ({ inputMeta, name, index }) => (
   <ExpansionPanel defaultExpanded className={classes.container}>
     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
       <div style={{ display: 'block' }}>
@@ -45,13 +37,10 @@ export const ActionInput = ({
 )
 
 ActionInput.propTypes = {
-  environments: PropTypes.object,
   inputMeta: PropTypes.object,
   index: PropTypes.number.isRequired,
-  serviceAccounts: PropTypes.object,
-  selectedInstance: PropTypes.string,
   name: PropTypes.string.isRequired,
-  selectInstance: PropTypes.func
+  projectId: PropTypes.string.isRequired // eslint-disable-line react/no-unused-prop-types
 }
 
 export default ActionInput

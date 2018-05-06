@@ -5,7 +5,7 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from 'material-ui/Dialog'
-import { get, map, find } from 'lodash'
+import { map, find } from 'lodash'
 import PersonIcon from 'material-ui-icons/Person'
 import Button from 'material-ui/Button'
 import Checkbox from 'material-ui/Checkbox'
@@ -26,6 +26,7 @@ export const SharingDialog = ({
   open,
   onRequestClose,
   project,
+  projectCollaborators,
   users,
   selectedCollaborators,
   selectCollaborator,
@@ -39,17 +40,15 @@ export const SharingDialog = ({
     modal={false}>
     <DialogTitle>Sharing</DialogTitle>
     <DialogContent className={classes.content}>
-      {project.collaborators ? (
+      {projectCollaborators ? (
         <div>
           <h4>Current Collaborators</h4>
           <List>
-            {map(project.collaborators, (user, i) => {
+            {map(projectCollaborators, (displayName, i) => {
               return (
-                <ListItem key={`Collab-${user.id}-${i}`}>
+                <ListItem key={`Collab-${i}`}>
                   <PersonIcon />
-                  <ListItemText
-                    primary={get(users, `${user.id}.displayName`, 'User')}
-                  />
+                  <ListItemText primary={displayName} />
                 </ListItem>
               )
             })}
@@ -60,6 +59,7 @@ export const SharingDialog = ({
         <UsersSearch
           onSuggestionClick={selectCollaborator}
           ignoreSuggestions={map(project.collaborators, (val, key) => key)}
+          resultsTitle="New Collaborators"
         />
       </div>
       {selectedCollaborators.length ? (
@@ -101,6 +101,7 @@ SharingDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   project: PropTypes.object,
   users: PropTypes.object,
+  projectCollaborators: PropTypes.array,
   onRequestClose: PropTypes.func, // from enhancer (withStateHandlers)
   selectedCollaborators: PropTypes.array.isRequired, // from enhancer (withStateHandlers)
   selectCollaborator: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
