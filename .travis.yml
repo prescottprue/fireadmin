@@ -18,6 +18,10 @@ branches:
     - stage
     - prod
 
+env:
+  # Enable colors within logs
+  - FORCE_COLOR=true
+
 cache:
   # bundler: true
   directories:
