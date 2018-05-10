@@ -22,7 +22,7 @@ export const FilesUploader = ({
           classes.dropzoneCompact}`}
         activeClassName={classes.dropzoneActive}
         disableClick={disabled}
-        accept={maxSelection === 1 ? acceptedFormats.join(', ') : undefined}>
+        accept={acceptedFormats.join(', ')}>
         <UploadIcon
           className={classes[`icon${isCompact ? 'Compact' : ''}`]}
           // color={colors.jellyBean}
