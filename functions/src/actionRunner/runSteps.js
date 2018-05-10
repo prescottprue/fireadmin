@@ -25,10 +25,9 @@ import {
 
 /**
  * Data action using Service account stored on Firestore
- * @param  {functions.Event} event - Event from cloud function
- * @param  {object|undefined} event.params - Parameters from event
- * @param  {String} event.data.serviceAccountType - Type of service accounts,
- * options include 'firestore', 'storage', or 'rtdb'
+ * @param  {functions.Event} snap - Event from cloud function
+ * @param  {Object} context
+ * @param  {Object} context.params - Parameters from event
  * @return {Promise}
  */
 export async function runStepsFromEvent(snap, context) {
