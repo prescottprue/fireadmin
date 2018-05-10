@@ -29,7 +29,7 @@ export function createIndexFunc({
     const index = client.initIndex(indexName)
     const objectID = get(context, `params.${idParam}`)
     // Remove the item from algolia if it is being deleted
-    if (!event.data.exists) {
+    if (!event.after.exists) {
       console.log(
         `Object with ID: ${objectID} being deleted, deleting from Algolia index: ${indexName} ... `
       )
@@ -40,7 +40,7 @@ export function createIndexFunc({
         return null
       })
     }
-    const data = change.after.val()
+    const data = change.after.data()
     // Check if index indexCondition is a function
     if (isFunction(indexCondition)) {
       // Only re-index if indexCondition function returns truthy

@@ -25,7 +25,7 @@ export default functions.firestore
  * @return {Promise} Resolves with filePath
  */
 export async function handleServiceAccountCreate(snap) {
-  const eventData = snap.val()
+  const eventData = snap.data()
   if (!eventData.serviceAccount) {
     throw new Error(
       'serviceAccount parameter is required to copy service account to Firestore'
@@ -63,9 +63,6 @@ export async function handleServiceAccountCreate(snap) {
     throw updateErr
   }
 
-  console.log(
-    'Service account copied to Firestore, cleaning up...',
-    event.params
-  )
+  console.log('Service account copied to Firestore, cleaning up...')
   return fileData
 }
