@@ -18,15 +18,24 @@ export default compose(
       doc: params.projectId,
       subcollections: [{ collection: 'environments' }]
     },
+    // Service Accounts
+    {
+      collection: 'projects',
+      doc: params.projectId,
+      subcollections: [{ collection: 'serviceAccountUploads' }],
+      orderBy: ['createdAt', 'desc'],
+      storeAs: `serviceAccounts-${params.projectId}`
+    },
     {
       collection: 'projects',
       doc: params.projectId
     }
   ]),
   // Map redux state to props
-  connect(({ firebase, firestore: { data } }, { params }) => ({
+  connect(({ firebase, firestore: { data, ordered } }, { params }) => ({
     auth: firebase.auth,
-    project: get(data, `projects.${params.projectId}`)
+    project: get(data, `projects.${params.projectId}`),
+    serviceAccounts: get(ordered, `serviceAccounts-${params.projectId}`)
   })),
   // Show a loading spinner while project data is loading
   spinnerWhileLoading(['project']),
