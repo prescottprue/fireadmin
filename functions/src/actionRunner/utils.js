@@ -132,17 +132,18 @@ export function updateResponseOnRTDB(snap, context, error) {
   } else {
     response.status = 'success'
   }
-  return snap.ref.root
-    .child(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
+  return admin
+    .database()
+    .ref(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
     .set(response)
 }
 
-export async function updateRequestAsStarted(event) {
+export async function updateRequestAsStarted(snap) {
   const response = {
     status: 'started',
     startedAt: admin.database.ServerValue.TIMESTAMP
   }
-  const [dbUpdateError, updateRes] = await to(event.ref.update(response))
+  const [dbUpdateError, updateRes] = await to(snap.ref.update(response))
   if (dbUpdateError) {
     console.error(
       'Error updating request as started within RTDB:',
@@ -199,8 +200,9 @@ export function updateResponseWithProgress(
     progress: stepIdx / totalNumSteps,
     updatedAt: admin.database.ServerValue.TIMESTAMP
   }
-  return snap.ref.root
-    .child(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
+  return admin
+    .database()
+    .ref(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
     .update(response)
 }
 
@@ -216,8 +218,9 @@ export function updateResponseWithError(snap, context) {
     complete: true,
     updatedAt: admin.database.ServerValue.TIMESTAMP
   }
-  return event.ref.root
-    .child(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
+  return admin
+    .database()
+    .ref(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
     .update(response)
 }
 
@@ -231,7 +234,8 @@ export function updateResponseWithError(snap, context) {
  * @return {Promise} Resolves with results of database write promise
  */
 export function updateResponseWithActionError(
-  event,
+  snap,
+  context,
   { stepIdx, totalNumSteps }
 ) {
   const response = {
@@ -247,8 +251,9 @@ export function updateResponseWithActionError(
     progress: stepIdx / totalNumSteps,
     updatedAt: admin.database.ServerValue.TIMESTAMP
   }
-  return event.data.adminRef.ref.root
-    .child(`${ACTION_RUNNER_RESPONSES_PATH}/${event.params.pushId}`)
+  return admin
+    .database()
+    .ref(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
     .update(response)
 }
 

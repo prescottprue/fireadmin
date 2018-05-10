@@ -1,4 +1,4 @@
-import { get, pick } from 'lodash'
+import { pick, find } from 'lodash'
 import { reset } from 'redux-form'
 import { formNames } from 'constants'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
@@ -23,8 +23,7 @@ export const addEnvironment = props => async newProjectData => {
     doc: projectId,
     subcollections: [{ collection: 'environments' }]
   }
-
-  const serviceAccount = get(serviceAccounts, selectedServiceAccount, null)
+  const serviceAccount = find(serviceAccounts, { id: selectedServiceAccount })
 
   // Show error if service account is not selected (not part of form)
   if (!serviceAccount) {
