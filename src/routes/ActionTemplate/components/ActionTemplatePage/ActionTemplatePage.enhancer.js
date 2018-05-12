@@ -2,7 +2,12 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
 import { firebasePaths, paths } from 'constants'
-import { withHandlers, withStateHandlers } from 'recompose'
+import {
+  withHandlers,
+  withStateHandlers,
+  onlyUpdateForKeys,
+  withProps
+} from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 import {
@@ -26,10 +31,10 @@ export default compose(
   ]),
   // map redux state to props
   connect(({ firestore: { data: { actionTemplates } } }, { params }) => ({
-    templateExists: !!get(actionTemplates, params.templateId)
+    template: get(actionTemplates, params.templateId)
   })),
   // Show spinner while template is loading
-  spinnerWhileLoading(['templateExists']),
+  spinnerWhileLoading(['template']),
   // Render Error page if there is an error in the
   renderIfError(
     (state, { params: { templateId } }) => [
@@ -37,7 +42,8 @@ export default compose(
     ],
     TemplateLoadingError
   ),
-  renderWhile(({ templateExists }) => !templateExists, TemplateNotFound),
+  withProps(({ template }) => ({ templateExists: !!template })),
+  renderWhile(({ template }) => !template, TemplateNotFound),
   withStateHandlers(
     ({ deleteDialogInitial = false }) => ({
       deleteDialogOpen: false
@@ -91,5 +97,6 @@ export default compose(
       }
     },
     goBack: ({ router }) => () => router.push(paths.actionTemplates)
-  })
+  }),
+  onlyUpdateForKeys(['templateExists'])
 )

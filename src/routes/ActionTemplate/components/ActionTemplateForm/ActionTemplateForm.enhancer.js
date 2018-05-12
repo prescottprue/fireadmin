@@ -28,7 +28,9 @@ export default compose(
   withProps(({ editable, pristine, submitting }) => ({
     submitTooltip: !editable
       ? 'Requires Owner or Collaborator rights'
-      : 'Save Template',
+      : pristine
+        ? 'No Changes'
+        : 'Save Template',
     cancelTooltip: pristine || submitting ? 'No changes' : 'Clear Changes'
   }))
 )

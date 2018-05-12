@@ -31,7 +31,7 @@
     "classnames": "^2.2.5",
     "codemirror": "^5.32.0",
     "date-fns": "^1.29.0",
-    "firebase": "^4.13.1",
+    "firebase": "4.12.0",
     "firepad": "^1.4.0",
     "lodash": "^4.17.4",
     "material-ui": "1.0.0-beta.39",
