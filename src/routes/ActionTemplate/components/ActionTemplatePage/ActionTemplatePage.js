@@ -31,10 +31,6 @@ export const ActionTemplatePage = ({
     </Link>
     <ActionTemplateForm
       onSubmit={updateTemplate}
-      initialValues={{
-        environments: [{ type: 'serviceAccount' }],
-        ...template
-      }}
       templateId={params.templateId}
       startTemplateDelete={startTemplateDelete}
     />
@@ -54,7 +50,14 @@ ActionTemplatePage.propTypes = {
   startTemplateDelete: PropTypes.func.isRequired,
   deleteDialogOpen: PropTypes.bool.isRequired,
   updateTemplate: PropTypes.func.isRequired,
-  toggleDeleteDialog: PropTypes.func.isRequired
+  toggleDeleteDialog: PropTypes.func.isRequired,
+  /* eslint-disable react/no-unused-prop-types */
+  router: PropTypes.shape({
+    push: PropTypes.func.isRequired // used in enhancer (withHandlers)
+  }),
+  showSuccess: PropTypes.func.isRequired, // used in enhancer (withHandlers)
+  showError: PropTypes.func.isRequired // used in enhancer (withHandlers)
+  /* eslint-enable react/no-unused-prop-types */
 }
 
 export default ActionTemplatePage

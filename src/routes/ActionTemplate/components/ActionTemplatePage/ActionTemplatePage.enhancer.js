@@ -1,4 +1,3 @@
-import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
@@ -9,9 +8,11 @@ import { withNotifications } from 'modules/notification'
 import {
   spinnerWhileLoading,
   withRouter,
-  renderWhileEmpty,
+  renderWhile,
   renderIfError
 } from 'utils/components'
+import TemplateLoadingError from './TemplateLoadingError'
+import TemplateNotFound from './TemplateNotFound'
 
 export default compose(
   withNotifications,
@@ -25,16 +26,18 @@ export default compose(
   ]),
   // map redux state to props
   connect(({ firestore: { data: { actionTemplates } } }, { params }) => ({
-    template: get(actionTemplates, params.templateId)
+    templateExists: !!get(actionTemplates, params.templateId)
   })),
   // Show spinner while template is loading
-  spinnerWhileLoading(['template']),
+  spinnerWhileLoading(['templateExists']),
   // Render Error page if there is an error in the
   renderIfError(
-    (state, { params }) => [`${firebasePaths.actionTemplates}.${params}`],
-    ({ errorMessage }) => <div>Error loading templates: {errorMessage}</div>
+    (state, { params: { templateId } }) => [
+      `${firebasePaths.actionTemplates}.${templateId}`
+    ],
+    TemplateLoadingError
   ),
-  renderWhileEmpty(['template'], () => <div>Template Not Found</div>),
+  renderWhile(({ templateExists }) => !templateExists, TemplateNotFound),
   withStateHandlers(
     ({ deleteDialogInitial = false }) => ({
       deleteDialogOpen: false
@@ -87,6 +90,6 @@ export default compose(
         showError('Error Deleting Template')
       }
     },
-    goBack: props => () => props.router.push(paths.actionTemplates)
+    goBack: ({ router }) => () => router.push(paths.actionTemplates)
   })
 )

@@ -8,6 +8,7 @@ import Typography from 'material-ui/Typography'
 import IconButton from 'material-ui/IconButton'
 import Button from 'material-ui/Button'
 import Grid from 'material-ui/Grid'
+import Tooltip from 'material-ui/Tooltip'
 import ActionTemplateStep from '../ActionTemplateStep'
 import ActionTemplateInputs from '../ActionTemplateInputs'
 import ActionTemplateEnvs from '../ActionTemplateEnvs'
@@ -23,26 +24,37 @@ export const ActionTemplateForm = ({
   reset,
   handleSubmit,
   templateId,
+  editable,
+  submitTooltip,
+  cancelTooltip,
   startTemplateDelete
 }) => (
   <form className={classes.container} onSubmit={handleSubmit}>
     <div className={classes.buttons}>
-      <Button
-        disabled={pristine || submitting}
-        color="secondary"
-        onTouchTap={reset}
-        variant="raised"
-        style={{ marginRight: '2rem' }}>
-        Cancel
-      </Button>
-      <Button
-        disabled={submitting || pristine}
-        color="primary"
-        type="submit"
-        variant="raised"
-        className={classes.submit}>
-        Save
-      </Button>
+      <Tooltip placement="bottom" title={cancelTooltip}>
+        <div>
+          <Button
+            disabled={pristine || submitting}
+            color="secondary"
+            onTouchTap={reset}
+            variant="raised"
+            style={{ marginRight: '2rem' }}>
+            Cancel
+          </Button>
+        </div>
+      </Tooltip>
+      <Tooltip placement="bottom" title={submitTooltip}>
+        <div>
+          <Button
+            disabled={!editable || submitting || pristine}
+            color="primary"
+            type="submit"
+            variant="raised"
+            className={classes.submit}>
+            Publish
+          </Button>
+        </div>
+      </Tooltip>
       {/* <LoadIntoProjectButton templateId={templateId} /> */}
       <IconButton
         onClick={startTemplateDelete}
@@ -105,7 +117,10 @@ ActionTemplateForm.propTypes = {
   startTemplateDelete: PropTypes.func,
   submitting: PropTypes.bool.isRequired,
   pristine: PropTypes.bool.isRequired,
-  reset: PropTypes.func.isRequired
+  reset: PropTypes.func.isRequired,
+  editable: PropTypes.bool.isRequired,
+  submitTooltip: PropTypes.string.isRequired,
+  cancelTooltip: PropTypes.string.isRequired
 }
 
 export default ActionTemplateForm
