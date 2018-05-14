@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
   pick,
@@ -15,10 +16,9 @@ import LoadingSpinner from 'components/LoadingSpinner'
 import { isLoaded, isEmpty } from 'react-redux-firebase'
 import {
   compose,
-  withContext,
-  getContext,
   mapProps,
   setDisplayName,
+  wrapDisplayName,
   branch,
   renderComponent
 } from 'recompose'
@@ -163,20 +163,29 @@ export const logProps = (propNames, logName = '') =>
     return ownerProps
   })
 
+export const createWithFromContext = withVar => WrappedComponent => {
+  class WithFromContext extends Component {
+    static wrappedComponent = WrappedComponent
+    static displayName = wrapDisplayName(WrappedComponent, withVar)
+    static contextTypes = {
+      [withVar]: PropTypes.object.isRequired
+    }
+
+    render() {
+      const props = { [withVar]: this.context[withVar] }
+      if (this.context.store && this.context.store.dispatch) {
+        props.dispatch = this.context.store.dispatch
+      }
+      return <WrappedComponent {...this.props} {...props} />
+    }
+  }
+
+  return WithFromContext
+}
+
+export const withRouter = createWithFromContext('router')
 /**
  * HOC that adds store to props
  * @return {HigherOrderComponent}
  */
-export const withStore = compose(
-  withContext({ store: PropTypes.object }, () => {}),
-  getContext({ store: PropTypes.object })
-)
-
-/**
- * HOC that adds router to props
- * @return {HigherOrderComponent}
- */
-export const withRouter = compose(
-  withContext({ router: PropTypes.object }, () => {}),
-  getContext({ router: PropTypes.object })
-)
+export const withStore = createWithFromContext('store')

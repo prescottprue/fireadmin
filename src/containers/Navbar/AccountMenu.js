@@ -5,7 +5,7 @@ import IconButton from 'material-ui/IconButton'
 import Avatar from 'material-ui/Avatar'
 import AccountCircle from 'material-ui-icons/AccountCircle'
 
-export const AccountMenu = ({
+const AccountMenu = ({
   avatarUrl,
   displayName,
   goToAccount,

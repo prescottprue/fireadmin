@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { browserHistory, Router } from 'react-router'
 import { Provider } from 'react-redux'
-import { withContext } from 'recompose'
+// import VersionChangeReloader from 'components/VersionChangeReloader'
 import { handleRouteUpdate } from 'utils/router'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
 import Theme from 'theme'
@@ -24,11 +24,4 @@ App.propTypes = {
   store: PropTypes.object.isRequired
 }
 
-export default withContext(
-  {
-    muiTheme: PropTypes.object
-  },
-  () => ({
-    muiTheme: theme
-  })
-)(App)
+export default App

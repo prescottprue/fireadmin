@@ -5,7 +5,8 @@ import {
   compose,
   withProps,
   flattenProp,
-  withStateHandlers
+  withStateHandlers,
+  setDisplayName
 } from 'recompose'
 import Theme from 'theme'
 import { withFirebase, isEmpty, isLoaded } from 'react-redux-firebase'
@@ -13,14 +14,19 @@ import { ACCOUNT_PATH } from 'constants'
 import { withRouter, spinnerWhileLoading } from 'utils/components'
 
 export default compose(
-  withFirebase, // add props.firebase (firebaseConnect() can also be used)
+  setDisplayName('Navbar'),
+  // add props.firebase
+  withFirebase,
+  // add props.router (router.push used in enhancers)
+  withRouter,
+  // get auth and profile from state
   connect(({ firebase: { auth, profile } }) => ({
     auth,
     profile
   })),
-  withRouter,
   // Wait for auth to be loaded before going further
   spinnerWhileLoading(['profile']),
+  // State handlers for account menu
   withStateHandlers(
     ({ accountMenuOpenInitially = false }) => ({
       accountMenuOpen: accountMenuOpenInitially,
@@ -51,7 +57,7 @@ export default compose(
   withProps(({ auth, profile }) => ({
     authExists: isLoaded(auth) && !isEmpty(auth)
   })),
-  // Flatten profile so that avatarUrl and displayName are available
+  // Flatten profile prop (adds avatarUrl and displayName to props)
   flattenProp('profile'),
   withStyles({ color: Theme.palette.primary1Color })
 )

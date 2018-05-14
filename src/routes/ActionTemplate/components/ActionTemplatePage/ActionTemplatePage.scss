@@ -10,3 +10,10 @@
   color: rgba(0, 0, 0, 0.54) !important;
   font-size: 2.25rem !important;
 }
+.notFound {
+  @extend .flex-row-center;
+  margin-top: 4rem;
+  &Text {
+    font-size: 2rem !important;
+  }
+}

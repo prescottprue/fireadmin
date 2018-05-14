@@ -35,7 +35,7 @@ export const ActionsPage = ({
           color="primary"
           variant="raised"
           aria-label="Run Action"
-          onTouchTap={submitActionRunner}>
+          onClick={submitActionRunner}>
           Run Action
         </Button>
         {selectedTemplate && (
@@ -44,7 +44,7 @@ export const ActionsPage = ({
             color="secondary"
             variant="raised"
             aria-label="Clear"
-            onTouchTap={clearRunner}
+            onClick={clearRunner}
             className={classes.button}>
             Clear
           </Button>

@@ -2,9 +2,7 @@ import { get, isFunction } from 'lodash'
 import algoliasearch from 'algoliasearch'
 import * as functions from 'firebase-functions'
 
-// Authenticate to Algolia Database.
-// TODO: Make sure you configure the `algolia.app_id` and `algolia.api_key`
-// Google Cloud environment variables.
+// Authenticate to Algolia Database
 const client = algoliasearch(
   functions.config().algolia.app_id,
   functions.config().algolia.api_key
@@ -29,7 +27,7 @@ export function createIndexFunc({
     const index = client.initIndex(indexName)
     const objectID = get(context, `params.${idParam}`)
     // Remove the item from algolia if it is being deleted
-    if (!event.after.exists) {
+    if (!change.after.exists) {
       console.log(
         `Object with ID: ${objectID} being deleted, deleting from Algolia index: ${indexName} ... `
       )
