@@ -28,7 +28,7 @@ export const EnvironmentsPage = ({
       Environments
     </Typography>
     <div style={{ marginBottom: '2rem' }}>
-      <Button variant="raised" color="primary" onTouchTap={toggleDialog}>
+      <Button variant="raised" color="primary" onClick={toggleDialog}>
         Add Environment
       </Button>
     </div>
@@ -81,17 +81,17 @@ export const EnvironmentsPage = ({
 EnvironmentsPage.propTypes = {
   project: PropTypes.object,
   params: PropTypes.object,
+  envDialogOpen: PropTypes.bool,
   selectedAccounts: PropTypes.array, // from enhancer
   selectedInstance: PropTypes.object, // from enhancer
-  toggleDialogWithData: PropTypes.func, // from enhancer
-  addEnvironment: PropTypes.func, // from enhancer
-  updateEnvironment: PropTypes.func, // from enhancer
-  removeEnvironment: PropTypes.func, // from enhancer
-  uploadServiceAccount: PropTypes.func, // from enhancer
-  selectServiceAccount: PropTypes.func, // from enhancer
   selectedServiceAccount: PropTypes.string, // from enhancer
-  toggleDialog: PropTypes.func, // from enhancer
-  envDialogOpen: PropTypes.bool
+  toggleDialogWithData: PropTypes.func.isRequired, // from enhancer
+  toggleDialog: PropTypes.func.isRequired, // from enhancer
+  addEnvironment: PropTypes.func.isRequired, // from enhancer
+  updateEnvironment: PropTypes.func.isRequired, // from enhancer
+  removeEnvironment: PropTypes.func.isRequired, // from enhancer
+  uploadServiceAccount: PropTypes.func.isRequired, // from enhancer
+  selectServiceAccount: PropTypes.func.isRequired // from enhancer
 }
 
 export default EnvironmentsPage

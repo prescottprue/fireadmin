@@ -82,7 +82,7 @@ export const AddEnvironmentDialog = ({
       <Button
         color="secondary"
         disabled={submitting}
-        onTouchTap={() => {
+        onClick={() => {
           reset()
           onRequestClose && onRequestClose()
         }}>
@@ -91,7 +91,7 @@ export const AddEnvironmentDialog = ({
       <Button
         color="primary"
         disabled={pristine || submitting}
-        onTouchTap={submit}>
+        onClick={submit}>
         {isEditing ? 'Save' : 'Create'}
       </Button>
     </DialogActions>

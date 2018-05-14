@@ -2,6 +2,10 @@
   "rules": {
     ".read": false,
     ".write": false,
+    "versionInfo": {
+      ".read": true,
+      ".write": false
+    },
     "displayNames": {
       ".read": true,
       ".write": false
