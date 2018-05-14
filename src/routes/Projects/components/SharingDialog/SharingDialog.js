@@ -87,10 +87,10 @@ export const SharingDialog = ({
       ) : null}
     </DialogContent>
     <DialogActions>
-      <Button color="secondary" onTouchTap={onRequestClose}>
+      <Button color="secondary" onClick={onRequestClose}>
         Cancel
       </Button>
-      <Button color="primary" onTouchTap={saveCollaborators}>
+      <Button color="primary" onClick={saveCollaborators}>
         Save
       </Button>
     </DialogActions>

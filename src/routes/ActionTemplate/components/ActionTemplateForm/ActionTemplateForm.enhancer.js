@@ -1,9 +1,17 @@
 import { reduxForm } from 'redux-form'
 import { compose } from 'redux'
 import { withProps } from 'recompose'
+import { withStyles } from 'material-ui'
 import { formNames } from 'constants'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
+
+const styles = theme => ({
+  button: {
+    margin: theme.spacing.unit,
+    cursor: 'finger'
+  }
+})
 
 export default compose(
   // Get template from redux state (listener in ActionTemplatePage)
@@ -26,11 +34,8 @@ export default compose(
   }),
   // Add props
   withProps(({ editable, pristine, submitting }) => ({
-    submitTooltip: !editable
-      ? 'Requires Owner or Collaborator rights'
-      : pristine
-        ? 'No Changes'
-        : 'Save Template',
-    cancelTooltip: pristine || submitting ? 'No changes' : 'Clear Changes'
-  }))
+    submitTooltip: editable && pristine && !submitting ? 'Save Template' : null,
+    cancelTooltip: pristine || submitting ? null : 'Undo'
+  })),
+  withStyles(styles)
 )

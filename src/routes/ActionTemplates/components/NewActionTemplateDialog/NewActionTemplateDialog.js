@@ -26,7 +26,7 @@ export const NewActionTemplateDialog = ({
         <Button
           disabled={submitting}
           color="secondary"
-          onTouchTap={onRequestClose}>
+          onClick={onRequestClose}>
           Cancel
         </Button>
         <Button

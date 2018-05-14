@@ -20,7 +20,8 @@ export const NewProjectDialog = ({
   pristine,
   reset,
   submitting,
-  submit
+  submit,
+  closeAndReset
 }) => (
   <Dialog open={open} onClose={onRequestClose}>
     <DialogTitle id="new-title">New Project</DialogTitle>
@@ -35,19 +36,13 @@ export const NewProjectDialog = ({
       </form>
     </DialogContent>
     <DialogActions>
-      <Button
-        color="secondary"
-        disabled={submitting}
-        onTouchTap={() => {
-          reset()
-          onRequestClose && onRequestClose()
-        }}>
+      <Button color="secondary" disabled={submitting} onClick={closeAndReset}>
         Cancel
       </Button>
       <Button
         color="primary"
         disabled={pristine || submitting}
-        onTouchTap={submit}>
+        onClick={submit}>
         Create
       </Button>
     </DialogActions>
@@ -58,6 +53,7 @@ NewProjectDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onRequestClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  closeAndReset: PropTypes.func.isRequired, // added by enhancer (withHandlers)
   handleSubmit: PropTypes.func.isRequired, // added by redux-form
   pristine: PropTypes.bool.isRequired, // added by redux-form
   reset: PropTypes.func.isRequired, // added by redux-form
