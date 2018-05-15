@@ -8,6 +8,7 @@ globals:
   expect: true
   should: true
   functionsTest: true
+  to: true
 
 rules:
   no-unused-expressions: 0

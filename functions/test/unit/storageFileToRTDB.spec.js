@@ -1,17 +1,38 @@
+import * as admin from 'firebase-admin' // eslint-disable-line no-unused-vars
+
 describe('Cloud Functions', () => {
   let storageFileToRTDB
   let adminInitStub
   let admin
+  let refStub
+  let docStub
+  let docSetStub
+  let setStub
+  let databaseStub
+  let firestoreStub
 
-  before(() => {
-    admin = require('firebase-admin')
+  beforeEach(() => {
     adminInitStub = sinon.stub(admin, 'initializeApp')
+    databaseStub = sinon.stub()
+    firestoreStub = sinon.stub()
+    refStub = sinon.stub()
+    setStub = sinon.stub()
+    docStub = sinon.stub()
+    docSetStub = sinon.stub()
+    refStub.returns({ root: setStub })
+    setStub.returns(Promise.resolve({ ref: 'new_ref' }))
+    databaseStub.ServerValue = { TIMESTAMP: 'test' }
+    databaseStub.returns({ ref: refStub })
+    docStub.returns({ set: docSetStub })
+    firestoreStub.returns({ doc: docStub })
+    sinon.stub(admin, 'database').get(() => databaseStub)
+    // Stub Firebase's functions.config()
     storageFileToRTDB = functionsTest.wrap(
       require(`${__dirname}/../../index`).storageFileToRTDB
     )
   })
 
-  after(() => {
+  afterEach(() => {
     functionsTest.cleanup()
     adminInitStub.restore()
   })
