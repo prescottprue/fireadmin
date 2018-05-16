@@ -1,6 +1,7 @@
 import { get, map } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
+import { reduxForm } from 'redux-form'
 import { withProps } from 'recompose'
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
@@ -30,18 +31,25 @@ export default compose(
     project: get(firestore, `data.projects.${projectId}`)
   })),
   spinnerWhileLoading(['project', 'displayNames']),
-  withProps(({ project, displayNames }) => ({
-    // map collaboratorPermissions object into an object with displayName
-    permissions: map(
+  withProps(({ project, displayNames }) => {
+    const permissions = map(
       project.collaboratorPermissions,
       ({ permission }, uid) => ({
         uid,
         permission,
         displayName: get(displayNames, uid)
       })
-    ),
-    collaborators: map(project.permissions, (_, uid) => ({
-      uid
-    }))
-  }))
+    )
+    return {
+      // map collaboratorPermissions object into an object with displayName
+      permissions,
+      initialValues: project.collaboratorPermissions,
+      collaborators: map(project.permissions, (_, uid) => ({
+        uid
+      }))
+    }
+  }),
+  reduxForm({
+    form: 'permissions'
+  })
 )

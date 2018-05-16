@@ -4,3 +4,32 @@
   margin-left: .125rem;
   margin-right: .125rem;
 }
+.header {
+  @extend .flex-row;
+  padding: 0.75rem;
+  &Left {
+    padding-left: .75rem;
+    width: 8rem;
+    margin-right: 2rem;
+  }
+}
+.displayName {
+  width: 8rem !important;
+  margin-right: 2rem !important;
+}
+.permission {
+  margin-left: -.75rem !important;
+}
+.content {
+  width: 100%;
+}
+.roleSelect {
+  margin-top: 2.5rem;
+  padding-left: 2rem;
+  width: 250px;
+}
+.buttons {
+  @extend .flex-row;
+  justify-content: flex-end;
+  width: 100%;
+}
