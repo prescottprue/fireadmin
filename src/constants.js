@@ -12,6 +12,7 @@ export const LOGIN_FORM_NAME = 'login'
 export const SIGNUP_FORM_NAME = 'signup'
 export const NEW_PROJECT_FORM_NAME = 'newProject'
 export const PROJECT_BUCKET_CONFIG_PATH = 'bucketConfig'
+export const PERMISSIONS_PATH = 'permissions'
 
 export const formNames = {
   account: ACCOUNT_FORM_NAME,
@@ -32,7 +33,8 @@ export const paths = {
   projectActions: PROJECT_ACTION_PATH,
   projectEnvironments: PROJECT_ENVIRONMENTS_PATH,
   projectEvents: PROJECT_EVENTS_PATH,
-  projectBucketConfig: PROJECT_BUCKET_CONFIG_PATH
+  projectBucketConfig: PROJECT_BUCKET_CONFIG_PATH,
+  projectPermissions: PERMISSIONS_PATH
 }
 
 export const firebasePaths = {
