@@ -44,7 +44,7 @@ const sidebarOptions = [
   },
   {
     value: paths.projectPermissions,
-    label: 'Permissions',
+    label: 'Users/Permissions',
     iconElement: <PeopleIcon />
   }
 ]

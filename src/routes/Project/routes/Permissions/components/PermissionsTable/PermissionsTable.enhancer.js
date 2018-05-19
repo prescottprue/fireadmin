@@ -1,11 +1,11 @@
 import { get, map } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { reduxForm } from 'redux-form'
 import { withProps } from 'recompose'
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
-import { spinnerWhileLoading } from 'utils/components'
+import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
+import NoCollaboratorsFound from './NoCollaboratorsFound'
 
 export default compose(
   withNotifications,
@@ -30,26 +30,19 @@ export default compose(
     displayNames: data.displayNames,
     project: get(firestore, `data.projects.${projectId}`)
   })),
+  // Show loading spinner until project and displayNames load
   spinnerWhileLoading(['project', 'displayNames']),
   withProps(({ project, displayNames }) => {
-    const permissions = map(
-      project.collaboratorPermissions,
-      ({ permission }, uid) => ({
-        uid,
-        permission,
-        displayName: get(displayNames, uid)
-      })
-    )
+    const collaborators = map(project.collaborators, (_, uid) => ({
+      uid,
+      permission: get(project, `collaboratorPermissions.${uid}.permission`),
+      displayName: get(displayNames, uid)
+    }))
     return {
       // map collaboratorPermissions object into an object with displayName
-      permissions,
-      initialValues: project.collaboratorPermissions,
-      collaborators: map(project.permissions, (_, uid) => ({
-        uid
-      }))
+      collaborators,
+      initialValues: collaborators
     }
   }),
-  reduxForm({
-    form: 'permissions'
-  })
+  renderWhileEmpty(['collaborators'], NoCollaboratorsFound)
 )

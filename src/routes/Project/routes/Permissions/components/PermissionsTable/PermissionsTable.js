@@ -25,7 +25,7 @@ const resourcesOptions = [
 ]
 
 export const PermissionsTable = ({
-  permissions,
+  collaborators,
   pristine,
   reset,
   handleSubmit
@@ -37,7 +37,7 @@ export const PermissionsTable = ({
         <span>Role</span>
       </div>
       <form className={classes.body} onSubmit={handleSubmit}>
-        {permissions.map(({ permission, uid, displayName }, index) => (
+        {collaborators.map(({ permission, uid, displayName }, index) => (
           <ExpansionPanel key={`${uid}-${permission}`}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.displayName}>
@@ -104,7 +104,7 @@ export const PermissionsTable = ({
 )
 
 PermissionsTable.propTypes = {
-  permissions: PropTypes.array.isRequired,
+  collaborators: PropTypes.array.isRequired,
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   reset: PropTypes.func.isRequired
