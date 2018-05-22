@@ -112,10 +112,8 @@ export async function runStepsFromEvent(snap, context) {
 
 /**
  * Data action using Service account stored on Firestore
- * @param  {functions.Event} event - Event from cloud function
- * @param  {object|undefined} event.params - Parameters from event
- * @param  {String} event.data.serviceAccountType - Type of service accounts,
- * options include 'firestore', 'storage', or 'rtdb'
+ * @param  {firebase.Datatabase.Snapshot} snap - Snapshot from cloud function
+ * @param  {Object} context - Context from cloud function
  * @return {Promise}
  */
 export async function runBackupsFromEvent(snap, context) {

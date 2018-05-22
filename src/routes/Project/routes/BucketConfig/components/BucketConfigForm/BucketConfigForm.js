@@ -59,8 +59,8 @@ export const BucketConfigForm = ({
             name: 'environment',
             id: 'environment'
           }}>
-          {map(get(project, 'environments'), ({ name, fullPath }, key) => (
-            <MenuItem key={key} value={key}>
+          {map(get(project, 'environments'), ({ name, fullPath }, i) => (
+            <MenuItem key={`Environment-${i}-${name}`} value={i}>
               {name}
             </MenuItem>
           ))}
@@ -76,8 +76,8 @@ export const BucketConfigForm = ({
             name: 'serviceAccount',
             id: 'serviceAccount'
           }}>
-          {map(serviceAccounts, ({ name, fullPath }) => (
-            <MenuItem key={fullPath} value={fullPath}>
+          {map(serviceAccounts, ({ name, fullPath }, idx) => (
+            <MenuItem key={`ServiceAccount-${idx}-${name}`} value={fullPath}>
               {name}
             </MenuItem>
           ))}

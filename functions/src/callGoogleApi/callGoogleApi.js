@@ -29,7 +29,6 @@ async function authClientFromServiceAccount(serviceAccount) {
   )
   return new Promise((resolve, reject) => {
     jwtClient.authorize(err => {
-      // tokens is second arg
       if (!err) {
         google.options({ auth: jwtClient })
         resolve(jwtClient)
@@ -91,7 +90,6 @@ export async function googleApisRequest(serviceAccount, requestSettings) {
 export default async function callGoogleApi(snap, context) {
   const eventVal = snap.val()
   const eventId = get(context, 'params.pushId')
-  console.log('Request recieved', eventVal)
   if (!eventVal) {
     console.error('No event value?')
     throw new Error('No value contained within event')
@@ -119,8 +117,9 @@ export default async function callGoogleApi(snap, context) {
       json: true
     })
     console.log('Google API response successful. Writing response to RTDB...')
-    await event.data.adminRef.ref.root
-      .child(`responses/${eventPathName}/${eventId}`)
+    await admin
+      .database()
+      .ref(`responses/${eventPathName}/${eventId}`)
       .set({
         completed: true,
         responseData: response,
@@ -130,9 +129,10 @@ export default async function callGoogleApi(snap, context) {
     return response
   } catch (err) {
     console.log('Error calling Google API:', err.message || err)
-    await event.data.adminRef.ref.root
+    await admin
+      .database()
       .child(`responses/${eventPathName}/${eventId}`)
-      .set({
+      .ref({
         completed: true,
         error: err.message || JSON.stringify(err),
         completedAt: admin.database.ServerValue.TIMESTAMP
