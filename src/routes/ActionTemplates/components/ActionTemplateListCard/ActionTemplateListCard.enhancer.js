@@ -1,14 +1,18 @@
 import { compose } from 'redux'
 import { withStyles } from 'material-ui/styles'
-import { withStateHandlers, flattenProp } from 'recompose'
+import { withStateHandlers, flattenProp, withProps } from 'recompose'
 import red from 'material-ui/colors/red'
 
 const styles = theme => ({
   card: {
-    maxWidth: 400
+    maxWidth: 400,
+    height: '10rem'
   },
   media: {
-    height: 194
+    height: 194,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    wordWrap: 'no-wrap'
   },
   expand: {
     transform: 'rotate(0deg)',
@@ -39,5 +43,10 @@ export default compose(
       })
     }
   ),
-  flattenProp('template')
+  flattenProp('template'),
+  withProps(({ description }) => ({
+    truncatedDescription:
+      description &&
+      `${description.substring(0, 85)}${description.length >= 85 ? '...' : ''}`
+  }))
 )
