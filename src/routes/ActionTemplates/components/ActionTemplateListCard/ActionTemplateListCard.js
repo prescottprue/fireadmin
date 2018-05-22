@@ -5,16 +5,16 @@ import Card, { CardHeader, CardContent } from 'material-ui/Card'
 import IconButton from 'material-ui/IconButton'
 import Typography from 'material-ui/Typography'
 import MoreVertIcon from 'material-ui-icons/MoreVert'
-import classes from './ActionTemplateListCard.scss'
 
 export const ActionTemplateListCard = ({
   name,
-  description,
+  truncatedDescription,
   steps,
   expanded,
-  onClick
+  onClick,
+  classes
 }) => (
-  <Card className={classes.container} onClick={onClick}>
+  <Card className={classes.card} onClick={onClick}>
     <CardHeader
       action={
         <IconButton>
@@ -22,10 +22,10 @@ export const ActionTemplateListCard = ({
         </IconButton>
       }
       title={name}
-      subheader={description}
+      subheader={`${size(steps)} Steps`}
     />
-    <CardContent>
-      <Typography component="p">{size(steps)} Steps</Typography>
+    <CardContent className={classes.media}>
+      <Typography component="p">{truncatedDescription}</Typography>
     </CardContent>
   </Card>
 )
@@ -34,8 +34,9 @@ ActionTemplateListCard.propTypes = {
   expanded: PropTypes.bool,
   onClick: PropTypes.func,
   name: PropTypes.string, // from enhancer (flattenProp - template)
-  description: PropTypes.string, // from enhancer (flattenProp - template)
-  steps: PropTypes.array // from enhancer (flattenProp - template)
+  steps: PropTypes.array, // from enhancer (flattenProp - template)
+  truncatedDescription: PropTypes.string, // from enhancer (withProps)
+  classes: PropTypes.object.isRequired // from enhancer (withStyles - template)
 }
 
 export default ActionTemplateListCard

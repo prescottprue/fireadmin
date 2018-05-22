@@ -15,8 +15,11 @@ import ActionTemplateBackups from '../ActionTemplateBackups'
 // import LoadIntoProjectButton from '../LoadIntoProjectButton'
 import DeleteIcon from 'material-ui-icons/Delete'
 import PublishIcon from 'material-ui-icons/Publish'
+import BackIcon from 'material-ui-icons/ArrowBack'
 import UndoIcon from 'material-ui-icons/Undo'
-import { firebasePaths } from 'constants'
+import IconButton from 'material-ui/IconButton'
+import { Link } from 'react-router'
+import { firebasePaths, paths } from 'constants'
 import styleClasses from './ActionTemplateForm.scss'
 
 export const ActionTemplateForm = ({
@@ -30,65 +33,57 @@ export const ActionTemplateForm = ({
   submitTooltip,
   deleteTooltip,
   cancelTooltip,
-  startTemplateDelete
+  startTemplateDelete,
+  goBack
 }) => (
   <form className={styleClasses.container} onSubmit={handleSubmit}>
     <div className={styleClasses.buttons}>
-      {cancelTooltip ? (
-        <Tooltip placement="bottom" title={cancelTooltip}>
-          <div>
-            <Button
-              disabled={pristine || submitting}
-              onClick={reset}
-              variant="fab"
-              color="secondary"
-              className={classes.button}>
-              <UndoIcon />
-            </Button>
-          </div>
-        </Tooltip>
-      ) : (
-        <Button variant="fab" disabled className={classes.button}>
-          <UndoIcon />
-        </Button>
-      )}
-      {submitTooltip ? (
-        <Tooltip placement="bottom" title={submitTooltip}>
-          <div>
-            <Button
-              type="submit"
-              variant="fab"
-              disabled={!editable || submitting || pristine}
-              color="primary"
-              className={classes.button}>
-              <PublishIcon />
-            </Button>
-          </div>
-        </Tooltip>
-      ) : (
-        <Button variant="fab" disabled className={classes.button}>
-          <PublishIcon />
-        </Button>
-      )}
+      <div style={{ marginRight: '4rem' }}>
+        <Link to={paths.dataAction}>
+          <Tooltip placement="bottom" title="Back To Templates">
+            <IconButton className={classes.submit} onClick={goBack}>
+              <BackIcon />
+            </IconButton>
+          </Tooltip>
+        </Link>
+      </div>
+      <Tooltip placement="bottom" title={cancelTooltip}>
+        <div>
+          <Button
+            disabled={pristine || submitting}
+            onClick={reset}
+            variant="fab"
+            color="secondary"
+            className={classes.button}>
+            <UndoIcon />
+          </Button>
+        </div>
+      </Tooltip>
+      <Tooltip placement="bottom" title={submitTooltip}>
+        <div>
+          <Button
+            type="submit"
+            variant="fab"
+            disabled={!editable || submitting || pristine}
+            color="primary"
+            className={classes.button}>
+            <PublishIcon />
+          </Button>
+        </div>
+      </Tooltip>
       {/* <LoadIntoProjectButton templateId={templateId} /> */}
-      {deleteTooltip ? (
-        <Tooltip placement="bottom" title={deleteTooltip}>
-          <div>
-            <Button
-              onClick={startTemplateDelete}
-              disabled={!editable}
-              variant="fab"
-              color="secondary"
-              className={classes.button}>
-              <DeleteIcon />
-            </Button>
-          </div>
-        </Tooltip>
-      ) : (
-        <Button variant="fab" disabled className={classes.button}>
-          <DeleteIcon />
-        </Button>
-      )}
+      <Tooltip placement="bottom" title={deleteTooltip}>
+        <div>
+          <Button
+            onClick={startTemplateDelete}
+            disabled={!editable}
+            variant="fab"
+            color="secondary"
+            className={classes.button}>
+            <DeleteIcon />
+          </Button>
+        </div>
+      </Tooltip>
     </div>
     <Typography className={styleClasses.header}>Meta Data</Typography>
     <Paper className={styleClasses.paper}>
@@ -105,10 +100,11 @@ export const ActionTemplateForm = ({
             component={TextField}
             className={styleClasses.field}
             label="Description"
+            multiline
           />
           <div className={styleClasses.publicToggle}>
             <FormControlLabel
-              control={<Field name="name" component={Switch} />}
+              control={<Field name="public" component={Switch} />}
               label="Public"
             />
           </div>
@@ -140,7 +136,8 @@ export const ActionTemplateForm = ({
 
 ActionTemplateForm.propTypes = {
   templateId: PropTypes.string.isRequired,
-  startTemplateDelete: PropTypes.func,
+  startTemplateDelete: PropTypes.func.isRequired,
+  goBack: PropTypes.func.isRequired, // from enhancer (withHandlers)
   submitting: PropTypes.bool.isRequired, // from enhancer (reduxForm)
   pristine: PropTypes.bool.isRequired, // from enhancer (reduxForm)
   reset: PropTypes.func.isRequired, // from enhancer (reduxForm)

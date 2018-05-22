@@ -1,5 +1,14 @@
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isOwner(res) {
+      return res.data.createdBy == request.auth.uid
+    }
+    function isOwnerOrPublic(res) {
+      return isOwner(res) || res.data.public == true
+    }
+    function isCollaborator(res) {
+      return res.data.collaborators[request.auth.uid] == true
+    }
     match /users/{userId} {
       allow read, write: if request.auth.uid == userId;
     }
@@ -8,30 +17,22 @@ service cloud.firestore {
       allow write: if request.auth.uid == userId;
     }
     match /projects/{projectId} {
-      // Only projects you own or collaborate on can be viewed
-			allow read: if resource.data.createdBy == request.auth.uid || resource.data.collaborators[request.auth.uid] == true;
-      allow write: if request.auth != null;
+      allow create: if isOwner(request.resource);
+      allow read: if isOwner(resource) || isCollaborator(resource);
+      allow write: if isOwner(resource) || isCollaborator(resource);
       match /{allChildren=**} {
-			  allow read: if get(/databases/$(database)/documents/projects/$(projectId)).data.createdBy == request.auth.uid || get(/databases/$(database)/documents/projects/$(projectId)).data.collaborators[(request.auth.uid)] == true;
-        allow write: if request.auth != null;
-      }
-    }
-    match /migrationTemplates/{templateId} {
-      // Only projects you own or collaborate on can be viewed
-      allow read: if resource.data.public == true || resource.data.createdBy == request.auth.uid;
-      allow write: if request.auth != null;
-      match /{allChildren=**} {
-        allow read: if resource.data.public == true || resource.data.createdBy == request.auth.uid;
+        allow read: if isOwner(get(/databases/$(database)/documents/projects/$(projectId)))
+          || isCollaborator(get(/databases/$(database)/documents/projects/$(projectId)));
         allow write: if request.auth != null;
       }
     }
     match /actionTemplates/{templateId} {
-      // Only projects you own or collaborate on can be viewed
-      allow read: if resource.data.public == true || resource.data.createdBy == request.auth.uid;
-      allow write: if request.auth != null;
+      allow create: if isOwner(request.resource);
+      allow read: if isOwnerOrPublic(resource);
+      allow write: if isOwner(resource);
       match /{allChildren=**} {
-        allow read: if resource.data.public == true || resource.data.createdBy == request.auth.uid;
-        allow write: if request.auth != null;
+        allow read: if isOwnerOrPublic(get(/databases/$(database)/documents/actionTemplates/$(projectId)));
+        allow write: if isOwnerOrPublic(get(/databases/$(database)/documents/actionTemplates/$(projectId)));
       }
     }
   }

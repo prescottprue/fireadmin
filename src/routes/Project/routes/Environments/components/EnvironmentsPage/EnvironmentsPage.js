@@ -9,13 +9,13 @@ import AddEnvironmentDialog from '../AddEnvironmentDialog'
 import classesFromStyles from './EnvironmentsPage.scss'
 
 export const EnvironmentsPage = ({
-  project,
   params,
   toggleDialog,
   selectServiceAccount,
   selectedAccounts,
   selectedInstance,
   toggleDialogWithData,
+  projectEnvironments,
   envDialogOpen,
   addEnvironment,
   selectedServiceAccount,
@@ -33,12 +33,12 @@ export const EnvironmentsPage = ({
       </Button>
     </div>
     <div>
-      {project.environments ? (
+      {projectEnvironments ? (
         <div className="flex-column">
           <div className={classesFromStyles.instances}>
-            {map(project.environments, (inst, i) => (
+            {map(projectEnvironments, (inst, i) => (
               <Instance
-                key={`Instance-${i}`}
+                key={`Instance-${params.projectId}-${i}`}
                 instance={inst}
                 onEditClick={() => toggleDialogWithData(inst, i)}
                 onRemoveClick={() => removeEnvironment(i)}
@@ -79,8 +79,8 @@ export const EnvironmentsPage = ({
 )
 
 EnvironmentsPage.propTypes = {
-  project: PropTypes.object,
-  params: PropTypes.object,
+  projectEnvironments: PropTypes.object,
+  params: PropTypes.object.isRequired,
   envDialogOpen: PropTypes.bool,
   selectedAccounts: PropTypes.array, // from enhancer
   selectedInstance: PropTypes.object, // from enhancer

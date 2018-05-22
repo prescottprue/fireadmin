@@ -1,10 +1,6 @@
 import { compose } from 'redux'
-import { withHandlers } from 'recompose'
-import { withNotifications } from 'modules/notification'
+import { pure } from 'recompose'
 
 export default compose(
-  withNotifications,
-  withHandlers({
-
-  })
+  pure
 )

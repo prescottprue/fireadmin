@@ -2,12 +2,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
 import { firebasePaths, paths } from 'constants'
-import {
-  withHandlers,
-  withStateHandlers,
-  onlyUpdateForKeys,
-  withProps
-} from 'recompose'
+import { withHandlers, withStateHandlers, pure, withProps } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 import {
@@ -46,7 +41,7 @@ export default compose(
   renderWhile(({ template }) => !template, TemplateNotFound),
   withStateHandlers(
     ({ deleteDialogInitial = false }) => ({
-      deleteDialogOpen: false
+      deleteDialogOpen: deleteDialogInitial
     }),
     {
       startTemplateDelete: () => () => ({
@@ -98,5 +93,5 @@ export default compose(
     },
     goBack: ({ router }) => () => router.push(paths.actionTemplates)
   }),
-  onlyUpdateForKeys(['templateExists'])
+  pure
 )
