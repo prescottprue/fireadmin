@@ -17,8 +17,7 @@ export const ActionsPage = ({
   templateName,
   submitActionRunner,
   params,
-  actionProcessing,
-  project
+  actionProcessing
 }) => (
   <div className={classes.container}>
     <Typography className={classes.pageHeader}>Actions</Typography>
@@ -54,8 +53,6 @@ export const ActionsPage = ({
         {actionProcessing && <LinearProgress color="primary" />}
       </div>
       <ActionRunnerForm
-        environments={project.environments}
-        project={project}
         projectId={params.projectId}
         selectedTemplate={selectedTemplate}
         initialValues={selectedTemplate}
@@ -70,7 +67,6 @@ export const ActionsPage = ({
 )
 
 ActionsPage.propTypes = {
-  project: PropTypes.object,
   params: PropTypes.object.isRequired, // from react-router
   selectedTemplate: PropTypes.object, // from enhancer (withStateHandlers)
   runAction: PropTypes.func.isRequired, // from enhancer (withHandlers)

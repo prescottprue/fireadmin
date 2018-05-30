@@ -15,17 +15,18 @@ export default compose(
       doc: get(params, 'projectId'),
       subcollections: [{ collection: 'events' }],
       orderBy: ['createdAt', 'desc'],
+      storeAs: `projectEvents-${params.projectId}`,
       limit: 300
     }
   ]),
   connect(({ firebase, firestore }, { params }) => ({
-    project: get(firestore, `data.projects.${params.projectId}`),
+    projectEvents: get(firestore, `data.projectEvents-${params.projectId}`),
     displayNames: get(firebase, 'data.displayNames')
   })),
-  spinnerWhileLoading(['project', 'project.events']),
-  renderWhileEmpty(['project', 'project.events'], NoProjectEvents),
-  withProps(({ project, displayNames }) => {
-    const events = map(get(project, 'events'), event => {
+  spinnerWhileLoading(['projectEvents']),
+  renderWhileEmpty(['projectEvents'], NoProjectEvents),
+  withProps(({ projectEvents, displayNames }) => {
+    const events = map(projectEvents, event => {
       const createdBy = get(event, 'createdBy')
       if (createdBy) {
         return {

@@ -2,33 +2,15 @@ import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withHandlers, withStateHandlers } from 'recompose'
-import { firestoreConnect } from 'react-redux-firebase'
 import { spinnerWhileLoading } from 'utils/components'
 import { withNotifications } from 'modules/notification'
 import * as handlers from './EnvironmentsPage.handlers'
 
 export default compose(
-  // Create Firestore listeners which update redux state
-  firestoreConnect(({ params }) => [
-    // Environments
-    {
-      collection: 'projects',
-      doc: params.projectId,
-      subcollections: [{ collection: 'environments' }],
-      storeAs: `environments-${params.projectId}`
-    },
-    // Service Accounts
-    {
-      collection: 'projects',
-      doc: params.projectId,
-      subcollections: [{ collection: 'serviceAccountUploads' }],
-      orderBy: ['createdAt', 'desc'],
-      storeAs: `serviceAccounts-${params.projectId}`
-    }
-  ]),
   // Map redux state to props
   connect(({ firebase: { auth }, firestore: { ordered } }, { params }) => ({
     auth,
+    // Listeners for redux data in ProjectsPageEnhancer
     projectEnvironments: get(ordered, `environments-${params.projectId}`),
     serviceAccounts: get(ordered, `serviceAccounts-${params.projectId}`)
   })),

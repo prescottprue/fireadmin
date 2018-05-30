@@ -79,7 +79,7 @@ export const EnvironmentsPage = ({
 )
 
 EnvironmentsPage.propTypes = {
-  projectEnvironments: PropTypes.object,
+  projectEnvironments: PropTypes.array,
   params: PropTypes.object.isRequired,
   envDialogOpen: PropTypes.bool,
   selectedAccounts: PropTypes.array, // from enhancer

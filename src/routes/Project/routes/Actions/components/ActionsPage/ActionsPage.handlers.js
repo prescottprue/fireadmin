@@ -26,7 +26,7 @@ export const runAction = props => async formValues => {
     firebase,
     firestore,
     params: { projectId },
-    auth,
+    uid,
     selectedTemplate,
     project,
     toggleActionProcessing
@@ -39,7 +39,7 @@ export const runAction = props => async formValues => {
     templateId: get(selectedTemplate, 'templateId'),
     template: omit(selectedTemplate, ['_highlightResult']),
     ...formValues,
-    createdBy: auth.uid,
+    createdBy: uid,
     createdAt: firestore.FieldValue.serverTimestamp()
   }
   if (environmentValues) {
@@ -64,7 +64,7 @@ export const runAction = props => async formValues => {
             inputValues: actionRequest.inputValues || []
           }
         },
-        createdBy: auth.uid
+        createdBy: uid
       }
     )
   )
