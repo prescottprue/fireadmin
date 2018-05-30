@@ -1,12 +1,15 @@
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
+import { withFirebase, withFirestore } from 'react-redux-firebase'
 import { withStateHandlers, withHandlers, withProps } from 'recompose'
 import { withNotifications } from 'modules/notification'
 import * as handlers from './ActionsPage.handlers'
 
 export default compose(
   withNotifications,
+  withFirestore,
+  withFirebase,
   // Map redux state to props
   connect(({ firebase, firestore: { data, ordered } }, { params }) => ({
     uid: firebase.auth.uid,

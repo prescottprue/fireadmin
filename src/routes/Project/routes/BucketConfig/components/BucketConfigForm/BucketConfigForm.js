@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Button from 'material-ui/Button'
-import { map, get } from 'lodash'
+import { map } from 'lodash'
 import { MenuItem } from 'material-ui/Menu'
 import { Field, FieldArray } from 'redux-form'
 import Typography from 'material-ui/Typography'
@@ -15,12 +15,11 @@ import classes from './BucketConfigForm.scss'
 export const BucketConfigForm = ({
   handleSubmit,
   pristine,
-  serviceAccounts,
   serviceAccount,
   storageBucket,
   method,
   reset,
-  project,
+  projectEnvironments,
   currentConfig,
   body,
   submitting
@@ -31,12 +30,7 @@ export const BucketConfigForm = ({
         color="primary"
         type="submit"
         variant="raised"
-        disabled={
-          pristine ||
-          submitting ||
-          !serviceAccount ||
-          (method === 'PUT' && !body)
-        }
+        disabled={pristine || submitting || (method === 'PUT' && !body)}
         className={classes.button}>
         Run Bucket Action
       </Button>
@@ -59,25 +53,8 @@ export const BucketConfigForm = ({
             name: 'environment',
             id: 'environment'
           }}>
-          {map(get(project, 'environments'), ({ name, fullPath }, i) => (
-            <MenuItem key={`Environment-${i}-${name}`} value={i}>
-              {name}
-            </MenuItem>
-          ))}
-        </Field>
-      </FormControl>
-      <FormControl className={classes.field}>
-        <InputLabel htmlFor="serviceAccount">Service Account</InputLabel>
-        <Field
-          name="serviceAccount.fullPath"
-          component={Select}
-          fullWidth
-          inputProps={{
-            name: 'serviceAccount',
-            id: 'serviceAccount'
-          }}>
-          {map(serviceAccounts, ({ name, fullPath }, idx) => (
-            <MenuItem key={`ServiceAccount-${idx}-${name}`} value={fullPath}>
+          {map(projectEnvironments, ({ id, name, fullPath }, i) => (
+            <MenuItem key={`Environment-${id}-${i}`} value={id}>
               {name}
             </MenuItem>
           ))}
@@ -127,17 +104,16 @@ export const BucketConfigForm = ({
 )
 
 BucketConfigForm.propTypes = {
+  body: PropTypes.object,
+  method: PropTypes.string,
+  projectEnvironments: PropTypes.array,
+  currentConfig: PropTypes.object,
+  serviceAccount: PropTypes.object,
+  storageBucket: PropTypes.string,
   handleSubmit: PropTypes.func.isRequired, // from enhancer (reduxForm)
   pristine: PropTypes.bool.isRequired, // from enhancer (reduxForm)
   submitting: PropTypes.bool.isRequired, // from enhancer (reduxForm)
-  reset: PropTypes.func.isRequired, // from enhancer (reduxForm)
-  body: PropTypes.object,
-  method: PropTypes.string,
-  project: PropTypes.object,
-  serviceAccounts: PropTypes.array,
-  currentConfig: PropTypes.object,
-  serviceAccount: PropTypes.object,
-  storageBucket: PropTypes.string
+  reset: PropTypes.func.isRequired // from enhancer (reduxForm)
 }
 
 export default BucketConfigForm

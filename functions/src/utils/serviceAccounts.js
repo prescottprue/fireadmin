@@ -84,7 +84,11 @@ export async function getAppFromServiceAccount(opts, eventData) {
  * @param  {String} name - Name under which to store local service account file
  * @return {Promise}
  */
-export async function serviceAccountFromFirestorePath(docPath, name) {
+export async function serviceAccountFromFirestorePath(
+  docPath,
+  name,
+  { returnData = false }
+) {
   const firestore = admin.firestore()
   const projectDoc = await firestore.doc(docPath).get()
   if (!projectDoc.exists) {
@@ -111,7 +115,7 @@ export async function serviceAccountFromFirestorePath(docPath, name) {
     }
     console.log('writing service account:', serviceAccountData)
     await fs.writeJson(tempLocalPath, serviceAccountData)
-    return tempLocalPath
+    return returnData ? serviceAccountData : tempLocalPath
   } catch (err) {
     console.error('Error getting service account form Firestore')
     throw err

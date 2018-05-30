@@ -11,8 +11,7 @@ export default compose(
   connect(({ firebase: { auth }, firestore: { ordered } }, { params }) => ({
     auth,
     // Listeners for redux data in ProjectsPageEnhancer
-    projectEnvironments: get(ordered, `environments-${params.projectId}`),
-    serviceAccounts: get(ordered, `serviceAccounts-${params.projectId}`)
+    projectEnvironments: get(ordered, `environments-${params.projectId}`)
   })),
   // Show a loading spinner while project data is loading
   spinnerWhileLoading(['projectEnvironments']),

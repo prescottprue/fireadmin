@@ -26,29 +26,41 @@ export default compose(
       setConfig: () => currentConfig => ({ currentConfig })
     }
   ),
+  // map redux state to props
+  connect(({ firestore: { ordered, data } }, { projectId, currentConfig }) => ({
+    projectEnvironments: get(ordered, `environments-${projectId}`),
+    projectEnvironmentsById: get(data, `environments-${projectId}`),
+    initialValues: {
+      body: currentConfig,
+      method: 'GET'
+    }
+  })),
   // Handlers as props
   withHandlers({
-    callGoogleApi: ({
+    onSubmit: ({
       firebase,
       firestore,
       showSuccess,
       showError,
       setConfig,
       storageBucket,
-      serviceAccount,
+      projectEnvironmentsById,
       project,
       projectId
     }) => async bucketConfig => {
       try {
         const databaseURL = get(
-          project,
-          `environments.${bucketConfig.environment}.databaseURL`
+          projectEnvironmentsById,
+          `${bucketConfig.environment}.databaseURL`
         )
         const databaseName =
           databaseURL && databaseURLToProjectName(databaseURL)
         const pushRef = await firebase.pushWithMeta('requests/googleApi', {
           api: 'storage',
           ...bucketConfig,
+          projectId,
+          databaseName,
+          databaseURL,
           storageBucket: `${databaseName}.appspot.com`
         })
         const pushKey = pushRef.key
@@ -56,6 +68,7 @@ export default compose(
           firebase.ref(`responses/googleApi/${pushKey}`)
         )
         if (results.error) {
+          showError(`Error calling google api: ${results.error}`)
           throw new Error(results.error)
         }
         setConfig(results.responseData)
@@ -88,20 +101,6 @@ export default compose(
       }
     }
   }),
-  // Add props
-  withProps(({ callGoogleApi }) => {
-    return {
-      onSubmit: callGoogleApi // so redux-form submit calls callGoogleApi
-    }
-  }),
-  // map redux state to props
-  connect(({ firestore: { ordered } }, { projectId, currentConfig }) => ({
-    serviceAccounts: get(ordered, `serviceAccounts-${projectId}`),
-    initialValues: {
-      body: currentConfig,
-      method: 'GET'
-    }
-  })),
   // form capability including submit
   reduxForm({
     form: formName,
@@ -113,8 +112,11 @@ export default compose(
   formValues('body'),
   formValues('method'),
   // Add more props
-  withProps(({ project, environment }) => {
-    const databaseURL = get(project, `environments.${environment}.databaseURL`)
+  withProps(({ projectEnvironmentsById, environment }) => {
+    const databaseURL = get(
+      projectEnvironmentsById,
+      `${environment}.databaseURL`
+    )
     const databaseName = databaseURL && databaseURLToProjectName(databaseURL)
     return {
       databaseName,
