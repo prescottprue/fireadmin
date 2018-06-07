@@ -1,23 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { reduxForm, Field } from 'redux-form'
+import { Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
 import Dialog, {
   DialogTitle,
   DialogActions,
   DialogContent
 } from 'material-ui/Dialog'
-import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
-import { formNames } from 'constants'
 import { required, validateDatabaseUrl } from 'utils/form'
-import FilesUploader from '../FilesUploader'
-import classes from './AddEnvironmentDialog.scss'
+import classes from './EditEnvironmentDialog.scss'
 
-export const AddEnvironmentDialog = ({
+export const EditEnvironmentDialog = ({
   onFilesDrop,
   submit,
   reset,
+  closeAndReset,
   submitting,
   projectId,
   pristine,
@@ -30,9 +28,7 @@ export const AddEnvironmentDialog = ({
   open
 }) => (
   <Dialog onClose={onRequestClose} open={open}>
-    <DialogTitle id="dialog-title">{`${
-      isEditing ? 'Edit' : 'Add'
-    } Environment`}</DialogTitle>
+    <DialogTitle id="dialog-title">Edit Environment</DialogTitle>
     <DialogContent className={classes.body}>
       <div className={classes.inputs}>
         <Field
@@ -59,35 +55,22 @@ export const AddEnvironmentDialog = ({
           label="Instance Description"
         />
       </div>
-      <div className={classes.serviceAccounts}>
-        <Typography style={{ fontSize: '1.1rem' }}>Service Account</Typography>
-        <FilesUploader
-          onFilesDrop={onFilesDrop}
-          label="to upload service account"
-        />
-      </div>
     </DialogContent>
     <DialogActions>
-      <Button
-        color="secondary"
-        disabled={submitting}
-        onClick={() => {
-          reset()
-          onRequestClose && onRequestClose()
-        }}>
+      <Button color="secondary" disabled={submitting} onClick={closeAndReset}>
         Cancel
       </Button>
       <Button
         color="primary"
         disabled={pristine || submitting}
         onClick={submit}>
-        Create
+        Save
       </Button>
     </DialogActions>
   </Dialog>
 )
 
-AddEnvironmentDialog.propTypes = {
+EditEnvironmentDialog.propTypes = {
   serviceAccounts: PropTypes.object,
   selectedServiceAccount: PropTypes.string,
   onRequestClose: PropTypes.func,
@@ -99,11 +82,9 @@ AddEnvironmentDialog.propTypes = {
   initialValues: PropTypes.object, // from reduxForm
   submit: PropTypes.func.isRequired, // from reduxForm
   reset: PropTypes.func.isRequired, // from reduxForm
+  closeAndReset: PropTypes.func.isRequired, // from reduxForm
   submitting: PropTypes.bool.isRequired, // from reduxForm
   pristine: PropTypes.bool.isRequired // from reduxForm
 }
 
-export default reduxForm({
-  form: formNames.newEnvironment,
-  enableReinitialize: true // Handle new/edit modal: reinitialize with other env to edit
-})(AddEnvironmentDialog)
+export default EditEnvironmentDialog

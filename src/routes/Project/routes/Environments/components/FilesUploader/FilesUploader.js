@@ -12,22 +12,20 @@ export const FilesUploader = ({
   maxSelection,
   disabled,
   acceptedFormats,
+  dropFiles,
+  droppedFiles,
   label
 }) => (
   <div className={classes.container}>
     {!isUploading ? (
       <Dropzone
-        onDrop={onFilesDrop}
+        onDrop={onFilesDrop || dropFiles}
         className={`${classes.dropzone} ${isCompact &&
           classes.dropzoneCompact}`}
         activeClassName={classes.dropzoneActive}
         disableClick={disabled}
         accept={acceptedFormats.join(', ')}>
-        <UploadIcon
-          className={classes[`icon${isCompact ? 'Compact' : ''}`]}
-          // color={colors.jellyBean}
-          // hoverColor={colors.alto}
-        />
+        <UploadIcon className={classes[`icon${isCompact ? 'Compact' : ''}`]} />
         <div className={classes[`dropzone${isCompact ? 'Text' : 'Title'}`]}>
           Drag & Drop
         </div>
@@ -40,17 +38,22 @@ export const FilesUploader = ({
         <LoadingSpinner />
       </div>
     )}
+    {droppedFiles.length
+      ? droppedFiles.map(file => <div>{JSON.stringify(file)}</div>)
+      : null}
   </div>
 )
 
 FilesUploader.propTypes = {
-  onFilesDrop: PropTypes.func.isRequired,
   maxSelection: PropTypes.number,
   isCompact: PropTypes.bool,
   isUploading: PropTypes.bool,
   label: PropTypes.string,
+  droppedFiles: PropTypes.array,
   acceptedFormats: PropTypes.array,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  onFilesDrop: PropTypes.func,
+  dropFiles: PropTypes.func.isRequired // from enhancer (withStateHandlers)
 }
 
 FilesUploader.defaultProps = {

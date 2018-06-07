@@ -14,7 +14,7 @@ export const addEnvironment = props => async newProjectData => {
   const {
     firestore,
     params: { projectId },
-    auth: { uid },
+    uid,
     selectedServiceAccount,
     serviceAccounts
   } = props
@@ -94,7 +94,7 @@ export const removeEnvironment = props => async environmentId => {
     firestore,
     showError,
     showSuccess,
-    auth: { uid },
+    uid,
     params: { projectId }
   } = props
   try {
@@ -134,7 +134,7 @@ export const updateEnvironment = props => async newValues => {
   const {
     firestore,
     params: { projectId },
-    auth: { uid },
+    uid,
     selectedKey
   } = props
   try {
@@ -175,7 +175,7 @@ export const uploadServiceAccount = props => async files => {
     firebase,
     firestore,
     showSuccess,
-    auth: { uid },
+    uid,
     params: { projectId }
   } = props
   const filePath = `serviceAccounts/${uid}/${projectId}`
@@ -190,6 +190,7 @@ export const uploadServiceAccount = props => async files => {
   )
   // Select newly uploaded service account within list
   props.selectServiceAccount(res.id)
+  // Track event within project events
   await createProjectEvent(
     { firestore, projectId },
     {
