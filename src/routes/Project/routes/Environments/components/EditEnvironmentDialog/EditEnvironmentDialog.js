@@ -12,19 +12,16 @@ import { required, validateDatabaseUrl } from 'utils/form'
 import classes from './EditEnvironmentDialog.scss'
 
 export const EditEnvironmentDialog = ({
-  onFilesDrop,
   submit,
   reset,
   closeAndReset,
   submitting,
   projectId,
   pristine,
-  isEditing,
   serviceAccounts,
   selectedServiceAccount,
   onRequestClose,
   initialValues,
-  onAccountClick,
   open
 }) => (
   <Dialog onClose={onRequestClose} open={open}>
@@ -74,9 +71,6 @@ EditEnvironmentDialog.propTypes = {
   serviceAccounts: PropTypes.object,
   selectedServiceAccount: PropTypes.string,
   onRequestClose: PropTypes.func,
-  onAccountClick: PropTypes.func,
-  onFilesDrop: PropTypes.func.isRequired,
-  isEditing: PropTypes.bool,
   projectId: PropTypes.string,
   open: PropTypes.bool.isRequired, // captured in other
   initialValues: PropTypes.object, // from reduxForm

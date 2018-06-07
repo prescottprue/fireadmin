@@ -38,9 +38,6 @@ export const FilesUploader = ({
         <LoadingSpinner />
       </div>
     )}
-    {droppedFiles.length
-      ? droppedFiles.map(file => <div>{JSON.stringify(file)}</div>)
-      : null}
   </div>
 )
 
@@ -53,7 +50,7 @@ FilesUploader.propTypes = {
   acceptedFormats: PropTypes.array,
   disabled: PropTypes.bool,
   onFilesDrop: PropTypes.func,
-  dropFiles: PropTypes.func.isRequired // from enhancer (withStateHandlers)
+  dropFiles: PropTypes.func // from enhancer (withStateHandlers)
 }
 
 FilesUploader.defaultProps = {

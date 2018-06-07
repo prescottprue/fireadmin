@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { reduxForm, Field } from 'redux-form'
+import { Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
 import Dialog, {
   DialogTitle,
@@ -9,13 +9,14 @@ import Dialog, {
 } from 'material-ui/Dialog'
 import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
-import { formNames } from 'constants'
+import List, { ListItem, ListItemText } from 'material-ui/List'
+import Checkbox from 'material-ui/Checkbox'
 import { required, validateDatabaseUrl } from 'utils/form'
 import FilesUploader from '../FilesUploader'
 import classes from './AddEnvironmentDialog.scss'
 
 export const AddEnvironmentDialog = ({
-  onFilesDrop,
+  onSubmit,
   submit,
   reset,
   submitting,
@@ -23,10 +24,14 @@ export const AddEnvironmentDialog = ({
   pristine,
   isEditing,
   serviceAccounts,
-  selectedServiceAccount,
+  selectedServiceAccountInd,
+  selectServiceAccount,
   onRequestClose,
   initialValues,
   onAccountClick,
+  closeAndReset,
+  dropFiles,
+  droppedFiles,
   open
 }) => (
   <Dialog onClose={onRequestClose} open={open}>
@@ -62,19 +67,32 @@ export const AddEnvironmentDialog = ({
       <div className={classes.serviceAccounts}>
         <Typography style={{ fontSize: '1.1rem' }}>Service Account</Typography>
         <FilesUploader
-          onFilesDrop={onFilesDrop}
+          onFilesDrop={dropFiles}
           label="to upload service account"
         />
+        <List>
+          {droppedFiles && droppedFiles.length
+            ? droppedFiles.map((file, i) => (
+                <ListItem
+                  key={`${i}-${file.name}`}
+                  role={undefined}
+                  dense
+                  button
+                  onClick={() => selectServiceAccount(i)}>
+                  <Checkbox
+                    checked={selectedServiceAccountInd === i}
+                    tabIndex={-1}
+                    disableRipple
+                  />
+                  <ListItemText primary={file.name} />
+                </ListItem>
+              ))
+            : null}
+        </List>
       </div>
     </DialogContent>
     <DialogActions>
-      <Button
-        color="secondary"
-        disabled={submitting}
-        onClick={() => {
-          reset()
-          onRequestClose && onRequestClose()
-        }}>
+      <Button color="secondary" disabled={submitting} onClick={closeAndReset}>
         Cancel
       </Button>
       <Button
@@ -89,21 +107,22 @@ export const AddEnvironmentDialog = ({
 
 AddEnvironmentDialog.propTypes = {
   serviceAccounts: PropTypes.object,
-  selectedServiceAccount: PropTypes.string,
+  selectedServiceAccountInd: PropTypes.number,
   onRequestClose: PropTypes.func,
   onAccountClick: PropTypes.func,
-  onFilesDrop: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
   isEditing: PropTypes.bool,
   projectId: PropTypes.string,
+  droppedFiles: PropTypes.array,
   open: PropTypes.bool.isRequired, // captured in other
   initialValues: PropTypes.object, // from reduxForm
+  selectServiceAccount: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
+  closeAndReset: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  dropFiles: PropTypes.func.isRequired, // from enhancer (withHandlers)
   submit: PropTypes.func.isRequired, // from reduxForm
   reset: PropTypes.func.isRequired, // from reduxForm
   submitting: PropTypes.bool.isRequired, // from reduxForm
   pristine: PropTypes.bool.isRequired // from reduxForm
 }
 
-export default reduxForm({
-  form: formNames.newEnvironment,
-  enableReinitialize: true // Handle new/edit modal: reinitialize with other env to edit
-})(AddEnvironmentDialog)
+export default AddEnvironmentDialog

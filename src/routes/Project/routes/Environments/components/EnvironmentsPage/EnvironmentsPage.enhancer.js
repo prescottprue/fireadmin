@@ -29,21 +29,20 @@ export default compose(
   // Add props.showSuccess and props.showError
   withNotifications,
   withStateHandlers(
-    ({ initialEnvDialogOpen = false }) => ({
+    () => ({
       selectedServiceAccount: null,
       selectedInstance: null,
-      envDialogOpen: initialEnvDialogOpen
+      newDialogOpen: false,
+      editDialogOpen: false
     }),
     {
-      toggleDialogWithData: ({ envDialogOpen }) => (action, key) => ({
-        envDialogOpen: !envDialogOpen,
-        selectedInstance: action,
-        selectedKey: key
+      toggleNewDialog: ({ newDialogOpen }) => () => ({
+        newDialogOpen: !newDialogOpen
       }),
-      toggleDialog: ({ envDialogOpen }) => () => ({
-        envDialogOpen: !envDialogOpen,
-        selectedInstance: null,
-        selectedKey: null
+      toggleEditDialog: ({ envDialogOpen }) => (action, key) => ({
+        editDialogOpen: !envDialogOpen,
+        selectedInstance: envDialogOpen ? null : action,
+        selectedKey: envDialogOpen ? null : key
       }),
       selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => ({
         selectedServiceAccount:

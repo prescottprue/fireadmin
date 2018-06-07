@@ -6,17 +6,19 @@ import Button from 'material-ui/Button'
 import Paper from 'material-ui/Paper'
 import Instance from '../Instance'
 import AddEnvironmentDialog from '../AddEnvironmentDialog'
+import EditEnvironmentDialog from '../EditEnvironmentDialog'
 import classesFromStyles from './EnvironmentsPage.scss'
 
 export const EnvironmentsPage = ({
   params,
-  toggleDialog,
+  toggleNewDialog,
+  toggleEditDialog,
   selectServiceAccount,
   selectedAccounts,
   selectedInstance,
-  toggleDialogWithData,
   projectEnvironments,
-  envDialogOpen,
+  newDialogOpen,
+  editDialogOpen,
   addEnvironment,
   selectedServiceAccount,
   updateEnvironment,
@@ -28,19 +30,19 @@ export const EnvironmentsPage = ({
       Environments
     </Typography>
     <div style={{ marginBottom: '2rem' }}>
-      <Button variant="raised" color="primary" onClick={toggleDialog}>
+      <Button variant="raised" color="primary" onClick={toggleNewDialog}>
         Add Environment
       </Button>
     </div>
     <div>
-      {projectEnvironments ? (
+      {projectEnvironments && projectEnvironments.length ? (
         <div className="flex-column">
           <div className={classesFromStyles.instances}>
             {map(projectEnvironments, (inst, i) => (
               <Instance
                 key={`Instance-${params.projectId}-${i}`}
                 instance={inst}
-                onEditClick={() => toggleDialogWithData(inst, i)}
+                onEditClick={() => toggleEditDialog(inst, i)}
                 onRemoveClick={() => removeEnvironment(i)}
               />
             ))}
@@ -64,13 +66,24 @@ export const EnvironmentsPage = ({
     </div>
     <AddEnvironmentDialog
       selectedInstance={selectedInstance}
-      open={envDialogOpen}
+      open={newDialogOpen}
       projectId={params.projectId}
       initialValues={selectedInstance}
       isEditing={!!selectedInstance}
-      onFilesDrop={uploadServiceAccount}
-      onSubmit={selectedInstance ? updateEnvironment : addEnvironment}
-      onRequestClose={toggleDialog}
+      onSubmit={addEnvironment}
+      onRequestClose={toggleNewDialog}
+      selectedAccounts={selectedAccounts}
+      selectedServiceAccount={selectedServiceAccount}
+      onAccountClick={selectServiceAccount}
+    />
+    <EditEnvironmentDialog
+      selectedInstance={selectedInstance}
+      open={editDialogOpen}
+      projectId={params.projectId}
+      initialValues={selectedInstance}
+      isEditing={!!selectedInstance}
+      onSubmit={addEnvironment}
+      onRequestClose={toggleEditDialog}
       selectedAccounts={selectedAccounts}
       selectedServiceAccount={selectedServiceAccount}
       onAccountClick={selectServiceAccount}
@@ -81,12 +94,13 @@ export const EnvironmentsPage = ({
 EnvironmentsPage.propTypes = {
   projectEnvironments: PropTypes.array,
   params: PropTypes.object.isRequired,
-  envDialogOpen: PropTypes.bool,
+  editDialogOpen: PropTypes.bool,
+  newDialogOpen: PropTypes.bool,
   selectedAccounts: PropTypes.array, // from enhancer
   selectedInstance: PropTypes.object, // from enhancer
   selectedServiceAccount: PropTypes.string, // from enhancer
-  toggleDialogWithData: PropTypes.func.isRequired, // from enhancer
-  toggleDialog: PropTypes.func.isRequired, // from enhancer
+  toggleNewDialog: PropTypes.func.isRequired, // from enhancer
+  toggleEditDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   addEnvironment: PropTypes.func.isRequired, // from enhancer
   updateEnvironment: PropTypes.func.isRequired, // from enhancer
   removeEnvironment: PropTypes.func.isRequired, // from enhancer
