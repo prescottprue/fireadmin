@@ -39,10 +39,10 @@ export default compose(
       toggleNewDialog: ({ newDialogOpen }) => () => ({
         newDialogOpen: !newDialogOpen
       }),
-      toggleEditDialog: ({ envDialogOpen }) => (action, key) => ({
-        editDialogOpen: !envDialogOpen,
-        selectedInstance: envDialogOpen ? null : action,
-        selectedKey: envDialogOpen ? null : key
+      toggleEditDialog: ({ editDialogOpen }) => (action, key) => ({
+        editDialogOpen: !editDialogOpen,
+        selectedInstance: editDialogOpen ? null : action,
+        selectedKey: editDialogOpen ? null : key
       }),
       selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => ({
         selectedServiceAccount:

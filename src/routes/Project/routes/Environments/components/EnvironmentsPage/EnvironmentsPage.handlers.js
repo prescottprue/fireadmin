@@ -1,4 +1,4 @@
-import { pick, find } from 'lodash'
+import { pick, get } from 'lodash'
 import { reset } from 'redux-form'
 import { formNames } from 'constants'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
@@ -13,33 +13,41 @@ import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 export const addEnvironment = props => async newProjectData => {
   const {
     firestore,
+    firebase,
     params: { projectId },
-    uid,
-    selectedServiceAccount,
-    serviceAccounts
+    uid
   } = props
   const locationConf = {
     collection: 'projects',
     doc: projectId,
     subcollections: [{ collection: 'environments' }]
   }
-  const serviceAccount = find(serviceAccounts, { id: selectedServiceAccount })
-
   // Show error if service account is not selected (not part of form)
-  if (!serviceAccount) {
+  if (!newProjectData.serviceAccount) {
     return props.showError('Please select a service account')
   }
 
-  // Build new environment object
-  const newEnv = {
-    ...newProjectData,
-    serviceAccount,
-    projectId,
-    createdBy: uid,
-    createdAt: firestore.FieldValue.serverTimestamp()
-  }
-
   try {
+    const serviceAccountRes = await firebase.uploadFile(
+      `serviceAccounts/${projectId}/${Date.now()}`,
+      newProjectData.serviceAccount
+    )
+    const { downloadURL, ref } = get(
+      serviceAccountRes,
+      'uploadTaskSnapshot',
+      {}
+    )
+    // Build new environment object
+    const newEnv = {
+      ...newProjectData,
+      serviceAccount: {
+        downloadURL,
+        fullPath: ref.fullPath
+      },
+      projectId,
+      createdBy: uid,
+      createdAt: firestore.FieldValue.serverTimestamp()
+    }
     // Write new environment to firestore
     const newEnvironmentRes = await firestore.add(locationConf, newEnv)
     // Add service account to service accounts collection
@@ -52,7 +60,10 @@ export const addEnvironment = props => async newProjectData => {
           { collection: 'serviceAccounts' }
         ]
       },
-      serviceAccount
+      {
+        downloadURL,
+        fullPath: ref.fullPath
+      }
     )
     // Write event to project events
     await createProjectEvent(

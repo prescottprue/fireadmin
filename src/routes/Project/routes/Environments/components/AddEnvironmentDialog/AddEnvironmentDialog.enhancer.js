@@ -1,7 +1,10 @@
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { withStateHandlers, withHandlers } from 'recompose'
-import { reduxForm } from 'redux-form'
+import { reduxForm, formValueSelector } from 'redux-form'
 import { formNames } from 'constants'
+
+const selector = formValueSelector(formNames.newEnvironment)
 
 export default compose(
   withStateHandlers(
@@ -17,18 +20,40 @@ export default compose(
       clearServiceAccount: () => () => ({
         selectedServiceAccountInd: null
       }),
-      dropFiles: ({ droppedFiles }) => files => ({
-        droppedFiles: droppedFiles.concat(files)
-      })
+      dropFiles: ({ droppedFiles, selectedServiceAccountInd }) => files => {
+        const newDroppedFiles = droppedFiles.concat(files)
+        return {
+          droppedFiles: newDroppedFiles, // add newly dropped files to existing
+          selectedServiceAccountInd:
+            selectedServiceAccountInd ||
+            (newDroppedFiles.length && newDroppedFiles.length - 1) // fallback to last of dropped files (handling 0)
+        }
+      }
     }
   ),
   reduxForm({
     form: formNames.newEnvironment
   }),
+  connect(state => {
+    return {
+      formValues: selector(state, 'databaseURL', 'name', 'description')
+    }
+  }),
   withHandlers({
     closeAndReset: ({ reset, onRequestClose }) => () => {
       reset()
       onRequestClose && onRequestClose()
+    },
+    callSubmit: ({
+      onSubmit,
+      droppedFiles,
+      formValues,
+      selectedServiceAccountInd
+    }) => () => {
+      onSubmit({
+        ...formValues,
+        serviceAccount: droppedFiles[selectedServiceAccountInd]
+      })
     }
   })
 )

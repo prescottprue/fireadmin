@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { map } from 'lodash'
 import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
 import Paper from 'material-ui/Paper'
@@ -20,7 +19,7 @@ export const EnvironmentsPage = ({
   newDialogOpen,
   editDialogOpen,
   addEnvironment,
-  selectedServiceAccount,
+  selectedServiceAccountInd,
   updateEnvironment,
   removeEnvironment,
   uploadServiceAccount
@@ -38,12 +37,12 @@ export const EnvironmentsPage = ({
       {projectEnvironments && projectEnvironments.length ? (
         <div className="flex-column">
           <div className={classesFromStyles.instances}>
-            {map(projectEnvironments, (inst, i) => (
+            {projectEnvironments.map((inst, i) => (
               <Instance
                 key={`Instance-${params.projectId}-${i}`}
                 instance={inst}
                 onEditClick={() => toggleEditDialog(inst, i)}
-                onRemoveClick={() => removeEnvironment(i)}
+                onRemoveClick={() => removeEnvironment(inst.id)}
               />
             ))}
           </div>
@@ -73,7 +72,7 @@ export const EnvironmentsPage = ({
       onSubmit={addEnvironment}
       onRequestClose={toggleNewDialog}
       selectedAccounts={selectedAccounts}
-      selectedServiceAccount={selectedServiceAccount}
+      selectedServiceAccount={selectedServiceAccountInd}
       onAccountClick={selectServiceAccount}
     />
     <EditEnvironmentDialog
@@ -85,7 +84,7 @@ export const EnvironmentsPage = ({
       onSubmit={addEnvironment}
       onRequestClose={toggleEditDialog}
       selectedAccounts={selectedAccounts}
-      selectedServiceAccount={selectedServiceAccount}
+      selectedServiceAccount={selectedServiceAccountInd}
       onAccountClick={selectServiceAccount}
     />
   </div>
@@ -98,7 +97,7 @@ EnvironmentsPage.propTypes = {
   newDialogOpen: PropTypes.bool,
   selectedAccounts: PropTypes.array, // from enhancer
   selectedInstance: PropTypes.object, // from enhancer
-  selectedServiceAccount: PropTypes.string, // from enhancer
+  selectedServiceAccountInd: PropTypes.number, // from enhancer
   toggleNewDialog: PropTypes.func.isRequired, // from enhancer
   toggleEditDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   addEnvironment: PropTypes.func.isRequired, // from enhancer

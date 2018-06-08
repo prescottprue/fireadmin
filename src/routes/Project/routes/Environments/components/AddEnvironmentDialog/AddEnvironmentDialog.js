@@ -16,8 +16,8 @@ import FilesUploader from '../FilesUploader'
 import classes from './AddEnvironmentDialog.scss'
 
 export const AddEnvironmentDialog = ({
-  onSubmit,
-  submit,
+  callSubmit,
+  handleSubmit,
   reset,
   submitting,
   projectId,
@@ -39,7 +39,7 @@ export const AddEnvironmentDialog = ({
       isEditing ? 'Edit' : 'Add'
     } Environment`}</DialogTitle>
     <DialogContent className={classes.body}>
-      <div className={classes.inputs}>
+      <form className={classes.inputs} onSubmit={handleSubmit}>
         <Field
           component={TextField}
           className={classes.field}
@@ -63,7 +63,7 @@ export const AddEnvironmentDialog = ({
           name="description"
           label="Instance Description"
         />
-      </div>
+      </form>
       <div className={classes.serviceAccounts}>
         <Typography style={{ fontSize: '1.1rem' }}>Service Account</Typography>
         <FilesUploader
@@ -98,7 +98,7 @@ export const AddEnvironmentDialog = ({
       <Button
         color="primary"
         disabled={pristine || submitting}
-        onClick={submit}>
+        onClick={callSubmit}>
         Create
       </Button>
     </DialogActions>
@@ -110,7 +110,8 @@ AddEnvironmentDialog.propTypes = {
   selectedServiceAccountInd: PropTypes.number,
   onRequestClose: PropTypes.func,
   onAccountClick: PropTypes.func,
-  onSubmit: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  callSubmit: PropTypes.func.isRequired,
   isEditing: PropTypes.bool,
   projectId: PropTypes.string,
   droppedFiles: PropTypes.array,
@@ -119,7 +120,6 @@ AddEnvironmentDialog.propTypes = {
   selectServiceAccount: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   closeAndReset: PropTypes.func.isRequired, // from enhancer (withHandlers)
   dropFiles: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  submit: PropTypes.func.isRequired, // from reduxForm
   reset: PropTypes.func.isRequired, // from reduxForm
   submitting: PropTypes.bool.isRequired, // from reduxForm
   pristine: PropTypes.bool.isRequired // from reduxForm
