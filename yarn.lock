@@ -4625,6 +4625,10 @@ lodash@^4.0.0, lodash@^4.11.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, l
   version "4.17.5"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
 
+lodash@^4.17.10:
+  version "4.17.10"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
+
 lodash@~2.4.1:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-2.4.2.tgz#fadd834b9683073da179b3eae6d9c0d15053f73e"
@@ -6389,12 +6393,12 @@ redux-auth-wrapper@^1.0.0:
     lodash.isempty "4.4.0"
     prop-types "15.5.8"
 
-redux-firestore@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/redux-firestore/-/redux-firestore-0.5.1.tgz#184a9b37793d0b8557410536ab17f0eb3f2025e6"
+redux-firestore@^0.5.6:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/redux-firestore/-/redux-firestore-0.5.6.tgz#13621644f20047374f393ac55294f5d0542a93e8"
   dependencies:
-    lodash "^4.17.4"
-    prop-types "^15.6.0"
+    lodash "^4.17.10"
+    prop-types "^15.6.1"
 
 redux-form-material-ui@^5.0.0-beta.2:
   version "5.0.0-beta.2"
