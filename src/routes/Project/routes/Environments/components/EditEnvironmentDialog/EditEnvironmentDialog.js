@@ -13,15 +13,11 @@ import classes from './EditEnvironmentDialog.scss'
 
 export const EditEnvironmentDialog = ({
   submit,
-  reset,
   closeAndReset,
   submitting,
   projectId,
   pristine,
-  serviceAccounts,
-  selectedServiceAccount,
   onRequestClose,
-  initialValues,
   open
 }) => (
   <Dialog onClose={onRequestClose} open={open}>
@@ -68,14 +64,10 @@ export const EditEnvironmentDialog = ({
 )
 
 EditEnvironmentDialog.propTypes = {
-  serviceAccounts: PropTypes.object,
-  selectedServiceAccount: PropTypes.string,
-  onRequestClose: PropTypes.func,
-  projectId: PropTypes.string,
-  open: PropTypes.bool.isRequired, // captured in other
-  initialValues: PropTypes.object, // from reduxForm
+  onRequestClose: PropTypes.func.isRequired,
+  projectId: PropTypes.string.isRequired,
+  open: PropTypes.bool.isRequired,
   submit: PropTypes.func.isRequired, // from reduxForm
-  reset: PropTypes.func.isRequired, // from reduxForm
   closeAndReset: PropTypes.func.isRequired, // from reduxForm
   submitting: PropTypes.bool.isRequired, // from reduxForm
   pristine: PropTypes.bool.isRequired // from reduxForm

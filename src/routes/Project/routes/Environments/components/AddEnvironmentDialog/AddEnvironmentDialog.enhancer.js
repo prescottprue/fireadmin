@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withStateHandlers, withHandlers } from 'recompose'
+import { withStateHandlers, withHandlers, setPropTypes } from 'recompose'
 import { reduxForm, formValueSelector } from 'redux-form'
 import { formNames } from 'constants'
 
@@ -38,6 +39,10 @@ export default compose(
     return {
       formValues: selector(state, 'databaseURL', 'name', 'description')
     }
+  }),
+  setPropTypes({
+    reset: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired
   }),
   withHandlers({
     closeAndReset: ({ reset, onRequestClose }) => () => {
