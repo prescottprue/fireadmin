@@ -91,16 +91,12 @@ export async function googleApisRequest(serviceAccount, requestSettings) {
 export default async function callGoogleApi(snap, context) {
   const eventVal = snap.val()
   const eventId = get(context, 'params.pushId')
-  if (!eventVal) {
-    console.error('No event value?')
-    throw new Error('No value contained within event')
-  }
   const {
     api = 'storage',
     method = 'GET',
     body,
     apiVersion = 'v1',
-    suffix = eventVal.suffix || `b/${eventVal.storageBucket}`,
+    suffix = `b/${eventVal.storageBucket}`,
     storageBucket,
     projectId,
     environment
@@ -124,7 +120,7 @@ export default async function callGoogleApi(snap, context) {
   }
   const appName = `app-${uniqueId()}`
   console.log(
-    'searching for service account from: ',
+    'Searching for service account from: ',
     `projects/${projectId}/environments/${environment}`
   )
 
@@ -149,12 +145,12 @@ export default async function callGoogleApi(snap, context) {
     throw missingParamsErr
   }
 
-  console.log('service account loaded:', serviceAccount)
+  const uri = `https://www.googleapis.com/${api}/${apiVersion}/${suffix}?cors`
   // Call Google API with service account
   const [err, response] = await to(
     googleApisRequest(serviceAccount, {
       method,
-      uri: `https://www.googleapis.com/${api}/${apiVersion}/${suffix}?cors`,
+      uri,
       body,
       headers: {
         'Gdata-Version': '3.0'
@@ -165,7 +161,7 @@ export default async function callGoogleApi(snap, context) {
 
   // Handle errors calling Google API
   if (err) {
-    console.log('Error calling Google API:', err.message || err)
+    console.error(`Error calling Google API: ${uri}`, err.message || err)
     await responseRef.set({
       completed: true,
       error: err.message || JSON.stringify(err),
@@ -174,7 +170,7 @@ export default async function callGoogleApi(snap, context) {
     throw err
   }
 
-  console.log('Google API response successful. Writing response to RTDB...')
+  console.log('Google API responsed successfully. Writing response to RTDB...')
   await responseRef.set({
     completed: true,
     responseData: response,
