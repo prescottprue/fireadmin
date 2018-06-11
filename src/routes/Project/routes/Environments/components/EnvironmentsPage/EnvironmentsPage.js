@@ -6,16 +6,19 @@ import Paper from 'material-ui/Paper'
 import Instance from '../Instance'
 import AddEnvironmentDialog from '../AddEnvironmentDialog'
 import EditEnvironmentDialog from '../EditEnvironmentDialog'
+import DeleteEnvironmentDialog from '../DeleteEnvironmentDialog'
 import classesFromStyles from './EnvironmentsPage.scss'
 
 export const EnvironmentsPage = ({
   params,
   toggleNewDialog,
+  toggleDeleteDialog,
   toggleEditDialog,
   selectServiceAccount,
   selectedInstance,
   projectEnvironments,
   newDialogOpen,
+  deleteDialogOpen,
   editDialogOpen,
   addEnvironment,
   selectedServiceAccountInd,
@@ -40,7 +43,7 @@ export const EnvironmentsPage = ({
                 key={`Instance-${params.projectId}-${i}`}
                 instance={inst}
                 onEditClick={() => toggleEditDialog(inst, inst.id)}
-                onRemoveClick={() => removeEnvironment(inst.id)}
+                onRemoveClick={() => toggleDeleteDialog(inst.id)}
               />
             ))}
           </div>
@@ -61,6 +64,12 @@ export const EnvironmentsPage = ({
         </Paper>
       )}
     </div>
+    <DeleteEnvironmentDialog
+      open={deleteDialogOpen}
+      projectId={params.projectId}
+      onSubmit={removeEnvironment}
+      onRequestClose={toggleDeleteDialog}
+    />
     <AddEnvironmentDialog
       open={newDialogOpen}
       projectId={params.projectId}
@@ -84,13 +93,15 @@ export const EnvironmentsPage = ({
 EnvironmentsPage.propTypes = {
   projectEnvironments: PropTypes.array,
   params: PropTypes.object.isRequired,
-  editDialogOpen: PropTypes.bool,
-  newDialogOpen: PropTypes.bool,
+  editDialogOpen: PropTypes.bool.isRequired,
+  newDialogOpen: PropTypes.bool.isRequired,
+  deleteDialogOpen: PropTypes.bool.isRequired,
   selectedInstance: PropTypes.object, // from enhancer
   selectedServiceAccountInd: PropTypes.number, // from enhancer
   addEnvironment: PropTypes.func.isRequired, // from enhancer (withHandlers)
   updateEnvironment: PropTypes.func.isRequired, // from enhancer (withHandlers)
   removeEnvironment: PropTypes.func.isRequired, // from enhancer  (withHandlers)
+  toggleDeleteDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   toggleNewDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   toggleEditDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   selectServiceAccount: PropTypes.func.isRequired // from enhancer (withStateHandlers)

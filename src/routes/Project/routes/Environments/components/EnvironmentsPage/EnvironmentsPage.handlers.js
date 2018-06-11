@@ -97,29 +97,31 @@ export const addEnvironment = props => async newProjectData => {
  * @return {Promise} Resolves after environment has been removed and
  * success message has been displayed to user
  */
-export const removeEnvironment = props => async environmentId => {
+export const removeEnvironment = props => async () => {
   const {
     firestore,
     showError,
     showSuccess,
     uid,
+    selectedDeleteKey,
     params: { projectId }
   } = props
   try {
     await firestore.delete({
       collection: 'projects',
       doc: projectId,
-      subcollections: [{ collection: 'environments', doc: environmentId }]
+      subcollections: [{ collection: 'environments', doc: selectedDeleteKey }]
     })
     await createProjectEvent(
       { firestore, projectId },
       {
         eventType: 'removeEnvironment',
-        eventData: { environmentId },
+        eventData: { environmentId: selectedDeleteKey },
         createdBy: uid
       }
     )
     triggerAnalyticsEvent({ category: 'Project', action: 'Remove Environment' })
+    props.toggleDeleteDialog()
     showSuccess('Environment deleted successfully')
   } catch (err) {
     console.error('error', err) // eslint-disable-line no-console

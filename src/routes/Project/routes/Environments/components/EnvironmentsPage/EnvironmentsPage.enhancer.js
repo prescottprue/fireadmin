@@ -32,12 +32,18 @@ export default compose(
     () => ({
       selectedServiceAccount: null,
       selectedInstance: null,
+      selectedDeleteKey: null,
       newDialogOpen: false,
-      editDialogOpen: false
+      editDialogOpen: false,
+      deleteDialogOpen: false
     }),
     {
       toggleNewDialog: ({ newDialogOpen }) => () => ({
         newDialogOpen: !newDialogOpen
+      }),
+      toggleDeleteDialog: ({ deleteDialogOpen }) => key => ({
+        deleteDialogOpen: !deleteDialogOpen,
+        selectedDeleteKey: deleteDialogOpen ? null : key
       }),
       toggleEditDialog: ({ editDialogOpen }) => (action, key) => ({
         editDialogOpen: !editDialogOpen,
