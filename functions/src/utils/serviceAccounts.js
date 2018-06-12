@@ -43,8 +43,9 @@ export async function getAppFromServiceAccount(opts, eventData) {
   // Get Service account data from resource (i.e Storage, Firestore, etc)
   const [err, accountFilePath] = await to(
     serviceAccountFromFirestorePath(
-      `projects/${projectId}/environments/${environmentKey || id}`,
-      appName
+      `projects/${projectId}/environments/${id || environmentKey}`,
+      appName,
+      { returnData: false }
     )
   )
 
@@ -53,14 +54,6 @@ export async function getAppFromServiceAccount(opts, eventData) {
     throw err
   }
 
-  const serviceAccountFromStorage = await fs.readJson(accountFilePath)
-  if (!isObject(serviceAccountFromStorage)) {
-    console.error(
-      'service account is not a valid object:',
-      serviceAccountFromStorage
-    )
-    throw new Error('Service account is not a valid.')
-  }
   try {
     const appCreds = {
       credential: admin.credential.cert(accountFilePath),
