@@ -48,7 +48,7 @@ Interested in adding a feature or contributing? Open an issue or [reach out over
 If you are just getting started with Fireadmin, it is probably best to checkout the [hosted version at fireadmin.io](http://fireadmin.io). After you become more familiar, feel free to run your own by pulling this source and proceeding to the [run your own section](#run-your-own).
 
 ### Requirements
-* node `^6.0.0` (`6.11.5` suggested to match [Cloud Functions Runtime][functions-runtime-url])
+* node `^6.14.0` (`6.14.0` suggested for function to match [Cloud Functions Runtime][functions-runtime-url])
 
 ## Running Your Own
 

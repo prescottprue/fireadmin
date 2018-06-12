@@ -1,5 +1,5 @@
 import { compose } from 'redux'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 import { withHandlers } from 'recompose'
 import { withRouter } from 'utils/components'
 import { LIST_PATH } from 'constants'

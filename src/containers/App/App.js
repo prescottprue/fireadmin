@@ -1,22 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { browserHistory, Router } from 'react-router'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { Provider } from 'react-redux'
-// import VersionChangeReloader from 'components/VersionChangeReloader'
-import { handleRouteUpdate } from 'utils/router'
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'
-import Theme from 'theme'
+import ThemeSettings from 'theme'
 
-const theme = createMuiTheme(Theme)
+const theme = createMuiTheme(ThemeSettings)
 
 const App = ({ routes, store }) => (
-  <Provider store={store}>
-    <MuiThemeProvider theme={theme}>
-      <Router history={browserHistory} onUpdate={handleRouteUpdate}>
-        {routes}
-      </Router>
-    </MuiThemeProvider>
-  </Provider>
+  <MuiThemeProvider theme={theme}>
+    <Provider store={store}>
+      <Router history={browserHistory}>{routes}</Router>
+    </Provider>
+  </MuiThemeProvider>
 )
 
 App.propTypes = {

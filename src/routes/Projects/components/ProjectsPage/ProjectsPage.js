@@ -1,7 +1,7 @@
 import React, { cloneElement } from 'react'
 import PropTypes from 'prop-types'
 import { isEmpty } from 'react-redux-firebase'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import ProjectTile from '../ProjectTile'
 import NewProjectTile from '../NewProjectTile'
 import NewProjectDialog from '../NewProjectDialog'

@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 import { capitalize, get } from 'lodash'
 import { Field } from 'redux-form'
 import { TextField, Select, RadioGroup } from 'redux-form-material-ui'
-import { FormControl, FormControlLabel, FormLabel } from 'material-ui/Form'
-import { InputLabel } from 'material-ui/Input'
-import Radio from 'material-ui/Radio'
-import { ListItemText } from 'material-ui/List'
-import { MenuItem } from 'material-ui/Menu'
-import Grid from 'material-ui/Grid'
+import FormLabel from '@material-ui/core/FormLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import InputLabel from '@material-ui/core/InputLabel'
+import Radio from '@material-ui/core/Radio'
+import ListItemText from '@material-ui/core/ListItemText'
+import MenuItem from '@material-ui/core/MenuItem'
+import GridListTile from '@material-ui/core/GridListTile'
 import classes from './ActionStepLocation.scss'
 
 // const pathTypeOptions = [{ value: 'only' }, { value: 'all but' }]
@@ -25,7 +27,7 @@ export const ActionStepLocation = ({
   steps,
   title
 }) => (
-  <Grid item xs={12} lg={6}>
+  <GridListTile item xs={12} lg={6}>
     <h4>{title}</h4>
     <FormControl className={classes.field}>
       <InputLabel htmlFor="resource">Select A Resource</InputLabel>
@@ -98,7 +100,7 @@ export const ActionStepLocation = ({
         className={classes.field}
       />
     )}
-  </Grid>
+  </GridListTile>
 )
 
 ActionStepLocation.propTypes = {

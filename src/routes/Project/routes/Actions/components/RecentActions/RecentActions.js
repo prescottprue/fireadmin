@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Paper from 'material-ui/Paper'
+import Paper from '@material-ui/core/Paper'
 import { get, map, startCase } from 'lodash'
 import Table, {
   TableBody,
   TableCell,
   TableHead,
   TableRow
-} from 'material-ui/Table'
-import IconButton from 'material-ui/IconButton'
-import Tooltip from 'material-ui/Tooltip'
-import RedoIcon from 'material-ui-icons/Redo'
+} from '@material-ui/core/Table'
+import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
+import RedoIcon from '@material-ui/icons/Redo'
 import { formatDateTime } from 'utils/formatters'
 import classes from './RecentActions.scss'
 

@@ -1,9 +1,9 @@
 import React from 'react'
-import LayersIcon from 'material-ui-icons/Layers'
-import HomeIcon from 'material-ui-icons/Home'
-import DeviceHubIcon from 'material-ui-icons/SettingsEthernet'
-import StorageIcon from 'material-ui-icons/Dns'
-import EventIcon from 'material-ui-icons/ViewList'
+import LayersIcon from '@material-ui/icons/Layers'
+import HomeIcon from '@material-ui/icons/Home'
+import DeviceHubIcon from '@material-ui/icons/SettingsEthernet'
+import StorageIcon from '@material-ui/icons/Dns'
+import EventIcon from '@material-ui/icons/ViewList'
 import { paths } from 'constants'
 
 export default [

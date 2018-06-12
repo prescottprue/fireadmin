@@ -1,5 +1,5 @@
 import { compose } from 'redux'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 import { withStateHandlers } from 'recompose'
 import { isMobileUserAgent } from 'utils/device'
 import styles from './SidebarLayout.styles'
