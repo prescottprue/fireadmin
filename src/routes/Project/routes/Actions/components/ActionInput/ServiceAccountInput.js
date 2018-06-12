@@ -28,7 +28,7 @@ export const ServiceAccountInput = ({
         id: 'environment'
       }}>
       {map(environments, (environment, environmentKey) => (
-        <MenuItem key={environmentKey} value={environmentKey}>
+        <MenuItem key={environmentKey} value={environment.id || environmentKey}>
           <ListItemText
             primary={environment.name || environmentKey}
             secondary={databaseURLToProjectName(environment.databaseURL)}

@@ -1,7 +1,7 @@
 import { compose } from 'redux'
 import { withProps, withHandlers, withStateHandlers } from 'recompose'
 import { connect } from 'react-redux'
-import { get } from 'lodash'
+import { get, pick } from 'lodash'
 import { withFirebase, withFirestore } from 'react-redux-firebase'
 import { formValues, reduxForm } from 'redux-form'
 import { databaseURLToProjectName } from 'utils'
@@ -55,42 +55,53 @@ export default compose(
         )
         const databaseName =
           databaseURL && databaseURLToProjectName(databaseURL)
+        // Push request to callGoogleApi cloud function
         const pushRef = await firebase.pushWithMeta('requests/googleApi', {
           api: 'storage',
-          ...bucketConfig,
+          ...pick(bucketConfig, ['method', 'cors', 'environment']),
           projectId,
           databaseName,
           databaseURL,
           storageBucket: `${databaseName}.appspot.com`
         })
         const pushKey = pushRef.key
+        // wait for response (written by cloud function)
         const results = await waitForCompleted(
           firebase.ref(`responses/googleApi/${pushKey}`)
         )
+        // Handle error calling google api (written to response)
         if (results.error) {
-          showError(`Error calling google api: ${results.error}`)
+          showError(`Error calling Google api: ${results.error}`)
           throw new Error(results.error)
         }
-        setConfig(results.responseData)
-        showSuccess('Storage Bucket Config Get Successful')
-        triggerAnalyticsEvent({
-          category: 'Project',
-          action: `${bucketConfig.method || 'GET'} Bucket Config`
-        })
-        await createProjectEvent(
-          { firestore, projectId },
-          {
-            eventType: `${
-              bucketConfig.method ? bucketConfig.method.toLowerCase() : 'get'
-            }BucketConfig`,
-            eventData: { bucketConfig },
-            createdBy: firebase._.authUid
-          }
-        )
-        showSuccess(
-          `Storage Bucket ${bucketConfig.method ||
-            'UPDATE'} completed Successfully`
-        )
+        if (
+          bucketConfig.method === 'GET' &&
+          !get(results, 'responseData.cors')
+        ) {
+          showSuccess('No CORS config currently exists for this bucket')
+        } else {
+          // Set config
+          setConfig(pick(results.responseData, ['cors']))
+          showSuccess('Storage Bucket Config Get Successful')
+          triggerAnalyticsEvent({
+            category: 'Project',
+            action: `${bucketConfig.method || 'GET'} Bucket Config`
+          })
+          await createProjectEvent(
+            { firestore, projectId },
+            {
+              eventType: `${
+                bucketConfig.method ? bucketConfig.method.toLowerCase() : 'get'
+              }BucketConfig`,
+              eventData: { bucketConfig },
+              createdBy: firebase._.authUid
+            }
+          )
+          showSuccess(
+            `Storage Bucket ${bucketConfig.method ||
+              'UPDATE'} completed Successfully`
+          )
+        }
       } catch (err) {
         if (err.message.indexOf('access to') !== -1) {
           showError('Error: Service Account Does Not Have Access')

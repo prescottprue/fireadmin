@@ -16,7 +16,7 @@
     "test:watch": "npm test -- --watch",
     "functions:build": "npm run build:functions",
     "functions:test": "npm run test --prefix functions",
-    "lint": "eslint .",
+    "lint": "eslint ./src ./functions ./build ./server ./project.config.js",
     "lint:fix": "npm run lint -- --fix",
     "codecov": "cat coverage/*/lcov.info | codecov",
     "prepush": "npm run lint"

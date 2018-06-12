@@ -24,19 +24,18 @@ const missingCredMsg =
  * @return {Promise} Resolves with Firebase app
  */
 export async function getAppFromServiceAccount(opts, eventData) {
-  const { databaseURL, storageBucket, environmentKey } = opts
+  const { databaseURL, storageBucket, environmentKey, id } = opts
   if (!databaseURL) {
     throw new Error(
       'databaseURL is required for action to authenticate through serviceAccount'
     )
   }
-  if (!environmentKey) {
+  if (!environmentKey && !id) {
     throw new Error(
-      'environmentKey is required for action to authenticate through serviceAccount'
+      'environmentKey or id is required for action to authenticate through serviceAccount'
     )
   }
   console.log(`Getting service account from Firestore...`)
-
   const { projectId } = eventData
   console.log('projectid:', projectId)
   // Make unique app name (prevents issue of multiple apps initialized with same name)
@@ -44,7 +43,7 @@ export async function getAppFromServiceAccount(opts, eventData) {
   // Get Service account data from resource (i.e Storage, Firestore, etc)
   const [err, accountFilePath] = await to(
     serviceAccountFromFirestorePath(
-      `projects/${projectId}/environments/${environmentKey}`,
+      `projects/${projectId}/environments/${environmentKey || id}`,
       appName
     )
   )
