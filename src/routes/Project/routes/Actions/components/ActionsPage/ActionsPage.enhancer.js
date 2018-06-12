@@ -1,31 +1,20 @@
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
+import { withFirebase, withFirestore } from 'react-redux-firebase'
 import { withStateHandlers, withHandlers, withProps } from 'recompose'
-import { firestoreConnect } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 import * as handlers from './ActionsPage.handlers'
 
 export default compose(
   withNotifications,
-  // Create listeners for Firestore
-  firestoreConnect(({ params }) => [
-    // Project environments
-    {
-      collection: 'projects',
-      doc: params.projectId,
-      subcollections: [{ collection: 'environments' }]
-    },
-    // Project
-    {
-      collection: 'projects',
-      doc: params.projectId
-    }
-  ]),
+  withFirestore,
+  withFirebase,
   // Map redux state to props
-  connect((state, { params }) => ({
-    auth: state.firebase.auth,
-    project: get(state.firestore, `data.projects.${params.projectId}`)
+  connect(({ firebase, firestore: { data, ordered } }, { params }) => ({
+    uid: firebase.auth.uid,
+    project: get(data, `projects.${params.projectId}`),
+    environments: get(ordered, `environments-${params.projectId}`)
   })),
   // State handlers as props
   withStateHandlers(

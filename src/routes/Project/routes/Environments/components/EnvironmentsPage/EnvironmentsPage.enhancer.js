@@ -1,57 +1,54 @@
+import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withHandlers, withStateHandlers } from 'recompose'
-import { firestoreConnect } from 'react-redux-firebase'
+import { withFirebase, withFirestore } from 'react-redux-firebase'
+import {
+  withHandlers,
+  withStateHandlers,
+  setPropTypes,
+  setDisplayName
+} from 'recompose'
 import { spinnerWhileLoading } from 'utils/components'
 import { withNotifications } from 'modules/notification'
 import * as handlers from './EnvironmentsPage.handlers'
 
 export default compose(
-  // Create Firestore listeners which update redux state
-  firestoreConnect(({ params }) => [
-    // Environments
-    {
-      collection: 'projects',
-      doc: params.projectId,
-      subcollections: [{ collection: 'environments' }],
-      storeAs: `environments-${params.projectId}`
-    },
-    // Service Accounts
-    {
-      collection: 'projects',
-      doc: params.projectId,
-      subcollections: [{ collection: 'serviceAccountUploads' }],
-      orderBy: ['createdAt', 'desc'],
-      storeAs: `serviceAccounts-${params.projectId}`
-    }
-  ]),
   // Map redux state to props
   connect(({ firebase: { auth }, firestore: { ordered } }, { params }) => ({
-    auth,
-    projectEnvironments: get(ordered, `environments-${params.projectId}`),
-    serviceAccounts: get(ordered, `serviceAccounts-${params.projectId}`)
+    uid: auth.uid,
+    // Listeners for redux data in ProjectsPage.enhancer
+    projectEnvironments: get(ordered, `environments-${params.projectId}`)
   })),
   // Show a loading spinner while project data is loading
   spinnerWhileLoading(['projectEnvironments']),
+  // Add props.firebase (used in handlers)
+  withFirebase,
+  // Add props.firestore (used in handlers)
+  withFirestore,
   // Add props.showSuccess and props.showError
   withNotifications,
   withStateHandlers(
-    ({ initialEnvDialogOpen = false }) => ({
+    () => ({
       selectedServiceAccount: null,
       selectedInstance: null,
-      envDialogOpen: initialEnvDialogOpen
+      selectedDeleteKey: null,
+      newDialogOpen: false,
+      editDialogOpen: false,
+      deleteDialogOpen: false
     }),
     {
-      toggleDialogWithData: ({ envDialogOpen }) => (action, key) => ({
-        envDialogOpen: !envDialogOpen,
-        selectedInstance: action,
-        selectedKey: key
+      toggleNewDialog: ({ newDialogOpen }) => () => ({
+        newDialogOpen: !newDialogOpen
       }),
-      toggleDialog: ({ envDialogOpen }) => () => ({
-        envDialogOpen: !envDialogOpen,
-        selectedInstance: null,
-        selectedKey: null
+      toggleDeleteDialog: ({ deleteDialogOpen }) => key => ({
+        deleteDialogOpen: !deleteDialogOpen,
+        selectedDeleteKey: deleteDialogOpen ? null : key
+      }),
+      toggleEditDialog: ({ editDialogOpen }) => (action, key) => ({
+        editDialogOpen: !editDialogOpen,
+        selectedInstance: editDialogOpen ? null : action,
+        selectedKey: editDialogOpen ? null : key
       }),
       selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => ({
         selectedServiceAccount:
@@ -62,5 +59,16 @@ export default compose(
       })
     }
   ),
+  // Set proptypes used in handlers
+  setPropTypes({
+    uid: PropTypes.string.isRequired,
+    firebase: PropTypes.shape({
+      uploadFiles: PropTypes.func.isRequired
+    }).isRequired,
+    firestore: PropTypes.shape({
+      add: PropTypes.func.isRequired
+    }).isRequired
+  }),
+  setDisplayName('EnvironmentsPage'),
   withHandlers(handlers)
 )

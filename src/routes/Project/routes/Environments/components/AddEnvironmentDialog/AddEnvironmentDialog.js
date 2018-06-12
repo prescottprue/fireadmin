@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { reduxForm, Field } from 'redux-form'
+import { Field } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
 import Dialog, {
   DialogTitle,
@@ -9,33 +9,30 @@ import Dialog, {
 } from 'material-ui/Dialog'
 import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
-import { formNames } from 'constants'
+import List, { ListItem, ListItemText } from 'material-ui/List'
+import Checkbox from 'material-ui/Checkbox'
 import { required, validateDatabaseUrl } from 'utils/form'
 import FilesUploader from '../FilesUploader'
-import ServiceAccounts from '../ServiceAccounts'
 import classes from './AddEnvironmentDialog.scss'
 
 export const AddEnvironmentDialog = ({
-  onFilesDrop,
-  submit,
-  reset,
+  callSubmit,
+  handleSubmit,
   submitting,
   projectId,
   pristine,
-  isEditing,
-  serviceAccounts,
-  selectedServiceAccount,
+  selectedServiceAccountInd,
+  selectServiceAccount,
   onRequestClose,
-  initialValues,
-  onAccountClick,
+  closeAndReset,
+  dropFiles,
+  droppedFiles,
   open
 }) => (
   <Dialog onClose={onRequestClose} open={open}>
-    <DialogTitle id="dialog-title">{`${
-      isEditing ? 'Edit' : 'Add'
-    } Environment`}</DialogTitle>
+    <DialogTitle id="dialog-title">Add Environment</DialogTitle>
     <DialogContent className={classes.body}>
-      <div className={classes.inputs}>
+      <form className={classes.inputs} onSubmit={handleSubmit}>
         <Field
           component={TextField}
           className={classes.field}
@@ -59,62 +56,61 @@ export const AddEnvironmentDialog = ({
           name="description"
           label="Instance Description"
         />
+      </form>
+      <div className={classes.serviceAccounts}>
+        <Typography style={{ fontSize: '1.1rem' }}>Service Account</Typography>
+        <FilesUploader
+          onFilesDrop={dropFiles}
+          label="to upload service account"
+        />
+        <List>
+          {droppedFiles && droppedFiles.length
+            ? droppedFiles.map((file, i) => (
+                <ListItem
+                  key={`${i}-${file.name}`}
+                  role={undefined}
+                  dense
+                  button
+                  onClick={() => selectServiceAccount(i)}>
+                  <Checkbox
+                    checked={selectedServiceAccountInd === i}
+                    tabIndex={-1}
+                    disableRipple
+                  />
+                  <ListItemText primary={file.name} />
+                </ListItem>
+              ))
+            : null}
+        </List>
       </div>
-      {!isEditing ? (
-        <div className={classes.serviceAccounts}>
-          <Typography style={{ fontSize: '1.1rem' }}>
-            Service Account
-          </Typography>
-          <FilesUploader
-            onFilesDrop={onFilesDrop}
-            label="to upload service account"
-          />
-          <ServiceAccounts
-            projectId={projectId}
-            serviceAccounts={serviceAccounts}
-            selectedAccountKey={selectedServiceAccount}
-            onAccountClick={onAccountClick}
-          />
-        </div>
-      ) : null}
     </DialogContent>
     <DialogActions>
-      <Button
-        color="secondary"
-        disabled={submitting}
-        onClick={() => {
-          reset()
-          onRequestClose && onRequestClose()
-        }}>
+      <Button color="secondary" disabled={submitting} onClick={closeAndReset}>
         Cancel
       </Button>
       <Button
         color="primary"
         disabled={pristine || submitting}
-        onClick={submit}>
-        {isEditing ? 'Save' : 'Create'}
+        onClick={callSubmit}>
+        Create
       </Button>
     </DialogActions>
   </Dialog>
 )
 
 AddEnvironmentDialog.propTypes = {
-  serviceAccounts: PropTypes.object,
-  selectedServiceAccount: PropTypes.string,
+  selectedServiceAccountInd: PropTypes.number,
   onRequestClose: PropTypes.func,
-  onAccountClick: PropTypes.func,
-  onFilesDrop: PropTypes.func.isRequired,
-  isEditing: PropTypes.bool,
+  handleSubmit: PropTypes.func.isRequired,
+  callSubmit: PropTypes.func.isRequired,
   projectId: PropTypes.string,
+  droppedFiles: PropTypes.array,
   open: PropTypes.bool.isRequired, // captured in other
-  initialValues: PropTypes.object, // from reduxForm
-  submit: PropTypes.func.isRequired, // from reduxForm
-  reset: PropTypes.func.isRequired, // from reduxForm
+  selectServiceAccount: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
+  closeAndReset: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  dropFiles: PropTypes.func.isRequired, // from enhancer (withHandlers)
   submitting: PropTypes.bool.isRequired, // from reduxForm
   pristine: PropTypes.bool.isRequired // from reduxForm
 }
 
-export default reduxForm({
-  form: formNames.newEnvironment,
-  enableReinitialize: true // Handle new/edit modal: reinitialize with other env to edit
-})(AddEnvironmentDialog)
+export default AddEnvironmentDialog

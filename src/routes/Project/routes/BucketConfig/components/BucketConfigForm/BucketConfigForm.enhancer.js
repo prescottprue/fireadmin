@@ -1,7 +1,7 @@
 import { compose } from 'redux'
 import { withProps, withHandlers, withStateHandlers } from 'recompose'
 import { connect } from 'react-redux'
-import { get } from 'lodash'
+import { get, pick } from 'lodash'
 import { withFirebase, withFirestore } from 'react-redux-firebase'
 import { formValues, reduxForm } from 'redux-form'
 import { databaseURLToProjectName } from 'utils'
@@ -26,58 +26,82 @@ export default compose(
       setConfig: () => currentConfig => ({ currentConfig })
     }
   ),
+  // map redux state to props
+  connect(({ firestore: { ordered, data } }, { projectId, currentConfig }) => ({
+    projectEnvironments: get(ordered, `environments-${projectId}`),
+    projectEnvironmentsById: get(data, `environments-${projectId}`),
+    initialValues: {
+      body: currentConfig,
+      method: 'GET'
+    }
+  })),
   // Handlers as props
   withHandlers({
-    callGoogleApi: ({
+    onSubmit: ({
       firebase,
       firestore,
       showSuccess,
       showError,
       setConfig,
       storageBucket,
-      serviceAccount,
+      projectEnvironmentsById,
       project,
       projectId
     }) => async bucketConfig => {
       try {
         const databaseURL = get(
-          project,
-          `environments.${bucketConfig.environment}.databaseURL`
+          projectEnvironmentsById,
+          `${bucketConfig.environment}.databaseURL`
         )
         const databaseName =
           databaseURL && databaseURLToProjectName(databaseURL)
+        // Push request to callGoogleApi cloud function
         const pushRef = await firebase.pushWithMeta('requests/googleApi', {
           api: 'storage',
-          ...bucketConfig,
+          ...pick(bucketConfig, ['method', 'cors', 'environment']),
+          projectId,
+          databaseName,
+          databaseURL,
           storageBucket: `${databaseName}.appspot.com`
         })
         const pushKey = pushRef.key
+        // wait for response (written by cloud function)
         const results = await waitForCompleted(
           firebase.ref(`responses/googleApi/${pushKey}`)
         )
+        // Handle error calling google api (written to response)
         if (results.error) {
+          showError(`Error calling Google api: ${results.error}`)
           throw new Error(results.error)
         }
-        setConfig(results.responseData)
-        showSuccess('Storage Bucket Config Get Successful')
-        triggerAnalyticsEvent({
-          category: 'Project',
-          action: `${bucketConfig.method || 'GET'} Bucket Config`
-        })
-        await createProjectEvent(
-          { firestore, projectId },
-          {
-            eventType: `${
-              bucketConfig.method ? bucketConfig.method.toLowerCase() : 'get'
-            }BucketConfig`,
-            eventData: { bucketConfig },
-            createdBy: firebase._.authUid
-          }
-        )
-        showSuccess(
-          `Storage Bucket ${bucketConfig.method ||
-            'UPDATE'} completed Successfully`
-        )
+        if (
+          bucketConfig.method === 'GET' &&
+          !get(results, 'responseData.cors')
+        ) {
+          showSuccess('No CORS config currently exists for this bucket')
+        } else {
+          // Set config
+          setConfig(pick(results.responseData, ['cors']))
+          showSuccess('Storage Bucket Config Get Successful')
+          triggerAnalyticsEvent({
+            category: 'Project',
+            action: `${bucketConfig.method || 'GET'} Bucket Config`
+          })
+          await createProjectEvent(
+            { firestore, projectId },
+            {
+              eventType: `${
+                bucketConfig.method ? bucketConfig.method.toLowerCase() : 'get'
+              }BucketConfig`,
+              eventData: { bucketConfig },
+              createdBy: firebase._.authUid
+            }
+          )
+          showSuccess(
+            `Storage Bucket ${bucketConfig.method ||
+              'UPDATE'} completed Successfully`
+          )
+        }
       } catch (err) {
         if (err.message.indexOf('access to') !== -1) {
           showError('Error: Service Account Does Not Have Access')
@@ -88,20 +112,6 @@ export default compose(
       }
     }
   }),
-  // Add props
-  withProps(({ callGoogleApi }) => {
-    return {
-      onSubmit: callGoogleApi // so redux-form submit calls callGoogleApi
-    }
-  }),
-  // map redux state to props
-  connect(({ firestore: { ordered } }, { projectId, currentConfig }) => ({
-    serviceAccounts: get(ordered, `serviceAccounts-${projectId}`),
-    initialValues: {
-      body: currentConfig,
-      method: 'GET'
-    }
-  })),
   // form capability including submit
   reduxForm({
     form: formName,
@@ -113,8 +123,11 @@ export default compose(
   formValues('body'),
   formValues('method'),
   // Add more props
-  withProps(({ project, environment }) => {
-    const databaseURL = get(project, `environments.${environment}.databaseURL`)
+  withProps(({ projectEnvironmentsById, environment }) => {
+    const databaseURL = get(
+      projectEnvironmentsById,
+      `${environment}.databaseURL`
+    )
     const databaseName = databaseURL && databaseURLToProjectName(databaseURL)
     return {
       databaseName,

@@ -1,47 +1,49 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { map } from 'lodash'
 import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
 import Paper from 'material-ui/Paper'
 import Instance from '../Instance'
 import AddEnvironmentDialog from '../AddEnvironmentDialog'
+import EditEnvironmentDialog from '../EditEnvironmentDialog'
+import DeleteEnvironmentDialog from '../DeleteEnvironmentDialog'
 import classesFromStyles from './EnvironmentsPage.scss'
 
 export const EnvironmentsPage = ({
   params,
-  toggleDialog,
+  toggleNewDialog,
+  toggleDeleteDialog,
+  toggleEditDialog,
   selectServiceAccount,
-  selectedAccounts,
   selectedInstance,
-  toggleDialogWithData,
   projectEnvironments,
-  envDialogOpen,
+  newDialogOpen,
+  deleteDialogOpen,
+  editDialogOpen,
   addEnvironment,
-  selectedServiceAccount,
+  selectedServiceAccountInd,
   updateEnvironment,
-  removeEnvironment,
-  uploadServiceAccount
+  removeEnvironment
 }) => (
   <div>
     <Typography className={classesFromStyles.pageHeader}>
       Environments
     </Typography>
     <div style={{ marginBottom: '2rem' }}>
-      <Button variant="raised" color="primary" onClick={toggleDialog}>
+      <Button variant="raised" color="primary" onClick={toggleNewDialog}>
         Add Environment
       </Button>
     </div>
     <div>
-      {projectEnvironments ? (
+      {projectEnvironments && projectEnvironments.length ? (
         <div className="flex-column">
           <div className={classesFromStyles.instances}>
-            {map(projectEnvironments, (inst, i) => (
+            {projectEnvironments.map((inst, i) => (
               <Instance
                 key={`Instance-${params.projectId}-${i}`}
                 instance={inst}
-                onEditClick={() => toggleDialogWithData(inst, i)}
-                onRemoveClick={() => removeEnvironment(i)}
+                onEditClick={() => toggleEditDialog(inst, inst.id)}
+                onRemoveClick={() => toggleDeleteDialog(inst.id)}
               />
             ))}
           </div>
@@ -62,36 +64,47 @@ export const EnvironmentsPage = ({
         </Paper>
       )}
     </div>
+    <DeleteEnvironmentDialog
+      open={deleteDialogOpen}
+      projectId={params.projectId}
+      onSubmit={removeEnvironment}
+      onRequestClose={toggleDeleteDialog}
+    />
     <AddEnvironmentDialog
+      open={newDialogOpen}
+      projectId={params.projectId}
+      onSubmit={addEnvironment}
+      onRequestClose={toggleNewDialog}
+      selectedServiceAccount={selectedServiceAccountInd}
+      onAccountClick={selectServiceAccount}
+    />
+    <EditEnvironmentDialog
       selectedInstance={selectedInstance}
-      open={envDialogOpen}
+      open={editDialogOpen}
       projectId={params.projectId}
       initialValues={selectedInstance}
-      isEditing={!!selectedInstance}
-      onFilesDrop={uploadServiceAccount}
-      onSubmit={selectedInstance ? updateEnvironment : addEnvironment}
-      onRequestClose={toggleDialog}
-      selectedAccounts={selectedAccounts}
-      selectedServiceAccount={selectedServiceAccount}
+      onSubmit={updateEnvironment}
+      onRequestClose={toggleEditDialog}
       onAccountClick={selectServiceAccount}
     />
   </div>
 )
 
 EnvironmentsPage.propTypes = {
-  projectEnvironments: PropTypes.object,
+  projectEnvironments: PropTypes.array,
   params: PropTypes.object.isRequired,
-  envDialogOpen: PropTypes.bool,
-  selectedAccounts: PropTypes.array, // from enhancer
+  editDialogOpen: PropTypes.bool.isRequired,
+  newDialogOpen: PropTypes.bool.isRequired,
+  deleteDialogOpen: PropTypes.bool.isRequired,
   selectedInstance: PropTypes.object, // from enhancer
-  selectedServiceAccount: PropTypes.string, // from enhancer
-  toggleDialogWithData: PropTypes.func.isRequired, // from enhancer
-  toggleDialog: PropTypes.func.isRequired, // from enhancer
-  addEnvironment: PropTypes.func.isRequired, // from enhancer
-  updateEnvironment: PropTypes.func.isRequired, // from enhancer
-  removeEnvironment: PropTypes.func.isRequired, // from enhancer
-  uploadServiceAccount: PropTypes.func.isRequired, // from enhancer
-  selectServiceAccount: PropTypes.func.isRequired // from enhancer
+  selectedServiceAccountInd: PropTypes.number, // from enhancer
+  addEnvironment: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  updateEnvironment: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  removeEnvironment: PropTypes.func.isRequired, // from enhancer  (withHandlers)
+  toggleDeleteDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
+  toggleNewDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
+  toggleEditDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
+  selectServiceAccount: PropTypes.func.isRequired // from enhancer (withStateHandlers)
 }
 
 export default EnvironmentsPage

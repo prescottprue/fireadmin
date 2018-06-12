@@ -204,7 +204,7 @@ ActionRunnerForm.propTypes = {
   templateEditExpanded: PropTypes.bool.isRequired,
   stepsExpanded: PropTypes.bool.isRequired,
   selectedTemplate: PropTypes.object,
-  environments: PropTypes.object
+  environments: PropTypes.array
 }
 
 export default ActionRunnerForm

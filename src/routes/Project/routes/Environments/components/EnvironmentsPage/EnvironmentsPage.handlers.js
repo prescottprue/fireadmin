@@ -1,7 +1,8 @@
-import { pick, find } from 'lodash'
+import { get } from 'lodash'
 import { reset } from 'redux-form'
 import { formNames } from 'constants'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
+import { to } from 'utils/async'
 
 /**
  * Handler for adding an environment to a project. Called clicking create
@@ -13,74 +14,81 @@ import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 export const addEnvironment = props => async newProjectData => {
   const {
     firestore,
+    firebase,
     params: { projectId },
-    auth: { uid },
-    selectedServiceAccount,
-    serviceAccounts
+    uid
   } = props
   const locationConf = {
     collection: 'projects',
     doc: projectId,
     subcollections: [{ collection: 'environments' }]
   }
-  const serviceAccount = find(serviceAccounts, { id: selectedServiceAccount })
-
   // Show error if service account is not selected (not part of form)
-  if (!serviceAccount) {
+  if (!newProjectData.serviceAccount) {
     return props.showError('Please select a service account')
   }
-
+  // Upload service account
+  const [uploadErr, serviceAccountRes] = await to(
+    firebase.uploadFile(
+      `serviceAccounts/${projectId}/${Date.now()}`,
+      newProjectData.serviceAccount
+    )
+  )
+  if (uploadErr) {
+    console.error('error', uploadErr) // eslint-disable-line no-console
+    props.showError(
+      'Error uploading service account: ',
+      uploadErr.message || 'Could not add project'
+    )
+    throw uploadErr
+  }
+  const { downloadURL, ref } = get(serviceAccountRes, 'uploadTaskSnapshot', {})
   // Build new environment object
   const newEnv = {
     ...newProjectData,
-    serviceAccount,
+    serviceAccount: {
+      downloadURL,
+      fullPath: ref.fullPath
+    },
     projectId,
     createdBy: uid,
     createdAt: firestore.FieldValue.serverTimestamp()
   }
 
-  try {
-    // Write new environment to firestore
-    const newEnvironmentRes = await firestore.add(locationConf, newEnv)
-    // Add service account to service accounts collection
-    await firestore.add(
-      {
-        collection: 'projects',
-        doc: projectId,
-        subcollections: [
-          { collection: 'environments', doc: newEnvironmentRes.id },
-          { collection: 'serviceAccounts' }
-        ]
-      },
-      serviceAccount
-    )
-    // Write event to project events
-    await createProjectEvent(
-      { projectId, firestore },
-      {
-        eventType: 'addEnvironment',
-        eventData: { newEventId: newEnvironmentRes.id },
-        createdBy: uid
-      }
-    )
-    // Write event to Google Analytics
-    triggerAnalyticsEvent({ category: 'Project', action: 'Add Environment' })
-    // Reset form for future use
-    props.dispatch(reset(formNames.newEnvironment))
-    // Unselect selected service account
-    props.clearServiceAccount()
-    // Close AddEnvironmentDialog
-    props.toggleDialog()
-    // Show success snackbar
-    props.showSuccess('Environment added successfully')
-  } catch (err) {
-    console.error('error', err) // eslint-disable-line no-console
+  // Write new environment to project
+  const [newEnvErr, newEnvironmentRes] = await to(
+    firestore.add(locationConf, newEnv)
+  )
+
+  // Handle errors creating environment
+  if (newEnvErr) {
+    console.error('Error creating environment', newEnvErr) // eslint-disable-line no-console
+    props.showError('Error creating new environment: ', newEnvErr.message)
     triggerAnalyticsEvent({
       category: 'Project',
       action: 'Error - Add Environment'
     })
-    props.showError('Error: ', err.message || 'Could not add project')
+    throw newEnvErr
   }
+  // Write event to project events
+  await createProjectEvent(
+    { projectId, firestore },
+    {
+      eventType: 'addEnvironment',
+      eventData: { newEventId: newEnvironmentRes.id },
+      createdBy: uid
+    }
+  )
+  // Write event to Google Analytics
+  triggerAnalyticsEvent({ category: 'Project', action: 'Add Environment' })
+  // Reset form for future use
+  props.dispatch(reset(formNames.newEnvironment))
+  // Unselect selected service account
+  props.clearServiceAccount()
+  // Close AddEnvironmentDialog
+  props.toggleNewDialog()
+  // Show success snackbar
+  props.showSuccess('Environment added successfully')
 }
 
 /**
@@ -89,29 +97,31 @@ export const addEnvironment = props => async newProjectData => {
  * @return {Promise} Resolves after environment has been removed and
  * success message has been displayed to user
  */
-export const removeEnvironment = props => async environmentId => {
+export const removeEnvironment = props => async () => {
   const {
     firestore,
     showError,
     showSuccess,
-    auth: { uid },
+    uid,
+    selectedDeleteKey,
     params: { projectId }
   } = props
   try {
     await firestore.delete({
       collection: 'projects',
       doc: projectId,
-      subcollections: [{ collection: 'environments', doc: environmentId }]
+      subcollections: [{ collection: 'environments', doc: selectedDeleteKey }]
     })
     await createProjectEvent(
       { firestore, projectId },
       {
         eventType: 'removeEnvironment',
-        eventData: { environmentId },
+        eventData: { environmentId: selectedDeleteKey },
         createdBy: uid
       }
     )
     triggerAnalyticsEvent({ category: 'Project', action: 'Remove Environment' })
+    props.toggleDeleteDialog()
     showSuccess('Environment deleted successfully')
   } catch (err) {
     console.error('error', err) // eslint-disable-line no-console
@@ -134,11 +144,11 @@ export const updateEnvironment = props => async newValues => {
   const {
     firestore,
     params: { projectId },
-    auth: { uid },
+    uid,
     selectedKey
   } = props
   try {
-    await props.firestore.update(
+    await firestore.update(
       {
         collection: 'projects',
         doc: projectId,
@@ -146,7 +156,7 @@ export const updateEnvironment = props => async newValues => {
       },
       newValues
     )
-    props.toggleDialog()
+    props.toggleEditDialog()
     props.showSuccess('Environment updated successfully')
     await createProjectEvent(
       { firestore, projectId },
@@ -161,45 +171,4 @@ export const updateEnvironment = props => async newValues => {
     console.error('error', err) // eslint-disable-line no-console
     props.showError('Error: ', err.message || 'Could not update environment')
   }
-}
-
-/**
- * Handler for uploading service account. Called when uploading within
- * Add Environment Dialog.
- * @param  {Object} props - EnvironmentsPage Component props
- * @return {Promise} Resolves after service account has been uploaded and
- * success message has been displayed to user
- */
-export const uploadServiceAccount = props => async files => {
-  const {
-    firebase,
-    firestore,
-    showSuccess,
-    auth: { uid },
-    params: { projectId }
-  } = props
-  const filePath = `serviceAccounts/${uid}/${projectId}`
-  const res = await firebase.uploadFile(
-    filePath,
-    files[0],
-    `projects/${projectId}/serviceAccountUploads`,
-    {
-      metadataFactory: (uploadTaskSnapshot, firebase, originalMeta) =>
-        pick(originalMeta, ['name', 'createdAt', 'fullPath'])
-    }
-  )
-  // Select newly uploaded service account within list
-  props.selectServiceAccount(res.id)
-  await createProjectEvent(
-    { firestore, projectId },
-    {
-      eventType: 'uploadAccount',
-      createdBy: uid
-    }
-  )
-  triggerAnalyticsEvent({
-    category: 'Project',
-    action: 'Upload Service Account'
-  })
-  showSuccess('Service Account uploaded successfully')
 }

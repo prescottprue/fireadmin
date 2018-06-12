@@ -24,19 +24,18 @@ const missingCredMsg =
  * @return {Promise} Resolves with Firebase app
  */
 export async function getAppFromServiceAccount(opts, eventData) {
-  const { databaseURL, storageBucket, environmentKey } = opts
+  const { databaseURL, storageBucket, environmentKey, id } = opts
   if (!databaseURL) {
     throw new Error(
       'databaseURL is required for action to authenticate through serviceAccount'
     )
   }
-  if (!environmentKey) {
+  if (!environmentKey && !id) {
     throw new Error(
-      'environmentKey is required for action to authenticate through serviceAccount'
+      'environmentKey or id is required for action to authenticate through serviceAccount'
     )
   }
   console.log(`Getting service account from Firestore...`)
-
   const { projectId } = eventData
   console.log('projectid:', projectId)
   // Make unique app name (prevents issue of multiple apps initialized with same name)
@@ -44,8 +43,9 @@ export async function getAppFromServiceAccount(opts, eventData) {
   // Get Service account data from resource (i.e Storage, Firestore, etc)
   const [err, accountFilePath] = await to(
     serviceAccountFromFirestorePath(
-      `projects/${projectId}/environments/${environmentKey}`,
-      appName
+      `projects/${projectId}/environments/${id || environmentKey}`,
+      appName,
+      { returnData: false }
     )
   )
 
@@ -54,14 +54,6 @@ export async function getAppFromServiceAccount(opts, eventData) {
     throw err
   }
 
-  const serviceAccountFromStorage = await fs.readJson(accountFilePath)
-  if (!isObject(serviceAccountFromStorage)) {
-    console.error(
-      'service account is not a valid object:',
-      serviceAccountFromStorage
-    )
-    throw new Error('Service account is not a valid.')
-  }
   try {
     const appCreds = {
       credential: admin.credential.cert(accountFilePath),
@@ -84,7 +76,11 @@ export async function getAppFromServiceAccount(opts, eventData) {
  * @param  {String} name - Name under which to store local service account file
  * @return {Promise}
  */
-export async function serviceAccountFromFirestorePath(docPath, name) {
+export async function serviceAccountFromFirestorePath(
+  docPath,
+  name,
+  { returnData = false }
+) {
   const firestore = admin.firestore()
   const projectDoc = await firestore.doc(docPath).get()
   if (!projectDoc.exists) {
@@ -111,7 +107,7 @@ export async function serviceAccountFromFirestorePath(docPath, name) {
     }
     console.log('writing service account:', serviceAccountData)
     await fs.writeJson(tempLocalPath, serviceAccountData)
-    return tempLocalPath
+    return returnData ? serviceAccountData : tempLocalPath
   } catch (err) {
     console.error('Error getting service account form Firestore')
     throw err

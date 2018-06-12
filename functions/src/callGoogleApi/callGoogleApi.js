@@ -1,9 +1,10 @@
 import * as admin from 'firebase-admin'
-import { get } from 'lodash'
+import { get, uniqueId } from 'lodash'
 import request from 'request-promise'
 import google from 'googleapis'
-import { serviceAccountFileFromStorage } from '../utils/serviceAccounts'
+import { serviceAccountFromFirestorePath } from '../utils/serviceAccounts'
 import { eventPathName, SCOPES } from './constants'
+import { to } from '../utils/async'
 
 let jwtClient = null
 
@@ -90,53 +91,92 @@ export async function googleApisRequest(serviceAccount, requestSettings) {
 export default async function callGoogleApi(snap, context) {
   const eventVal = snap.val()
   const eventId = get(context, 'params.pushId')
-  if (!eventVal) {
-    console.error('No event value?')
-    throw new Error('No value contained within event')
-  }
   const {
     api = 'storage',
     method = 'GET',
     body,
     apiVersion = 'v1',
-    suffix = eventVal.suffix || `b/${eventVal.storageBucket}`,
-    serviceAccount: { fullPath }
+    suffix = `b/${eventVal.storageBucket}`,
+    storageBucket,
+    projectId,
+    environment
   } = eventVal
-  try {
-    const serviceAccount = await serviceAccountFileFromStorage(
-      fullPath,
-      `callGoogleApi/${eventId}/${Date.now()}`
+  const responseRef = admin
+    .database()
+    .ref(`responses/${eventPathName}/${eventId}`)
+
+  // Handle missing parameters
+  if (!projectId || !environment || !storageBucket) {
+    const missingMsg =
+      'projectId, environment, and storageBucket are required parameters'
+    console.error(missingMsg)
+    const missingParamsErr = new Error(missingMsg)
+    await responseRef.set({
+      completed: true,
+      error: missingMsg,
+      completedAt: admin.database.ServerValue.TIMESTAMP
+    })
+    throw missingParamsErr
+  }
+  const appName = `app-${uniqueId()}`
+  console.log(
+    'Searching for service account from: ',
+    `projects/${projectId}/environments/${environment}`
+  )
+
+  // Get Service Account object by decryping string from Firestore
+  const [getSAErr, serviceAccount] = await to(
+    serviceAccountFromFirestorePath(
+      `projects/${projectId}/environments/${environment}`,
+      appName,
+      { returnData: true }
     )
-    const response = await googleApisRequest(serviceAccount, {
+  )
+
+  // Handle errors getting service account
+  if (getSAErr || !serviceAccount) {
+    console.error('Error getting service account:', getSAErr)
+    const missingParamsErr = getSAErr
+    await responseRef.set({
+      completed: true,
+      error: getSAErr.message || getSAErr,
+      completedAt: admin.database.ServerValue.TIMESTAMP
+    })
+    throw missingParamsErr
+  }
+
+  const uri = `https://www.googleapis.com/${api}/${apiVersion}/${suffix}?cors`
+  // Call Google API with service account
+  const [err, response] = await to(
+    googleApisRequest(serviceAccount, {
       method,
-      uri: `https://www.googleapis.com/${api}/${apiVersion}/${suffix}?cors`,
+      uri,
       body,
       headers: {
         'Gdata-Version': '3.0'
       },
       json: true
     })
-    console.log('Google API response successful. Writing response to RTDB...')
-    await admin
-      .database()
-      .ref(`responses/${eventPathName}/${eventId}`)
-      .set({
-        completed: true,
-        responseData: response,
-        completedAt: admin.database.ServerValue.TIMESTAMP
-      })
-    console.log('Success! Response data written to RTDB. Exiting.')
-    return response
-  } catch (err) {
-    console.log('Error calling Google API:', err.message || err)
-    await admin
-      .database()
-      .child(`responses/${eventPathName}/${eventId}`)
-      .ref({
-        completed: true,
-        error: err.message || JSON.stringify(err),
-        completedAt: admin.database.ServerValue.TIMESTAMP
-      })
+  )
+
+  // Handle errors calling Google API
+  if (err) {
+    console.error(`Error calling Google API: ${uri}`, err.message || err)
+    await responseRef.set({
+      completed: true,
+      error: err.message || JSON.stringify(err),
+      completedAt: admin.database.ServerValue.TIMESTAMP
+    })
     throw err
   }
+
+  console.log('Google API responsed successfully. Writing response to RTDB...')
+  await responseRef.set({
+    completed: true,
+    responseData: response,
+    completedAt: admin.database.ServerValue.TIMESTAMP
+  })
+
+  console.log('Success! Response data written to RTDB. Exiting.')
+  return response
 }
