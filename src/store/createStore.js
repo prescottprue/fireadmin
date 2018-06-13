@@ -3,8 +3,10 @@ import thunk from 'redux-thunk'
 import { browserHistory } from 'react-router'
 import { reactReduxFirebase, getFirebase } from 'react-redux-firebase'
 import makeRootReducer from './reducers'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
 import 'firebase/firestore'
+import 'firebase/database'
 import { reduxFirestore } from 'redux-firestore'
 import { firebase as fbConfig, reduxFirebase as reduxConfig } from '../config'
 import { version } from '../../package.json'
@@ -38,7 +40,7 @@ export default (initialState = {}) => {
   // Initialize Firebase
   firebase.initializeApp(fbConfig)
   // Initialize Firestore
-  firebase.firestore()
+  firebase.firestore().settings({ timestampsInSnapshots: true })
 
   // ======================================================
   // Store Instantiation and HMR Setup

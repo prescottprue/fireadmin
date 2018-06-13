@@ -1,11 +1,11 @@
-import orange from 'material-ui/colors/orange'
-import pink from 'material-ui/colors/pink'
-import teal from 'material-ui/colors/teal'
-import grey from 'material-ui/colors/grey'
-import blue from 'material-ui/colors/blue'
-// import { fade } from 'material-ui/styles/colorManipulator'
-import spacing from 'material-ui/styles/spacing'
-import zIndex from 'material-ui/styles/zIndex'
+import orange from '@material-ui/core/colors/orange'
+import pink from '@material-ui/core/colors/pink'
+import teal from '@material-ui/core/colors/teal'
+import grey from '@material-ui/core/colors/grey'
+import blue from '@material-ui/core/colors/blue'
+// import { fade } from '@material-ui/core/styles/colorManipulator'
+import spacing from '@material-ui/core/styles/spacing'
+import zIndex from '@material-ui/core/styles/zIndex'
 
 export default {
   spacing,

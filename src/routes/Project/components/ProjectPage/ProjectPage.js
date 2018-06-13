@@ -1,6 +1,6 @@
 import React, { cloneElement } from 'react'
 import PropTypes from 'prop-types'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import SidebarLayout from 'layouts/SidebarLayout'
 import OverviewPanel from '../OverviewPanel'
 import classes from './ProjectPage.scss'

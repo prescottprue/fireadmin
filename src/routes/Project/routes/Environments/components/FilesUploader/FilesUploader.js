@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Dropzone from 'react-dropzone'
 import LoadingSpinner from 'components/LoadingSpinner'
-import UploadIcon from 'material-ui-icons/CloudUpload'
+import UploadIcon from '@material-ui/icons/CloudUpload'
 import classes from './FilesUploader.scss'
 
 export const FilesUploader = ({

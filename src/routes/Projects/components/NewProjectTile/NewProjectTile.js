@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Paper from 'material-ui/Paper'
-import ContentAddCircle from 'material-ui-icons/AddCircle'
+import ContentAddCircle from '@material-ui/icons/AddCircle'
+import Paper from '@material-ui/core/Paper'
 import classes from './NewProjectTile.scss'
 
 const iconSize = '6rem'
-const iconStyle = { width: iconSize, height: iconSize }
+const iconStyle = { width: iconSize, height: iconSize, color: 'grey' }
 
 export const NewProjectTile = ({ onClick }) => (
   <Paper className={classes.container} onClick={onClick}>
-    <ContentAddCircle color="action" style={iconStyle} />
+    <ContentAddCircle style={iconStyle} />
   </Paper>
 )
 

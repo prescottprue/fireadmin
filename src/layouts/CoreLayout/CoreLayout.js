@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Navbar from 'containers/Navbar'
+import classes from './CoreLayout.scss'
 import { Notifications } from 'modules/notification'
 import VersionChangeReloader from 'components/VersionChangeReloader'
-import classes from './CoreLayout.scss'
 import 'styles/core.scss'
 
-const CoreLayout = ({ children }) => (
+export const CoreLayout = ({ children }) => (
   <div className={classes.container}>
     <Navbar />
     <div className={classes.children}>{children}</div>

@@ -1,7 +1,7 @@
 import { compose } from 'redux'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 import { withStateHandlers, flattenProp, withProps } from 'recompose'
-import red from 'material-ui/colors/red'
+import red from '@material-ui/core/colors/red'
 
 const styles = theme => ({
   card: {

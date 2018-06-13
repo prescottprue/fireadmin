@@ -60,12 +60,19 @@ const config = {
 // ------------------------------------
 config.module.rules.push({
   test: /\.(js|jsx)$/,
-  exclude: [/node_modules/, /redux-firestore/, /react-redux-firebase/],
+  exclude: [
+    /node_modules/,
+    /redux-firestore\/es/,
+    /react-redux-firebase\/es/
+    // Add other packages that you are npm linking here
+  ],
   use: [
     {
       loader: 'babel-loader',
       query: {
         cacheDirectory: true,
+        // ignore root .babelrc (Check issue #59 for more details)
+        babelrc: false,
         plugins: [
           'lodash',
           'transform-decorators-legacy',

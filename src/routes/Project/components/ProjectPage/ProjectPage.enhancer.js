@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 import { withStateHandlers } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
 import {
@@ -29,14 +29,6 @@ export default compose(
       orderBy: ['createdAt', 'desc'],
       storeAs: `environments-${params.projectId}`
     },
-    // Service Accounts
-    {
-      collection: 'projects',
-      doc: params.projectId,
-      subcollections: [{ collection: 'serviceAccountUploads' }],
-      orderBy: ['createdAt', 'desc'],
-      storeAs: `serviceAccountUploads-${params.projectId}`
-    },
     // Service Account Uploads
     {
       collection: 'projects',
@@ -48,14 +40,14 @@ export default compose(
   ]),
   connect(({ firebase, firestore: { data } }, { params }) => ({
     auth: firebase.auth,
-    project: get(data, `projects.${params.projectId}`)
+    project: get(data, `projects.${params.projectId}`),
+    environments: get(data, `environments-${params.projectId}`)
   })),
-  spinnerWhileLoading(['project']),
+  spinnerWhileLoading(['project', 'environments']),
   renderWhileEmpty(['project'], ProjectNotFoundPage),
   renderIfError(
     [
       (state, { params }) => `projects.${params.projectId}`,
-      (state, { params }) => `projects.${params.projectId}.serviceAccounts`,
       (state, { params }) => `projects.${params.projectId}.environments`
     ],
     ProjectErrorPage

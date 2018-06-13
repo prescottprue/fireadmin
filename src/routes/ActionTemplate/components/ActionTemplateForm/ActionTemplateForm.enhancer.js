@@ -1,11 +1,11 @@
 import { reduxForm } from 'redux-form'
-import { compose } from 'redux'
-import { withProps, withHandlers } from 'recompose'
-import { withStyles } from 'material-ui'
-import { formNames, paths } from 'constants'
-import { withRouter } from 'utils/components'
-import { connect } from 'react-redux'
 import { get } from 'lodash'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { withProps, withHandlers } from 'recompose'
+import { withStyles } from '@material-ui/core/styles'
+import { withRouter } from 'utils/components'
+import { formNames, paths } from 'constants'
 
 const styles = theme => ({
   button: {
