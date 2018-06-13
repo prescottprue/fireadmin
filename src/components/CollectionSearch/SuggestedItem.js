@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { size } from 'lodash'
-import { MenuItem } from 'material-ui/Menu'
+import MenuItem from '@material-ui/core/Menu'
 import { Highlight } from 'react-instantsearch/dom'
 
 const SuggestedUser = ({ hit, onClick }) => (

@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import createStore from './store/createStore'
 import { version as rfVersion } from 'redux-firestore'
-import { version } from '../package.json'
-import { env } from './config'
+import createStore from './store/createStore'
 import { initScripts } from './utils'
+import { env } from './config'
+import { version } from '../package.json'
 import './styles/core.scss'
 
 // Window Variables
@@ -21,6 +21,7 @@ const initialState = window.___INITIAL_STATE__ || {
   firebase: { authError: null }
 }
 const store = createStore(initialState)
+
 // Render Setup
 // ------------------------------------
 const MOUNT_NODE = document.getElementById('root')
@@ -28,6 +29,7 @@ const MOUNT_NODE = document.getElementById('root')
 let render = () => {
   const App = require('./containers/App').default
   const routes = require('./routes/index').default(store)
+
   ReactDOM.render(<App store={store} routes={routes} />, MOUNT_NODE)
 }
 

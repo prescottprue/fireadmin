@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { flatMap } from 'lodash'
-import Divider from 'material-ui/Divider'
-import List, { ListItem, ListItemText } from 'material-ui/List'
+import Divider from '@material-ui/core/Divider'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
 import classes from './PrivateActionTemplates.scss'
 
 export const PrivateActionTemplates = ({ templates, itemClickHandler }) => (
