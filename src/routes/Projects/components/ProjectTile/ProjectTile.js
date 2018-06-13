@@ -60,7 +60,7 @@ export const ProjectTile = ({
     </div>
     {project.createdAt ? (
       <span className={classes.createdAt}>
-        {moment(project.createdAt).format('MM/DD/YY')}
+        {moment(project.createdAt.toDate()).format('MM/DD/YY')}
       </span>
     ) : null}
     <div className="flex-column">

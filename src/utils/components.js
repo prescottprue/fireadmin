@@ -18,7 +18,6 @@ import {
   compose,
   mapProps,
   setDisplayName,
-  wrapDisplayName,
   branch,
   renderComponent
 } from 'recompose'

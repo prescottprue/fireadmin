@@ -26,8 +26,9 @@ export const Navbar = ({
         color="inherit"
         className={classes.flex}
         component={Link}
-        to={authExists ? LIST_PATH : '/'}>
-        fireadmin
+        to={authExists ? LIST_PATH : '/'}
+        style={{ fontSize: '1.4rem' }}>
+        Fireadmin
       </Typography>
       {authExists ? (
         <AccountMenu

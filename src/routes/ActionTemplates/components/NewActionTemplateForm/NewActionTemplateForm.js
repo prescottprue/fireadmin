@@ -1,7 +1,7 @@
 import React from 'react'
 import { Field } from 'redux-form'
 import { TextField, Switch } from 'redux-form-material-ui'
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import classes from './NewActionTemplateForm.scss'
 
 export const NewActionTemplateForm = () => (
