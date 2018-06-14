@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Button from 'material-ui/Button'
-import Typography from 'material-ui/Typography'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
 import PermissionsTable from '../PermissionsTable'
 import classes from './Permissions.scss'
 
