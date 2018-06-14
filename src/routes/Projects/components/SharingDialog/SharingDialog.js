@@ -1,20 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogTitle
-} from 'material-ui/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogActions from '@material-ui/core/DialogActions'
+import Dialog from '@material-ui/core/Dialog'
 import { map, find } from 'lodash'
-import PersonIcon from 'material-ui-icons/Person'
-import Button from 'material-ui/Button'
-import Checkbox from 'material-ui/Checkbox'
-import List, {
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText
-} from 'material-ui/List'
-import Slide from 'material-ui/transitions/Slide'
+import PersonIcon from '@material-ui/icons/Person'
+import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
+import Slide from '@material-ui/core/Slide'
 import UsersSearch from 'components/UsersSearch'
 import classes from './SharingDialog.scss'
 

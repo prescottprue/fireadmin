@@ -18,7 +18,6 @@ import {
   compose,
   mapProps,
   setDisplayName,
-  wrapDisplayName,
   branch,
   renderComponent
 } from 'recompose'
@@ -165,12 +164,6 @@ export const logProps = (propNames, logName = '') =>
 
 export const createWithFromContext = withVar => WrappedComponent => {
   class WithFromContext extends Component {
-    static wrappedComponent = WrappedComponent
-    static displayName = wrapDisplayName(WrappedComponent, withVar)
-    static contextTypes = {
-      [withVar]: PropTypes.object.isRequired
-    }
-
     render() {
       const props = { [withVar]: this.context[withVar] }
       if (this.context.store && this.context.store.dispatch) {
@@ -180,10 +173,15 @@ export const createWithFromContext = withVar => WrappedComponent => {
     }
   }
 
+  WithFromContext.contextTypes = {
+    [withVar]: PropTypes.object.isRequired
+  }
+
   return WithFromContext
 }
 
 export const withRouter = createWithFromContext('router')
+
 /**
  * HOC that adds store to props
  * @return {HigherOrderComponent}

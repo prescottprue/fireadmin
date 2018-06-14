@@ -1,16 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Paper from 'material-ui/Paper'
+import Paper from '@material-ui/core/Paper'
 import { get, map, startCase } from 'lodash'
-import Table, {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow
-} from 'material-ui/Table'
-import IconButton from 'material-ui/IconButton'
-import Tooltip from 'material-ui/Tooltip'
-import RedoIcon from 'material-ui-icons/Redo'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
+import RedoIcon from '@material-ui/icons/Redo'
 import { formatDateTime } from 'utils/formatters'
 import classes from './RecentActions.scss'
 
@@ -34,7 +33,7 @@ export const RecentActions = ({
       <TableBody>
         {map(orderedActions, (action, groupName) => [
           <TableRow key={groupName} className={classes.tableRowDivider}>
-            <TableCell>{formatDateTime(action.createdAt)}</TableCell>
+            <TableCell>{formatDateTime(action.createdAt.toDate())}</TableCell>
             <TableCell>
               <span>{action.createdBy || startCase(action.createdByType)}</span>
             </TableCell>

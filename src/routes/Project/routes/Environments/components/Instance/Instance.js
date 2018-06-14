@@ -1,25 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
-import Card, { CardHeader, CardContent } from 'material-ui/Card'
-import Typography from 'material-ui/Typography'
-import IconButton from 'material-ui/IconButton'
-import Menu, { MenuItem } from 'material-ui/Menu'
-import { ListItemIcon, ListItemText } from 'material-ui/List'
-import MoreVertIcon from 'material-ui-icons/MoreVert'
-import DeleteIcon from 'material-ui-icons/Delete'
-import EditIcon from 'material-ui-icons/ModeEdit'
+import Card from '@material-ui/core/Card'
+import CardHeader from '@material-ui/core/CardHeader'
+import CardContent from '@material-ui/core/CardContent'
+import Typography from '@material-ui/core/Typography'
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
+import DeleteIcon from '@material-ui/icons/Delete'
+import EditIcon from '@material-ui/icons/ModeEdit'
+import { databaseURLToProjectName } from 'utils'
 import classes from './Instance.scss'
-
-const databaseURLToProjectName = databaseURL =>
-  databaseURL.replace('https://', '').replace('.firebaseio.com', '')
 
 export const Instance = ({
   instance,
   anchorEl,
   closeMenu,
-  onRemoveClick,
   menuClick,
+  removeAndClose,
   editAndClose,
   instanceDescription,
   onEditClick
@@ -48,7 +50,7 @@ export const Instance = ({
               </ListItemIcon>
               <ListItemText inset primary="Edit" />
             </MenuItem>
-            <MenuItem onClick={onRemoveClick}>
+            <MenuItem onClick={removeAndClose}>
               <ListItemIcon className={classes.icon}>
                 <DeleteIcon />
               </ListItemIcon>
@@ -68,7 +70,7 @@ export const Instance = ({
 
 Instance.propTypes = {
   instance: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-  onRemoveClick: PropTypes.func.isRequired,
+  removeAndClose: PropTypes.func.isRequired,
   onEditClick: PropTypes.func.isRequired,
   editAndClose: PropTypes.func.isRequired,
   instanceDescription: PropTypes.string,

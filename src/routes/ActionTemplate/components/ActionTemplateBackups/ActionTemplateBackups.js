@@ -3,20 +3,19 @@ import PropTypes from 'prop-types'
 import { capitalize } from 'lodash'
 import { Field } from 'redux-form'
 import { TextField, Select } from 'redux-form-material-ui'
-import { FormControl } from 'material-ui/Form'
-import { InputLabel } from 'material-ui/Input'
-import ExpansionPanel, {
-  ExpansionPanelSummary,
-  ExpansionPanelDetails
-} from 'material-ui/ExpansionPanel'
-import Typography from 'material-ui/Typography'
-import { ListItemText } from 'material-ui/List'
-import { MenuItem } from 'material-ui/Menu'
-import IconButton from 'material-ui/IconButton'
-import Button from 'material-ui/Button'
-import Grid from 'material-ui/Grid'
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
-import DeleteIcon from 'material-ui-icons/Delete'
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import Typography from '@material-ui/core/Typography'
+import ListItemText from '@material-ui/core/ListItemText'
+import MenuItem from '@material-ui/core/MenuItem'
+import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button'
+import Grid from '@material-ui/core/Grid'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import DeleteIcon from '@material-ui/icons/Delete'
 import classes from './ActionTemplateBackups.scss'
 
 // const pathTypeOptions = [{ value: 'only' }, { value: 'all but' }]
@@ -43,7 +42,7 @@ export const ActionTemplateBackups = ({ fields, steps }) => (
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Grid container spacing={24} style={{ flexGrow: 1 }}>
+          <Grid constainer spacing={24} style={{ flexGrow: 1 }}>
             <Grid item xs={12} lg={6}>
               <Field
                 name={`${member}.name`}

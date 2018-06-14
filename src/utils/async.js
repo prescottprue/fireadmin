@@ -18,3 +18,5 @@ export function promiseWaterfall(callbacks) {
     Promise.resolve()
   )
 }
+
+export default { to, promiseWaterfall }

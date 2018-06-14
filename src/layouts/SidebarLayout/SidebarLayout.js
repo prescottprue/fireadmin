@@ -1,53 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import Drawer from 'material-ui/Drawer'
-import AppBar from 'material-ui/AppBar'
-import Toolbar from 'material-ui/Toolbar'
-import Typography from 'material-ui/Typography'
-import Divider from 'material-ui/Divider'
-// import IconButton from 'material-ui/IconButton'
-// import ChevronLeftIcon from 'material-ui-icons/ChevronLeft'
-// import ChevronRightIcon from 'material-ui-icons/ChevronRight'
-import LayersIcon from 'material-ui-icons/Layers'
-import HomeIcon from 'material-ui-icons/Home'
-import DeviceHubIcon from 'material-ui-icons/SettingsEthernet'
-import StorageIcon from 'material-ui-icons/Dns'
-import EventIcon from 'material-ui-icons/ViewList'
-import PeopleIcon from 'material-ui-icons/People'
-import { paths } from 'constants'
+import Drawer from '@material-ui/core/Drawer'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import Divider from '@material-ui/core/Divider'
 import SidebarList from './SidebarList'
-
-const sidebarOptions = [
-  {
-    value: '',
-    label: 'Home',
-    iconElement: <HomeIcon />
-  },
-  {
-    value: paths.projectEnvironments,
-    iconElement: <LayersIcon />
-  },
-  {
-    value: paths.projectActions,
-    iconElement: <DeviceHubIcon />
-  },
-  {
-    value: paths.projectBucketConfig,
-    label: 'Bucket Config',
-    iconElement: <StorageIcon />
-  },
-  {
-    value: paths.projectEvents,
-    label: 'Events',
-    iconElement: <EventIcon />
-  },
-  {
-    value: paths.projectPermissions,
-    label: 'Users/Permissions',
-    iconElement: <PeopleIcon />
-  }
-]
+import sidebarOptions from './sidebarOptions'
 
 export const SidebarLayout = ({
   title,

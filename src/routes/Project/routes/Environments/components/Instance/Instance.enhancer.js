@@ -1,6 +1,12 @@
+import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { compose } from 'redux'
-import { withStateHandlers, withProps } from 'recompose'
+import {
+  withStateHandlers,
+  withHandlers,
+  withProps,
+  setPropTypes
+} from 'recompose'
 
 export default compose(
   withStateHandlers(
@@ -16,13 +22,23 @@ export default compose(
       })
     }
   ),
+  setPropTypes({
+    onRemoveClick: PropTypes.func.isRequired,
+    onEditClick: PropTypes.func.isRequired
+  }),
+  withHandlers({
+    editAndClose: ({ onEditClick, closeMenu }) => () => {
+      closeMenu()
+      onEditClick()
+    },
+    removeAndClose: ({ onRemoveClick, closeMenu }) => () => {
+      onRemoveClick()
+      closeMenu()
+    }
+  }),
   withProps(({ onEditClick, closeMenu, instance }) => {
     const originalDesc = get(instance, 'description', '')
     return {
-      editAndClose: () => {
-        closeMenu()
-        onEditClick()
-      },
       instanceDescription: originalDesc.length
         ? originalDesc.length > 50
           ? originalDesc.substring(0, 50).concat('...')

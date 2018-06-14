@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Button from 'material-ui/Button'
-import Typography from 'material-ui/Typography'
-import { LinearProgress } from 'material-ui/Progress'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import ActionRunnerForm from '../ActionRunnerForm'
 import RecentActions from '../RecentActions'
 import classes from './ActionsPage.scss'
@@ -17,8 +17,7 @@ export const ActionsPage = ({
   templateName,
   submitActionRunner,
   params,
-  actionProcessing,
-  project
+  actionProcessing
 }) => (
   <div className={classes.container}>
     <Typography className={classes.pageHeader}>Actions</Typography>
@@ -54,8 +53,6 @@ export const ActionsPage = ({
         {actionProcessing && <LinearProgress color="primary" />}
       </div>
       <ActionRunnerForm
-        environments={project.environments}
-        project={project}
         projectId={params.projectId}
         selectedTemplate={selectedTemplate}
         initialValues={selectedTemplate}
@@ -70,7 +67,6 @@ export const ActionsPage = ({
 )
 
 ActionsPage.propTypes = {
-  project: PropTypes.object,
   params: PropTypes.object.isRequired, // from react-router
   selectedTemplate: PropTypes.object, // from enhancer (withStateHandlers)
   runAction: PropTypes.func.isRequired, // from enhancer (withHandlers)

@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 import { withStateHandlers } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
 import {
@@ -16,31 +16,38 @@ import { withNotifications } from 'modules/notification'
 
 export default compose(
   firestoreConnect(({ params }) => [
-    {
-      collection: 'projects',
-      doc: params.projectId,
-      subcollections: [{ collection: 'environments' }]
-    },
-    {
-      collection: 'projects',
-      doc: params.projectId,
-      subcollections: [{ collection: 'serviceAccounts' }]
-    },
+    // Project
     {
       collection: 'projects',
       doc: params.projectId
+    },
+    // Project environments
+    {
+      collection: 'projects',
+      doc: params.projectId,
+      subcollections: [{ collection: 'environments' }],
+      orderBy: ['createdAt', 'desc'],
+      storeAs: `environments-${params.projectId}`
+    },
+    // Service Account Uploads
+    {
+      collection: 'projects',
+      doc: params.projectId,
+      subcollections: [{ collection: 'serviceAccounts' }],
+      orderBy: ['createdAt', 'desc'],
+      storeAs: `serviceAccountUploads-${params.projectId}`
     }
   ]),
   connect(({ firebase, firestore: { data } }, { params }) => ({
     auth: firebase.auth,
-    project: get(data, `projects.${params.projectId}`)
+    project: get(data, `projects.${params.projectId}`),
+    environments: get(data, `environments-${params.projectId}`)
   })),
-  spinnerWhileLoading(['project', 'project.environments']),
+  spinnerWhileLoading(['project', 'environments']),
   renderWhileEmpty(['project'], ProjectNotFoundPage),
   renderIfError(
     [
       (state, { params }) => `projects.${params.projectId}`,
-      (state, { params }) => `projects.${params.projectId}.serviceAccounts`,
       (state, { params }) => `projects.${params.projectId}.environments`
     ],
     ProjectErrorPage

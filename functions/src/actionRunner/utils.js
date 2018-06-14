@@ -116,7 +116,7 @@ export function writeDocsInBatches(firestoreInstance, destPath, docData, opts) {
   return promiseWaterfall(
     chunk(docData, MAX_DOCS_PER_BATCH).map((dataChunk, chunkIdx) => {
       console.log(`Writing chunk #${chunkIdx}`)
-      return batchWriteDocs(firestoreInstance, destPath, dataChunk, opts)
+      return () => batchWriteDocs(firestoreInstance, destPath, dataChunk, opts)
     })
   )
 }

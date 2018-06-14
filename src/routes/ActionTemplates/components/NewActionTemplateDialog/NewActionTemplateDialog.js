@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogTitle
-} from 'material-ui/Dialog'
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import Button from '@material-ui/core/Button'
 import NewActionTemplateForm from '../NewActionTemplateForm'
-import Button from 'material-ui/Button'
 import classes from './NewActionTemplateDialog.scss'
 
 export const NewActionTemplateDialog = ({

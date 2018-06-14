@@ -1,19 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Paper from 'material-ui/Paper'
-import Tooltip from 'material-ui/Tooltip'
-import IconButton from 'material-ui/IconButton'
-// import Button from 'material-ui/Button'
-import DeleteIcon from 'material-ui-icons/Delete'
-import AddPersonIcon from 'material-ui-icons/GroupAdd'
-import PersonIcon from 'material-ui-icons/Person'
-import SharingDialog from '../SharingDialog'
 import { get, map } from 'lodash'
 import moment from 'moment'
-import Menu, { MenuItem } from 'material-ui/Menu'
-import MoreVertIcon from 'material-ui-icons/MoreVert'
-import { ListItemIcon, ListItemText } from 'material-ui/List'
-import EditIcon from 'material-ui-icons/ModeEdit'
+import Paper from '@material-ui/core/Paper'
+import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import DeleteIcon from '@material-ui/icons/Delete'
+import AddPersonIcon from '@material-ui/icons/GroupAdd'
+import PersonIcon from '@material-ui/icons/Person'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
+import EditIcon from '@material-ui/icons/ModeEdit'
+import SharingDialog from '../SharingDialog'
 import classes from './ProjectTile.scss'
 
 export const ProjectTile = ({
@@ -59,7 +60,7 @@ export const ProjectTile = ({
     </div>
     {project.createdAt ? (
       <span className={classes.createdAt}>
-        {moment(project.createdAt).format('MM/DD/YY')}
+        {moment(project.createdAt.toDate()).format('MM/DD/YY')}
       </span>
     ) : null}
     <div className="flex-column">
