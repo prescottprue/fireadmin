@@ -1,0 +1,52 @@
+{
+  "name": "fireadmin-e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:stage": "mocha test/**/*.spec.js -- --env='stage'",
+    "test:local": "mocha test/**/*.spec.js -- --env='local'",
+    "lint": "eslint -c .eslintrc ./test ./utils",
+    "lint:fix": "npm run lint -- --fix",
+    "prepush": "npm run lint"
+  },
+  "author": "prescottprue",
+  "license": "MIT",
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "chai": "^4.1.2",
+    "electron": "^2.0.2",
+    "firebase-admin": "^5.12.1",
+    "mocha": "^3.5.3",
+    "moment": "^2.21.0",
+    "nightmare": "^2.10.0",
+    "nightmare-upload": "^0.1.1",
+    "nightmare-window-manager": "0.2.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-plugin-lodash": "^3.2.11",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-export-extensions": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-env": "^1.4.0",
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^3.19.0",
+    "eslint-config-prettier": "^2.3.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-config-standard-react": "^5.0.0",
+    "eslint-plugin-babel": "^4.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-node": "^4.2.2",
+    "eslint-plugin-prettier": "^2.1.2",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^7.0.1",
+    "eslint-plugin-standard": "^3.0.1",
+    "husky": "^0.14.3",
+    "prettier": "^1.13.5"
+  }
+}

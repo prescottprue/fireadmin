@@ -14,7 +14,7 @@ export default compose(
       props.showError(formErrs ? 'Form Invalid' : err.message || 'Error'),
     googleLogin: ({ firebase, showError, router }) => event =>
       firebase
-        .login({ provider: 'google', type: 'popup' })
+        .login({ provider: 'google', type: 'redirect' })
         .then(() => {
           triggerAnalyticsEvent({ category: 'Auth', action: 'Login' })
         })

@@ -8,7 +8,7 @@ const iconSize = '6rem'
 const iconStyle = { width: iconSize, height: iconSize, color: 'grey' }
 
 export const NewProjectTile = ({ onClick }) => (
-  <Paper className={classes.container} onClick={onClick}>
+  <Paper className={classes.container} onClick={onClick} id="new-project-tile">
     <ContentAddCircle style={iconStyle} />
   </Paper>
 )

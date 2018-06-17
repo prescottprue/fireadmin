@@ -9,3 +9,4 @@ src/config.js
 functions/etc
 functions/dist
 functions/.runtimeconfig.json
+test/e2e/config.js

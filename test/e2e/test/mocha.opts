@@ -1,0 +1,6 @@
+--timeout 300000
+--require babel-core/register
+--require babel-polyfill
+--require ./test/setup
+--recursive
+--colors
