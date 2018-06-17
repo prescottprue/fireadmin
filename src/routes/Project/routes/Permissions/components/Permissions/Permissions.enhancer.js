@@ -1,5 +1,5 @@
 import { compose } from 'redux'
-import { withProps } from 'recompose'
+import { withProps, withStateHandlers, withHandlers } from 'recompose'
 import { reduxForm } from 'redux-form'
 
 export default compose(
@@ -8,15 +8,20 @@ export default compose(
   })),
   reduxForm({
     form: 'permissions'
+  }),
+  withStateHandlers(
+    () => ({
+      newMemberModalOpen: false
+    }),
+    {
+      toggleNewMemberModal: ({ newMemberModalOpen }) => () => ({
+        newMemberModalOpen: !newMemberModalOpen
+      })
+    }
+  ),
+  withHandlers({
+    addNewMemeber: props => () => {
+      props.change('')
+    }
   })
-  // withStateHandlers(() => ({
-  //
-  // }), {
-  //
-  // })
-  // withHandlers({
-  //   addNewMemeber: props => () => {
-  //     props.change('')
-  //   }
-  // })
 )
