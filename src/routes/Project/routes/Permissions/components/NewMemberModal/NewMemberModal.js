@@ -1,46 +1,51 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Field } from 'redux-form'
-import { TextField } from 'redux-form-material-ui'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Button from '@material-ui/core/Button'
-import { required } from 'utils/form'
+import UsersSearch from 'components/UsersSearch'
+import UsersList from 'components/UsersList'
 import classes from './NewMemberModal.scss'
 
 export const NewMemberModal = ({
   callSubmit,
-  handleSubmit,
-  submitting,
   projectId,
-  pristine,
   onRequestClose,
   closeAndReset,
+  selectCollaborator,
+  collaborators,
+  selectedCollaborators,
   open
 }) => (
   <Dialog onClose={onRequestClose} open={open}>
     <DialogTitle id="dialog-title">Add Member</DialogTitle>
     <DialogContent className={classes.body}>
-      <form className={classes.inputs} onSubmit={handleSubmit}>
-        <Field
-          component={TextField}
-          className={classes.field}
-          name="name"
-          validate={required}
-          fullWidth
-          label="Member Name"
+      <div className={classes.search}>
+        <UsersSearch
+          onSuggestionClick={selectCollaborator}
+          ignoreSuggestions={collaborators}
+          resultsTitle="New Collaborators"
         />
-      </form>
+      </div>
+      {selectedCollaborators.length ? (
+        <div>
+          <h4>New Collaborators</h4>
+          <UsersList
+            users={selectedCollaborators}
+            onUserClick={selectCollaborator}
+          />
+        </div>
+      ) : null}
     </DialogContent>
     <DialogActions>
-      <Button color="secondary" disabled={submitting} onClick={closeAndReset}>
+      <Button color="secondary" onClick={closeAndReset}>
         Cancel
       </Button>
       <Button
         color="primary"
-        disabled={pristine || submitting}
+        disabled={!selectedCollaborators}
         onClick={callSubmit}>
         Add Member
       </Button>
@@ -50,13 +55,13 @@ export const NewMemberModal = ({
 
 NewMemberModal.propTypes = {
   onRequestClose: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
+  selectCollaborator: PropTypes.func.isRequired,
+  collaborators: PropTypes.array.isRequired,
+  selectedCollaborators: PropTypes.array.isRequired,
   callSubmit: PropTypes.func.isRequired,
   projectId: PropTypes.string,
   open: PropTypes.bool.isRequired, // captured in other
-  closeAndReset: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  submitting: PropTypes.bool.isRequired, // from reduxForm
-  pristine: PropTypes.bool.isRequired // from reduxForm
+  closeAndReset: PropTypes.func.isRequired // from enhancer (withHandlers)
 }
 
 export default NewMemberModal

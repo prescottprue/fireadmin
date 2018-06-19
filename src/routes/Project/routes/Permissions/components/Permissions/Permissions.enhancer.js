@@ -1,14 +1,16 @@
 import { compose } from 'redux'
-import { withProps, withStateHandlers, withHandlers } from 'recompose'
-import { reduxForm } from 'redux-form'
+import { withProps, withStateHandlers } from 'recompose'
+import { connect } from 'react-redux'
+import { isSubmitting } from 'redux-form'
+import { formNames } from 'constants'
 
 export default compose(
   withProps(({ params: { projectId } }) => ({
     projectId
   })),
-  reduxForm({
-    form: 'permissions'
-  }),
+  connect((state, { projectId }) => ({
+    permissionsSubmitting: isSubmitting(formNames.projectPermissions)(state)
+  })),
   withStateHandlers(
     () => ({
       newMemberModalOpen: false
@@ -18,10 +20,5 @@ export default compose(
         newMemberModalOpen: !newMemberModalOpen
       })
     }
-  ),
-  withHandlers({
-    addNewMemeber: props => () => {
-      props.change('')
-    }
-  })
+  )
 )

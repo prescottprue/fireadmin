@@ -40,7 +40,7 @@ export const PermissionsTable = ({
           <ExpansionPanel key={`${uid}-${permission}`}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.displayName}>
-                {displayName}
+                {displayName || uid}
               </Typography>
               <Typography className={classes.permission}>
                 {capitalize(permission)}
@@ -90,7 +90,7 @@ export const PermissionsTable = ({
                     variant="raised"
                     aria-label="Run Action"
                     type="submit">
-                    Update Roles
+                    Update Role
                   </Button>
                 </div>
               </div>

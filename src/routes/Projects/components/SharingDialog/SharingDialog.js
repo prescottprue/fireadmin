@@ -4,16 +4,15 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
 import Dialog from '@material-ui/core/Dialog'
-import { map, find } from 'lodash'
+import { map } from 'lodash'
 import PersonIcon from '@material-ui/icons/Person'
 import Button from '@material-ui/core/Button'
-import Checkbox from '@material-ui/core/Checkbox'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Slide from '@material-ui/core/Slide'
 import UsersSearch from 'components/UsersSearch'
+import UsersList from 'components/UsersList'
 import classes from './SharingDialog.scss'
 
 function Transition(props) {
@@ -63,24 +62,10 @@ export const SharingDialog = ({
       {selectedCollaborators.length ? (
         <div>
           <h4>New Collaborators</h4>
-          <List>
-            {selectedCollaborators.map((user, i) => (
-              <ListItem key={`SelectedUser-${user.id || user.objectID}-${i}`}>
-                <PersonIcon />
-                <ListItemText primary={user.displayName} />
-                <ListItemSecondaryAction>
-                  <Checkbox
-                    onChange={() => selectCollaborator(user)}
-                    checked={
-                      !!find(selectedCollaborators, {
-                        objectID: user.id || user.objectID
-                      })
-                    }
-                  />
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
-          </List>
+          <UsersList
+            users={selectedCollaborators}
+            onUserClick={selectCollaborator}
+          />
         </div>
       ) : null}
     </DialogContent>

@@ -1,29 +1,18 @@
-import { get, map } from 'lodash'
+import { get, map, reduce } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withProps } from 'recompose'
-import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
+import { withProps, withHandlers } from 'recompose'
+import { reduxForm } from 'redux-form'
+import { firebaseConnect, withFirestore } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
 import NoCollaboratorsFound from './NoCollaboratorsFound'
+import { formNames } from 'constants'
 
 export default compose(
   withNotifications,
   firebaseConnect(['displayNames']),
-  // Create listeners for Firestore
-  firestoreConnect(({ projectId }) => [
-    // Project environments
-    {
-      collection: 'projects',
-      doc: projectId,
-      subcollections: [{ collection: 'environments' }]
-    },
-    // Project
-    {
-      collection: 'projects',
-      doc: projectId
-    }
-  ]),
+  withFirestore,
   // Map redux state to props
   connect(({ firebase: { auth, data }, firestore }, { projectId }) => ({
     auth,
@@ -40,9 +29,33 @@ export default compose(
     }))
     return {
       // map collaboratorPermissions object into an object with displayName
-      collaborators,
-      initialValues: collaborators
+      collaborators
     }
   }),
-  renderWhileEmpty(['collaborators'], NoCollaboratorsFound)
+  renderWhileEmpty(['collaborators'], NoCollaboratorsFound),
+  withHandlers({
+    onSubmit: ({ firestore, project, projectId }) => async values => {
+      const currentPermissions = get(project, `collaboratorPermissions`)
+      const collaboratorPermissions = reduce(
+        currentPermissions,
+        (acc, userPermissionSetting, settingUid) => {
+          return {
+            ...acc,
+            [settingUid]: values[settingUid]
+              ? {
+                  ...userPermissionSetting,
+                  ...values[settingUid],
+                  updatedAt: firestore.FieldValue.serverTimestamp()
+                }
+              : userPermissionSetting
+          }
+        },
+        {}
+      )
+      await firestore.update(`projects/${projectId}`, {
+        collaboratorPermissions
+      })
+    }
+  }),
+  reduxForm({ form: formNames.projectPermissions })
 )

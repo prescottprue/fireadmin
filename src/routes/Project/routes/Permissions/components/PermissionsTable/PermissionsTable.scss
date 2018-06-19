@@ -4,18 +4,20 @@
   margin-left: .125rem;
   margin-right: .125rem;
 }
+$distanceWidth: 15rem;
 .header {
   @extend .flex-row;
   padding: 0.75rem;
   &Left {
     padding-left: .75rem;
-    width: 8rem;
+    width: $distanceWidth;
     margin-right: 2rem;
   }
 }
 .displayName {
-  width: 8rem !important;
+  width: $distanceWidth !important;
   margin-right: 2rem !important;
+  overflow: hidden !important;
 }
 .permission {
   margin-left: -.75rem !important;
