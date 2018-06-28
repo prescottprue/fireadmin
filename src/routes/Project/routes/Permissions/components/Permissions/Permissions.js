@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import PermissionsTable from '../PermissionsTable'
+import RolesTable from '../RolesTable'
 import NewMemberModal from '../NewMemberModal'
 import classes from './Permissions.scss'
 
@@ -25,6 +26,7 @@ export const Permissions = ({
       </Button>
     </div>
     <PermissionsTable projectId={projectId} />
+    <RolesTable projectId={projectId} />
     <NewMemberModal
       projectId={projectId}
       open={newMemberModalOpen}

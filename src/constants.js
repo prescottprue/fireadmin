@@ -22,7 +22,8 @@ export const formNames = {
   newActionTemplate: 'newActionTemplate',
   actionTemplate: 'actionTemplate',
   actionRunner: 'actionRunner',
-  projectPermissions: 'projectPermissions'
+  projectPermissions: 'projectPermissions',
+  projectRoles: 'projectRoles'
 }
 
 export const paths = {

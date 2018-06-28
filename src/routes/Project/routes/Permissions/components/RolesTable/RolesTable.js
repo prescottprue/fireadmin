@@ -1,78 +1,80 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
-import { capitalize } from 'lodash'
-import { Select } from 'redux-form-material-ui'
+import { Checkbox } from 'redux-form-material-ui'
+import { map, startCase } from 'lodash'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import InputLabel from '@material-ui/core/InputLabel'
-import MenuItem from '@material-ui/core/MenuItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import FormControl from '@material-ui/core/FormControl'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import classes from './PermissionsTable.scss'
+import classes from './RolesTable.scss'
+
+const roles = {
+  viewer: {
+    permissions: {
+      editPermissions: true
+    }
+  },
+  owner: {
+    permissions: {
+      editPermissions: true
+    }
+  },
+  editor: {
+    permissions: {
+      editPermissions: true
+    }
+  }
+}
 
 const resourcesOptions = [
-  { value: 'viewer' },
-  { value: 'owner' },
-  { value: 'editor' }
+  { value: 'editPermissions' },
+  { value: 'editEnvironments' },
+  { value: 'editUsers' }
 ]
 
-export const PermissionsTable = ({
-  collaborators,
-  pristine,
-  reset,
-  handleSubmit
-}) => (
-  <Paper>
+export const RolesTable = ({ pristine, reset, handleSubmit }) => (
+  <Paper className={classes.container}>
     <div className={classes.table}>
       <div className={classes.header}>
-        <span className={classes.headerLeft}>Member</span>
-        <span>Role</span>
+        <span className={classes.headerLeft}>Role</span>
+        <span>Permissions</span>
       </div>
       <form className={classes.body} onSubmit={handleSubmit}>
-        {collaborators.map(({ role, uid, displayName }, index) => (
-          <ExpansionPanel key={`${uid}-${role}`}>
+        {map(roles, ({ name, permissions }, roleKey) => (
+          <ExpansionPanel key={roleKey}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.displayName}>
-                {displayName || uid}
+                {name || startCase(roleKey)}
               </Typography>
-              <Typography className={classes.permission}>
-                {capitalize(role)}
-              </Typography>
+              {map(permissions, (_, permission) => (
+                <Typography className={classes.permission} key={permission}>
+                  {startCase(permission)}
+                </Typography>
+              ))}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails style={{ paddingTop: 0 }}>
               <div className={classes.content}>
                 <Divider />
                 <div>
                   <div className={classes.roleSelect}>
-                    <FormControl className={classes.field}>
-                      <InputLabel htmlFor="role">Role</InputLabel>
-                      <Field
-                        name={`${uid}.role`}
-                        component={Select}
-                        fullWidth
-                        inputProps={{
-                          name: 'role',
-                          id: 'role'
-                        }}>
-                        {resourcesOptions.map((option, idx) => (
-                          <MenuItem
-                            key={`Role-Option-${option.value}-${idx}`}
-                            value={option.value}
-                            disabled={option.disabled}>
-                            <ListItemText
-                              primary={option.label || capitalize(option.value)}
-                            />
-                          </MenuItem>
-                        ))}
-                      </Field>
-                    </FormControl>
+                    {resourcesOptions.map((option, idx) => (
+                      <FormControlLabel
+                        key={`${option.value}-${idx}`}
+                        control={
+                          <Field
+                            name={`permissions.${option.value}`}
+                            component={Checkbox}
+                          />
+                        }
+                        label={startCase(option.value)}
+                      />
+                    ))}
                   </div>
                 </div>
                 <div className={classes.buttons}>
@@ -102,11 +104,10 @@ export const PermissionsTable = ({
   </Paper>
 )
 
-PermissionsTable.propTypes = {
-  collaborators: PropTypes.array.isRequired,
+RolesTable.propTypes = {
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   reset: PropTypes.func.isRequired
 }
 
-export default PermissionsTable
+export default RolesTable
