@@ -1,21 +1,40 @@
-import { get } from 'lodash'
+import { get, map, some } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withFirebase, withFirestore } from 'react-redux-firebase'
+import { formValueSelector } from 'redux-form'
+import { formNames } from 'constants'
 import { withStateHandlers, withHandlers, withProps } from 'recompose'
 import { withNotifications } from 'modules/notification'
 import * as handlers from './ActionsPage.handlers'
+
+const selector = formValueSelector(formNames.actionRunner)
 
 export default compose(
   withNotifications,
   withFirestore,
   withFirebase,
   // Map redux state to props
-  connect(({ firebase, firestore: { data, ordered } }, { params }) => ({
-    uid: firebase.auth.uid,
-    project: get(data, `projects.${params.projectId}`),
-    environments: get(ordered, `environments-${params.projectId}`)
-  })),
+  connect((state, { params }) => {
+    const {
+      firebase,
+      firestore: { data, ordered }
+    } = state
+    return {
+      uid: firebase.auth.uid,
+      project: get(data, `projects.${params.projectId}`),
+      environments: get(ordered, `environments-${params.projectId}`),
+      protectedEnvInUse: some(
+        map(selector(state, 'environmentValues'), envInd =>
+          get(
+            state.firestore.ordered,
+            `environments-${params.projectId}.${envInd}`
+          )
+        ),
+        { protected: true }
+      )
+    }
+  }),
   // State handlers as props
   withStateHandlers(
     () => ({
