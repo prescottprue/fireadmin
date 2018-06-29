@@ -17,6 +17,7 @@ export const ActionsPage = ({
   templateName,
   submitActionRunner,
   params,
+  protectedEnvInUse,
   actionProcessing
 }) => (
   <div className={classes.container}>
@@ -30,7 +31,7 @@ export const ActionsPage = ({
     <div className={classes.container}>
       <div className={classes.buttons}>
         <Button
-          disabled={!selectedTemplate || actionProcessing}
+          disabled={!selectedTemplate || actionProcessing || protectedEnvInUse}
           color="primary"
           variant="raised"
           aria-label="Run Action"
