@@ -24,14 +24,14 @@ export default compose(
       uid: firebase.auth.uid,
       project: get(data, `projects.${params.projectId}`),
       environments: get(ordered, `environments-${params.projectId}`),
-      protectedEnvInUse: some(
+      lockEnvInUse: some(
         map(selector(state, 'environmentValues'), envInd =>
           get(
             state.firestore.ordered,
             `environments-${params.projectId}.${envInd}`
           )
         ),
-        { protected: true }
+        { locked: true }
       )
     }
   }),
@@ -67,9 +67,10 @@ export default compose(
   ),
   // Handlers as props
   withHandlers(handlers),
-  withProps(({ selectedTemplate }) => ({
+  withProps(({ selectedTemplate, actionProcessing, lockEnvInUse }) => ({
     templateName: selectedTemplate
       ? `Template: ${get(selectedTemplate, 'name', '')}`
-      : 'Template'
+      : 'Template',
+    runActionDisabled: !selectedTemplate || actionProcessing || lockEnvInUse
   }))
 )

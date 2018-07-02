@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
-import { TextField, Checkbox, FormControlLabel } from 'redux-form-material-ui'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import { TextField, Checkbox } from 'redux-form-material-ui'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -47,8 +48,8 @@ export const EditEnvironmentDialog = ({
           label="Instance Description"
         />
         <FormControlLabel
-          control={<Field name="protected" component={Checkbox} />}
-          label="Protected (prevents actions)"
+          control={<Field name="locked" component={Checkbox} />}
+          label="Locked (prevents actions)"
         />
       </div>
     </DialogContent>

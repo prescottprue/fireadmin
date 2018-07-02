@@ -1,33 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Field } from 'redux-form'
-import { capitalize } from 'lodash'
-import { Select } from 'redux-form-material-ui'
-import Button from '@material-ui/core/Button'
+import { map } from 'lodash'
 import Paper from '@material-ui/core/Paper'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import InputLabel from '@material-ui/core/InputLabel'
-import MenuItem from '@material-ui/core/MenuItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import FormControl from '@material-ui/core/FormControl'
-import Typography from '@material-ui/core/Typography'
-import Divider from '@material-ui/core/Divider'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import PermissionsTableRow from '../PermissionsTableRow'
 import classes from './PermissionsTable.scss'
-
-const resourcesOptions = [
-  { value: 'viewer' },
-  { value: 'owner' },
-  { value: 'editor' }
-]
+import { formNames } from 'constants'
 
 export const PermissionsTable = ({
   collaborators,
-  pristine,
-  reset,
-  handleSubmit
+  updatePermissions,
+  projectId,
+  removeMember
 }) => (
   <Paper>
     <div className={classes.table}>
@@ -35,78 +18,28 @@ export const PermissionsTable = ({
         <span className={classes.headerLeft}>Member</span>
         <span>Role</span>
       </div>
-      <form className={classes.body} onSubmit={handleSubmit}>
-        {collaborators.map(({ role, uid, displayName }, index) => (
-          <ExpansionPanel key={`${uid}-${role}`}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography className={classes.displayName}>
-                {displayName || uid}
-              </Typography>
-              <Typography className={classes.permission}>
-                {capitalize(role)}
-              </Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails style={{ paddingTop: 0 }}>
-              <div className={classes.content}>
-                <Divider />
-                <div>
-                  <div className={classes.roleSelect}>
-                    <FormControl className={classes.field}>
-                      <InputLabel htmlFor="role">Role</InputLabel>
-                      <Field
-                        name={`${uid}.role`}
-                        component={Select}
-                        fullWidth
-                        inputProps={{
-                          name: 'role',
-                          id: 'role'
-                        }}>
-                        {resourcesOptions.map((option, idx) => (
-                          <MenuItem
-                            key={`Role-Option-${option.value}-${idx}`}
-                            value={option.value}
-                            disabled={option.disabled}>
-                            <ListItemText
-                              primary={option.label || capitalize(option.value)}
-                            />
-                          </MenuItem>
-                        ))}
-                      </Field>
-                    </FormControl>
-                  </div>
-                </div>
-                <div className={classes.buttons}>
-                  <Button
-                    disabled={pristine}
-                    color="secondary"
-                    aria-label="Run Action"
-                    onClick={reset}
-                    style={{ marginRight: '2rem' }}>
-                    Cancel
-                  </Button>
-                  <Button
-                    disabled={pristine}
-                    color="primary"
-                    variant="raised"
-                    aria-label="Run Action"
-                    type="submit">
-                    Update Role
-                  </Button>
-                </div>
-              </div>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-        ))}
-      </form>
+      {map(collaborators, ({ role, uid, displayName }, index) => (
+        <PermissionsTableRow
+          key={`${uid}-${role}`}
+          uid={uid}
+          role={role}
+          displayName={displayName}
+          onSubmit={updatePermissions}
+          projectId={projectId}
+          form={`${formNames.projectPermissions}.${uid}`}
+          initialValues={{ [uid]: { role } }}
+          onMemberRemoveClick={removeMember}
+        />
+      ))}
     </div>
   </Paper>
 )
 
 PermissionsTable.propTypes = {
   collaborators: PropTypes.array.isRequired,
-  pristine: PropTypes.bool.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  reset: PropTypes.func.isRequired
+  projectId: PropTypes.string.isRequired,
+  updatePermissions: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  removeMember: PropTypes.func.isRequired // from enhancer (withHandlers)
 }
 
 export default PermissionsTable
