@@ -10,6 +10,7 @@ import classes from './ActionsPage.scss'
 export const ActionsPage = ({
   selectActionTemplate,
   runAction,
+  runActionDisabled,
   clearRunner,
   selectedTemplate,
   toggleTemplateEdit,
@@ -30,7 +31,7 @@ export const ActionsPage = ({
     <div className={classes.container}>
       <div className={classes.buttons}>
         <Button
-          disabled={!selectedTemplate || actionProcessing}
+          disabled={runActionDisabled}
           color="primary"
           variant="raised"
           aria-label="Run Action"
@@ -76,6 +77,7 @@ ActionsPage.propTypes = {
   toggleTemplateEdit: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   templateEditExpanded: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
   actionProcessing: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
+  runActionDisabled: PropTypes.bool.isRequired, // from enhancer (withProps)
   templateName: PropTypes.string.isRequired // from enhancer (withProps)
 }
 
