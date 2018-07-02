@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Paper from '@material-ui/core/Paper'
-import { get, map, startCase } from 'lodash'
+import { get, map, startCase, invoke } from 'lodash'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -33,7 +33,9 @@ export const RecentActions = ({
       <TableBody>
         {map(orderedActions, (action, groupName) => [
           <TableRow key={groupName} className={classes.tableRowDivider}>
-            <TableCell>{formatDateTime(action.createdAt.toDate())}</TableCell>
+            <TableCell>
+              {formatDateTime(invoke(action, 'createdAt.toDate'))}
+            </TableCell>
             <TableCell>
               <span>{action.createdBy || startCase(action.createdByType)}</span>
             </TableCell>

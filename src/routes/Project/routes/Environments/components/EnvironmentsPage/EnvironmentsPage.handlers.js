@@ -42,12 +42,11 @@ export const addEnvironment = props => async newProjectData => {
     )
     throw uploadErr
   }
-  const { downloadURL, ref } = get(serviceAccountRes, 'uploadTaskSnapshot', {})
+  const { ref } = get(serviceAccountRes, 'uploadTaskSnapshot', {})
   // Build new environment object
   const newEnv = {
     ...newProjectData,
     serviceAccount: {
-      downloadURL,
       fullPath: ref.fullPath
     },
     projectId,

@@ -28,6 +28,12 @@ export function runAction(props) {
       environments,
       toggleActionProcessing
     } = props
+    if (props.lockedEnvInUse) {
+      const errMsg = 'Action Runner Disabled. Locked environment selected.'
+      props.showError(errMsg)
+      console.error(errMsg) // eslint-disable-line no-console
+      throw new Error(errMsg)
+    }
     const { environmentValues } = formValues
     // Build request object for action run
     const actionRequest = {
@@ -45,6 +51,7 @@ export function runAction(props) {
         envId => environments[envId] || envId
       )
     }
+
     // TODO: Show error notification if required action inputs are not selected
     props.closeTemplateEdit()
     toggleActionProcessing()
