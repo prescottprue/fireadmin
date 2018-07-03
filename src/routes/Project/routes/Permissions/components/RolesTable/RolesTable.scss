@@ -1,7 +1,8 @@
 @import 'base';
 
-.container {
+.root {
   margin-top: 3rem;
+  height: 100%;
 }
 $distanceWidth: 15rem;
 .header {
@@ -23,6 +24,7 @@ $distanceWidth: 15rem;
 }
 .content {
   width: 100%;
+  height: 100%;
 }
 .roleSelect {
   margin-top: 2.5rem;
@@ -33,6 +35,7 @@ $distanceWidth: 15rem;
   @extend .flex-row;
   justify-content: flex-end;
   width: 100%;
+  margin-bottom: 3rem;
 }
 .empty {
   padding: 2rem;
