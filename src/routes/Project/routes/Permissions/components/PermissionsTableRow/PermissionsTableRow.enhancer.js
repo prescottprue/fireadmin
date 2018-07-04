@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { setPropTypes, withStateHandlers } from 'recompose'
+import { setPropTypes, withStateHandlers, withHandlers } from 'recompose'
 import { reduxForm } from 'redux-form'
 import { withStyles } from '@material-ui/core/styles'
 import styles from './PermissionsTableRow.styles'
@@ -10,15 +10,15 @@ import { getRoleOptions } from 'selectors'
 export default compose(
   setPropTypes({
     projectId: PropTypes.string.isRequired,
-    form: PropTypes.string.isRequired
+    form: PropTypes.string.isRequired,
+    onDeleteClick: PropTypes.func.isRequired
   }),
   reduxForm({
     enableReinitialize: true
   }),
   withStateHandlers(
     () => ({
-      anchorEl: null,
-      deleteDialogOpen: false
+      anchorEl: null
     }),
     {
       handleMenuClick: () => e => ({
@@ -26,17 +26,17 @@ export default compose(
       }),
       handleMenuClose: () => () => ({
         anchorEl: null
-      }),
-      startDelete: () => () => ({
-        deleteDialogOpen: true
-      }),
-      handleDeleteClose: () => () => ({
-        deleteDialogOpen: false
       })
     }
   ),
   connect((state, props) => ({
     roleOptions: getRoleOptions(state, props)
   })),
+  withHandlers({
+    closeAndCallDelete: props => () => {
+      props.handleMenuClose()
+      props.onDeleteClick(props.uid)
+    }
+  }),
   withStyles(styles)
 )

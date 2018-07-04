@@ -15,9 +15,9 @@ export const DeleteMemberModal = ({
   open
 }) => (
   <Dialog onClose={onRequestClose} open={open}>
-    <DialogTitle id="dialog-title">Add Member</DialogTitle>
+    <DialogTitle id="dialog-title">Delete Member</DialogTitle>
     <DialogContent className={classes.body}>
-      Are you sure you want to remove {name}
+      Are you sure you want to remove {name}?
     </DialogContent>
     <DialogActions>
       <Button color="secondary" onClick={onRequestClose}>
@@ -36,7 +36,7 @@ export const DeleteMemberModal = ({
 DeleteMemberModal.propTypes = {
   removeDisabled: PropTypes.bool,
   onRequestClose: PropTypes.func.isRequired,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   open: PropTypes.bool.isRequired, // captured in other
   removeAndClose: PropTypes.func.isRequired // from enhancer (withHandlers)
 }

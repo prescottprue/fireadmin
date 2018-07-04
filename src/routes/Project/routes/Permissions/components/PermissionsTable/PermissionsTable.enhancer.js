@@ -1,12 +1,14 @@
 import { get, map, reduce, omit } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withProps, withHandlers } from 'recompose'
+import { withProps, withHandlers, withStateHandlers } from 'recompose'
 import { firebaseConnect, withFirestore } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
+import { withStyles } from '@material-ui/core/styles'
 import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
 import { to } from 'utils/async'
 import NoCollaboratorsFound from './NoCollaboratorsFound'
+import styles from './PermissionsTable.styles'
 
 export default compose(
   withNotifications,
@@ -20,7 +22,28 @@ export default compose(
   })),
   // Show loading spinner until project and displayNames load
   spinnerWhileLoading(['project', 'displayNames']),
-  withProps(({ project, displayNames }) => {
+  withStateHandlers(
+    () => ({
+      anchorEl: null,
+      deleteDialogOpen: false
+    }),
+    {
+      handleMenuClick: () => e => ({
+        anchorEl: e.target
+      }),
+      handleMenuClose: () => () => ({
+        anchorEl: null
+      }),
+      startDelete: () => selectedMemberId => ({
+        deleteDialogOpen: true,
+        selectedMemberId: selectedMemberId
+      }),
+      handleDeleteClose: () => () => ({
+        deleteDialogOpen: false
+      })
+    }
+  ),
+  withProps(({ project, displayNames, selectedMemberId }) => {
     const collaborators = map(project.collaborators, (_, uid) => ({
       uid,
       role: get(project, `collaboratorPermissions.${uid}.role`),
@@ -28,7 +51,8 @@ export default compose(
     }))
     return {
       // map collaboratorPermissions object into an object with displayName
-      collaborators
+      collaborators,
+      selectedMemberName: get(displayNames, selectedMemberId, selectedMemberId)
     }
   }),
   renderWhileEmpty(['collaborators'], NoCollaboratorsFound),
@@ -95,5 +119,6 @@ export default compose(
       }
       showSuccess('Member removed successfully')
     }
-  })
+  }),
+  withStyles(styles)
 )

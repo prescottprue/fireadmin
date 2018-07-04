@@ -6,8 +6,7 @@ export default compose(
   // Proptypes for props used in HOCs including withHandlers
   setPropTypes({
     onDeleteClick: PropTypes.func.isRequired,
-    onRequestClose: PropTypes.func.isRequired,
-    name: PropTypes.string.isRequired
+    onRequestClose: PropTypes.func.isRequired
   }),
   // Add handlers as props
   withHandlers({

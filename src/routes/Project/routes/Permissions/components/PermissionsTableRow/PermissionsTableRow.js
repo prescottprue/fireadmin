@@ -19,7 +19,6 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
-import DeleteMemberModal from '../DeleteMemberModal'
 import classesFromStyles from './PermissionsTableRow.scss'
 
 const editOptions = ['Delete']
@@ -37,112 +36,101 @@ export const PermissionsTableRow = ({
   handleSubmit,
   handleMenuClose,
   handleMenuClick,
-  deleteDialogOpen,
-  handleDeleteClose,
-  onMemberRemoveClick,
-  startDelete,
+  closeAndCallDelete,
   anchorEl
 }) => (
-  <form onSubmit={handleSubmit}>
-    <DeleteMemberModal
-      open={deleteDialogOpen}
-      name={displayName || uid}
-      onRequestClose={handleMenuClose}
-      onDeleteClick={onMemberRemoveClick}
-    />
-    <ExpansionPanel className={classes.root}>
-      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography className={classesFromStyles.displayName}>
-          {displayName || uid}
-        </Typography>
-        <Typography className={classesFromStyles.permission}>
-          {capitalize(role)}
-        </Typography>
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails style={{ paddingTop: 0 }}>
-        <div className={classes.content}>
-          <Divider />
-          <div className={classesFromStyles.menu}>
-            <IconButton
-              aria-label="More"
-              aria-owns="long-menu"
-              aria-haspopup="true"
-              onClick={handleMenuClick}>
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              id="long-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              PaperProps={{
-                style: {
-                  maxHeight: ITEM_HEIGHT * 4.5,
-                  width: 200
-                }
-              }}>
-              {editOptions.map(option => (
-                <MenuItem key={option} onClick={startDelete}>
-                  <ListItemIcon className={classes.icon}>
-                    <DeleteIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    classes={{ primary: classes.primary }}
-                    inset
-                    primary="Delete Member"
-                  />
-                </MenuItem>
-              ))}
-            </Menu>
-          </div>
-          <div>
-            <div className={classesFromStyles.roleSelect}>
-              <FormControl className={classesFromStyles.field}>
-                <InputLabel htmlFor="role">Role</InputLabel>
-                <Field
-                  name={`${uid}.role`}
-                  component={Select}
-                  fullWidth
-                  inputProps={{
-                    name: 'role',
-                    id: 'role'
-                  }}>
-                  {roleOptions.map((option, idx) => (
-                    <MenuItem
-                      key={`Role-Option-${option.value}-${idx}`}
-                      value={option.value}
-                      disabled={option.disabled}>
-                      <ListItemText
-                        primary={option.label || capitalize(option.value)}
-                      />
-                    </MenuItem>
-                  ))}
-                </Field>
-              </FormControl>
-            </div>
-          </div>
-          <div className={classesFromStyles.buttons}>
-            <Button
-              disabled={pristine}
-              color="secondary"
-              aria-label="Run Action"
-              onClick={reset}
-              style={{ marginRight: '2rem' }}>
-              Cancel
-            </Button>
-            <Button
-              disabled={pristine}
-              color="primary"
-              variant="raised"
-              aria-label="Run Action"
-              type="submit">
-              Update Role
-            </Button>
+  <ExpansionPanel className={classes.root}>
+    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+      <Typography className={classesFromStyles.displayName}>
+        {displayName || uid}
+      </Typography>
+      <Typography className={classesFromStyles.permission}>
+        {capitalize(role)}
+      </Typography>
+    </ExpansionPanelSummary>
+    <ExpansionPanelDetails style={{ paddingTop: 0 }}>
+      <form className={classes.content} onSubmit={handleSubmit}>
+        <Divider />
+        <div className={classesFromStyles.menu}>
+          <IconButton
+            aria-label="More"
+            aria-owns="long-menu"
+            aria-haspopup="true"
+            onClick={handleMenuClick}>
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            id="long-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            PaperProps={{
+              style: {
+                maxHeight: ITEM_HEIGHT * 4.5,
+                width: 200
+              }
+            }}>
+            {editOptions.map(option => (
+              <MenuItem key={option} onClick={closeAndCallDelete}>
+                <ListItemIcon className={classes.icon}>
+                  <DeleteIcon />
+                </ListItemIcon>
+                <ListItemText
+                  classes={{ primary: classes.primary }}
+                  inset
+                  primary="Delete Member"
+                />
+              </MenuItem>
+            ))}
+          </Menu>
+        </div>
+        <div>
+          <div className={classesFromStyles.roleSelect}>
+            <FormControl className={classesFromStyles.field}>
+              <InputLabel htmlFor="role">Role</InputLabel>
+              <Field
+                name={`${uid}.role`}
+                component={Select}
+                fullWidth
+                inputProps={{
+                  name: 'role',
+                  id: 'role'
+                }}>
+                {roleOptions.map((option, idx) => (
+                  <MenuItem
+                    key={`Role-Option-${option.value}-${idx}`}
+                    value={option.value}
+                    disabled={option.disabled}>
+                    <ListItemText
+                      primary={option.label || capitalize(option.value)}
+                    />
+                  </MenuItem>
+                ))}
+              </Field>
+            </FormControl>
           </div>
         </div>
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
-  </form>
+        <div className={classesFromStyles.buttons}>
+          <Button
+            disabled={pristine}
+            color="secondary"
+            aria-label="Run Action"
+            onClick={reset}
+            style={{ marginRight: '2rem' }}>
+            Cancel
+          </Button>
+          <Button
+            disabled={pristine}
+            color="primary"
+            variant="raised"
+            aria-label="Run Action"
+            type="submit">
+            Update Role
+          </Button>
+        </div>
+      </form>
+    </ExpansionPanelDetails>
+  </ExpansionPanel>
 )
 
 PermissionsTableRow.propTypes = {
@@ -150,13 +138,10 @@ PermissionsTableRow.propTypes = {
   uid: PropTypes.string.isRequired,
   role: PropTypes.string,
   roleOptions: PropTypes.array,
-  onMemberRemoveClick: PropTypes.func.isRequired,
+  closeAndCallDelete: PropTypes.func.isRequired,
   anchorEl: PropTypes.object, // from enhancer (withStateHandlers)
   handleMenuClick: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   handleMenuClose: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  deleteDialogOpen: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
-  handleDeleteClose: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  startDelete: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   pristine: PropTypes.bool.isRequired, // from enhancer (reduxForm)
   handleSubmit: PropTypes.func.isRequired, // from enhancer (reduxForm)
