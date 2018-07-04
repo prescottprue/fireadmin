@@ -22,12 +22,6 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import DeleteMemberModal from '../DeleteMemberModal'
 import classesFromStyles from './PermissionsTableRow.scss'
 
-const resourcesOptions = [
-  { value: 'viewer' },
-  { value: 'owner' },
-  { value: 'editor' }
-]
-
 const editOptions = ['Delete']
 
 const ITEM_HEIGHT = 48
@@ -38,6 +32,7 @@ export const PermissionsTableRow = ({
   displayName,
   uid,
   role,
+  roleOptions,
   classes,
   handleSubmit,
   handleMenuClose,
@@ -112,7 +107,7 @@ export const PermissionsTableRow = ({
                     name: 'role',
                     id: 'role'
                   }}>
-                  {resourcesOptions.map((option, idx) => (
+                  {roleOptions.map((option, idx) => (
                     <MenuItem
                       key={`Role-Option-${option.value}-${idx}`}
                       value={option.value}
@@ -154,6 +149,7 @@ PermissionsTableRow.propTypes = {
   displayName: PropTypes.string,
   uid: PropTypes.string.isRequired,
   role: PropTypes.string,
+  roleOptions: PropTypes.array,
   onMemberRemoveClick: PropTypes.func.isRequired,
   anchorEl: PropTypes.object, // from enhancer (withStateHandlers)
   handleMenuClick: PropTypes.func.isRequired, // from enhancer (withStateHandlers)

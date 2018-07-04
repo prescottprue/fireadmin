@@ -1,34 +1,33 @@
-import PropTypes from 'prop-types'
 import { get, some, omit } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import {
-  withHandlers,
-  withStateHandlers,
-  withProps,
-  setPropTypes
-} from 'recompose'
+import { withHandlers, withStateHandlers, withProps } from 'recompose'
 import { withFirestore } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
 import NoRolesFound from './NoRolesFound'
+import { getRoles, getProject } from 'selectors'
+
+const INITIAL_ROLES = {
+  owner: {
+    permissions: {
+      editPermissions: true
+    }
+  }
+}
 
 export default compose(
   withNotifications,
   withFirestore,
   // Map redux state to props
-  connect(({ firebase: { auth, data }, firestore }, { projectId }) => ({
-    auth,
-    project: get(firestore, `data.projects.${projectId}`),
-    roles: get(firestore, `data.projects.${projectId}.roles`),
-    initialValues: get(firestore, `data.projects.${projectId}.roles`)
+  connect((state, props) => ({
+    project: getProject(state, props),
+    roles: getRoles(state, props),
+    initialValues: getRoles(state, props) || INITIAL_ROLES
   })),
   // Show loading spinner until project and displayNames load
   spinnerWhileLoading(['project']),
   renderWhileEmpty(['roles'], NoRolesFound),
-  setPropTypes({
-    roleKey: PropTypes.string.isRequired
-  }),
   withStateHandlers(
     () => ({
       newRoleOpen: false
@@ -89,6 +88,6 @@ export default compose(
     }
   }),
   withProps(({ newRoleOpen, auth }) => ({
-    addRoleDisabled: newRoleOpen || !auth.uid
+    addRoleDisabled: newRoleOpen
   }))
 )

@@ -1,11 +1,11 @@
-// import { get, map } from 'lodash'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
-// import { connect } from 'react-redux'
+import { connect } from 'react-redux'
 import { setPropTypes, withStateHandlers } from 'recompose'
 import { reduxForm } from 'redux-form'
 import { withStyles } from '@material-ui/core/styles'
 import styles from './PermissionsTableRow.styles'
+import { getRoleOptions } from 'selectors'
 
 export default compose(
   setPropTypes({
@@ -35,5 +35,8 @@ export default compose(
       })
     }
   ),
+  connect((state, props) => ({
+    roleOptions: getRoleOptions(state, props)
+  })),
   withStyles(styles)
 )
