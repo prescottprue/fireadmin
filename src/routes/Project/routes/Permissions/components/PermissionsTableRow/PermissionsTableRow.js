@@ -51,10 +51,9 @@ export const PermissionsTableRow = ({
   <form onSubmit={handleSubmit}>
     <DeleteMemberModal
       open={deleteDialogOpen}
-      uid={uid}
-      displayName={displayName}
+      name={displayName || uid}
       onRequestClose={handleMenuClose}
-      onRemoveClick={onMemberRemoveClick}
+      onDeleteClick={onMemberRemoveClick}
     />
     <ExpansionPanel className={classes.root}>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>

@@ -5,15 +5,17 @@ import Button from '@material-ui/core/Button'
 import Collapse from '@material-ui/core/Collapse'
 import RolesTableRow from '../RolesTableRow'
 import NewRoleCard from '../NewRoleCard'
+import { formNames } from 'constants'
 import classes from './RolesTable.scss'
 
 export const RolesTable = ({
   roles,
+  addRole,
   updateRole,
+  deleteRole,
   openNewRole,
   newRoleOpen,
   closeNewRole,
-  addRole,
   addRoleDisabled
 }) => (
   <div className={classes.root}>
@@ -34,11 +36,13 @@ export const RolesTable = ({
       {map(roles, ({ name, permissions }, roleKey) => (
         <RolesTableRow
           key={roleKey}
+          form={`${formNames.projectRoles}.${roleKey}`}
           roleKey={roleKey}
           name={name}
           permissions={permissions}
           onSubmit={updateRole}
-          initialValues={roles}
+          initialValues={roles[roleKey]}
+          onDeleteClick={deleteRole}
         />
       ))}
     </div>
@@ -48,6 +52,7 @@ export const RolesTable = ({
 RolesTable.propTypes = {
   updateRole: PropTypes.func.isRequired,
   openNewRole: PropTypes.func.isRequired,
+  deleteRole: PropTypes.func.isRequired,
   closeNewRole: PropTypes.func.isRequired,
   addRole: PropTypes.func.isRequired,
   newRoleOpen: PropTypes.bool.isRequired,

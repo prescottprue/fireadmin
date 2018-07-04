@@ -15,5 +15,11 @@ export default theme => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-end'
+  },
+  menu: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: '.5rem'
   }
 })

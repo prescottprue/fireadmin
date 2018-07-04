@@ -11,6 +11,14 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
+import DeleteIcon from '@material-ui/icons/Delete'
+import DeleteMemberModal from '../DeleteMemberModal'
 
 const resourcesOptions = [
   { value: 'editPermissions' },
@@ -18,15 +26,32 @@ const resourcesOptions = [
   { value: 'editUsers' }
 ]
 
+const editOptions = ['Delete']
+
+const ITEM_HEIGHT = 48
+
 export const RolesTableRow = ({
   name,
   pristine,
   reset,
   handleSubmit,
   roleKey,
-  classes
+  classes,
+  handleMenuClick,
+  startDelete,
+  handleMenuClose,
+  deleteDialogOpen,
+  handleDeleteClose,
+  onDeleteClick,
+  anchorEl
 }) => (
   <ExpansionPanel key={roleKey}>
+    <DeleteMemberModal
+      open={deleteDialogOpen}
+      name={roleKey}
+      onRequestClose={handleDeleteClose}
+      onDeleteClick={onDeleteClick}
+    />
     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
       <Typography className={classes.displayName}>
         {name || startCase(roleKey)}
@@ -35,13 +60,46 @@ export const RolesTableRow = ({
     <ExpansionPanelDetails>
       <form className={classes.content} onSubmit={handleSubmit}>
         <Divider />
+        <div className={classes.menu}>
+          <IconButton
+            aria-label="More"
+            aria-owns="long-menu"
+            aria-haspopup="true"
+            onClick={handleMenuClick}>
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            id="long-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            PaperProps={{
+              style: {
+                maxHeight: ITEM_HEIGHT * 4.5,
+                width: 200
+              }
+            }}>
+            {editOptions.map(option => (
+              <MenuItem key={option} onClick={startDelete}>
+                <ListItemIcon className={classes.icon}>
+                  <DeleteIcon />
+                </ListItemIcon>
+                <ListItemText
+                  classes={{ primary: classes.primary }}
+                  inset
+                  primary="Delete Role"
+                />
+              </MenuItem>
+            ))}
+          </Menu>
+        </div>
         <div className={classes.roleSelect}>
           {resourcesOptions.map((option, idx) => (
             <FormControlLabel
               key={`${option.value}-${idx}`}
               control={
                 <Field
-                  name={`${roleKey}.permissions.${option.value}`}
+                  name={`permissions.${option.value}`}
                   component={Checkbox}
                 />
               }
@@ -74,6 +132,13 @@ export const RolesTableRow = ({
 
 RolesTableRow.propTypes = {
   name: PropTypes.string,
+  onDeleteClick: PropTypes.func.isRequired,
+  startDelete: PropTypes.func.isRequired,
+  anchorEl: PropTypes.object, // from enhancer (withStateHandlers)
+  handleMenuClick: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
+  handleMenuClose: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
+  deleteDialogOpen: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
+  handleDeleteClose: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   pristine: PropTypes.bool.isRequired, // from enhancer (reduxForm)
   handleSubmit: PropTypes.func.isRequired, // from enhancer (reduxForm)

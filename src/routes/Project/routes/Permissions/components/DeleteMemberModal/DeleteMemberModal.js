@@ -9,16 +9,15 @@ import classes from './DeleteMemberModal.scss'
 
 export const DeleteMemberModal = ({
   onRequestClose,
-  displayName,
   removeDisabled,
   removeAndClose,
-  uid,
+  name,
   open
 }) => (
   <Dialog onClose={onRequestClose} open={open}>
     <DialogTitle id="dialog-title">Add Member</DialogTitle>
     <DialogContent className={classes.body}>
-      Are you sure you want to remove {displayName || uid}
+      Are you sure you want to remove {name}
     </DialogContent>
     <DialogActions>
       <Button color="secondary" onClick={onRequestClose}>
@@ -28,7 +27,7 @@ export const DeleteMemberModal = ({
         color="primary"
         disabled={removeDisabled}
         onClick={removeAndClose}>
-        Remove Member
+        Remove
       </Button>
     </DialogActions>
   </Dialog>
@@ -37,8 +36,7 @@ export const DeleteMemberModal = ({
 DeleteMemberModal.propTypes = {
   removeDisabled: PropTypes.bool,
   onRequestClose: PropTypes.func.isRequired,
-  displayName: PropTypes.string,
-  uid: PropTypes.string,
+  name: PropTypes.string.isRequired,
   open: PropTypes.bool.isRequired, // captured in other
   removeAndClose: PropTypes.func.isRequired // from enhancer (withHandlers)
 }

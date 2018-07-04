@@ -3,14 +3,17 @@ import { compose } from 'redux'
 import { withHandlers, setPropTypes } from 'recompose'
 
 export default compose(
+  // Proptypes for props used in HOCs including withHandlers
   setPropTypes({
-    onRemoveClick: PropTypes.func.isRequired,
-    onRequestClose: PropTypes.func.isRequired
+    onDeleteClick: PropTypes.func.isRequired,
+    onRequestClose: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired
   }),
+  // Add handlers as props
   withHandlers({
-    removeAndClose: ({ onRequestClose, onRemoveClick, uid }) => value => {
+    removeAndClose: ({ onRequestClose, onDeleteClick, name }) => value => {
       onRequestClose && onRequestClose()
-      onRemoveClick && onRemoveClick(uid)
+      onDeleteClick && onDeleteClick(name)
     }
   })
 )
