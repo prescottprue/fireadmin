@@ -10,6 +10,7 @@ import classes from './ActionsPage.scss'
 export const ActionsPage = ({
   selectActionTemplate,
   runAction,
+  runActionDisabled,
   clearRunner,
   selectedTemplate,
   toggleTemplateEdit,
@@ -17,7 +18,6 @@ export const ActionsPage = ({
   templateName,
   submitActionRunner,
   params,
-  runActionDisabled,
   actionProcessing
 }) => (
   <div className={classes.container}>

@@ -24,7 +24,7 @@ export default compose(
       uid: firebase.auth.uid,
       project: get(data, `projects.${params.projectId}`),
       environments: get(ordered, `environments-${params.projectId}`),
-      lockEnvInUse: some(
+      lockedEnvInUse: some(
         map(selector(state, 'environmentValues'), envInd =>
           get(
             state.firestore.ordered,
@@ -67,10 +67,10 @@ export default compose(
   ),
   // Handlers as props
   withHandlers(handlers),
-  withProps(({ selectedTemplate, actionProcessing, lockEnvInUse }) => ({
+  withProps(({ selectedTemplate, actionProcessing, lockedEnvInUse }) => ({
     templateName: selectedTemplate
       ? `Template: ${get(selectedTemplate, 'name', '')}`
       : 'Template',
-    runActionDisabled: !selectedTemplate || actionProcessing || lockEnvInUse
+    runActionDisabled: !selectedTemplate || actionProcessing || lockedEnvInUse
   }))
 )
