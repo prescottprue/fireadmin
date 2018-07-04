@@ -14,6 +14,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import IconButton from '@material-ui/core/IconButton'
+import FormLabel from '@material-ui/core/FormLabel'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
@@ -21,9 +22,9 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import DeleteMemberModal from '../DeleteMemberModal'
 
 const resourcesOptions = [
-  { value: 'editPermissions' },
-  { value: 'editEnvironments' },
-  { value: 'editUsers' }
+  { value: 'members' },
+  { value: 'environments' },
+  { value: 'roles' }
 ]
 
 const editOptions = ['Delete']
@@ -53,7 +54,7 @@ export const RolesTableRow = ({
       onDeleteClick={onDeleteClick}
     />
     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-      <Typography className={classes.displayName}>
+      <Typography className={classes.heading}>
         {name || startCase(roleKey)}
       </Typography>
     </ExpansionPanelSummary>
@@ -93,19 +94,81 @@ export const RolesTableRow = ({
             ))}
           </Menu>
         </div>
+        <Typography
+          component="h2"
+          className={classes.resourcePermissionsHeader}>
+          Resource Permissions
+        </Typography>
         <div className={classes.roleSelect}>
-          {resourcesOptions.map((option, idx) => (
-            <FormControlLabel
-              key={`${option.value}-${idx}`}
-              control={
-                <Field
-                  name={`permissions.${option.value}`}
-                  component={Checkbox}
-                />
-              }
-              label={startCase(option.value)}
-            />
-          ))}
+          <div className={classes.optionsLabels}>
+            {resourcesOptions.map((option, idx) => (
+              <FormLabel
+                key={`${option.value}-${idx}`}
+                className={classes.optionLabel}>
+                {startCase(option.value)}
+              </FormLabel>
+            ))}
+          </div>
+          <div className={classes.roleOptions}>
+            <span>Create</span>
+            {resourcesOptions.map((option, idx) => (
+              <FormControlLabel
+                key={`${option.value}-${idx}`}
+                className={classes.roleOption}
+                control={
+                  <Field
+                    name={`createPermissions.${option.value}`}
+                    component={Checkbox}
+                  />
+                }
+              />
+            ))}
+          </div>
+          <div className={classes.roleOptions}>
+            <span>Read</span>
+            {resourcesOptions.map((option, idx) => (
+              <FormControlLabel
+                key={`${option.value}-${idx}`}
+                className={classes.roleOption}
+                control={
+                  <Field
+                    name={`readPermissions.${option.value}`}
+                    component={Checkbox}
+                  />
+                }
+              />
+            ))}
+          </div>
+          <div className={classes.roleOptions}>
+            <span>Update</span>
+            {resourcesOptions.map((option, idx) => (
+              <FormControlLabel
+                key={`${option.value}-${idx}`}
+                className={classes.roleOption}
+                control={
+                  <Field
+                    name={`updatePermissions.${option.value}`}
+                    component={Checkbox}
+                  />
+                }
+              />
+            ))}
+          </div>
+          <div className={classes.roleOptions}>
+            <span>Delete</span>
+            {resourcesOptions.map((option, idx) => (
+              <FormControlLabel
+                key={`${option.value}-${idx}`}
+                className={classes.roleOption}
+                control={
+                  <Field
+                    name={`deletePermissions.${option.value}`}
+                    component={Checkbox}
+                  />
+                }
+              />
+            ))}
+          </div>
         </div>
         <div className={classes.buttons}>
           <Button
