@@ -40,7 +40,7 @@ export const EnvironmentsPage = ({
           <div className={classesFromStyles.instances}>
             {projectEnvironments.map((inst, i) => (
               <Instance
-                key={`Instance-${params.projectId}-${i}`}
+                key={`Instance-${inst.id}-${i}`}
                 instance={inst}
                 onEditClick={() => toggleEditDialog(inst, inst.id)}
                 onRemoveClick={() => toggleDeleteDialog(inst.id)}

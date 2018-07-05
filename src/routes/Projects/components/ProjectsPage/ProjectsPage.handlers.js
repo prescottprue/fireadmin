@@ -17,7 +17,7 @@ export const addProject = props => async newInstance => {
     )
     props.showSuccess('Project added successfully')
     props.toggleDialog()
-    triggerAnalyticsEvent({ category: 'Projects', action: 'Create' })
+    triggerAnalyticsEvent('createProject')
     return res
   } catch (err) {
     showError(err.message || 'Could not add project')
@@ -30,7 +30,7 @@ export const deleteProject = props => async projectId => {
   try {
     await firestore.delete({ collection: 'projects', doc: projectId })
     showSuccess('Project deleted successfully')
-    triggerAnalyticsEvent({ category: 'Projects', action: 'Delete' })
+    triggerAnalyticsEvent('deleteProject', { projectId })
   } catch (err) {
     console.error('Error:', err) // eslint-disable-line no-console
     showError(err.message || 'Could not add project')
@@ -43,6 +43,5 @@ export const goToProject = ({ router }) => projectId => {
 
 export const goToCollaborator = ({ router, showError }) => userId => {
   showError('User pages are not yet supported!')
-  triggerAnalyticsEvent({ category: 'Projects', action: 'Collaborator Click' })
   // router.push(`${USERS_PATH}/${userId}`)
 }

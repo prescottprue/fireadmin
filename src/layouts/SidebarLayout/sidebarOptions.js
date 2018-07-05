@@ -4,6 +4,7 @@ import HomeIcon from '@material-ui/icons/Home'
 import DeviceHubIcon from '@material-ui/icons/SettingsEthernet'
 import StorageIcon from '@material-ui/icons/Dns'
 import EventIcon from '@material-ui/icons/ViewList'
+import PeopleIcon from '@material-ui/icons/People'
 import { paths } from 'constants'
 
 export default [
@@ -29,5 +30,10 @@ export default [
     value: paths.projectEvents,
     label: 'Events',
     iconElement: <EventIcon />
+  },
+  {
+    value: paths.projectPermissions,
+    label: 'Users/Permissions',
+    iconElement: <PeopleIcon />
   }
 ]

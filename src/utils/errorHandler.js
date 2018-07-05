@@ -12,7 +12,7 @@ let errorHandler
 export function init() {
   if (googleApis && googleApis.apiKey && environment === 'production') {
     window.addEventListener('DOMContentLoaded', () => {
-      const errorHandler = new window.StackdriverErrorReporter()
+      const errorHandler = new StackdriverErrorReporter()
       errorHandler.start({
         key: googleApis.apiKey,
         projectId: firebase.projectId,
