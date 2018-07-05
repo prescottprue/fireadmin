@@ -13,7 +13,7 @@ export const LoginPage = ({ emailLogin, googleLogin, onSubmitFail }) => (
         Click below to login using your Google Account
       </div>
       <div className={classes.providers}>
-        <GoogleButton onClick={googleLogin} />
+        <GoogleButton id="google-auth-button" onClick={googleLogin} />
       </div>
     </Paper>
   </div>

@@ -29,7 +29,7 @@ export const ProjectTile = ({
   sharingDialogOpen,
   toggleSharingDialog
 }) => (
-  <Paper className={classes.container} open={open}>
+  <Paper className={classes.container} open={open} id={`Project-${project.id}`}>
     <div className={classes.top}>
       <span className={classes.name} onClick={() => onSelect(project)}>
         {project.name}
