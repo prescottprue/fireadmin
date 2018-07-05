@@ -28,13 +28,15 @@ export default store => ({
       const ProjectEvents = require('./routes/ProjectEvents').default
       const Actions = require('./routes/Actions').default
       const BucketConfig = require('./routes/BucketConfig').default
+      const Permissions = require('./routes/Permissions').default
 
       /*  Return getComponent   */
       cb(null, [
         Actions(store),
         Environments(store),
         BucketConfig(store),
-        ProjectEvents(store)
+        ProjectEvents(store),
+        Permissions(store)
       ])
     })
   }

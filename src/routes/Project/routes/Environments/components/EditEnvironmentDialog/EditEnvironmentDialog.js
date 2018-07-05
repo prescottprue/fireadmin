@@ -18,7 +18,8 @@ export const EditEnvironmentDialog = ({
   projectId,
   pristine,
   onRequestClose,
-  open
+  open,
+  lockEnvDisabled
 }) => (
   <Dialog onClose={onRequestClose} open={open}>
     <DialogTitle id="dialog-title">Edit Environment</DialogTitle>
@@ -48,7 +49,13 @@ export const EditEnvironmentDialog = ({
           label="Instance Description"
         />
         <FormControlLabel
-          control={<Field name="locked" component={Checkbox} />}
+          control={
+            <Field
+              name="locked"
+              component={Checkbox}
+              disabled={lockEnvDisabled}
+            />
+          }
           label="Locked (prevents actions)"
         />
       </div>
@@ -71,6 +78,7 @@ EditEnvironmentDialog.propTypes = {
   onRequestClose: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,
   open: PropTypes.bool.isRequired,
+  lockEnvDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
   submit: PropTypes.func.isRequired, // from reduxForm
   closeAndReset: PropTypes.func.isRequired, // from reduxForm
   submitting: PropTypes.bool.isRequired, // from reduxForm

@@ -1,0 +1,19 @@
+@import 'base';
+
+.container {
+  // @extend .flex-column-center;
+  overflow-y: scroll;
+  // margin-bottom: 4rem;
+  padding-bottom: 4rem;
+  padding-left: .125rem;
+  padding-right: .125rem;
+}
+.button {
+  margin-left: 2rem !important;
+}
+.buttons {
+  @extend .flex-row;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+  margin-left: .75rem;
+}

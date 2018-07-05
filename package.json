@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.4.9",
+  "version": "0.5.0",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "functions:start": "npm run start --prefix functions",
     "functions:build": "npm run build --prefix functions",
     "functions:test": "npm run test --prefix functions",
-    "lint": "eslint ./src ./functions ./build ./server ./project.config.js",
+    "lint": "eslint src functions build server project.config.js",
     "lint:fix": "npm run lint -- --fix",
     "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\"",
     "prepush": "npm run lint"
@@ -62,6 +62,7 @@
     "redux-form": "^7.4.0",
     "redux-form-material-ui": "^5.0.0-beta.3",
     "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
@@ -105,7 +106,7 @@
     "husky": "^0.14.3",
     "ip": "^1.1.5",
     "node-sass": "^4.5.3",
-    "prettier": "^1.12.1",
+    "prettier": "^1.13.5",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.5",
     "style-loader": "^0.17.0",

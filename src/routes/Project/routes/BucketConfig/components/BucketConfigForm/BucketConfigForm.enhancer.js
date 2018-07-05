@@ -83,9 +83,9 @@ export default compose(
           // Set config
           setConfig(pick(results.responseData, ['cors']))
           showSuccess('Storage Bucket Config Get Successful')
-          triggerAnalyticsEvent({
-            category: 'Project',
-            action: `${bucketConfig.method || 'GET'} Bucket Config`
+          triggerAnalyticsEvent('bucketAction', {
+            method: bucketConfig.method || 'GET',
+            resouce: 'CORS'
           })
           await createProjectEvent(
             { firestore, projectId },

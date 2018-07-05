@@ -1,0 +1,43 @@
+@import 'base';
+
+.container {
+  margin-left: .125rem;
+  margin-right: .125rem;
+}
+$distanceWidth: 15rem;
+.header {
+  @extend .flex-row;
+  padding: 0.75rem;
+  &Left {
+    padding-left: .75rem;
+    width: $distanceWidth;
+    margin-right: 2rem;
+  }
+}
+.displayName {
+  width: $distanceWidth !important;
+  margin-right: 2rem !important;
+  overflow: hidden !important;
+}
+.permission {
+  margin-left: -.75rem !important;
+}
+.roleSelect {
+  margin-top: 2.5rem;
+  padding-left: 2rem;
+  width: 250px;
+}
+.buttons {
+  @extend .flex-row;
+  justify-content: flex-end;
+  width: 100%;
+}
+.menu {
+  @extend .flex-row;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: .5rem;
+}
+.empty {
+  padding: 2rem;
+}

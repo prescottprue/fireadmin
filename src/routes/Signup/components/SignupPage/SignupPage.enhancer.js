@@ -16,7 +16,7 @@ export default compose(
       firebase
         .login({ provider: 'google', type: 'popup' })
         .then(() => {
-          triggerAnalyticsEvent({ category: 'Auth', action: 'Signup' })
+          triggerAnalyticsEvent('signup')
         })
         .catch(err => showError(err.message || 'Error with Signup'))
   }),
