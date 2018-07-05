@@ -63,23 +63,22 @@ export const addEnvironment = props => async newProjectData => {
   if (newEnvErr) {
     console.error('Error creating environment', newEnvErr) // eslint-disable-line no-console
     props.showError('Error creating new environment: ', newEnvErr.message)
-    triggerAnalyticsEvent({
-      category: 'Project',
-      action: 'Error - Add Environment'
-    })
     throw newEnvErr
   }
   // Write event to project events
   await createProjectEvent(
     { projectId, firestore },
     {
-      eventType: 'addEnvironment',
-      eventData: { newEventId: newEnvironmentRes.id },
+      eventType: 'createEnvironment',
+      eventData: { newEnvironmentId: newEnvironmentRes.id },
       createdBy: uid
     }
   )
-  // Write event to Google Analytics
-  triggerAnalyticsEvent({ category: 'Project', action: 'Add Environment' })
+  // Write event to Analytics
+  triggerAnalyticsEvent('createEnvironment', {
+    projectId,
+    newEnvironmentId: newEnvironmentRes.id
+  })
   // Reset form for future use
   props.dispatch(reset(formNames.newEnvironment))
   // Unselect selected service account
@@ -114,20 +113,19 @@ export const removeEnvironment = props => async () => {
     await createProjectEvent(
       { firestore, projectId },
       {
-        eventType: 'removeEnvironment',
+        eventType: 'deleteEnvironment',
         eventData: { environmentId: selectedDeleteKey },
         createdBy: uid
       }
     )
-    triggerAnalyticsEvent({ category: 'Project', action: 'Remove Environment' })
+    triggerAnalyticsEvent('deleteEnvironment', {
+      projectId,
+      environmentId: selectedDeleteKey
+    })
     props.toggleDeleteDialog()
     showSuccess('Environment deleted successfully')
   } catch (err) {
     console.error('error', err) // eslint-disable-line no-console
-    triggerAnalyticsEvent({
-      category: 'Project',
-      action: 'Error - Remove Environment'
-    })
     showError('Error: ', err.message || 'Could not remove environment')
   }
 }
@@ -165,7 +163,10 @@ export const updateEnvironment = props => async newValues => {
         createdBy: uid
       }
     )
-    triggerAnalyticsEvent({ category: 'Project', action: 'Update Environment' })
+    triggerAnalyticsEvent('updateEnvironment', {
+      projectId,
+      environmentId: selectedKey
+    })
   } catch (err) {
     console.error('error', err) // eslint-disable-line no-console
     props.showError('Error: ', err.message || 'Could not update environment')

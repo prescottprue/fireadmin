@@ -7,6 +7,7 @@ import { withNotifications } from 'modules/notification'
 import { withStyles } from '@material-ui/core/styles'
 import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
 import { to } from 'utils/async'
+import { triggerAnalyticsEvent } from 'utils/analytics'
 import NoCollaboratorsFound from './NoCollaboratorsFound'
 import styles from './PermissionsTable.styles'
 
@@ -93,6 +94,7 @@ export default compose(
         console.error(`Error updating permissions: ${err.message}`, err) // eslint-disable-line no-console
         throw err
       }
+      triggerAnalyticsEvent('updateRole', { projectId })
       showSuccess('Permissions updated successfully')
     },
     removeMember: ({
@@ -117,6 +119,10 @@ export default compose(
         console.error(`Error removing member: ${err.message}`, err) // eslint-disable-line no-console
         throw err
       }
+      triggerAnalyticsEvent('removeCollaborator', {
+        projectId,
+        removedCollaboratorUid: uid
+      })
       showSuccess('Member removed successfully')
     }
   }),

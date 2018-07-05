@@ -5,6 +5,7 @@ import { withHandlers, withStateHandlers, withProps } from 'recompose'
 import { withFirestore } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
+import { triggerAnalyticsEvent } from 'utils/analytics'
 import NoRolesFound from './NoRolesFound'
 import { getRoles, getProject } from 'selectors'
 
@@ -55,6 +56,7 @@ export default compose(
         }
       })
       showSuccess('Role updated successfully!')
+      triggerAnalyticsEvent('updateRole', { projectId })
     },
     addRole: props => async newRole => {
       const { firestore, project, projectId } = props
@@ -72,8 +74,9 @@ export default compose(
           }
         }
       })
-      props.closeNewRole()
       props.showSuccess('Roles added successfully!')
+      triggerAnalyticsEvent('addRole', { projectId })
+      props.closeNewRole()
     },
     deleteRole: ({
       firestore,
@@ -84,7 +87,8 @@ export default compose(
       await firestore.update(`projects/${projectId}`, {
         roles: omit(roles, [roleKey])
       })
-      showSuccess('Roles deleted successfully!')
+      showSuccess('Role deleted successfully!')
+      triggerAnalyticsEvent('deleteRole', { projectId, roleKey })
     }
   }),
   withProps(({ newRoleOpen, auth }) => ({

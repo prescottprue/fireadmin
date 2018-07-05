@@ -1,30 +1,61 @@
-import ReactGA from 'react-ga'
 import { version } from '../../package.json'
-import { analyticsTrackingId, env } from 'config' // eslint-disable-line import/no-unresolved
+import { segmentId } from 'config' // eslint-disable-line import/no-unresolved
 
-/**
- * Initialize Google Analytics if analytics id exists and environment is
- * production
- */
-export function initGA() {
-  if (analyticsTrackingId && env === 'production') {
-    ReactGA.initialize(analyticsTrackingId)
-    ReactGA.set({
-      appName: env || 'Production',
-      appVersion: version
+export function setAnalyticsUser(auth) {
+  if (auth && auth.uid) {
+    window.analytics.identify(auth.uid, {
+      name: auth.displayName,
+      email: auth.email,
+      avatar: auth.photoURL,
+      version
     })
   }
+}
+
+export function initSegment() {
+  // if (segmentId && env === 'production') {
+  /* eslint-disable */
+    !function(){
+      var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t,e){var n=document.createElement("script");n.type="text/javascript";n.async=!0;n.src="https://cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(n,a);analytics._loadOptions=e};analytics.SNIPPET_VERSION="4.1.0";
+      analytics.load(segmentId);
+      analytics.page({ version });
+    }}();
+    /* eslint-enable */
+  // }
+}
+
+const ANALYTICS_EVENT_NAMES = {
+  login: 'Login',
+  signup: 'Signup',
+  createProject: 'Create Project',
+  deleteProject: 'Delete Project',
+  bucketAction: 'Storage Bucket Action',
+  createEnvironment: 'Create Environment',
+  updateEnvironment: 'Update Environment',
+  deleteEnvironment: 'Delete Environment',
+  updatePermissions: 'Update Permissions',
+  addRole: 'Add Role',
+  updateRole: 'Update Role',
+  removeRole: 'Delete Role',
+  requestActionRun: 'Request Action Run',
+  addCollaborator: 'Add Collaborator',
+  removeCollaborator: 'Remove Collaborator'
 }
 
 /**
  * Trigger analytics event within google analytics through react-ga
  * @param  {Object} eventData - Data associated with the event.
  */
-export function triggerAnalyticsEvent(eventData) {
-  if (analyticsTrackingId && env === 'production') {
-    ReactGA.event(eventData)
+export function triggerAnalyticsEvent(eventNameKey, eventData) {
+  const eventName = ANALYTICS_EVENT_NAMES[eventNameKey]
+  if (!eventName) {
+    console.warn(`Event name for event key: "${eventNameKey}" not found`) // eslint-disable-line no-console
   } else {
-    console.debug('Analytics Event:', eventData) // eslint-disable-line no-console
+    if (segmentId) {
+      window.analytics.track(eventName, eventData)
+    } else {
+      console.debug('Analytics Event:', eventName, eventData) // eslint-disable-line no-console
+    }
   }
 }
 
@@ -50,25 +81,4 @@ export function createProjectEvent({ firestore, projectId }, pushObject) {
   )
 }
 
-/**
- * Set user auth data within Google Analytics
- * @param {Object} auth - Authentication data
- * @param {String} auth.uid - User's id
- */
-export function setGAUser(auth) {
-  if (auth && auth.uid) {
-    ReactGA.set({ userId: auth.uid })
-  }
-}
-
-/**
- * Track route update within Google Analytics
- */
-export function trackRouteUpdate() {
-  if (analyticsTrackingId) {
-    ReactGA.set({ page: window.location.pathname })
-    ReactGA.pageview(window.location.pathname)
-  }
-}
-
-export default { initGA, triggerAnalyticsEvent, trackRouteUpdate }
+export default { triggerAnalyticsEvent }

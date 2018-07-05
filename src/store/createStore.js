@@ -10,6 +10,7 @@ import 'firebase/database'
 import 'firebase/storage'
 import { reduxFirestore } from 'redux-firestore'
 import { firebase as fbConfig, reduxFirebase as reduxConfig } from '../config'
+import { setAnalyticsUser } from '../utils/analytics'
 import { version } from '../../package.json'
 import { updateLocation } from './location'
 
@@ -52,7 +53,14 @@ export default (initialState = {}) => {
     compose(
       applyMiddleware(...middleware),
       reduxFirestore(firebase),
-      reactReduxFirebase(firebase, reduxConfig),
+      reactReduxFirebase(firebase, {
+        ...reduxConfig,
+        onAuthStateChanged: (authState, second) => {
+          if (authState) {
+            setAnalyticsUser(authState)
+          }
+        }
+      }),
       ...enhancers
     )
   )

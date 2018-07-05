@@ -31,6 +31,7 @@
         "googleApis": {
           "apiKey": "${STAGE_GOOGLE_API_KEY}"
         },
+        "segmentId": "${STAGE_SEGMENT_ID}",
         "algolia": {
           "appId": "${STAGE_ALGOLIA_APP_ID}",
           "apiKey": "${STAGE_ALGOLIA_BROWSER_KEY}"
@@ -56,6 +57,7 @@
           "sessions": null
         },
         "analyticsTrackingId": "${GA_TRACKING_ID}",
+        "segmentId": "${PROD_SEGMENT_ID}",
         "googleApis": {
           "apiKey": "${PROD_GOOGLE_API_KEY}"
         },

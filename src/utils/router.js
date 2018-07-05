@@ -1,9 +1,7 @@
 import { UserAuthWrapper } from 'redux-auth-wrapper'
 import { browserHistory } from 'react-router'
 import { LIST_PATH } from 'constants'
-import { env } from 'config'
 import LoadingSpinner from 'components/LoadingSpinner'
-import { trackRouteUpdate } from './analytics'
 
 const AUTHED_REDIRECT = 'AUTHED_REDIRECT'
 const UNAUTHED_REDIRECT = 'UNAUTHED_REDIRECT'
@@ -60,9 +58,7 @@ export const UserIsNotAuthenticated = UserAuthWrapper({
  environment is production
  */
 export const handleRouteUpdate = () => {
-  if (env === 'prod') {
-    trackRouteUpdate()
-  }
+  // TODO: Add logic that runs on route update
 }
 
 export default {

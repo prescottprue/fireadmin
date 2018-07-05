@@ -35,6 +35,7 @@ export function runAction(props) {
       throw new Error(errMsg)
     }
     const { environmentValues } = formValues
+    const templateId = get(selectedTemplate, 'templateId')
     // Build request object for action run
     const actionRequest = {
       projectId,
@@ -55,7 +56,11 @@ export function runAction(props) {
     // TODO: Show error notification if required action inputs are not selected
     props.closeTemplateEdit()
     toggleActionProcessing()
-    triggerAnalyticsEvent({ category: 'Project', action: 'Start Action Run' })
+    triggerAnalyticsEvent('requestActionRun', {
+      projectId,
+      templateId,
+      environmentValues
+    })
     // Write event to project events
     const [err] = await to(
       createProjectEvent(

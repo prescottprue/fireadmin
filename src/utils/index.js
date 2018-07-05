@@ -1,11 +1,11 @@
 import { get } from 'lodash'
-import { initGA } from './analytics'
+import { initSegment } from './analytics'
 import { init as initErrorHandler } from './errorHandler'
 import { currentUserPermissionsByType } from 'selectors'
 
 export const initScripts = () => {
-  initGA()
   initErrorHandler()
+  initSegment()
 }
 
 export const databaseURLToProjectName = databaseURL =>

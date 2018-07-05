@@ -36,10 +36,7 @@ export function saveCollaborators({
         .update({ collaborators, collaboratorPermissions })
       onRequestClose()
       showSuccess('Collaborator added successfully')
-      triggerAnalyticsEvent({
-        category: 'Projects',
-        action: 'Add Collaborator'
-      })
+      triggerAnalyticsEvent('addCollaborator', { projectId: project.id })
     } catch (err) {
       showError('Collaborator could not be added')
       throw err
