@@ -21,6 +21,16 @@ export const getProject = (state, props) =>
   get(state, `firestore.data.projects.${props.projectId}`)
 
 /**
+ * Get whether or not the currently logged in user is the project owner
+ * @param  {Object} state - redux state
+ * @param  {Object} props - component props
+ */
+export const getCurrentUserCreatedProject = createSelector(
+  [getProject, getAuthUid],
+  (project, authUid) => get(project, 'createdBy') === authUid
+)
+
+/**
  * Get roles from project
  * @param  {Object} state - redux state
  * @param  {Object} props - component props

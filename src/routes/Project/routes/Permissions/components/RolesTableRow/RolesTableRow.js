@@ -24,7 +24,8 @@ import DeleteMemberModal from '../DeleteMemberModal'
 const resourcesOptions = [
   { value: 'members' },
   { value: 'environments' },
-  { value: 'roles' }
+  { value: 'roles' },
+  { value: 'permissions' }
 ]
 
 const editOptions = ['Delete']
