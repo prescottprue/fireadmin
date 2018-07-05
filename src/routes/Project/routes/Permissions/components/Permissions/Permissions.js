@@ -10,14 +10,14 @@ import classes from './Permissions.scss'
 export const Permissions = ({
   projectId,
   toggleNewMemberModal,
-  permissionsSubmitting,
+  addMemberDisabled,
   newMemberModalOpen
 }) => (
   <div className={classes.container}>
     <Typography className={classes.pageHeader}>Permissions</Typography>
     <div className={classes.buttons}>
       <Button
-        disabled={permissionsSubmitting}
+        disabled={addMemberDisabled}
         color="primary"
         variant="raised"
         aria-label="Add Member"
@@ -37,7 +37,7 @@ export const Permissions = ({
 
 Permissions.propTypes = {
   projectId: PropTypes.string.isRequired,
-  permissionsSubmitting: PropTypes.bool.isRequired,
+  addMemberDisabled: PropTypes.bool.isRequired,
   toggleNewMemberModal: PropTypes.func.isRequired,
   newMemberModalOpen: PropTypes.bool.isRequired
 }
