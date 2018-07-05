@@ -44,6 +44,7 @@ export const RolesTableRow = ({
   handleMenuClose,
   deleteDialogOpen,
   handleDeleteClose,
+  updateRolesDisabled,
   onDeleteClick,
   anchorEl
 }) => (
@@ -119,6 +120,7 @@ export const RolesTableRow = ({
                 control={
                   <Field
                     name={`createPermissions.${option.value}`}
+                    disabled={updateRolesDisabled}
                     component={Checkbox}
                   />
                 }
@@ -134,6 +136,7 @@ export const RolesTableRow = ({
                 control={
                   <Field
                     name={`readPermissions.${option.value}`}
+                    disabled={updateRolesDisabled}
                     component={Checkbox}
                   />
                 }
@@ -149,6 +152,7 @@ export const RolesTableRow = ({
                 control={
                   <Field
                     name={`updatePermissions.${option.value}`}
+                    disabled={updateRolesDisabled}
                     component={Checkbox}
                   />
                 }
@@ -164,6 +168,7 @@ export const RolesTableRow = ({
                 control={
                   <Field
                     name={`deletePermissions.${option.value}`}
+                    disabled={updateRolesDisabled}
                     component={Checkbox}
                   />
                 }
@@ -181,7 +186,7 @@ export const RolesTableRow = ({
             Cancel
           </Button>
           <Button
-            disabled={pristine}
+            disabled={pristine || updateRolesDisabled}
             color="primary"
             variant="raised"
             aria-label="Run Action"
@@ -198,6 +203,7 @@ RolesTableRow.propTypes = {
   name: PropTypes.string,
   onDeleteClick: PropTypes.func.isRequired,
   startDelete: PropTypes.func.isRequired,
+  updateRolesDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
   anchorEl: PropTypes.object, // from enhancer (withStateHandlers)
   handleMenuClick: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   handleMenuClose: PropTypes.func.isRequired, // from enhancer (withStateHandlers)

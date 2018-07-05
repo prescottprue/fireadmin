@@ -1,18 +1,10 @@
-import { get } from 'lodash'
 import { compose } from 'redux'
 import { withProps, withStateHandlers } from 'recompose'
 import { connect } from 'react-redux'
 import { isSubmitting } from 'redux-form'
 import { formNames } from 'constants'
-import {
-  currentUserPermissionsByType,
-  getCurrentUserCreatedProject
-} from 'selectors'
-
-const createPermissionChecker = (state, props) => permission => {
-  const permissionsByType = currentUserPermissionsByType(state, props)
-  return get(permissionsByType, permission) === true
-}
+import { createPermissionChecker } from 'utils'
+import { getCurrentUserCreatedProject } from 'selectors'
 
 export default compose(
   withProps(({ params: { projectId } }) => ({

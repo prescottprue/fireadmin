@@ -16,7 +16,8 @@ export const RolesTable = ({
   openNewRole,
   newRoleOpen,
   closeNewRole,
-  addRoleDisabled
+  addRoleDisabled,
+  projectId
 }) => (
   <div className={classes.root}>
     <div className={classes.buttons}>
@@ -41,6 +42,7 @@ export const RolesTable = ({
           name={name}
           permissions={permissions}
           onSubmit={updateRole}
+          projectId={projectId}
           initialValues={roles[roleKey]}
           onDeleteClick={deleteRole}
         />
@@ -57,27 +59,8 @@ RolesTable.propTypes = {
   addRole: PropTypes.func.isRequired,
   newRoleOpen: PropTypes.bool.isRequired,
   addRoleDisabled: PropTypes.bool.isRequired,
+  projectId: PropTypes.string.isRequired,
   roles: PropTypes.object
-}
-
-RolesTable.defaultProps = {
-  roles: {
-    viewer: {
-      permissions: {
-        editPermissions: true
-      }
-    },
-    owner: {
-      permissions: {
-        editPermissions: true
-      }
-    },
-    editor: {
-      permissions: {
-        editPermissions: true
-      }
-    }
-  }
 }
 
 export default RolesTable
