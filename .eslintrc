@@ -18,7 +18,8 @@ globals:
   __DEV__: false
   __COVERAGE__: false
   __TEST__: false
-  StackdriverErrorReporter: false # added by script tag in index.html
+  StackdriverErrorReporter: false # added to window by script tag in index.html
+  Raven: false # added to window by script tag in index.html
 
 rules:
   semi: [2, 'never']
