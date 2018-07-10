@@ -1,6 +1,6 @@
 import { get } from 'lodash'
 import { initSegment } from './analytics'
-import { init as initErrorHandler } from './errorHandler'
+import { init as initErrorHandler } from './errorHandling'
 import { currentUserPermissionsByType } from 'selectors'
 
 export const initScripts = () => {
