@@ -1,0 +1,5 @@
+image: cypress/base
+cypress-e2e:
+  script:
+    - npm install
+    - $(npm bin)/cypress run
