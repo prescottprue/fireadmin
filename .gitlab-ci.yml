@@ -2,6 +2,8 @@ image: cypress/base
 
 cypress-e2e:
   script:
-    - echo "{ \"FIREBASE_TOKEN\": $FIREBASE_TOKEN }" > cypress.env.json
+    - echo "Creating cypress.env.json..."
+    - 'echo "{ \"FIREBASE_TOKEN\": $FIREBASE_TOKEN }" > cypress.env.json'
+    - echo "cypress.env.json created successfully. Calling npm install..."
     - npm install
     - npm run test:stage
