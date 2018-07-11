@@ -9,3 +9,5 @@ src/config.js
 functions/etc
 functions/dist
 functions/.runtimeconfig.json
+cypress/videos
+cypress/screenshots

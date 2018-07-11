@@ -17,7 +17,8 @@
     "functions:test": "npm run test --prefix functions",
     "lint": "eslint src functions build server project.config.js",
     "lint:fix": "npm run lint -- --fix",
-    "test": "$(npm bin)/cypress run",
+    "test:local": "cross-env CYPRESS_baseUrl=http://localhost:3000 cypress open",
+    "test:stage": "cross-env CYPRESS_baseUrl=https://fireadmin-stage.firebaseapp.com $(npm bin)/cypress run",
     "test:ui": "$(npm bin)/cypress open",
     "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\"",
     "prepush": "npm run lint"
