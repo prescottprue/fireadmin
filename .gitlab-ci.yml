@@ -4,7 +4,8 @@ stages:
   - deploy
   - test_stage
 
-test:
+test_app:
+  stage: test
   image: cypress/base
   script:
     - echo "Creating cypress.env.json..."
@@ -29,11 +30,13 @@ build:
     # - npm run test # Removed for now due to too many deps. Jest coming soon.
     - npm run build
   cache:
-    - node_modules # NPM packages
-    - functions/node_modules
-    - .yarn
+    paths:
+      - node_modules # NPM packages
+      - functions/node_modules
+      - .yarn
   artifacts:
-    - dist
+    paths:
+      - dist
   when: on_success
 
 deploy_staging:
@@ -47,7 +50,7 @@ deploy_staging:
   variables:
     FIREBASE_TOKEN: $STAGE_FIREBASE_TOKEN
   only:
-  - master
+    - master
 
 deploy_prod:
   image: node:6
@@ -61,7 +64,7 @@ deploy_prod:
     FIREBASE_TOKEN: $PROD_FIREBASE_TOKEN
   when: manual
   only:
-  - master
+    - master
 
 
 test_stage:
@@ -73,8 +76,9 @@ test_stage:
     - npm install
     - npm run test:stage
   artifacts:
-    - cypress/videos
-    - cypress/screenshots
+    paths:
+      - cypress/videos
+      - cypress/screenshots
   when: manual
   only:
-  - master
+    - master

@@ -27,7 +27,8 @@ export const Navbar = ({
         className={classes.flex}
         component={Link}
         to={authExists ? LIST_PATH : '/'}
-        style={{ fontSize: '1.4rem' }}>
+        style={{ fontSize: '1.4rem' }}
+        data-test="brand">
         Fireadmin
       </Typography>
       {authExists ? (

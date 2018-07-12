@@ -1,14 +1,23 @@
+# OS
 *.log
 **/*.log
 .DS_Store
 **/.DS_Store
-**/dist
+
+# Main dependencies
 **/node_modules
-coverage
+
+# React App
+**/dist
 src/config.js
+
+# Functions
 functions/etc
 functions/dist
 functions/.runtimeconfig.json
+functions/serviceAccount.json
+
+# Tests
 cypress/videos
 cypress/screenshots
 cypress.env.json

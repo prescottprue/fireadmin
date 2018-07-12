@@ -12,7 +12,11 @@ const buttonStyle = {
 
 export const LoginMenu = () => (
   <div className={classes.menu}>
-    <Button style={buttonStyle} component={Link} to={LOGIN_PATH} data-test="sign-in">
+    <Button
+      style={buttonStyle}
+      component={Link}
+      to={LOGIN_PATH}
+      data-test="sign-in">
       Sign In
     </Button>
   </div>

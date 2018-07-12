@@ -8,6 +8,7 @@ import ProjectsRoute from './Projects'
 import ProjectRoute from './Project'
 import AccountRoute from './Account'
 import NotFoundRoute from './NotFound'
+import { createOnEnter } from '../utils/router'
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
@@ -16,6 +17,7 @@ export const createRoutes = store => ({
   path: '/',
   component: CoreLayout,
   indexRoute: Home,
+  onEnter: createOnEnter(store),
   childRoutes: [
     AccountRoute(store),
     LoginRoute(store),

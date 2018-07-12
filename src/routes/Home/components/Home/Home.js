@@ -52,7 +52,7 @@ export const Home = ({ goToLogin }) => (
         </div>
       </div>
     </Paper>
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} data-test="features">
       <div className={classes.header}>Use only what you need</div>
       <div className={classes.lower}>
         <div className={classes.sectionVertical}>

@@ -6,3 +6,4 @@ blueprints/**
 src/config.js
 functions/dist
 functions/test/mocha.opts
+cypress/fixtures/**
