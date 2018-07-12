@@ -17,8 +17,10 @@ build:
   artifacts:
     expire_in: 2 weeks
     paths:
-      - functions/mochawesome-report
+      - node_modules # keep as artifact for future jobs
+      - functions/node_modules # keep as artifact for future jobs
       - dist
+      - functions/mochawesome-report
       - functions/dist
   script:
     - yarn config set cache-folder .yarn
@@ -33,14 +35,16 @@ unit_tests:
   stage: unit_tests
   image: node:6.14.0
   when: on_success
+  allow_failure: true
   except:
     - prod
-  cache:
-    policy: pull # only pull cache, skip uploading
-    paths:
-      - node_modules # NPM packages
-      - functions/node_modules
-      - .yarn
+  # Did not load function node modules from previous job
+  # cache:
+  #   policy: pull # only pull cache, skip uploading
+  #   paths:
+  #     - node_modules # NPM packages
+  #     - functions/node_modules
+  #     - .yarn
   artifacts:
     expire_in: 2 weeks
     paths:
@@ -58,12 +62,6 @@ deploy_staging:
   only:
     - master
     - web
-  cache:
-    policy: pull # only pull cache, skip uploading
-    paths:
-      - node_modules # NPM packages
-      - functions/node_modules
-      - .yarn
   script:
     - npm run deploy
 
@@ -78,11 +76,6 @@ e2e_tests:
     - master
     - web
     - schedules
-  cache:
-    policy: pull # only pull cache, skip uploading
-    paths:
-      - node_modules # NPM packages
-      - .yarn
   artifacts:
     expire_in: 2 weeks
     paths:
@@ -101,15 +94,11 @@ deploy_prod:
     name: production
     url: https://fireadmin.io
   when: manual
-  cache:
-    policy: pull # only pull cache, skip uploading
-    paths:
-      - node_modules # NPM packages
-      - functions/node_modules
-      - .yarn
   only:
     - prod
     - web
+  variables:
+    TRAVIS_BRANCH: stage # workaround to get firebase-ci to use config for stage from .firebaserc
   script:
     - npm run clean # remove existing dist folder
     - npm run build:config # create env specific src/config.js
