@@ -19,6 +19,7 @@ build:
     paths:
       - node_modules # keep as artifact for future jobs
       - functions/node_modules # keep as artifact for future jobs
+      - /root/.cache/Cypress # Cypress binary
       - dist
       - functions/mochawesome-report
       - functions/dist
@@ -97,6 +98,10 @@ deploy_prod:
   only:
     - prod
     - web
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - dist
   variables:
     TRAVIS_BRANCH: stage # workaround to get firebase-ci to use config for stage from .firebaserc
   script:
