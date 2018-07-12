@@ -13,8 +13,9 @@ test:
     - npm install
     - npm run test:stage
   artifacts:
-    - cypress/videos
-    - cypress/screenshots
+    paths:
+      - cypress/videos
+      - cypress/screenshots
 
 build:
   image: node:6
