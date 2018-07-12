@@ -1,16 +1,13 @@
 stages:
   - build
   - unit_tests
-  - deploy_stage
-  - e2e_test
+  - deploy_staging
+  - e2e_tests
   - deploy_prod
 
 build:
   stage: build
   image: node:6.14.0
-  environment:
-    name: staging
-    url: https://fireadmin-stage.firebaseapp.com
   when: always
   cache:
     paths:
@@ -35,9 +32,6 @@ build:
 unit_tests:
   stage: unit_tests
   image: node:6.14.0
-  environment:
-    name: staging
-    url: https://fireadmin-stage.firebaseapp.com
   when: on_success
   except:
     - prod
@@ -54,8 +48,8 @@ unit_tests:
   script:
     - npm run test --prefix functions
 
-deploy_stage:
-  stage: deploy_stage
+deploy_staging:
+  stage: deploy_staging
   image: node:6.14.0
   environment:
     name: staging
