@@ -57,8 +57,19 @@ export const UserIsNotAuthenticated = UserAuthWrapper({
  * @description Fired when route is updated. Route updates are tracked if
  environment is production
  */
-export const handleRouteUpdate = () => {
-  // TODO: Add logic that runs on route update
+export const createOnEnter = store => (
+  { location: { query, pathname }, auth },
+  replace
+) => {
+  const currentItem = localStorage.getItem('fbToken')
+  if (currentItem) {
+    return store.firebase.login({ token: currentItem }).catch(err => {
+      Raven.captureException('Error authenticating with Auth token', err)
+      return '/'
+    })
+  }
+
+  return null
 }
 
 export default {
