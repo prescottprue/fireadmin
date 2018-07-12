@@ -11,3 +11,4 @@ functions/dist
 functions/.runtimeconfig.json
 cypress/videos
 cypress/screenshots
+cypress.env.json

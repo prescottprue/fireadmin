@@ -1,9 +1,80 @@
-image: cypress/base
+stages:
+  - build
+  - test
+  - deploy
+  - test_stage
 
-cypress-e2e:
+test:
+  image: cypress/base
   script:
     - echo "Creating cypress.env.json..."
-    - 'echo "{ \"FIREBASE_TOKEN\": $FIREBASE_TOKEN }" > cypress.env.json'
+    - 'echo "{ \"FIREBASE_TOKEN\"\: $STAGE_FIREBASE_TOKEN }" > ./cypress.env.json'
     - echo "cypress.env.json created successfully. Calling npm install..."
     - npm install
     - npm run test:stage
+  artifacts:
+    - cypress/videos
+    - cypress/screenshots
+
+build:
+  image: node:6
+  script:
+    - yarn config set cache-folder .yarn
+    - yarn install
+    - yarn add firebase-ci
+    - yarn install --cwd functions
+    - npm run build:config # create env specific src/config.js
+    - npm run lint
+    # - npm run test # Removed for now due to too many deps. Jest coming soon.
+    - npm run build
+  cache:
+    - node_modules # NPM packages
+    - functions/node_modules
+    - .yarn
+  artifacts:
+    - dist
+  when: on_success
+
+deploy_staging:
+  image: node:6
+  stage: deploy
+  script:
+    - echo "Deploy to staging server"
+  environment:
+    name: staging
+    url: https://fireadmin-stage.firebaseapp.com
+  variables:
+    FIREBASE_TOKEN: $STAGE_FIREBASE_TOKEN
+  only:
+  - master
+
+deploy_prod:
+  image: node:6
+  stage: deploy
+  script:
+    - echo "Deploy to production server"
+  environment:
+    name: production
+    url: https://fireadmin.io
+  variables:
+    FIREBASE_TOKEN: $PROD_FIREBASE_TOKEN
+  when: manual
+  only:
+  - master
+
+
+test_stage:
+  stage
+  image: cypress/base
+  script:
+    - echo "Creating cypress.env.json..."
+    - 'echo "{ \"FIREBASE_TOKEN\"\: $FIREBASE_TOKEN }" > ./cypress.env.json'
+    - echo "cypress.env.json created successfully. Calling npm install..."
+    - npm install
+    - npm run test:stage
+  artifacts:
+    - cypress/videos
+    - cypress/screenshots
+  when: manual
+  only:
+  - master
