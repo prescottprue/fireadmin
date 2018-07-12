@@ -64,7 +64,6 @@ deploy_prod:
 
 
 test_stage:
-  stage
   image: cypress/base
   script:
     - echo "Creating cypress.env.json..."
