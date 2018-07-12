@@ -63,6 +63,8 @@ deploy_staging:
   only:
     - master
     - web
+  variables:
+    TRAVIS_BRANCH: master # workaround to get firebase-ci to use config for stage from .firebaserc
   script:
     - npm run deploy
 
@@ -103,7 +105,7 @@ deploy_prod:
     paths:
       - dist
   variables:
-    TRAVIS_BRANCH: stage # workaround to get firebase-ci to use config for stage from .firebaserc
+    TRAVIS_BRANCH: prod # workaround to get firebase-ci to use config for stage from .firebaserc
   script:
     - npm run clean # remove existing dist folder
     - npm run build:config # create env specific src/config.js
