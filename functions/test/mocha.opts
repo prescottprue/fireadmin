@@ -2,4 +2,4 @@
 --require ./test/setup
 --recursive
 --colors
---report lcov
+--report mochawesome

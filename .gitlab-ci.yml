@@ -1,25 +1,28 @@
 stages:
   - build
-  - test
-  - deploy
-  - test_stage
-
-test_app:
-  stage: test
-  image: cypress/base
-  script:
-    - echo "Creating cypress.env.json..."
-    - 'echo "{ \"FIREBASE_TOKEN\"\: $STAGE_FIREBASE_TOKEN }" > ./cypress.env.json'
-    - echo "cypress.env.json created successfully. Calling npm install..."
-    - npm install
-    - npm run test:stage
-  artifacts:
-    paths:
-      - cypress/videos
-      - cypress/screenshots
+  - unit_tests
+  - deploy_stage
+  - e2e_test
+  - deploy_prod
 
 build:
-  image: node:6
+  stage: build
+  image: node:6.14.0
+  environment:
+    name: staging
+    url: https://fireadmin-stage.firebaseapp.com
+  when: always
+  cache:
+    paths:
+      - node_modules # NPM packages
+      - functions/node_modules
+      - .yarn
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - functions/mochawesome-report
+      - dist
+      - functions/dist
   script:
     - yarn config set cache-folder .yarn
     - yarn install
@@ -27,58 +30,94 @@ build:
     - yarn install --cwd functions
     - npm run build:config # create env specific src/config.js
     - npm run lint
-    # - npm run test # Removed for now due to too many deps. Jest coming soon.
     - npm run build
+
+unit_tests:
+  stage: unit_tests
+  image: node:6.14.0
+  environment:
+    name: staging
+    url: https://fireadmin-stage.firebaseapp.com
+  when: on_success
+  except:
+    - prod
   cache:
+    policy: pull # only pull cache, skip uploading
     paths:
       - node_modules # NPM packages
       - functions/node_modules
       - .yarn
   artifacts:
+    expire_in: 2 weeks
     paths:
-      - dist
-  when: on_success
-
-deploy_staging:
-  image: node:6
-  stage: deploy
+      - functions/mochawesome-report
   script:
-    - echo "Deploy to staging server"
+    - npm run test --prefix functions
+
+deploy_stage:
+  stage: deploy_stage
+  image: node:6.14.0
   environment:
     name: staging
     url: https://fireadmin-stage.firebaseapp.com
-  variables:
-    FIREBASE_TOKEN: $STAGE_FIREBASE_TOKEN
+  when: on_success
   only:
     - master
-
-deploy_prod:
-  image: node:6
-  stage: deploy
+    - web
+  cache:
+    policy: pull # only pull cache, skip uploading
+    paths:
+      - node_modules # NPM packages
+      - functions/node_modules
+      - .yarn
   script:
-    - echo "Deploy to production server"
-  environment:
-    name: production
-    url: https://fireadmin.io
-  variables:
-    FIREBASE_TOKEN: $PROD_FIREBASE_TOKEN
-  when: manual
-  only:
-    - master
+    - npm run deploy
 
-
-test_stage:
+e2e_tests:
+  stage: e2e_tests
   image: cypress/base
-  script:
-    - echo "Creating cypress.env.json..."
-    - 'echo "{ \"FIREBASE_TOKEN\"\: $FIREBASE_TOKEN }" > ./cypress.env.json'
-    - echo "cypress.env.json created successfully. Calling npm install..."
-    - npm install
-    - npm run test:stage
+  environment:
+    name: staging
+    url: https://fireadmin-stage.firebaseapp.com
+  when: on_success
+  only:
+    - master
+    - web
+    - schedules
+  cache:
+    policy: pull # only pull cache, skip uploading
+    paths:
+      - node_modules # NPM packages
+      - .yarn
   artifacts:
+    expire_in: 2 weeks
     paths:
       - cypress/videos
       - cypress/screenshots
+  script:
+    - echo "Creating cypress.env.json..."
+    - 'echo "{ \"FIREBASE_TOKEN\"\: $STAGE_FIREBASE_TOKEN }" > ./cypress.env.json'
+    - echo "cypress.env.json created successfully. Calling npm install..."
+    - npm run test:stage
+
+deploy_prod:
+  stage: deploy_prod
+  image: node:6.14.0
+  environment:
+    name: production
+    url: https://fireadmin.io
   when: manual
+  cache:
+    policy: pull # only pull cache, skip uploading
+    paths:
+      - node_modules # NPM packages
+      - functions/node_modules
+      - .yarn
   only:
-    - master
+    - prod
+    - web
+  script:
+    - npm run clean # remove existing dist folder
+    - npm run build:config # create env specific src/config.js
+    - npm run build # rebuild bundle with new config
+    - npm run deploy
