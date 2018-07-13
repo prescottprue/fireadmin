@@ -3,12 +3,23 @@ stages:
   - unit_tests
   - deploy_staging
   - e2e_tests
-  - deploy_prod
+  - deploy_production
 
-build:
+# Build Stage
+# Installs dependencies, builds app, and saves results for later (artifacts).
+# 1. Install dependencies for React App and Cloud Functions using Yarn. Installing of
+# cypress binary is skipped (done in E2E Testing Stage)
+# 2. Build environment specific config file in src/config.js
+# 3. Confirm there is no lint within code (after config is injected for import linting)
+# 4. Build React app to dist folder
+# 5. Preserve build results and dependencies for future jobs in the pipeline
+Build:
   stage: build
   image: node:6.14.0
   when: always
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-build/
   cache:
     paths:
       - node_modules # NPM packages
@@ -17,29 +28,33 @@ build:
   artifacts:
     expire_in: 2 weeks
     paths:
-      - node_modules # keep as artifact for future jobs
-      - functions/node_modules # keep as artifact for future jobs
+      - node_modules # keep as artifact for future jobs (cache didn't share between jobs)
+      - functions/node_modules # keep as artifact for future jobs (cache didn't share between jobs)
       - dist
-      - functions/mochawesome-report
       - functions/dist
   variables:
     CYPRESS_INSTALL_BINARY: 0 # skip installing cypress binary
   script:
     - yarn config set cache-folder .yarn
     - yarn install
-    - yarn add firebase-ci
     - yarn install --cwd functions
     - npm run build:config # create env specific src/config.js
     - npm run lint
     - npm run build
 
-unit_tests:
+# Unit Testing Stage
+# Run unit tests for Cloud Functions
+# NOTE: Cache was not used for node_modules since function deps were not perserving
+Unit Tests:
   stage: unit_tests
   image: node:6.14.0
   when: on_success
   allow_failure: true
   except:
     - prod
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-tests/
+      - $CI_COMMIT_MESSAGE =~ /skip-unit-tests/
   # Did not load function node modules from previous job
   # cache:
   #   policy: pull # only pull cache, skip uploading
@@ -54,7 +69,9 @@ unit_tests:
   script:
     - npm run test --prefix functions
 
-deploy_staging:
+# Deploy Staging
+# Deploy React App and Cloud Functions
+Deploy Staging:
   stage: deploy_staging
   image: node:6.14.0
   environment:
@@ -64,12 +81,19 @@ deploy_staging:
   only:
     - master
     - web
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-deploy/
+      - $CI_COMMIT_MESSAGE =~ /skip-stage-deploy/
   variables:
     TRAVIS_BRANCH: master # workaround to get firebase-ci to use config for stage from .firebaserc
   script:
+    - yarn add firebase-ci
     - npm run deploy
 
-e2e_tests:
+# End To End Tests
+# Install Cypress binary and run end to end tests using Cypress
+E2E Tests:
   stage: e2e_tests
   image: cypress/base
   environment:
@@ -80,29 +104,40 @@ e2e_tests:
     - master
     - web
     - schedules
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-end-to-end-tests/
+      - $CI_COMMIT_MESSAGE =~ /skip-stage-deploy/ # skip running tests when not deploying to stage
   artifacts:
     expire_in: 2 weeks
     paths:
       - cypress/videos
       - cypress/screenshots
   script:
-    - yarn add cypress
-    - $(npm bin)/cypress verify
+    - yarn add cypress # install Cypress so that binary is grabbed (skipped in build stage)
+    - $(npm bin)/cypress verify # Confirm Cypress is ready to use
     - echo "Creating cypress.env.json..."
-    - 'echo "{ \"FIREBASE_TOKEN\"\: $STAGE_FIREBASE_TOKEN }" > ./cypress.env.json'
+    - 'echo "{ \"FIREBASE_TOKEN\": $STAGE_FIREBASE_TOKEN }" > ./cypress.env.json' # Create config file containing environment vairables
     - echo "cypress.env.json created successfully. Calling npm install..."
-    - npm run test:stage
+    - npm run test:stage # Run E2E Tests through Cypress
 
-deploy_prod:
-  stage: deploy_prod
+# Deploy Production
+# 1. Commit
+# 2. Deploy React App and Cloud Functions to production environment (https://fireadmin.io)
+Deploy Production:
+  stage: deploy_production
   image: node:6.14.0
   environment:
     name: production
     url: https://fireadmin.io
   when: manual
   only:
-    - prod
+    - master
     - web
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-deploy/
+      - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/ # skip running tests when not deploying to stage
   artifacts:
     expire_in: 2 weeks
     paths:
