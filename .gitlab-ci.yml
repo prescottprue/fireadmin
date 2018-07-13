@@ -19,10 +19,11 @@ build:
     paths:
       - node_modules # keep as artifact for future jobs
       - functions/node_modules # keep as artifact for future jobs
-      - /root/.cache/Cypress # Cypress binary
       - dist
       - functions/mochawesome-report
       - functions/dist
+  variables:
+    CYPRESS_INSTALL_BINARY: 0 # skip installing cypress binary
   script:
     - yarn config set cache-folder .yarn
     - yarn install
@@ -85,6 +86,8 @@ e2e_tests:
       - cypress/videos
       - cypress/screenshots
   script:
+    - yarn add cypress
+    - $(npm bin)/cypress verify
     - echo "Creating cypress.env.json..."
     - 'echo "{ \"FIREBASE_TOKEN\"\: $STAGE_FIREBASE_TOKEN }" > ./cypress.env.json'
     - echo "cypress.env.json created successfully. Calling npm install..."
