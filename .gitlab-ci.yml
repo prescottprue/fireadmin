@@ -51,7 +51,8 @@ Unit Tests:
   when: on_success
   allow_failure: true
   except:
-    - prod
+    refs:
+      - prod
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-tests/
       - $CI_COMMIT_MESSAGE =~ /skip-unit-tests/
