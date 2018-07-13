@@ -38,6 +38,7 @@ Build:
     - yarn config set cache-folder .yarn
     - yarn install
     - yarn install --cwd functions
+    - yarn add firebase-ci
     - npm run build:config # create env specific src/config.js
     - npm run lint
     - npm run build
@@ -89,7 +90,6 @@ Deploy Staging:
   variables:
     TRAVIS_BRANCH: master # workaround to get firebase-ci to use config for stage from .firebaserc
   script:
-    - yarn add firebase-ci
     - npm run deploy
 
 # End To End Tests
