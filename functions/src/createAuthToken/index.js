@@ -18,13 +18,9 @@ async function createAuthTokenEvent(snap, context) {
     console.error(errMsg)
     throw new Error(errMsg)
   }
-  const appFromSA = admin.initializeApp(
-    {
-      credential: admin.credential.cert(serviceAccount),
-      databaseURL: 'https://fireadmin-stage.firebaseio.com'
-    },
-    'withServiceAccount'
-  )
+  const adminConfig = JSON.parse(process.env.FIREBASE_CONFIG)
+  adminConfig.credential = admin.credential.cert(serviceAccount)
+  const appFromSA = admin.initializeApp(adminConfig, 'withServiceAccount')
   const {
     params: { pushId },
     auth

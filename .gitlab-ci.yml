@@ -105,6 +105,9 @@ E2E Tests:
     - master
     - web
     - schedules
+  cache:
+    paths:
+      .cache/Cypress
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-end-to-end-tests/
@@ -118,7 +121,7 @@ E2E Tests:
     - yarn add cypress # install Cypress so that binary is grabbed (skipped in build stage)
     - $(npm bin)/cypress verify # Confirm Cypress is ready to use
     - echo "Creating cypress.env.json..."
-    - 'echo "{ \"FIREBASE_TOKEN\": $STAGE_FIREBASE_TOKEN }" > ./cypress.env.json' # Create config file containing environment vairables
+    - 'echo "{ \"FIREBASE_TOKEN\": \"$STAGE_FIREBASE_TOKEN\" }" > ./cypress.env.json' # Create config file containing environment vairables
     - echo "cypress.env.json created successfully. Calling npm install..."
     - npm run test:stage # Run E2E Tests through Cypress
 
