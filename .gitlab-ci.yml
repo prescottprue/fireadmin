@@ -107,7 +107,7 @@ E2E Tests:
     - schedules
   cache:
     paths:
-      .cache/Cypress
+      - .cache/Cypress
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-end-to-end-tests/
