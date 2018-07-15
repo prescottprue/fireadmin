@@ -5,6 +5,6 @@ describe('Projects Page', () => {
   })
 
   it('Supports adding a new project', () => {
-    cy.get('.new-project-tile').click()
+    cy.get('[data-test=new-project-tile]').click()
   })
 })
