@@ -9,6 +9,21 @@ import path from 'path'
  * @return {Promise}
  */
 async function createAuthTokenEvent(snap, context) {
+  const { uid: qaUid, password: qaPassword } = get(functions.config(), 'qa', {})
+  const {
+    params: { pushId },
+    auth
+  } = context
+  const { uid: uidParam, password } = snap.val()
+  // Confirm that uid and password are within request
+  if (!uidParam || !password) {
+    throw new Error('UID and password parameters are required')
+  }
+  // Only allow qa UID and password combo
+  if (password !== qaPassword || uidParam !== qaUid) {
+    throw new Error('Invalid password and uid combo')
+  }
+  const uid = get(auth, 'uid', uidParam)
   const serviceAccount = require(path.join(
     process.cwd(),
     'serviceAccount.json'
@@ -21,12 +36,6 @@ async function createAuthTokenEvent(snap, context) {
   const adminConfig = JSON.parse(process.env.FIREBASE_CONFIG)
   adminConfig.credential = admin.credential.cert(serviceAccount)
   const appFromSA = admin.initializeApp(adminConfig, 'withServiceAccount')
-  const {
-    params: { pushId },
-    auth
-  } = context
-  const { uid: uidParam } = snap.val()
-  const uid = get(auth, 'uid', uidParam)
   try {
     const customToken = await appFromSA
       .auth()
@@ -53,7 +62,8 @@ async function createAuthTokenEvent(snap, context) {
 
 /**
  * @name createAuthToken
- * Cloud Function triggered by Real Time Database Create Event
+ * Cloud Function to create custom auth tokens for use in testing
+ * triggered by Real Time Database Create Event
  * @type {functions.CloudFunction}
  */
 export default functions.database

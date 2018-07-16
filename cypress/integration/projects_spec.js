@@ -1,6 +1,6 @@
 describe('Projects Page', () => {
   beforeEach(() => {
-    window.localStorage.setItem('fbToken', Cypress.env('FIREBASE_TOKEN'))
+    cy.login()
     cy.visit('/projects')
   })
 
