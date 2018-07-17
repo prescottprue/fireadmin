@@ -32,7 +32,6 @@ export function getAuthToken() {
           password: Cypress.env('TEST_PASSWORD')
         })
         .then(pushSnap => {
-          console.log('push snap:', pushSnap.key, pushSnap.ref)
           return new Promise((resolve, reject) => {
             const off = responsesRef.child(pushSnap.ref.key).on(
               'value',

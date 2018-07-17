@@ -2,7 +2,7 @@ import { version } from '../../package.json'
 import { segmentId, env } from 'config' // eslint-disable-line import/no-unresolved
 
 export function setAnalyticsUser(auth) {
-  if (auth && auth.uid) {
+  if (auth && auth.uid && window.analytics) {
     window.analytics.identify(auth.uid, {
       name: auth.displayName,
       email: auth.email,

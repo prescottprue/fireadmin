@@ -3,7 +3,7 @@ import { createSelector } from '../utils'
 describe('Projects Page', () => {
   before(() => {
     cy.login()
-    cy.wait(2000)
+    cy.wait(3000)
     cy.visit('/projects')
     cy.wait(2000)
   })
@@ -11,24 +11,27 @@ describe('Projects Page', () => {
   describe('Add Project', () => {
     it('creates project when provided a valid name', () => {
       const newProjectTitle = 'Test project'
-      cy.get(createSelector('new-project-tile'), { timeout: 3000 }).click()
-      cy.get(createSelector('new-project-name'), { timeout: 2000 })
+      cy.get(createSelector('new-project-tile')).click()
+      cy.get(createSelector('new-project-name'))
         .find('input')
         .type(newProjectTitle)
       cy.get(createSelector('new-project-create-button')).click()
       // confirm first project tile has title passed to new project input
-      cy.get(createSelector('project-tile-name'), { timeout: 3000 })
+      cy.get(createSelector('project-tile-name'))
         .first()
         .should('have.text', newProjectTitle)
     })
   })
 
   describe('Delete Project', () => {
-    it('allows project to be deleted for project owner', () => {
-      cy.get(createSelector('project-tile-more'), { timeout: 3000 })
+    it('allows project to be deleted by project owner', () => {
+      // click on the more button
+      cy.get(createSelector('project-tile-more'))
         .first()
         .click()
       cy.get(createSelector('project-tile-delete')).click()
+      // Confirm that new project is not available
+      cy.get(createSelector('new-project-name')).should('not.exist')
     })
   })
 })

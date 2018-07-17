@@ -1,7 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import { get } from 'lodash'
-import path from 'path'
 
 /**
  * @param  {functions.Event} event - Function event
@@ -24,10 +23,7 @@ async function createAuthTokenEvent(snap, context) {
     throw new Error('Invalid password and uid combo')
   }
   const uid = get(auth, 'uid', uidParam)
-  const serviceAccount = require(path.join(
-    process.cwd(),
-    'serviceAccount.json'
-  ))
+  const serviceAccount = functions.config().service_account
   if (!serviceAccount) {
     const errMsg = 'Service Account required'
     console.error(errMsg)
