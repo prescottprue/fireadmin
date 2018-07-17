@@ -7,6 +7,7 @@ export const addProject = props => async newInstance => {
     return showError('You must be logged in to create a project')
   }
   try {
+    props.toggleDialog()
     const res = await firestore.add(
       { collection: 'projects' },
       {
@@ -16,7 +17,6 @@ export const addProject = props => async newInstance => {
       }
     )
     props.showSuccess('Project added successfully')
-    props.toggleDialog()
     triggerAnalyticsEvent('createProject')
     return res
   } catch (err) {

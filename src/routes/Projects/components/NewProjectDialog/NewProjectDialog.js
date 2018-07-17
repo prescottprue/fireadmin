@@ -31,17 +31,23 @@ export const NewProjectDialog = ({
           component={TextField}
           label="Project Name"
           validate={[required]}
+          data-test="new-project-name"
         />
       </form>
     </DialogContent>
     <DialogActions>
-      <Button color="secondary" disabled={submitting} onClick={closeAndReset}>
+      <Button
+        color="secondary"
+        disabled={submitting}
+        onClick={closeAndReset}
+        data-test="new-project-cancel-button">
         Cancel
       </Button>
       <Button
         color="primary"
         disabled={pristine || submitting}
-        onClick={submit}>
+        onClick={submit}
+        data-test="new-project-create-button">
         Create
       </Button>
     </DialogActions>

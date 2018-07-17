@@ -20,7 +20,7 @@ function initRaven() {
  */
 function initStackdriverErrorReporter() {
   let errorReporter
-  if (googleApis && googleApis.apiKey) {
+  if (googleApis && googleApis.apiKey && environment === 'production') {
     window.addEventListener('DOMContentLoaded', () => {
       const errorHandler = new StackdriverErrorReporter()
       errorHandler.start({
@@ -54,7 +54,7 @@ export function init() {
  * @param {String} auth.uid - User's id
  */
 export function setErrorUser(auth) {
-  if (auth && auth.uid) {
+  if (auth && auth.uid && environment === 'production') {
     // Set user within Stackdriver
     if (errorHandler && errorHandler.setUser) {
       errorHandler.setUser(auth.uid)

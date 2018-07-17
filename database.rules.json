@@ -40,6 +40,12 @@
       }
     },
     "responses": {
+      "createAuthToken": {
+        "$responseId": {
+          ".read": "auth !== null && (root.child('requests').child('createAuthToken').child($responseId).child('createdBy').val() == auth.uid || root.child('requests').child('createAuthToken').child($responseId).child('uid').val() == auth.uid)",
+          ".write": "auth !== null && (root.child('requests').child('createAuthToken').child($responseId).child('createdBy').val() == auth.uid || root.child('requests').child('createAuthToken').child($responseId).child('uid').val() == auth.uid)"
+        }
+      },
       "$responseGroup": {
         "$responseId": {
           ".read": "auth !== null && root.child('requests').child($responseGroup).child($responseId).child('createdBy').val() == auth.uid",

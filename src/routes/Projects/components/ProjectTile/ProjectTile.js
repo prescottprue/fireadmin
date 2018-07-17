@@ -29,13 +29,16 @@ export const ProjectTile = ({
   sharingDialogOpen,
   toggleSharingDialog
 }) => (
-  <Paper className={classes.container} open={open}>
+  <Paper className={classes.container} open={open} data-test="project-tile">
     <div className={classes.top}>
-      <span className={classes.name} onClick={() => onSelect(project)}>
+      <span
+        className={classes.name}
+        onClick={() => onSelect(project)}
+        data-test="project-tile-name">
         {project.name}
       </span>
       <div>
-        <IconButton onClick={menuClick}>
+        <IconButton onClick={menuClick} data-test="project-tile-more">
           <MoreVertIcon />
         </IconButton>
         <Menu
@@ -43,13 +46,15 @@ export const ProjectTile = ({
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={closeMenu}>
-          <MenuItem onClick={() => onSelect(project)}>
+          <MenuItem
+            onClick={() => onSelect(project)}
+            data-test="project-tile-edit">
             <ListItemIcon className={classes.icon}>
               <EditIcon />
             </ListItemIcon>
             <ListItemText inset primary="Edit" />
           </MenuItem>
-          <MenuItem onClick={onDelete}>
+          <MenuItem onClick={onDelete} data-test="project-tile-delete">
             <ListItemIcon className={classes.icon}>
               <DeleteIcon />
             </ListItemIcon>

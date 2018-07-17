@@ -1,5 +1,7 @@
 import firebase from 'firebase'
 
+let currentToken
+
 function initializeFirebase() {
   const firebaseConfig = {
     apiKey: Cypress.env('FIREBASE_API_KEY'),
@@ -14,32 +16,39 @@ function initializeFirebase() {
 }
 
 export function getAuthToken() {
+  if (currentToken) {
+    return Promise.resolve(currentToken)
+  }
   initializeFirebase()
   const db = firebase.database()
   const requestsRef = db.ref('requests/createAuthToken')
   const responsesRef = db.ref('responses/createAuthToken')
   firebase.auth().onAuthStateChanged(user => {
-    requestsRef
-      .push({
-        uid: Cypress.env('TEST_UID'),
-        currentUid: user.uid,
-        password: Cypress.env('TEST_PASSWORD')
-      })
-      .then(pushSnap => {
-        console.log('push snap:', pushSnap.key, pushSnap.ref)
-        return new Promise((resolve, reject) => {
-          responsesRef.child(pushSnap.ref.key).on(
-            'value',
-            responseSnap => {
-              const responseVal = responseSnap.val()
-              if (responseVal && responseVal.token) {
-                resolve(responseVal.token)
-              }
-            },
-            reject
-          )
+    if (user) {
+      requestsRef
+        .push({
+          uid: Cypress.env('TEST_UID'),
+          currentUid: user.uid,
+          password: Cypress.env('TEST_PASSWORD')
         })
-      })
+        .then(pushSnap => {
+          console.log('push snap:', pushSnap.key, pushSnap.ref)
+          return new Promise((resolve, reject) => {
+            const off = responsesRef.child(pushSnap.ref.key).on(
+              'value',
+              responseSnap => {
+                const responseVal = responseSnap.val()
+                if (responseVal && responseVal.token) {
+                  currentToken = responseVal.token
+                  off()
+                  resolve(responseVal.token)
+                }
+              },
+              reject
+            )
+          })
+        })
+    }
   })
   return firebase
     .auth()
@@ -48,4 +57,8 @@ export function getAuthToken() {
       console.log('Error logging in:', error)
       return Promise.reject(error)
     })
+}
+
+export function createSelector(selectorValue) {
+  return `[data-test=${selectorValue}]`
 }
