@@ -40,7 +40,7 @@ Build:
     - yarn install --cwd functions
     - yarn add firebase-ci
     - npm run build:config # create env specific src/config.js
-    - ./bin/buildServiceAccount.sh # create env specific service account
+    - ./bin/buildTestConfig.sh # create env specific service account
     - npm run lint
     - npm run build
 
@@ -119,10 +119,9 @@ E2E Tests:
       - cypress/videos
       - cypress/screenshots
   script:
-    - yarn add cypress # install Cypress so that binary is grabbed (skipped in build stage)
+    - yarn add --dev cypress # install Cypress so that binary is grabbed (skipped in build stage)
     - $(npm bin)/cypress verify # Confirm Cypress is ready to use
     - echo "Creating cypress.env.json..."
-    - ./bin/buildServiceAccount.sh # create env specific service account
     - echo "cypress.env.json created successfully. Calling test run..."
     - npm run test:stage # Run E2E Tests through Cypress
 
@@ -142,7 +141,7 @@ Deploy Production:
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
-      - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/ # skip running tests when not deploying to stage
+      - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/
   artifacts:
     expire_in: 2 weeks
     paths:
@@ -152,6 +151,5 @@ Deploy Production:
   script:
     - npm run clean # remove existing dist folder
     - npm run build:config # create env specific src/config.js
-    - ./bin/buildServiceAccount.sh # create env specific service account
     - npm run build # rebuild bundle with new config
     - npm run deploy
