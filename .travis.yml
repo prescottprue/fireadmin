@@ -1,0 +1,47 @@
+dist: trusty
+
+sudo: false
+
+language: node_js
+
+node_js:
+ - 6.14.0 # runtime used within Firebase functions
+
+notifications:
+  email:
+    on_failure: change
+    on_success: change
+
+branches:
+  only:
+    - master
+    - stage
+    - prod
+
+env:
+  # Enable colors within logs
+  - FORCE_COLOR=true
+
+cache:
+  # bundler: true
+  directories:
+    - node_modules # NPM packages
+    - functions/node_modules
+  # TODO: Use npm once functions runtime is updated to a node verion with lock files
+  yarn: true
+
+install:
+  - yarn install
+  - yarn add firebase-ci
+  - yarn install --cwd functions
+
+script:
+  - npm run build:config # create env specific src/config.js
+  - npm run lint
+  # - npm run test # Removed for now due to too many deps. Jest coming soon.
+  - npm run build
+
+after_success:
+  # deploy hosting, RTDB rules, firestore rules, functions, and
+  # functions config (from mapEnv settings in .firebaserc)
+  - npm run deploy
