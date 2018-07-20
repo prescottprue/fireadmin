@@ -84,8 +84,9 @@ export async function serviceAccountFromFirestorePath(
   const firestore = admin.firestore()
   const projectDoc = await firestore.doc(docPath).get()
   if (!projectDoc.exists) {
-    console.error('Project containing service account not found')
-    throw new Error('Project containing service account not found')
+    const getProjErr = `Project containing service account not at path: ${docPath}`
+    console.error(getProjErr)
+    throw new Error(getProjErr)
   }
   const projectData = projectDoc.data()
   const { credential } = get(projectData, 'serviceAccount', {})

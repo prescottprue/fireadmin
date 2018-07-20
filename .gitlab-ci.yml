@@ -80,7 +80,7 @@ Deploy Staging:
   environment:
     name: staging
     url: https://fireadmin-stage.firebaseapp.com
-  when: manual
+  when: on_success
   only:
     - master
     - web
@@ -101,7 +101,7 @@ E2E Tests:
   environment:
     name: staging
     url: https://fireadmin-stage.firebaseapp.com
-  when: manual
+  when: on_success
   only:
     - master
     - web
