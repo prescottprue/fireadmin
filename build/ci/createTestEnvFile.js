@@ -7,7 +7,7 @@ import path from 'path'
 /**
  * Get prefix for current environment based on environment vars available
  * within CI. Falls back to staging (i.e. STAGE)
- * @return {[type]} [description]
+ * @return {String} Environment prefix string
  */
 function getEnvPrefix() {
   const prefixesByCiEnv = {
@@ -28,8 +28,11 @@ function getEnvPrefix() {
  * // => 'fireadmin-stage' (value of 'STAGE_FIREBASE_PROJECT_ID' environment var)
  */
 function envVarBasedOnCIEnv(varNameRoot) {
-  const testConfig = path.join(process.cwd(), 'cypress', 'config.json')
-  if (!process.env.CI) {
+  if (!process.env.CI && process.env.CI_ENVIRONMENT_SLUG) {
+    console.log(
+      `Not within valid CI environment, ${varNameRoot} is being loaded from cypress/config.json`
+    )
+    const testConfig = path.join(process.cwd(), 'cypress', 'config.json')
     return require(testConfig)[varNameRoot]
   }
   const prefix = getEnvPrefix()
@@ -90,10 +93,11 @@ function getServiceAccount() {
  * @return {Promise}
  */
 async function createTestConfig() {
+  const envPrefix = getEnvPrefix()
   // Get UID from environment
   const uid = envVarBasedOnCIEnv('TEST_UID')
   if (!uid) {
-    throw new Error('TEST_UID is missing from environment')
+    throw new Error(`${envPrefix}TEST_UID is missing from environment. Check`)
   }
   // Get service account from local file falling back to environment variables
   const serviceAccount = getServiceAccount()
