@@ -1,11 +1,15 @@
-describe('Cloud Functions', () => {
+describe.skip('storageFileToRTDB Cloud Function', () => {
   let storageFileToRTDB
   let adminInitStub
   let admin
+  let gcs
+  let mockBucket
 
   before(() => {
     admin = require('firebase-admin')
+    gcs = require('@google-cloud/storage')()
     adminInitStub = sinon.stub(admin, 'initializeApp')
+    mockBucket = sinon.stub(gcs, 'bucket').callsFake(() => ({}))
     storageFileToRTDB = functionsTest.wrap(
       require(`${__dirname}/../../index`).storageFileToRTDB
     )
@@ -14,9 +18,10 @@ describe('Cloud Functions', () => {
   after(() => {
     functionsTest.cleanup()
     adminInitStub.restore()
+    mockBucket.restore()
   })
 
-  describe('Storage File to RTDB', () => {
+  describe('Converts Storage File to RTDB', () => {
     it('responds to fake event', async () => {
       const snap = {
         val: () => ({ displayName: 'some', filePath: 'some' })

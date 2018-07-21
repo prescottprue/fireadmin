@@ -22,13 +22,12 @@ Build:
       - $CI_COMMIT_MESSAGE =~ /skip-build/
   cache:
     paths:
-      - node_modules # NPM packages
       - functions/node_modules
       - .yarn
   artifacts:
     expire_in: 2 weeks
     paths:
-      - node_modules # keep as artifact for future jobs (cache didn't share between jobs)
+      - .yarn # keep as artifact for future jobs (cache didn't share between jobs)
       - functions/node_modules # keep as artifact for future jobs (cache didn't share between jobs)
       - dist
       - functions/dist
@@ -119,11 +118,11 @@ E2E Tests:
     paths:
       - cypress/videos
       - cypress/screenshots
+      - cypress.env.json
   script:
     - yarn add --dev cypress # install Cypress so that binary is grabbed (skipped in build stage)
     - $(npm bin)/cypress verify # Confirm Cypress is ready to use
     - echo "Creating cypress.env.json..."
-    - ./bin/buildTestConfig.sh # Create environment specific env
     - echo "cypress.env.json created successfully. Calling test run..."
     - npm run test:stage # Run E2E Tests through Cypress
 

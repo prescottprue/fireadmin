@@ -6,7 +6,7 @@
     "test:cov": "istanbul cover ./node_modules/mocha/bin/_mocha ./test/unit/**",
     "lint": "eslint -c .eslintrc ./src",
     "clean": "rimraf dist etc",
-    "build": "npm run clean && babel src -d --out-dir dist",
+    "build": "npm run clean && babel src -d --out-dir dist --retainLines",
     "watch": "npm run build -- --watch",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase experimental:functions:shell",

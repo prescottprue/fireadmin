@@ -16,7 +16,7 @@ let mocksdk = firebasemock.MockFirebaseSdk(
 
 let mockapp = mocksdk.initializeApp()
 
-describe('indexUsers Cloud Function', () => {
+describe('indexUser Cloud Function', () => {
   let myFunctions
   let configStub
   let adminInitStub
@@ -43,7 +43,16 @@ describe('indexUsers Cloud Function', () => {
         storageBucket: 'not-a-project.appspot.com',
         projectId: 'not-a-project.appspot',
         messagingSenderId: '823357791673'
-      }
+      },
+      algolia: {
+        app_id: 'asdf',
+        api_key: 'asdf'
+      },
+      gmail: {},
+      encryption: {
+        password: 'asdf'
+      },
+      service_account: {}
       // You can stub any other config values needed by your functions here, for example:
       // foo: 'bar'
     })
@@ -116,7 +125,7 @@ describe('indexUsers Cloud Function', () => {
     }
     // Invoke webhook with our fake request and response objects. This will cause the
     // assertions in the response object to be evaluated.
-    const res = await myFunctions.indexUsers(fakeEvent)
+    const res = await myFunctions.indexUser(fakeEvent)
     expect(res).to.be.null
   })
 })
