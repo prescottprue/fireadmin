@@ -4,16 +4,20 @@ import { pickBy, isUndefined, size, keys, isString } from 'lodash'
 import fs from 'fs'
 import path from 'path'
 
+const testEnvFilePath = path.join(process.cwd(), 'cypress.env.json')
+const localTestConfigPath = path.join(process.cwd(), 'cypress', 'config.json')
+const serviceAccountPath = path.join(process.cwd(), 'serviceAccount.json')
+const prefixesByCiEnv = {
+  staging: 'STAGE_',
+  production: 'PROD_'
+}
+
 /**
  * Get prefix for current environment based on environment vars available
  * within CI. Falls back to staging (i.e. STAGE)
  * @return {String} Environment prefix string
  */
 function getEnvPrefix() {
-  const prefixesByCiEnv = {
-    staging: 'STAGE_',
-    production: 'PROD_'
-  }
   return (
     prefixesByCiEnv[process.env.CI_ENVIRONMENT_SLUG] || prefixesByCiEnv.staging
   )
@@ -32,8 +36,7 @@ function envVarBasedOnCIEnv(varNameRoot) {
     console.log(
       `Not within valid CI environment, ${varNameRoot} is being loaded from cypress/config.json`
     )
-    const testConfig = path.join(process.cwd(), 'cypress', 'config.json')
-    return require(testConfig)[varNameRoot]
+    return require(localTestConfigPath)[varNameRoot]
   }
   const prefix = getEnvPrefix()
   return process.env[`${prefix}${varNameRoot}`] || process.env[varNameRoot]
@@ -68,11 +71,16 @@ function getParsedEnvVar(varNameRoot) {
   }
 }
 
+/**
+ * Get service account from either local file or environment variables
+ * @return {Object} Service account object
+ */
 function getServiceAccount() {
-  const serviceAccountPath = path.join(process.cwd(), './serviceAccount.json')
+  // Check for local service account file (Local dev)
   if (fs.existsSync(serviceAccountPath)) {
     return require(serviceAccountPath)
   }
+  // Use environment variables (CI)
   return {
     type: 'service_account',
     project_id: envVarBasedOnCIEnv('FIREBASE_PROJECT_ID'),
@@ -125,17 +133,17 @@ async function createTestConfig() {
     const customToken = await appFromSA
       .auth()
       .createCustomToken(uid, { isTesting: true })
+    // Remove firebase app
     appFromSA.delete()
+    // Create config object to be written into test env file
     const newCypressConfig = {
       TEST_UID: envVarBasedOnCIEnv('TEST_UID'),
       FIREBASE_API_KEY: envVarBasedOnCIEnv('FIREBASE_API_KEY'),
       FIREBASE_PROJECT_ID: envVarBasedOnCIEnv('FIREBASE_PROJECT_ID'),
       FIREBASE_AUTH_JWT: customToken
     }
-    fs.writeFileSync(
-      newCypressConfig,
-      JSON.stringify(newCypressConfig, null, 2)
-    )
+    // Write config file as string
+    fs.writeFileSync(testEnvFilePath, JSON.stringify(newCypressConfig, null, 2))
     return customToken
   } catch (err) {
     /* eslint-disable no-console */
