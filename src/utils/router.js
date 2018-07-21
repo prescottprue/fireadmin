@@ -61,12 +61,17 @@ export const createOnEnter = store => (
   { location: { query, pathname }, auth },
   replace
 ) => {
-  const currentItem = localStorage.getItem('fbToken')
+  const currentItem = sessionStorage.getItem('fbToken')
   if (currentItem) {
-    return store.firebase.login({ token: currentItem }).catch(err => {
-      Raven.captureException('Error authenticating with Auth token', err)
-      return '/'
-    })
+    return store.firebase
+      .login({ token: currentItem })
+      .then(() => {
+        sessionStorage.setItem('fbToken', null)
+      })
+      .catch(err => {
+        Raven.captureException('Error authenticating with Auth token', err)
+        return '/'
+      })
   }
 
   return null

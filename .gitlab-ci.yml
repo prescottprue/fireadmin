@@ -32,6 +32,7 @@ Build:
       - functions/node_modules # keep as artifact for future jobs (cache didn't share between jobs)
       - dist
       - functions/dist
+      - src
   variables:
     CYPRESS_INSTALL_BINARY: 0 # skip installing cypress binary
   script:
@@ -39,8 +40,8 @@ Build:
     - yarn install
     - yarn install --cwd functions
     - yarn add firebase-ci
-    - npm run build:config # create env specific src/config.js
-    - ./bin/buildTestConfig.sh # create env specific service account
+    - npm run build:config # create env specific app config (src/config.js)
+    - npm run build:testConfig # create env specific config for tests (cypress.env.json)
     - npm run lint
     - npm run build
 

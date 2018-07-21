@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "build:functions": "npm run build --prefix functions",
     "build:config": "firebase-ci createConfig",
     "deploy": "firebase-ci deploy",
+    "build:testConfig": "$(npm bin)/babel-node build/ci/createTestEnvFile",
     "start": "cross-env NODE_ENV=development webpack-dashboard -p 1334 -c cyan -m -t fireadmin -- node build/scripts/start",
     "start:simple": "cross-env NODE_ENV=development node build/scripts/start",
     "functions:start": "npm run start --prefix functions",
@@ -35,7 +36,7 @@
   "author": "prescottprue (https://github.com/prescottprue)",
   "license": "MIT",
   "dependencies": {
-    "@material-ui/core": "1.0.0",
+    "@material-ui/core": "1.4.0",
     "@material-ui/icons": "1.0.0",
     "classnames": "^2.2.5",
     "codemirror": "^5.32.0",
@@ -71,6 +72,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.24.1",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.0.0",
@@ -109,6 +111,7 @@
     "favicons-webpack-plugin": "0.0.7",
     "figures": "^2.0.0",
     "file-loader": "^0.11.1",
+    "firebase-admin": "^5.13.0",
     "fs-extra": "^3.0.1",
     "html-webpack-plugin": "^2.29.0",
     "husky": "^0.14.3",

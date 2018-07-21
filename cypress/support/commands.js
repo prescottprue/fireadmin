@@ -1,5 +1,3 @@
-import { getAuthToken } from '../utils'
-
 const TOKEN_STORAGE_KEY = 'fbToken'
 
 // ***********************************************
@@ -15,16 +13,21 @@ const TOKEN_STORAGE_KEY = 'fbToken'
 //
 // -- This is a parent command --
 Cypress.Commands.add('login', (email, password) => {
-  if (!Cypress.env('TEST_UID') || !Cypress.env('TEST_PASSWORD')) {
-    cy.log('TEST_UID and TEST_PASSWORD are required environment variables')
+  if (!Cypress.env('FIREBASE_AUTH_JWT')) {
+    cy.log(
+      'FIREBASE_AUTH_JWT must be set to cypress environment in order to login'
+    )
     return
   }
-  return getAuthToken().then(token => {
-    window.sessionStorage.setItem(TOKEN_STORAGE_KEY, token)
-  })
+  cy.log(
+    'FIREBASE_AUTH_JWT exists, logging in:',
+    Cypress.env('FIREBASE_AUTH_JWT')
+  )
+  window.sessionStorage.setItem(
+    TOKEN_STORAGE_KEY,
+    Cypress.env('FIREBASE_AUTH_JWT')
+  )
 })
-//
-//
 // -- This is a child command --
 // Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
 //

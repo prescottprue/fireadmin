@@ -21,5 +21,6 @@ functions/serviceAccount.json
 cypress/videos
 cypress/screenshots
 cypress.env.json
+cypress/config.json
 functions/mochawesome-report
-cypress/serviceAccount.json
+serviceAccount.json
