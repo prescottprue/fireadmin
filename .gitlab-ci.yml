@@ -22,16 +22,17 @@ Build:
       - $CI_COMMIT_MESSAGE =~ /skip-build/
   cache:
     paths:
+      - node_modules
       - functions/node_modules
       - .yarn
   artifacts:
     expire_in: 2 weeks
     paths:
-      - .yarn # keep as artifact for future jobs (cache didn't share between jobs)
+      - node_modules # keep as artifact for future jobs (cache didn't share between jobs)
       - functions/node_modules # keep as artifact for future jobs (cache didn't share between jobs)
       - dist
       - functions/dist
-      - src
+      - src/config.js
   variables:
     CYPRESS_INSTALL_BINARY: 0 # skip installing cypress binary
   script:
