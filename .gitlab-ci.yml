@@ -33,15 +33,18 @@ Build:
       - dist
       - functions/dist
       - src/config.js
+      - cypress.env.json
   variables:
     CYPRESS_INSTALL_BINARY: 0 # skip installing cypress binary
   script:
     - yarn config set cache-folder .yarn
     - yarn install
     - yarn install --cwd functions
-    - yarn add firebase-ci
+    - npm i firebase-ci # install firebase-ci (without save) for file creation and deploy
     - npm run build:config # create env specific app config (src/config.js)
+    - echo "Creating cypress.env.json..."
     - npm run build:testConfig # create env specific config for tests (cypress.env.json)
+    - echo "cypress.env.json created successfully."
     - npm run lint
     - npm run build
 
@@ -123,8 +126,6 @@ E2E Tests:
   script:
     - yarn add --dev cypress # install Cypress so that binary is grabbed (skipped in build stage)
     - $(npm bin)/cypress verify # Confirm Cypress is ready to use
-    - echo "Creating cypress.env.json..."
-    - echo "cypress.env.json created successfully. Calling test run..."
     - npm run test:stage # Run E2E Tests through Cypress
 
 # Deploy Production
