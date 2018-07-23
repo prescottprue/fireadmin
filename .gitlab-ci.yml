@@ -126,7 +126,7 @@ E2E Tests:
   script:
     - yarn add --dev cypress # install Cypress so that binary is grabbed (skipped in build stage)
     - $(npm bin)/cypress verify # Confirm Cypress is ready to use
-    - npm run test:stage # Run E2E Tests through Cypress
+    - npm run test:stage -- --record --key $CYPRESS_KEY # Run E2E Tests through Cypress
 
 # Deploy Production
 # 1. Commit

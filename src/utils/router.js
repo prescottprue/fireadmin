@@ -63,12 +63,22 @@ export const createOnEnter = store => (
 ) => {
   const currentItem = sessionStorage.getItem('fbToken')
   if (currentItem) {
+    /* eslint-disable no-console */
+    console.log('fbToken found in session storage, logging in...')
     return store.firebase
       .login({ token: currentItem })
       .then(() => {
+        console.log(
+          'auth through fbToken successful! Removing token from session storage'
+        )
         sessionStorage.setItem('fbToken', null)
       })
       .catch(err => {
+        console.log(
+          `Error logging in through auth token: ${err.message || ''}`,
+          err
+        )
+        /* eslint-enable no-console */
         Raven.captureException('Error authenticating with Auth token', err)
         return '/'
       })

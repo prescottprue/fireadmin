@@ -19,14 +19,12 @@ Cypress.Commands.add('login', (email, password) => {
     )
     return
   }
-  cy.log(
-    'FIREBASE_AUTH_JWT exists, logging in:',
-    Cypress.env('FIREBASE_AUTH_JWT')
-  )
+  cy.log('FIREBASE_AUTH_JWT is defined, setting to session storage...')
   window.sessionStorage.setItem(
     TOKEN_STORAGE_KEY,
     Cypress.env('FIREBASE_AUTH_JWT')
   )
+  cy.log('FIREBASE_AUTH_JWT set to session storage, logging in...')
 })
 // -- This is a child command --
 // Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
