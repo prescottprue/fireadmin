@@ -32,11 +32,12 @@ function getEnvPrefix() {
  * // => 'fireadmin-stage' (value of 'STAGE_FIREBASE_PROJECT_ID' environment var)
  */
 function envVarBasedOnCIEnv(varNameRoot) {
-  if (!process.env.CI && process.env.CI_ENVIRONMENT_SLUG) {
+  if (!process.env.CI && !process.env.CI_ENVIRONMENT_SLUG) {
     console.log(
       `Not within valid CI environment, ${varNameRoot} is being loaded from cypress/config.json`
     )
-    return require(localTestConfigPath)[varNameRoot]
+    const configObj = require(localTestConfigPath)
+    return configObj[`STAGE_${varNameRoot}`] || configObj[varNameRoot]
   }
   const prefix = getEnvPrefix()
   return process.env[`${prefix}${varNameRoot}`] || process.env[varNameRoot]
@@ -48,8 +49,8 @@ function envVarBasedOnCIEnv(varNameRoot) {
  * @param  {String} varNameRoot - variable name without the environment prefix
  * @return {Any} Value of the environment variable
  * @example
- * envVarBasedOnCIEnv('FIREBASE_PRIVATE_KEY_ID')
- * // => 'fireadmin-stage' (value of 'STAGE_FIREBASE_PRIVATE_KEY_ID' environment var)
+ * getParsedEnvVar('FIREBASE_PRIVATE_KEY_ID')
+ * // => 'fireadmin-stage' (parsed value of 'STAGE_FIREBASE_PRIVATE_KEY_ID' environment var)
  */
 function getParsedEnvVar(varNameRoot) {
   const val = envVarBasedOnCIEnv(varNameRoot)
@@ -102,13 +103,18 @@ function getServiceAccount() {
  */
 async function createTestConfig() {
   const envPrefix = getEnvPrefix()
-  // Get UID from environment
+  // Get UID from environment (falls back to cypress/config.json for local)
   const uid = envVarBasedOnCIEnv('TEST_UID')
+  // Throw if UID is missing in environment
   if (!uid) {
-    throw new Error(`${envPrefix}TEST_UID is missing from environment. Check`)
+    throw new Error(
+      `${envPrefix}TEST_UID is missing from environment. Confirm that cypress/config.json contains either ${envPrefix}TEST_UID or TEST_UID.`
+    )
   }
+
   // Get service account from local file falling back to environment variables
   const serviceAccount = getServiceAccount()
+
   // Confirm service account has all parameters
   const serviceAccountMissingParams = pickBy(serviceAccount, isUndefined)
   if (size(serviceAccountMissingParams)) {
@@ -117,6 +123,7 @@ async function createTestConfig() {
     ).join(', ')}`
     throw new Error(errMsg)
   }
+
   // Get project ID from environment variable
   const projectId =
     process.env.GCLOUD_PROJECT || envVarBasedOnCIEnv('FIREBASE_PROJECT_ID')

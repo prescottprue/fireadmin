@@ -71,7 +71,6 @@ export const createOnEnter = store => (
         console.log(
           'auth through fbToken successful! Removing token from session storage'
         )
-        sessionStorage.setItem('fbToken', null)
       })
       .catch(err => {
         console.log(

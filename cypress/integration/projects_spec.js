@@ -2,9 +2,10 @@ import { createSelector } from '../utils'
 
 describe('Projects Page', () => {
   before(() => {
+    cy.visit('/')
     cy.login()
-    cy.wait(3000)
-    cy.visit('/projects')
+    cy.wait(1000)
+    cy.visit('/login')
     cy.wait(2000)
   })
 
