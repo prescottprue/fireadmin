@@ -14,6 +14,13 @@ import { setAnalyticsUser } from '../utils/analytics'
 import { version } from '../../package.json'
 import { updateLocation } from './location'
 
+// Initialize Firebase
+firebase.initializeApp(fbConfig)
+// Initialize Firestore
+firebase.firestore().settings({ timestampsInSnapshots: true })
+
+window.fbAuth = firebase.auth()
+
 export default (initialState = {}) => {
   // ======================================================
   // Window Vars Config

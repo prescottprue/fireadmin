@@ -7,9 +7,9 @@ describe('Projects Page', () => {
   before(() => {
     // Create a server to listen to requests sent out to Google Auth and Firestore
     cy.server()
-      .route('POST', /identitytoolkit\/v3\/relyingparty\/getAccountInfo\//)
+      .route('POST', /identitytoolkit\/v3\/relyingparty\/getAccountInfo/)
       .as('getGoogleAccountInfo')
-      .route('POST', /identitytoolkit\/v3\/relyingparty\/verifyCustomToken\//)
+      .route('POST', /identitytoolkit\/v3\/relyingparty\/verifyCustomToken/)
       .as('verifyCustomFirebaseToken')
       .route('POST', /google.firestore.v1beta1.Firestore\/Write\//)
       .as('addProject')
