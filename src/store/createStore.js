@@ -2,24 +2,17 @@ import { applyMiddleware, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import { browserHistory } from 'react-router'
 import { reactReduxFirebase, getFirebase } from 'react-redux-firebase'
-import makeRootReducer from './reducers'
+import { reduxFirestore } from 'redux-firestore'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/database'
 import 'firebase/storage'
-import { reduxFirestore } from 'redux-firestore'
-import { firebase as fbConfig, reduxFirebase as reduxConfig } from '../config'
 import { setAnalyticsUser } from '../utils/analytics'
+import makeRootReducer from './reducers'
+import { firebase as fbConfig, reduxFirebase as rrfConfig } from '../config'
 import { version } from '../../package.json'
 import { updateLocation } from './location'
-
-// Initialize Firebase
-firebase.initializeApp(fbConfig)
-// Initialize Firestore
-firebase.firestore().settings({ timestampsInSnapshots: true })
-
-window.fbAuth = firebase.auth()
 
 export default (initialState = {}) => {
   // ======================================================
@@ -46,9 +39,30 @@ export default (initialState = {}) => {
     }
   }
 
-  // Initialize Firebase
-  firebase.initializeApp(fbConfig)
-  // Initialize Firestore
+  const defaultRRFConfig = {
+    userProfile: 'users', // root that user profiles are written to
+    updateProfileOnLogin: false, // enable/disable updating of profile on login
+    useFirestoreForProfile: true,
+    useFirestoreForStorageMeta: true,
+    presence: 'presence',
+    sessions: null,
+    onAuthStateChanged: authState => {
+      if (authState) {
+        setAnalyticsUser(authState)
+      }
+    }
+  }
+
+  const combinedConfig = rrfConfig
+    ? { ...defaultRRFConfig, ...rrfConfig }
+    : defaultRRFConfig
+
+  // Initialize Firebase only if an fbInstance was not passed to the window (tests)
+  if (!window.fbInstance) {
+    firebase.initializeApp(fbConfig)
+  }
+
+  // Initialize Firestore with settings
   firebase.firestore().settings({ timestampsInSnapshots: true })
 
   // ======================================================
@@ -60,14 +74,7 @@ export default (initialState = {}) => {
     compose(
       applyMiddleware(...middleware),
       reduxFirestore(firebase),
-      reactReduxFirebase(firebase, {
-        ...reduxConfig,
-        onAuthStateChanged: (authState, second) => {
-          if (authState) {
-            setAnalyticsUser(authState)
-          }
-        }
-      }),
+      reactReduxFirebase(window.fbInstance || firebase, combinedConfig),
       ...enhancers
     )
   )
