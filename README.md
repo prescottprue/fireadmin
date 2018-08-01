@@ -33,6 +33,7 @@
   * Custom logic (JS written in the browser with ESNext features like `async/await`)
 * Project level tracking of actions which have been run through Action Runner
 * Get/Set CORS Config of Storage Buckets
+* E2E Tests through Cypress
 
 *coming soon*
 * Authorized Google API Request Panel
@@ -48,7 +49,7 @@ Interested in adding a feature or contributing? Open an issue or [reach out over
 If you are just getting started with Fireadmin, it is probably best to checkout the [hosted version at fireadmin.io](http://fireadmin.io). After you become more familiar, feel free to run your own by pulling this source and proceeding to the [run your own section](#run-your-own).
 
 ### Requirements
-* node `^6.14.0` (`6.14.0` suggested for function to match [Cloud Functions Runtime][functions-runtime-url])
+* node `^6.14.0` (`8.11.3` suggested for function to match [Cloud Functions Runtime][functions-runtime-url])
 
 ## Running Your Own
 
@@ -224,10 +225,9 @@ For more options on CI settings checkout the [firebase-ci docs](https://github.c
 
 ## FAQ
 
-1. Why node `6.11.5` instead of a newer version? [Cloud Functions runtime is still on `6.11.5`][functions-runtime-url], which is why that is what is used for the travis build version. This will be switched when the functions runtime is updated
-1. Why Yarn over node's `package-lock.json`? - Relates to previous question. Node `6.*.*` and equivalent npm didn't include lock files yet.
+1. Why node `8.11.3` instead of a newer version? [Cloud Functions runtime supports `6` or `8`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
 1. Uploading service accounts? Where do they go and how are my service accounts stored?
-  Currently on a Google Cloud Storage Bucket which does not have CORS access. There is also the option to store them in Firestore as an encrypted string for quicker reads/writes when running actions.
+  Currently on a Google Cloud Storage Bucket which has security rules and does not have CORS access. As soon as the file has been converted into an encrypted string and stored within Firestore, it is removed from Cloud Storage.
 
 ## What Happened To The Fireadmin NPM Library?
 

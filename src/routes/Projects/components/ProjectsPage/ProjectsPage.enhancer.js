@@ -1,12 +1,12 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get } from 'lodash'
 import { withHandlers, withStateHandlers, pure } from 'recompose'
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 import { withRouter, spinnerWhileLoading } from 'utils/components'
 import { UserIsAuthenticated } from 'utils/router'
 import * as handlers from './ProjectsPage.handlers'
+import { getAllCurrentUsersProjects } from 'selectors'
 
 export default compose(
   // redirect to /login if user is not logged in
@@ -31,12 +31,11 @@ export default compose(
     }
   ]),
   // Map projects from state to props (populating them in the process)
-  connect(({ firebase, firestore: { ordered, data } }) => ({
-    projects: get(ordered, 'projects'),
-    collabProjects: get(ordered, 'collabProjects')
+  connect((state, props) => ({
+    projects: getAllCurrentUsersProjects(state, props)
   })),
   // Show loading spinner while projects and collabProjects are loading
-  spinnerWhileLoading(['projects', 'collabProjects']),
+  spinnerWhileLoading(['projects']),
   // Add props.router
   withRouter,
   // Add props.showError and props.showSuccess

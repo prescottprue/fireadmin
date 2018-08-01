@@ -1,5 +1,6 @@
 import { get, map, mapKeys } from 'lodash'
 import { createSelector } from 'reselect'
+export * from './projectsSelectors'
 
 /**
  * Get the currently logged in user's Auth UID from firebase state. Data is
