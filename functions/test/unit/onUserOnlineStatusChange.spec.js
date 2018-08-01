@@ -1,4 +1,4 @@
-describe('onUserOnlineStatusChange RTDB Cloud Function (RTDB:onUpdate)', () => {
+describe.skip('onUserOnlineStatusChange RTDB Cloud Function (RTDB:onUpdate)', () => {
   let onUserOnlineStatusChange
   let adminInitStub
   let admin

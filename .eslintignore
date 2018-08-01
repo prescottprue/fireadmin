@@ -6,4 +6,6 @@ blueprints/**
 src/config.js
 functions/dist
 functions/test/mocha.opts
+functions/coverage/**
+functions/mochawesome-report/**
 cypress/fixtures/**

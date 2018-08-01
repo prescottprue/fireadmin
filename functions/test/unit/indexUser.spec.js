@@ -16,7 +16,7 @@ let mocksdk = firebasemock.MockFirebaseSdk(
 
 let mockapp = mocksdk.initializeApp()
 
-describe('indexUser Cloud Function', () => {
+describe.skip('indexUser Cloud Function', () => {
   let myFunctions
   let configStub
   let adminInitStub

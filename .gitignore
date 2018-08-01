@@ -16,6 +16,8 @@ functions/etc
 functions/dist
 functions/.runtimeconfig.json
 functions/serviceAccount.json
+functions/coverage
+functions/mochawesome-report
 
 # Tests
 cypress/videos

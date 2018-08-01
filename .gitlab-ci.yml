@@ -74,9 +74,12 @@ Unit Tests:
     expire_in: 2 weeks
     paths:
       - functions/dist
+      - functions/coverage # Test coverage report
+      - functions/mochawesome-report # Test results in JSON and HTML
   before_script:
     - npm i --prefix functions
   script:
+    - npm run test --prefix functions
     - npm run test:cov --prefix functions
 
 # Deploy Staging

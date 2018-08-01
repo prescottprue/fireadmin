@@ -3,17 +3,16 @@
   "description": "Cloud Functions for Fireadmin application.",
   "scripts": {
     "test": "npm run build && mocha ./test/unit/** -R mochawesome",
-    "test:cov": "istanbul cover ./node_modules/mocha/bin/_mocha ./test/unit/**",
+    "test:cov": "istanbul cover $(npm bin)/_mocha ./test/unit/**",
     "lint": "eslint -c .eslintrc ./src",
     "clean": "rimraf dist etc",
     "build": "npm run clean && babel src -d --out-dir dist --retainLines",
     "watch": "npm run build -- --watch",
     "serve": "npm run build && firebase serve --only functions",
-    "shell": "npm run build && firebase experimental:functions:shell",
+    "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log",
-    "postinstall": "npm run build"
+    "logs": "firebase functions:log"
   },
   "dependencies": {
     "@google-cloud/storage": "^1.7.0",
@@ -22,7 +21,7 @@
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.1",
+    "babel-preset-env": "^1.7.0",
     "babel-runtime": "^6.26.0",
     "firebase-admin": "^5.13.1",
     "firebase-functions": "^2.0.2",
@@ -47,11 +46,12 @@
     "firebase-functions-test": "^0.1.1",
     "firebase-mock": "^2.2.4",
     "istanbul": "1.1.0-alpha.1",
-    "mocha": "^5.0.4",
-    "sinon": "^4.1.2"
+    "mocha": "^5.2.0",
+    "mochawesome": "^3.0.3",
+    "sinon": "^6.1.4"
   },
   "engines": {
-    "node": "6.14.0"
+    "node": "8"
   },
   "author": "prescottprue (https://github.com/prescottprue)",
   "license": "MIT",
