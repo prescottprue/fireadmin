@@ -34,8 +34,6 @@ describe('Projects Page', () => {
     // Reload to start fresh (only auth state preserved from previous
     // navigation or tests)
     cy.reload()
-    // wait for response of project data
-    cy.wait('@getProjectData')
   })
 
   describe('Add Project', () => {
