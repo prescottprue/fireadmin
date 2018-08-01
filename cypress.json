@@ -1,4 +1,7 @@
 {
   "projectId": "6my6ku",
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "requestTimeout": 50000,
+  "responseTimeout": 50000,
+  "defaultCommandTimeout": 8000
 }

@@ -2,21 +2,22 @@ import { createSelector } from '../utils'
 
 describe('Projects Page', () => {
   let open // eslint-disable-line no-unused-vars
-  // Setup before tests including creating a server to listen for external
-  // requests
+  // Setup before tests including creating a server to listen for external requests
   before(() => {
     // Create a server to listen to requests sent out to Google Auth and Firestore
     cy.server()
+      // Google get google account info (periodically called by Firebase JS SDK)
       .route('POST', /identitytoolkit\/v3\/relyingparty\/getAccountInfo/)
       .as('getGoogleAccountInfo')
-      .route('POST', /identitytoolkit\/v3\/relyingparty\/verifyCustomToken/)
-      .as('verifyCustomFirebaseToken')
-      .route('POST', /google.firestore.v1beta1.Firestore\/Write\//)
-      .as('addProject')
-      .route('POST', /google.firestore.v1beta1.Firestore\/Listen\//)
+      // Firebase JS SDK request - Called when listener attached
+      .route('POST', /google.firestore.v1beta1.Firestore\/Listen/)
       .as('listenForProjects')
-      .route('GET', /google.firestore.v1beta1.Firestore\/Listen\//)
+      // Firebase JS SDK request - Called when data is returned
+      .route('GET', /google.firestore.v1beta1.Firestore\/Listen/)
       .as('getProjectData')
+      // Firebase JS SDK request - Called when project data is written
+      .route('POST', /google.firestore.v1beta1.Firestore\/Write/)
+      .as('addProject')
       .window()
       .then(win => {
         // Create a spy on the servers onOpen event so we can later expect
@@ -29,22 +30,18 @@ describe('Projects Page', () => {
     // Login using custom token
     cy.login()
     // Go to projects page
-    cy.visit('/projects').then(() =>
-      // Wait for all data requests to complete before proceeding
-      // we use promise all because responses can return at different times
-      Promise.all([
-        cy.wait('@verifyCustomFirebaseToken'),
-        cy.wait('@getGoogleAccountInfo'),
-        cy.wait('@listenForProjects'),
-        cy.wait('@getProjectData')
-      ])
-    )
+    cy.visit('/projects')
+    // Reload to start fresh (only auth state preserved from previous
+    // navigation or tests)
+    cy.reload()
+    // wait for response of project data
+    cy.wait('@getProjectData')
   })
 
   describe('Add Project', () => {
     it('creates project when provided a valid name', () => {
       const newProjectTitle = 'Test project'
-      cy.get(createSelector('new-project-tile'), { timeout: 8000 }).click()
+      cy.get(createSelector('new-project-tile')).click()
       // Type name of new project into input
       cy.get(createSelector('new-project-name'))
         .find('input')
@@ -66,9 +63,8 @@ describe('Projects Page', () => {
       cy.get(createSelector('project-tile-more'))
         .first()
         .click()
-      // Click on the "delete" option in the more options
       cy.get(createSelector('project-tile-delete')).click()
-      // Confirm that new project is no longer available
+      // Confirm that new project is not available
       cy.get(createSelector('new-project-name')).should('not.exist')
     })
   })
