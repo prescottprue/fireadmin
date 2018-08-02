@@ -30,7 +30,7 @@ export const addEnvironment = props => async newProjectData => {
   // Upload service account
   const [uploadErr, serviceAccountRes] = await to(
     firebase.uploadFile(
-      `serviceAccounts/${projectId}/${Date.now()}`,
+      `serviceAccounts/${uid}/${projectId}/${Date.now()}`,
       newProjectData.serviceAccount
     )
   )

@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import { map, pick } from 'lodash'
+import { get } from 'lodash'
 import { to } from '../utils/async'
 import { handleServiceAccountCreate } from '../copyServiceAccountToFirestore'
 
@@ -31,27 +31,6 @@ async function moveServiceAccountsEvent(snap, context) {
     accountsByProject.push({ projectId: snap.key, data: snap.val() })
   })
 
-  // Write all uploaded service accounts to service account uploads subcollection
-  await Promise.all(
-    accountsByProject.map(({ projectId, data }) => {
-      const projectRef = admin
-        .firestore()
-        .collection('projects')
-        .doc(projectId)
-      return Promise.all(
-        map(data, (serviceAccount, serviceAccountId) => {
-          return Promise.all([
-            projectRef
-              .collection('serviceAccountUploads')
-              .doc(serviceAccountId)
-              .set(pick(serviceAccount, ['createdAt', 'fullPath', 'name']))
-          ])
-        })
-      )
-    })
-  )
-  console.log('Service accounts copied from RTDB to accounts subcollection')
-
   // Add credential to each service account that is missing it
   const projectsSnap = await admin
     .firestore()
@@ -64,15 +43,30 @@ async function moveServiceAccountsEvent(snap, context) {
   console.log('projects snaps:', projectsSnaps.length)
   await Promise.all(
     projectsSnaps.map(async projectSnap => {
+      const projectData = projectSnap.data()
       console.log('getting environments for project:', projectSnap.id)
-      const environmentsSnap = await projectSnap
+      const environmentsSnap = await projectSnap.ref
         .collection('environments')
         .get()
       const environmentsSnaps = []
       environmentsSnap.forEach(projectSnap => {
         environmentsSnaps.push(projectSnap)
       })
-      return Promise.all(environmentsSnaps.map(handleServiceAccountCreate))
+      return Promise.all(
+        environmentsSnaps.map(envSnap =>
+          handleServiceAccountCreate(envSnap).catch(err => {
+            console.error(
+              `Error copying service account for project "${
+                projectSnap.id
+              }" with createdBy "${get(
+                projectData,
+                'createdBy'
+              )}": ${err.message || ''}`,
+              err
+            )
+          })
+        )
+      )
     })
   )
   console.log('Service accounts migrated successfully')
