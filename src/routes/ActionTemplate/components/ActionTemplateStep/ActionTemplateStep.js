@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize, get } from 'lodash'
 import { Field } from 'redux-form'
-import { TextField, Select } from 'redux-form-material-ui'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import { TextField, Select, Checkbox } from 'redux-form-material-ui'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -37,7 +38,7 @@ export const ActionTemplateStep = ({
   <div>
     <Button
       onClick={() =>
-        fields.push({ type: 'copy', src: { pathType: 'userInpu' } })
+        fields.push({ type: 'copy', src: { pathType: 'userInput' } })
       }
       color="primary"
       variant="raised"
@@ -100,6 +101,29 @@ export const ActionTemplateStep = ({
                   ))}
                 </Field>
               </FormControl>
+              {get(steps, `${index}.type`) === 'copy' ? (
+                <div className="flex-column">
+                  <FormControlLabel
+                    control={
+                      <Field
+                        name="subcollections"
+                        disabled={
+                          get(steps, `${index}.src.resource`) !== 'firestore'
+                        }
+                        component={Checkbox}
+                      />
+                    }
+                    label="Include subcollections (only Firestore)"
+                    className={classes.subcollectionOption}
+                  />
+                  <Typography style={{ marginTop: '1rem' }}>
+                    <strong>Note:</strong>
+                    <br />
+                    All collections will by copied by default. Specific
+                    subcollection support coming soon.
+                  </Typography>
+                </div>
+              ) : null}
             </Grid>
             {get(steps, `${index}.type`) !== 'custom' ? (
               <Grid

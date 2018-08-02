@@ -10,7 +10,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import Radio from '@material-ui/core/Radio'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
-import GridListTile from '@material-ui/core/GridListTile'
+import Grid from '@material-ui/core/Grid'
 import classes from './ActionStepLocation.scss'
 
 // const pathTypeOptions = [{ value: 'only' }, { value: 'all but' }]
@@ -27,7 +27,7 @@ export const ActionStepLocation = ({
   steps,
   title
 }) => (
-  <GridListTile item xs={12} lg={6}>
+  <Grid item xs={12} lg={6}>
     <h4>{title}</h4>
     <FormControl className={classes.field}>
       <InputLabel htmlFor="resource">Select A Resource</InputLabel>
@@ -100,7 +100,7 @@ export const ActionStepLocation = ({
         className={classes.field}
       />
     )}
-  </GridListTile>
+  </Grid>
 )
 
 ActionStepLocation.propTypes = {

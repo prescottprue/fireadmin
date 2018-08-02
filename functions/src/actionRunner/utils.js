@@ -1,4 +1,4 @@
-import { size, chunk } from 'lodash'
+import { size, chunk, flatten, isArray } from 'lodash'
 import * as admin from 'firebase-admin'
 import { ACTION_RUNNER_RESPONSES_PATH } from './constants'
 import { to, promiseWaterfall } from '../utils/async'
@@ -31,13 +31,21 @@ export function slashPathToFirestoreRef(firestoreInstance, slashPath) {
  * an ordered array.
  * @return {Object|Null} Object documents from snapshot or null
  */
-export function dataArrayFromSnap(snap) {
+export function dataArrayFromSnap(snap, onlyIds) {
   const data = []
   if (snap.data && snap.exists) {
-    data.push({ id: snap.id, data: snap.data() })
+    const docData = { id: snap.id }
+    if (!onlyIds) {
+      docData.data = (snap.data && snap.data()) || snap
+    }
+    data.push(docData)
   } else if (snap.forEach) {
     snap.forEach(doc => {
-      data.push({ id: doc.id, data: doc.data() || doc })
+      const docData = { id: doc.id }
+      if (!onlyIds) {
+        docData.data = (doc.data && doc.data()) || doc
+      }
+      data.push(docData)
     })
   }
   return data
@@ -61,65 +69,7 @@ export function dataByIdSnapshot(snap) {
   return size(data) ? data : null
 }
 
-/**
- * Write document updates in a batch process.
- * @param  {firestore.Firestore} firestoreInstance - Instance on which to
- * create ref
- * @param  {String} destPath - Destination path under which data should be
- * written
- * @param  {Array} docData - List of docs to be written
- * @param  {Object} opts - Options object (can contain merge)
- * @return {Promise} Resolves with results of batch commit
- */
-async function batchWriteDocs(firestoreInstance, destPath, docData, opts) {
-  const batch = firestoreInstance.batch()
-  // Call set to dest instance for each doc within the original data
-  docData.forEach(({ id, data }) => {
-    const childRef = slashPathToFirestoreRef(firestoreInstance, destPath).doc(
-      id
-    )
-    batch.set(childRef, data, opts)
-  })
-  const [writeErr, writeRes] = await to(batch.commit())
-  // Handle errors in batch write
-  if (writeErr) {
-    console.error(
-      'Error copying between Firestore instances: ',
-      writeErr.message || writeErr
-    )
-    throw writeErr
-  }
-  console.log(`Successfully copied docs to Firestore path: ${destPath}`)
-  return writeRes
-}
-
 const MAX_DOCS_PER_BATCH = 500
-
-/**
- * Write documents to Firestore in batches. If there are more docs than
- * the max docs per batch count, multiple batches will be run in succession.
- * @param  {firestore.Firestore} firestoreInstance - Instance on which to
- * create ref
- * @param  {String} destPath - Destination path under which data should be
- * written
- * @param  {Array} docData - List of docs to be written
- * @param  {Object} opts - Options object (can contain merge)
- * @return {Promise} Resolves with results of batch commit
- */
-export function writeDocsInBatches(firestoreInstance, destPath, docData, opts) {
-  // Check if doc data is longer than max docs per batch
-  if (docData && docData.length < MAX_DOCS_PER_BATCH) {
-    // Less than the max number of docs in a batch
-    return batchWriteDocs(firestoreInstance, destPath, docData, opts)
-  }
-  // More than max number of docs per batch - run multiple batches in succession
-  return promiseWaterfall(
-    chunk(docData, MAX_DOCS_PER_BATCH).map((dataChunk, chunkIdx) => {
-      console.log(`Writing chunk #${chunkIdx}`)
-      return () => batchWriteDocs(firestoreInstance, destPath, dataChunk, opts)
-    })
-  )
-}
 
 export function updateResponseOnRTDB(snap, context, error) {
   const response = {
@@ -281,4 +231,204 @@ export async function writeProjectEvent(projectId, extraEventAttributes = {}) {
     throw new Error(errMsg)
   }
   return addRes
+}
+
+/**
+ * Convert a collection snapshot into an array (uses forEach).
+ * @param  {Object} collectionsSnap - Collection snap object with forEach
+ * @return {Array} List of collection snapshot ids
+ */
+export function collectionsSnapToArray(collectionsSnap) {
+  const collectionsIds = []
+  if (collectionsSnap.forEach) {
+    collectionsSnap.forEach(collectionSnap => {
+      collectionsIds.push(collectionSnap.id)
+    })
+  }
+  return collectionsIds
+}
+
+async function writeDocBatch({ dataFromSrc, destRef, opts }) {
+  const batch = destRef.firestore.batch()
+  const srcChildIds = []
+  // Call set to dest instance for each doc within the original data
+  dataFromSrc.forEach(({ id, data }) => {
+    const childRef = destRef.doc(id)
+    srcChildIds.push(id)
+    batch.set(childRef, data, opts)
+  })
+  const [writeErr, writeRes] = await to(batch.commit())
+  // Handle errors in batch write
+  if (writeErr) {
+    console.error('Error writing batch ', writeErr.message || writeErr, {
+      destId: destRef.id
+    })
+    throw writeErr
+  }
+  return writeRes
+}
+
+/**
+ * Write documents to Firestore in batches. If there are more docs than
+ * the max docs per batch count, multiple batches will be run in succession.
+ * @param  {firestore.Firestore} firestoreInstance - Instance on which to
+ * create ref
+ * @param  {String} destPath - Destination path under which data should be
+ * written
+ * @param  {Array} docData - List of docs to be written
+ * @param  {Object} opts - Options object (can contain merge)
+ * @return {Promise} Resolves with results of batch commit
+ */
+export async function writeDocsInBatches({ dataFromSrc, destRef, opts }) {
+  // Check if doc data is longer than max docs per batch
+  if (dataFromSrc && dataFromSrc.length < MAX_DOCS_PER_BATCH) {
+    // Less than the max number of docs in a batch
+    return writeDocBatch({ dataFromSrc, destRef, opts })
+  }
+  // More than max number of docs per batch - run multiple batches in succession
+  const promiseResult = await promiseWaterfall(
+    chunk(dataFromSrc, MAX_DOCS_PER_BATCH).map((dataChunk, chunkIdx) => {
+      // Return a function to fit promise waterfall pattern
+      return () => {
+        console.log(`Writing chunk #${chunkIdx} to ${destRef.id}`)
+        return writeDocBatch({ dataFromSrc: dataChunk, destRef, opts })
+      }
+    })
+  )
+  // Flatten array of arrays (one for each chunk) into an array of results
+  // and wrap in promise resolve
+  return flatten(promiseResult)
+}
+
+/**
+ * Get collection names from provided settings falling back to getting all
+ * collection names for the provided Firestore ref using getCollections.
+ * @param  {Array|Boolean} subcollectionSetting [description]
+ * @param  {Object} ref - Firestore reference
+ * @return {Promise} Resolves with an array of collection names
+ */
+async function getSubcollectionNames(subcollectionSetting, ref) {
+  // Return if the provided setting is an array (assuming it is an array of names)
+  if (isArray(subcollectionSetting)) {
+    return subcollectionSetting
+  }
+  // all collection names
+  const [getCollectionsErr, collections] = await to(ref.getCollections())
+  // Handle errors in batch write
+  if (getCollectionsErr) {
+    console.error(
+      'Error getting collections: ',
+      getCollectionsErr.message || getCollectionsErr
+    )
+    throw getCollectionsErr
+  }
+  return collectionsSnapToArray(collections)
+}
+
+/**
+ * Write document updates in a batch process.
+ * @param  {firestore.Firestore} firestoreInstance - Instance on which to
+ * create ref
+ * @param  {String} destPath - Destination path under which data should be
+ * written
+ * @param  {Array} docData - List of docs to be written
+ * @param  {Object} opts - Options object (can contain merge)
+ * @return {Promise} Resolves with results of batch commit
+ */
+export async function batchCopyBetweenFirestoreRefs({
+  srcRef,
+  destRef,
+  opts = {}
+}) {
+  const { copySubcollections } = opts
+  // Get data from src reference
+  const [getErr, firstSnap] = await to(srcRef.get())
+
+  // Handle errors getting original data
+  if (getErr) {
+    console.error(
+      'Error getting data from first instance: ',
+      getErr.message || getErr
+    )
+    throw getErr
+  }
+
+  // Get data into array (regardless of single doc or collection)
+  const dataFromSrc = dataArrayFromSnap(firstSnap)
+
+  // Write docs (batching if nessesary)
+  const [writeErr] = await to(
+    writeDocsInBatches({ dataFromSrc, destRef, opts })
+  )
+
+  // Handle errors in batch write
+  if (writeErr) {
+    console.error(
+      `Error batch copying docs from "${srcRef.id}" to "${destRef.id}": `,
+      writeErr.message || writeErr
+    )
+    throw writeErr
+  }
+
+  // Exit if not copying subcollections
+  if (!copySubcollections) {
+    console.log(
+      `Successfully copied docs from Firestore collection "${srcRef.id}"`
+    )
+    return null
+  }
+
+  console.log(
+    `Successfully copied docs from Firestore collection "${
+      srcRef.id
+    }" starting subcollections copy...`
+  )
+
+  // Write subcollections of all documents
+  const [subcollectionWriteErr] = await to(
+    Promise.all(
+      dataFromSrc.map(async ({ id: childDocId }) => {
+        const docSrcRef = srcRef.doc(childDocId)
+        const docDestRef = destRef.doc(childDocId)
+        // Get subcollection names from settings falling back to all subcollections
+        const subcollectionNames = await getSubcollectionNames(
+          copySubcollections,
+          docSrcRef
+        )
+
+        // Exit if the document does not have any subcollections
+        if (!subcollectionNames.length) {
+          return null
+        }
+
+        return Promise.all(
+          subcollectionNames.map(collectionName =>
+            batchCopyBetweenFirestoreRefs({
+              srcRef: docSrcRef.collection(collectionName),
+              destRef: docDestRef.collection(collectionName),
+              opts
+            })
+          )
+        )
+      })
+    )
+  )
+
+  if (subcollectionWriteErr) {
+    console.error(
+      `Error writing subcollections for collection "${
+        srcRef.id
+      }": ${subcollectionWriteErr.message || ''}`,
+      subcollectionWriteErr
+    )
+    throw subcollectionWriteErr
+  }
+
+  console.log(
+    `Successfully copied docs from Firestore path: ${
+      srcRef.id
+    } with subcollections: ${copySubcollections}`
+  )
+
+  return null
 }
