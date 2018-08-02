@@ -38,7 +38,7 @@ export const ActionTemplateStep = ({
   <div>
     <Button
       onClick={() =>
-        fields.push({ type: 'copy', src: { pathType: 'userInpu' } })
+        fields.push({ type: 'copy', src: { pathType: 'userInput' } })
       }
       color="primary"
       variant="raised"
@@ -102,11 +102,27 @@ export const ActionTemplateStep = ({
                 </Field>
               </FormControl>
               {get(steps, `${index}.type`) === 'copy' ? (
-                <FormControlLabel
-                  control={<Field name="subcollections" component={Checkbox} />}
-                  label="Include subcollections"
-                  className={classes.subcollectionOption}
-                />
+                <div className="flex-column">
+                  <FormControlLabel
+                    control={
+                      <Field
+                        name="subcollections"
+                        disabled={
+                          get(steps, `${index}.src.resource`) !== 'firestore'
+                        }
+                        component={Checkbox}
+                      />
+                    }
+                    label="Include subcollections (only Firestore)"
+                    className={classes.subcollectionOption}
+                  />
+                  <Typography style={{ marginTop: '1rem' }}>
+                    <strong>Note:</strong>
+                    <br />
+                    All collections will by copied by default. Specific
+                    subcollection support coming soon.
+                  </Typography>
+                </div>
               ) : null}
             </Grid>
             {get(steps, `${index}.type`) !== 'custom' ? (
