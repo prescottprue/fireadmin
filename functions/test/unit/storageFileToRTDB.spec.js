@@ -11,19 +11,11 @@ describe('storageFileToRTDB RTDB Cloud Function (database:onCreate)', () => {
   let firestoreStub
 
   beforeEach(() => {
-    process.env.FIREBASE_CONFIG = JSON.stringify({
-      databaseURL: 'https://some-project.firebaseio.com',
-      storageBucket: 'some-bucket.appspot.com'
-    })
-    functionsTest.mockConfig({
-      firebase: {
-        databaseURL: 'https://some-project.firebaseio.com'
-      },
-      encryption: {},
-      algolia: {},
-      email: {}
-    })
+    // Stub Firebase's functions.config() (default in test/setup)
+    mockFunctionsConfig()
+    // Stub Firebase's admin.initializeApp
     adminInitStub = sinon.stub(admin, 'initializeApp')
+    // Stub Real Time Database and Firestore
     databaseStub = sinon.stub()
     firestoreStub = sinon.stub()
     refStub = sinon.stub()
@@ -37,6 +29,7 @@ describe('storageFileToRTDB RTDB Cloud Function (database:onCreate)', () => {
     docStub.returns({ set: docSetStub })
     firestoreStub.returns({ doc: docStub })
     sinon.stub(admin, 'database').get(() => databaseStub)
+    // Start of storage mock
     // sinon.stub(gcs).returns(new MockStorage())
     // Stub Firebase's functions.config()
     storageFileToRTDB = functionsTest.wrap(

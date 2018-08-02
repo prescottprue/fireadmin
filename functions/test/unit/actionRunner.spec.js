@@ -9,15 +9,8 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', () => {
   let setStub
 
   beforeEach(() => {
-    // Stub Firebase's functions.config()
-    functionsTest.mockConfig({
-      firebase: {
-        databaseURL: 'https://some-project.firebaseio.com'
-      },
-      encryption: {},
-      algolia: {},
-      email: {}
-    })
+    // Stub Firebase's functions.config() (default in test/setup)
+    mockFunctionsConfig()
     // Stub Firebase's admin.initializeApp
     adminInitStub = sinon.stub(admin, 'initializeApp')
     databaseStub = sinon.stub()

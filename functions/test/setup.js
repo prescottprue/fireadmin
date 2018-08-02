@@ -13,3 +13,25 @@ global.sinon = sinon
 global.expect = chai.expect
 global.assert = chai.assert
 global.functionsTest = functionsTest
+global.mockFunctionsConfig = (extraConfig = {}) =>
+  functionsTest.mockConfig({
+    firebase: {
+      databaseURL: 'https://some-project.firebaseio.com'
+    },
+    encryption: {},
+    algolia: {
+      app_id: 'asdf',
+      api_key: 'asdf'
+    },
+    email: {},
+    ...extraConfig
+  })
+
+// Stub Firebase's functions.config() (default in test/setup.js)
+mockFunctionsConfig()
+
+// Stub Firebase's config environment var
+process.env.FIREBASE_CONFIG = JSON.stringify({
+  databaseURL: 'https://some-project.firebaseio.com',
+  storageBucket: 'some-bucket.appspot.com'
+})

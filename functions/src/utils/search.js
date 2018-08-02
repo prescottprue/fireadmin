@@ -2,6 +2,12 @@ import { get, isFunction } from 'lodash'
 import algoliasearch from 'algoliasearch'
 import * as functions from 'firebase-functions'
 
+// Authenticate to Algolia Database
+const client = algoliasearch(
+  functions.config().algolia.app_id,
+  functions.config().algolia.api_key
+)
+
 /**
  * Creates a function indexs item within Algolia from a function event.
  * @param  {String} indexName - name of Algolia index under which to place item
@@ -18,11 +24,6 @@ export function createIndexFunc({
   otherPromises = []
 }) {
   return (change, context) => {
-    // Authenticate to Algolia Database
-    const client = algoliasearch(
-      functions.config().algolia.app_id,
-      functions.config().algolia.api_key
-    )
     const index = client.initIndex(indexName)
     const objectID = get(context, `params.${idParam}`)
     // Remove the item from algolia if it is being deleted
