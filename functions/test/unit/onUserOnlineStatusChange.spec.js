@@ -1,35 +1,42 @@
-describe.skip('onUserOnlineStatusChange RTDB Cloud Function (RTDB:onUpdate)', () => {
+import * as admin from 'firebase-admin'
+
+describe('onUserOnlineStatusChange RTDB Cloud Function (RTDB:onUpdate)', () => {
   let onUserOnlineStatusChange
   let adminInitStub
-  let admin
-  let functions
-  let configStub
+  let firestoreStub = () => ({ doc: sinon.stub({ set: sinon.stub() }) })
+  let refStub // eslint-disable-line no-unused-vars
+  let docStub
+  let docSetStub // eslint-disable-line no-unused-vars
+  let rtdbStub
+  let setStub
+  const resultOfSet = {}
 
-  before(() => {
-    /* eslint-disable global-require */
-    admin = require('firebase-admin')
+  beforeEach(() => {
+    // Stub Firebase's functions.config()
+    functionsTest.mockConfig({
+      firebase: {
+        databaseURL: 'https://some-project.firebaseio.com'
+      },
+      encryption: {},
+      algolia: {},
+      email: {}
+    })
     // Stub Firebase's admin.initializeApp
     adminInitStub = sinon.stub(admin, 'initializeApp')
-    functions = require('firebase-functions')
-    configStub = sinon.stub(functions, 'config').returns({
-      firebase: {
-        databaseURL: 'https://not-a-project.firebaseio.com',
-        storageBucket: 'not-a-project.appspot.com',
-        projectId: 'not-a-project.appspot',
-        messagingSenderId: '823357791673'
-      },
-      algolia: {
-        app_id: 'asdf',
-        api_key: 'asdf'
-      },
-      gmail: {},
-      encryption: {
-        password: 'asdf'
-      },
-      service_account: {}
-      // You can stub any other config values needed by your functions here, for example:
-      // foo: 'bar'
+    // Stub Firebase's functions.config()
+    firestoreStub = sinon.stub()
+    docStub = sinon.stub()
+    docSetStub = sinon.stub()
+    setStub = sinon.stub()
+    rtdbStub = sinon.stub()
+    setStub.returns(Promise.resolve(resultOfSet))
+    docStub.returns({ set: setStub, once: () => Promise.resolve({}) })
+    rtdbStub.returns({
+      val: () => ({}),
+      once: () => Promise.resolve(rtdbStub())
     })
+    firestoreStub.returns({ doc: docStub })
+    sinon.stub(admin, 'firestore').get(() => firestoreStub)
     // Stub Firebase's functions.config()
     onUserOnlineStatusChange = functionsTest.wrap(
       require(`${__dirname}/../../index`).onUserOnlineStatusChange
@@ -37,15 +44,16 @@ describe.skip('onUserOnlineStatusChange RTDB Cloud Function (RTDB:onUpdate)', ()
     /* eslint-enable global-require */
   })
 
-  after(() => {
+  afterEach(() => {
     // Restoring our stubs to the original methods.
-    configStub.restore()
+    functionsTest.cleanup()
     adminInitStub.restore()
   })
 
   it('invokes successfully', async () => {
     const snap = {
-      val: () => ({ displayName: 'some', filePath: 'some' })
+      val: () => ({ displayName: 'some', filePath: 'some' }),
+      ref: rtdbStub()
     }
     const fakeContext = {
       params: { filePath: 'testing', userId: 1 }
@@ -55,6 +63,6 @@ describe.skip('onUserOnlineStatusChange RTDB Cloud Function (RTDB:onUpdate)', ()
       { before: snap, after: snap },
       fakeContext
     )
-    expect(result).to.exist
+    expect(result).to.equal(resultOfSet)
   })
 })
