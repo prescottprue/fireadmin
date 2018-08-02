@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize, get } from 'lodash'
 import { Field } from 'redux-form'
-import { TextField, Select } from 'redux-form-material-ui'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import { TextField, Select, Checkbox } from 'redux-form-material-ui'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -100,6 +101,12 @@ export const ActionTemplateStep = ({
                   ))}
                 </Field>
               </FormControl>
+              {get(steps, `${index}.type`) === 'copy' ? (
+                <FormControlLabel
+                  control={<Field name="subcollections" component={Checkbox} />}
+                  label="Include subcollections"
+                />
+              ) : null}
             </Grid>
             {get(steps, `${index}.type`) !== 'custom' ? (
               <Grid

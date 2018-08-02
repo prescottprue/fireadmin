@@ -21,7 +21,6 @@ export async function copyBetweenFirestoreInstances(
   inputValues
 ) {
   const { merge = true, subcollections } = eventData
-  console.log('copy event:', eventData)
   const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
   const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
   // Get Firestore references from slash paths (handling both doc and collection)
@@ -77,20 +76,26 @@ export async function copyFromFirestoreToRTDB(
   // Handle errors getting original data
   if (getErr) {
     console.error(
-      'Error getting data from first instance: ',
-      getErr.message || getErr
+      `Error getting data from first firestore instance: ${getErr.message ||
+        ''}`,
+      getErr
     )
     throw getErr
   }
   // Get data into array (regardless of single doc or collection)
   const dataFromSrc = dataByIdSnapshot(firstSnap)
+
+  // Handle no data within provided source path
   if (!dataFromSrc) {
-    console.error('No data exists within source path')
-    throw new Error('No data exists within source path')
+    const noDataErr = 'No data exists within source path'
+    console.error(noDataErr)
+    throw new Error(noDataErr)
   }
-  const [updateErr, updateRes] = await to(
-    secondRTDB.ref(destPath).update(dataFromSrc)
-  )
+
+  // Write data to destination RTDB path
+  const [updateErr] = await to(secondRTDB.ref(destPath).update(dataFromSrc))
+
+  // Handle errors writing data to destination RTDB
   if (updateErr) {
     console.error(
       'Error copying from Firestore to RTDB',
@@ -98,8 +103,10 @@ export async function copyFromFirestoreToRTDB(
     )
     throw updateErr
   }
-  console.log('Copy from Firestore to RTDB successful')
-  return updateRes
+
+  console.log('Copy from Firestore to RTDB successful!')
+
+  return null
 }
 
 /**
@@ -160,9 +167,7 @@ export async function copyBetweenRTDBInstances(
 ) {
   if (!get(app1, 'database') || !get(app2, 'database')) {
     console.error('Database not found on app instance')
-    throw new Error(
-      'Invalid service account, does not enable access to database'
-    )
+    throw new Error('Invalid service account, does not have access to database')
   }
   try {
     const firstRTDB = app1.database()

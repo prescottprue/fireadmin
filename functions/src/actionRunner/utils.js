@@ -301,11 +301,18 @@ export async function writeDocsInBatches({ dataFromSrc, destRef, opts }) {
 }
 
 /**
- * Get all collection names for a Firestore ref using getCollections
+ * Get collection names from provided settings falling back to getting all
+ * collection names for the provided Firestore ref using getCollections.
+ * @param  {Array|Boolean} subcollectionSetting [description]
  * @param  {Object} ref - Firestore reference
  * @return {Promise} Resolves with an array of collection names
  */
-async function getAllCollectionNames(ref) {
+async function getSubcollectionNames(subcollectionSetting, ref) {
+  // Return if the provided setting is an array (assuming it is an array of names)
+  if (isArray(subcollectionSetting)) {
+    return subcollectionSetting
+  }
+  // all collection names
   const [getCollectionsErr, collections] = await to(ref.getCollections())
   // Handle errors in batch write
   if (getCollectionsErr) {
@@ -315,10 +322,7 @@ async function getAllCollectionNames(ref) {
     )
     throw getCollectionsErr
   }
-  console.log('collections response:', collections)
-  const collectionsNamesArray = dataArrayFromSnap(collections, true)
-  console.log('collectionsNamesArray', collectionsNamesArray)
-  return collectionsNamesArray
+  return collectionsSnapToArray(collections)
 }
 
 /**
@@ -339,11 +343,6 @@ export async function batchCopyBetweenFirestoreRefs({
   const { copySubcollections } = opts
   // Get data from src reference
   const [getErr, firstSnap] = await to(srcRef.get())
-  console.log('batch copy copyBetweenFirestoreInstances:', {
-    srcId: srcRef.id,
-    destId: destRef.id,
-    copySubcollections
-  })
 
   // Handle errors getting original data
   if (getErr) {
@@ -357,6 +356,7 @@ export async function batchCopyBetweenFirestoreRefs({
   // Get data into array (regardless of single doc or collection)
   const dataFromSrc = dataArrayFromSnap(firstSnap)
 
+  // Write docs (batching if nessesary)
   const [writeErr] = await to(
     writeDocsInBatches({ dataFromSrc, destRef, opts })
   )
@@ -364,12 +364,13 @@ export async function batchCopyBetweenFirestoreRefs({
   // Handle errors in batch write
   if (writeErr) {
     console.error(
-      'Error writing docs in batches: ',
+      `Error batch copying docs from "${srcRef.id}" to "${destRef.id}": `,
       writeErr.message || writeErr
     )
     throw writeErr
   }
 
+  // Exit if not copying subcollections
   if (!copySubcollections) {
     console.log(
       `Successfully copied docs from Firestore collection "${srcRef.id}"`
@@ -389,27 +390,16 @@ export async function batchCopyBetweenFirestoreRefs({
       dataFromSrc.map(async ({ id: childDocId }) => {
         const docSrcRef = srcRef.doc(childDocId)
         const docDestRef = destRef.doc(childDocId)
+        // Get subcollection names from settings falling back to all subcollections
+        const subcollectionNames = await getSubcollectionNames(
+          copySubcollections,
+          docSrcRef
+        )
 
-        let subcollectionNames
-        if (!isArray(copySubcollections)) {
-          console.log(
-            `Getting subcollection names for ${srcRef.id}/${childDocId}`
-          )
-          subcollectionNames = await getAllCollectionNames(docSrcRef)
-        } else {
-          subcollectionNames = copySubcollections
-        }
-
+        // Exit if the document does not have any subcollections
         if (!subcollectionNames.length) {
-          console.log(`No subcollections found for ${srcRef.id}/${childDocId}`)
           return null
         }
-        console.log('Document has subcollections:', {
-          srcId: srcRef.id,
-          destId: destRef.id,
-          childDocId,
-          subcollectionNames
-        })
 
         return Promise.all(
           subcollectionNames.map(collectionName =>
@@ -426,8 +416,10 @@ export async function batchCopyBetweenFirestoreRefs({
 
   if (subcollectionWriteErr) {
     console.error(
-      `Error writing subcollections for collection: ${srcRef.id}`,
-      subcollectionWriteErr.message || subcollectionWriteErr
+      `Error writing subcollections for collection "${
+        srcRef.id
+      }": ${subcollectionWriteErr.message || ''}`,
+      subcollectionWriteErr
     )
     throw subcollectionWriteErr
   }
