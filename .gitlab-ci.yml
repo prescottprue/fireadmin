@@ -60,7 +60,6 @@ Build:
 
 # Unit Testing Stage
 # Run unit tests for Cloud Functions
-# NOTE: Cache was not used for node_modules since function deps were not perserving
 Unit Tests:
   stage: unit_tests
   image: node:8

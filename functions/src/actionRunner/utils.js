@@ -1,4 +1,4 @@
-import { size, chunk, flatten } from 'lodash'
+import { size, chunk, flatten, isArray } from 'lodash'
 import * as admin from 'firebase-admin'
 import { ACTION_RUNNER_RESPONSES_PATH } from './constants'
 import { to, promiseWaterfall } from '../utils/async'
@@ -315,7 +315,7 @@ async function getAllCollectionNames(ref) {
     )
     throw getCollectionsErr
   }
-
+  console.log('collections response:', collections)
   const collectionsNamesArray = dataArrayFromSnap(collections, true)
   console.log('collectionsNamesArray', collectionsNamesArray)
   return collectionsNamesArray
@@ -334,14 +334,15 @@ async function getAllCollectionNames(ref) {
 export async function batchCopyBetweenFirestoreRefs({
   srcRef,
   destRef,
-  subcollections,
-  opts
+  opts = {}
 }) {
+  const { copySubcollections } = opts
   // Get data from src reference
   const [getErr, firstSnap] = await to(srcRef.get())
   console.log('batch copy copyBetweenFirestoreInstances:', {
     srcId: srcRef.id,
-    destId: destRef.id
+    destId: destRef.id,
+    copySubcollections
   })
 
   // Handle errors getting original data
@@ -369,14 +370,18 @@ export async function batchCopyBetweenFirestoreRefs({
     throw writeErr
   }
 
-  if (!subcollections) {
-    console.log('Successfully copied docs from Firestore path: ', srcRef.id)
+  if (!copySubcollections) {
+    console.log(
+      `Successfully copied docs from Firestore collection "${srcRef.id}"`
+    )
     return null
   }
 
-  if (subcollections.length) {
-    console.log('Successfully copied docs from Firestore path: ', srcRef.id)
-  }
+  console.log(
+    `Successfully copied docs from Firestore collection "${
+      srcRef.id
+    }" starting subcollections copy...`
+  )
 
   // Write subcollections of all documents
   const [subcollectionWriteErr] = await to(
@@ -384,18 +389,21 @@ export async function batchCopyBetweenFirestoreRefs({
       dataFromSrc.map(async ({ id: childDocId }) => {
         const docSrcRef = srcRef.doc(childDocId)
         const docDestRef = destRef.doc(childDocId)
-        // Exit if request does not have subcollections
-        if (!subcollections) {
-          return null
-        }
 
         let subcollectionNames
-        if (!subcollections.length) {
+        if (!isArray(copySubcollections)) {
+          console.log(
+            `Getting subcollection names for ${srcRef.id}/${childDocId}`
+          )
           subcollectionNames = await getAllCollectionNames(docSrcRef)
         } else {
-          subcollectionNames = subcollections
+          subcollectionNames = copySubcollections
         }
 
+        if (!subcollectionNames.length) {
+          console.log(`No subcollections found for ${srcRef.id}/${childDocId}`)
+          return null
+        }
         console.log('Document has subcollections:', {
           srcId: srcRef.id,
           destId: destRef.id,
@@ -427,7 +435,7 @@ export async function batchCopyBetweenFirestoreRefs({
   console.log(
     `Successfully copied docs from Firestore path: ${
       srcRef.id
-    } with subcollections: ${subcollections}`
+    } with subcollections: ${copySubcollections}`
   )
 
   return null

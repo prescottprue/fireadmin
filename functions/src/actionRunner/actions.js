@@ -1,15 +1,14 @@
 import { invoke, get } from 'lodash'
-import { downloadFromStorage, uploadToStorage } from '../utils/cloudStorage'
 import {
   slashPathToFirestoreRef,
-  dataArrayFromSnap,
-  writeDocsInBatches,
-  dataByIdSnapshot
+  dataByIdSnapshot,
+  batchCopyBetweenFirestoreRefs
 } from './utils'
+import { downloadFromStorage, uploadToStorage } from '../utils/cloudStorage'
 import { to } from '../utils/async'
 
 /**
- * Copy data between Firestore instances with different service accounts
+ * Copy data between Firestore instances from two different Firebase projects
  * @param  {firebase.App} app1 - First app for the action
  * @param  {firebase.App} app2 - Second app for the action
  * @param  {Object} eventData - Data from event (contains settings)
@@ -21,43 +20,36 @@ export async function copyBetweenFirestoreInstances(
   eventData,
   inputValues
 ) {
-  const firestore1 = app1.firestore()
-  const firestore2 = app2.firestore()
-  const { merge = true } = eventData
+  const { merge = true, subcollections } = eventData
+  console.log('copy event:', eventData)
   const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
-  // Get Firestore instance from slash path (handling both doc and collection)
-  const srcRef = slashPathToFirestoreRef(firestore1, srcPath)
-  // Get data from first instance
-  const [getErr, firstSnap] = await to(srcRef.get())
-  // Handle errors getting original data
-  if (getErr) {
-    console.error(
-      'Error getting data from first instance: ',
-      getErr.message || getErr
-    )
-    throw getErr
-  }
-  // Get data into array (regardless of single doc or collection)
-  const dataFromSrc = dataArrayFromSnap(firstSnap)
-  if (!dataFromSrc) {
-    console.error('No data exists within source path')
-    throw new Error('No data exists within source path')
-  }
   const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
-  // Run in multiple batches if there are more that 500 documents since
-  // batch processes are limited to 500 documents
-  const [writeErr, writeRes] = await to(
-    writeDocsInBatches(firestore2, destPath, dataFromSrc, { merge })
+  // Get Firestore references from slash paths (handling both doc and collection)
+  const srcRef = slashPathToFirestoreRef(app1.firestore(), srcPath)
+  const destRef = slashPathToFirestoreRef(app2.firestore(), destPath)
+
+  // Copy from src ref to dest ref with support for merging and subcollections
+  const [copyErr, writeRes] = await to(
+    batchCopyBetweenFirestoreRefs({
+      srcRef,
+      destRef,
+      subcollections,
+      opts: { merge, copySubcollections: subcollections }
+    })
   )
-  // Handle errors running write action
-  if (writeErr) {
-    console.error(
-      'Error getting data from first instance: ',
-      writeErr.message || writeErr
-    )
-    throw writeErr
+
+  // Handle errors copying between Firestore Refs
+  if (copyErr) {
+    console.error('Error copying data between Firestore refs: ', {
+      message: copyErr.message || copyErr,
+      srcPath,
+      destPath
+    })
+    throw copyErr
   }
-  console.log('Copy between Firestore instances successful')
+
+  console.log('Copy between Firestore instances successful!')
+
   return writeRes
 }
 
