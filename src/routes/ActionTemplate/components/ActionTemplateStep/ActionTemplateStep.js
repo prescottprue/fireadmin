@@ -105,6 +105,7 @@ export const ActionTemplateStep = ({
                 <FormControlLabel
                   control={<Field name="subcollections" component={Checkbox} />}
                   label="Include subcollections"
+                  className={classes.subcollectionOption}
                 />
               ) : null}
             </Grid>
