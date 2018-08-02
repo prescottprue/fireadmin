@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import { initSegment } from './analytics'
 import { init as initErrorHandler } from './errorHandling'
-import { currentUserPermissionsByType } from 'selectors'
+import { currentUserProjectPermissions } from 'selectors'
 
 export const initScripts = () => {
   initErrorHandler()
@@ -12,6 +12,6 @@ export const databaseURLToProjectName = databaseURL =>
   databaseURL.replace('https://', '').replace('.firebaseio.com', '')
 
 export const createPermissionChecker = (state, props) => permission => {
-  const permissionsByType = currentUserPermissionsByType(state, props)
+  const permissionsByType = currentUserProjectPermissions(state, props)
   return get(permissionsByType, permission) === true
 }

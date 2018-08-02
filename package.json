@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.5.3",
+  "version": "0.5.5",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "main": "index.js",
   "scripts": {
@@ -83,7 +83,7 @@
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.15.0",
-    "babel-preset-env": "^1.4.0",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-runtime": "^6.20.0",
     "chalk": "^1.1.3",

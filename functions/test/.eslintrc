@@ -8,6 +8,7 @@ globals:
   expect: true
   should: true
   functionsTest: true
+  mockFunctionsConfig: true
 
 rules:
   no-unused-expressions: 0

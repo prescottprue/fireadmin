@@ -4,7 +4,8 @@
   "scripts": {
     "test": "npm run build && mocha ./test/unit/** -R mochawesome",
     "test:cov": "istanbul cover $(npm bin)/_mocha ./test/unit/**",
-    "lint": "eslint -c .eslintrc ./src",
+    "lint": "eslint -c .eslintrc src test",
+    "lint:fix": "npm run lint -- --fix",
     "clean": "rimraf dist etc",
     "build": "npm run clean && babel src -d --out-dir dist --retainLines",
     "watch": "npm run build -- --watch",
@@ -48,7 +49,8 @@
     "istanbul": "1.1.0-alpha.1",
     "mocha": "^5.2.0",
     "mochawesome": "^3.0.3",
-    "sinon": "^6.1.4"
+    "sinon": "^6.1.4",
+    "sinon-chai": "^3.2.0"
   },
   "engines": {
     "node": "8"

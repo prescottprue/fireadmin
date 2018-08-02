@@ -1,11 +1,13 @@
+import * as admin from 'firebase-admin'
+
 describe('Cloud Functions', () => {
   let myFunctions
   let adminInitStub
-  let admin
+  // let admin
 
   before(() => {
     /* eslint-disable global-require */
-    admin = require('firebase-admin')
+    // admin = require('firebase-admin')
     adminInitStub = sinon.stub(admin, 'initializeApp')
     myFunctions = require(`${__dirname}/../../index`)
     /* eslint-enable global-require */

@@ -17,7 +17,9 @@ export default async function runAction(snap, context) {
 
   // Running an action not supported without projectId
   if (!eventData.projectId) {
-    throw new Error('projectId parameter is required')
+    const missingProjectErr = new Error('projectId parameter is required')
+    await updateResponseOnRTDB(snap, context, missingProjectErr)
+    throw missingProjectErr
   }
 
   // Send start event

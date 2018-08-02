@@ -1,4 +1,4 @@
-import { get, map, mapKeys } from 'lodash'
+import { get, map } from 'lodash'
 import { createSelector } from 'reselect'
 export * from './projectsSelectors'
 
@@ -64,24 +64,9 @@ export const getCurrentUserRoleName = createSelector(
  * @param  {Object} props - component props
  * @return {Object}       [description]
  */
-export const currentUserPermissions = createSelector(
+export const currentUserProjectPermissions = createSelector(
   [getRoles, getCurrentUserRoleName],
-  (roles, currentUserRole) => get(roles, currentUserRole)
-)
-
-/**
- * Get logged in user's permissions from project and group them by type
- * (i.e. create, read, update, destroy)
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
- * @return {Object} User permissions by permission type
- */
-export const currentUserPermissionsByType = createSelector(
-  [currentUserPermissions],
-  permissions =>
-    mapKeys(permissions, (_, permissionName) =>
-      permissionName.replace('Permissions', '')
-    )
+  (roles, currentUserRole) => get(roles, `${currentUserRole}.permissions`)
 )
 
 /**
