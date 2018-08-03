@@ -142,7 +142,7 @@ Build Production:
     - prod
     - web
   variables:
-    - FIREBASE_CI_PROJECT="prod" # build using prod settings in .firebaserc
+    FIREBASE_CI_PROJECT: "prod" # deploy using prod project in .firebaserc
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
@@ -172,7 +172,7 @@ Deploy Production:
     - prod
     - web
   variables:
-    - FIREBASE_CI_PROJECT="prod" # deploy using prod project in .firebaserc
+    FIREBASE_CI_PROJECT: "prod" # deploy using prod project in .firebaserc
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
