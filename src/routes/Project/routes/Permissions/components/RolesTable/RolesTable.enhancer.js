@@ -4,10 +4,9 @@ import { connect } from 'react-redux'
 import { withHandlers, withStateHandlers, withProps } from 'recompose'
 import { withFirestore } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
-import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
+import { spinnerWhileLoading } from 'utils/components'
 import { triggerAnalyticsEvent } from 'utils/analytics'
-import NoRolesFound from './NoRolesFound'
-import { getRoles, getProject } from 'selectors'
+import { getOrderedRoles, getProject } from 'selectors'
 
 export default compose(
   withNotifications,
@@ -15,11 +14,10 @@ export default compose(
   // Map redux state to props
   connect((state, props) => ({
     project: getProject(state, props),
-    roles: getRoles(state, props)
+    orderedRoles: getOrderedRoles(state, props)
   })),
   // Show loading spinner until project and displayNames load
   spinnerWhileLoading(['project']),
-  renderWhileEmpty(['roles'], NoRolesFound),
   withStateHandlers(
     () => ({
       newRoleOpen: false

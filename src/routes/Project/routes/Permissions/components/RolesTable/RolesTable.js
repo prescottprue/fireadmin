@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { map } from 'lodash'
 import Button from '@material-ui/core/Button'
 import Collapse from '@material-ui/core/Collapse'
 import RolesTableRow from '../RolesTableRow'
 import NewRoleCard from '../NewRoleCard'
+import NoRolesFound from './NoRolesFound'
 import { formNames } from 'constants'
 import classes from './RolesTable.scss'
 
 export const RolesTable = ({
-  roles,
+  orderedRoles,
   addRole,
   updateRole,
   deleteRole,
@@ -34,18 +34,22 @@ export const RolesTable = ({
       <NewRoleCard onRequestClose={closeNewRole} onSubmit={addRole} />
     </Collapse>
     <div className={classes.rolesTable}>
-      {map(roles, ({ name, permissions }, roleKey) => (
-        <RolesTableRow
-          key={roleKey}
-          form={`${formNames.projectRoles}.${roleKey}`}
-          roleKey={roleKey}
-          name={name}
-          onSubmit={updateRole}
-          projectId={projectId}
-          initialValues={permissions}
-          onDeleteClick={deleteRole}
-        />
-      ))}
+      {orderedRoles && orderedRoles.length ? (
+        orderedRoles.map(({ name, permissions, key }) => (
+          <RolesTableRow
+            key={key}
+            form={`${formNames.projectRoles}.${key}`}
+            roleKey={key}
+            name={name}
+            onSubmit={updateRole}
+            projectId={projectId}
+            initialValues={permissions}
+            onDeleteClick={deleteRole}
+          />
+        ))
+      ) : (
+        <NoRolesFound />
+      )}
     </div>
   </div>
 )
@@ -59,7 +63,7 @@ RolesTable.propTypes = {
   newRoleOpen: PropTypes.bool.isRequired,
   addRoleDisabled: PropTypes.bool.isRequired,
   projectId: PropTypes.string.isRequired,
-  roles: PropTypes.object
+  orderedRoles: PropTypes.array
 }
 
 export default RolesTable

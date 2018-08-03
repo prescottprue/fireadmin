@@ -1,4 +1,4 @@
-import { get, map } from 'lodash'
+import { get, map, size, orderBy } from 'lodash'
 import { createSelector } from 'reselect'
 
 /**
@@ -47,6 +47,19 @@ export const getCurrentUserCreatedProject = createSelector(
 export const getRoles = createSelector(
   getProject,
   project => (project === null ? null : get(project, 'roles'))
+)
+
+/**
+ * Get roles from project
+ * @param  {Object} state - redux state
+ * @param  {Object} props - component props
+ */
+export const getOrderedRoles = createSelector(getRoles, roles =>
+  orderBy(
+    map(roles, (role, key) => ({ ...role, key })),
+    [role => size(get(role, 'permissions'))],
+    ['desc']
+  )
 )
 
 /**
