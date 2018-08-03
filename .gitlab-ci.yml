@@ -120,6 +120,7 @@ E2E Tests:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - node_modules/
+      - functions/node_modules/
       - .cache/Cypress
   artifacts:
     expire_in: 2 weeks
