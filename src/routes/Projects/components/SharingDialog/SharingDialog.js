@@ -10,14 +10,9 @@ import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import Slide from '@material-ui/core/Slide'
 import UsersSearch from 'components/UsersSearch'
 import UsersList from 'components/UsersList'
 import classes from './SharingDialog.scss'
-
-function Transition(props) {
-  return <Slide direction="up" {...props} />
-}
 
 export const SharingDialog = ({
   open,
@@ -29,12 +24,7 @@ export const SharingDialog = ({
   selectCollaborator,
   saveCollaborators
 }) => (
-  <Dialog
-    open={open}
-    onRequestClose={onRequestClose}
-    className={classes.container}
-    transition={Transition}
-    modal={false}>
+  <Dialog open={open} onClose={onRequestClose} className={classes.container}>
     <DialogTitle>Sharing</DialogTitle>
     <DialogContent className={classes.content}>
       {projectCollaborators ? (

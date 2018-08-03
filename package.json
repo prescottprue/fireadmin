@@ -45,7 +45,6 @@
     "firebase": "^5.0.3",
     "firepad": "^1.4.0",
     "lodash": "^4.17.10",
-    "moment": "^2.19.2",
     "normalize.css": "^7.0.0",
     "object-assign": "^4.1.1",
     "promise": "^7.1.1",
