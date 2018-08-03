@@ -6,7 +6,9 @@ import { withFirestore } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 import { spinnerWhileLoading } from 'utils/components'
 import { triggerAnalyticsEvent } from 'utils/analytics'
+import { withStyles } from '@material-ui/core/styles'
 import { getOrderedRoles, getProject } from 'selectors'
+import styles from './RolesTable.styles'
 
 export default compose(
   withNotifications,
@@ -88,5 +90,6 @@ export default compose(
   }),
   withProps(({ newRoleOpen, auth }) => ({
     addRoleDisabled: newRoleOpen
-  }))
+  })),
+  withStyles(styles)
 )
