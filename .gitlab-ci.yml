@@ -15,7 +15,6 @@ cache:
   paths:
     - node_modules/
     - functions/node_modules/
-    - .cache/Cypress
 
 # Script run before all stages unless otherwise overriden
 before_script:
@@ -51,7 +50,6 @@ Build:
     paths:
       - node_modules
       - functions/node_modules
-      - .cache/Cypress
   script:
     - npm run build:config # create env specific src/config.js
     - npm run lint
@@ -115,6 +113,14 @@ E2E Tests:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-tests/
       - $CI_COMMIT_MESSAGE =~ /skip-e2e-tests/
+  # Cache dependencies across jobs only pulling not uploading (upload to cache
+  # happens in build stage)
+  cache:
+    untracked: true
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .cache/Cypress
   artifacts:
     expire_in: 2 weeks
     paths:
