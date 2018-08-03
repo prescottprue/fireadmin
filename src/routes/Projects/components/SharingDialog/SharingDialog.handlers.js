@@ -15,15 +15,11 @@ export function saveCollaborators({
     const currentProject = await firestore.get(`projects/${project.id}`)
     const projectData = invoke(currentProject, 'data')
     const collaborators = get(projectData, 'collaborators', {})
-    const collaboratorPermissions = get(
-      projectData,
-      'collaboratorPermissions',
-      {}
-    )
+    const permissions = get(projectData, 'permissions', {})
     selectedCollaborators.forEach(currentCollaborator => {
       if (!get(projectData, `collaborators.${currentCollaborator.objectID}`)) {
         collaborators[currentCollaborator.objectID] = true
-        collaboratorPermissions[currentCollaborator.objectID] = {
+        permissions[currentCollaborator.objectID] = {
           permission: 'viewer',
           sharedAt: Date.now()
         }
@@ -33,7 +29,7 @@ export function saveCollaborators({
       await firebase
         .firestore()
         .doc(`projects/${project.id}`)
-        .update({ collaborators, collaboratorPermissions })
+        .update({ collaborators, permissions })
       onRequestClose()
       showSuccess('Collaborator added successfully')
       triggerAnalyticsEvent('addCollaborator', { projectId: project.id })

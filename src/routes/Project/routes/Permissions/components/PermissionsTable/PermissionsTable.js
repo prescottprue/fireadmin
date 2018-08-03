@@ -8,7 +8,7 @@ import classesFromStyles from './PermissionsTable.scss'
 import { formNames } from 'constants'
 
 export const PermissionsTable = ({
-  collaborators,
+  permissions,
   updatePermissions,
   projectId,
   startDelete,
@@ -29,7 +29,7 @@ export const PermissionsTable = ({
       onRequestClose={handleDeleteClose}
       onDeleteClick={removeMember}
     />
-    {map(collaborators, ({ role, uid, displayName }, index) => (
+    {map(permissions, ({ role, uid, displayName }, index) => (
       <PermissionsTableRow
         key={`${uid}-${role}`}
         uid={uid}
@@ -46,7 +46,7 @@ export const PermissionsTable = ({
 )
 
 PermissionsTable.propTypes = {
-  collaborators: PropTypes.array.isRequired,
+  permissions: PropTypes.array.isRequired,
   projectId: PropTypes.string.isRequired,
   classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   selectedMemberName: PropTypes.string, // from enhancer (withStateHandlers)

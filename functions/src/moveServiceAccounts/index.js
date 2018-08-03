@@ -41,7 +41,7 @@ async function moveServiceAccountsEvent(snap, context) {
   projectsSnap.forEach(projectSnap => {
     projectsSnaps.push(projectSnap)
   })
-  console.log('projects snaps:', projectsSnaps.length)
+  console.log(`Projects loaded. Count: ${projectsSnaps.length}`)
   await Promise.all(
     projectsSnaps.map(async projectSnap => {
       const projectData = projectSnap.data()
@@ -70,79 +70,94 @@ async function moveServiceAccountsEvent(snap, context) {
       )
     })
   )
-  console.log('Service accounts migrated successfully')
-  function createAddPermissionsMapper() {
-    return function addAuthor({ id, data }) {
-      const author = data.createdBy
-      if (!author) {
-        console.log(`no author for project: ${id}, skipping`)
-        return null
-      }
-      if (data.collaboratorPermissions) {
-        console.log(`project: ${id} already has collaborator permissions?`)
-        return null
-      }
-      const collaborators = get(data, 'collaborators', {})
-      const existingCollaboratorPermissions = get(
-        data,
-        'collaboratorPermissions',
-        {}
-      )
-      const newPermissionsFromCollaborators = mapValues(
-        collaborators,
-        collabUid => ({
-          role: 'Admin',
-          updatedAt: admin.firestore.FieldValue.serverTimestamp()
-        })
-      )
-      const collaboratorPermissions = {
-        ...newPermissionsFromCollaborators,
-        ...existingCollaboratorPermissions
-      }
-      // Check to see if author exist
-      if (!data.collaboratorPermissions) {
-        // author does not exist, add it (only updates need to be returned)
-        return {
-          collaboratorPermissions,
-          roles: {
-            admin: {
-              name: 'Admin',
-              permissions: {
-                read: { environments: true, members: true, permissions: true },
-                update: {
-                  environments: true,
-                  members: true,
-                  permissions: true
-                },
-                delete: {
-                  environments: true,
-                  members: true,
-                  permissions: true
-                },
-                create: { environments: true, members: true, permissions: true }
-              }
-            },
-            editor: {
-              name: 'Editor',
-              permissions: {
-                read: { environments: true },
-                update: { environments: true },
-                create: { environments: true }
-              }
-            },
-            viewer: {
-              permissions: { read: { environments: true } }
-            }
-          }
-        }
-      }
-      // Document already has author, do not update
-      return null
-    }
-  }
+  console.log('Service accounts migrated successfully, adding permissions...')
+
   await mapEachItemInCollection(
     admin.firestore(),
     'projects',
     createAddPermissionsMapper()
   )
+  console.log('Permissions added successfully! Exiting')
+  return null
+}
+
+function createAddPermissionsMapper() {
+  return function addAuthor({ id, data }) {
+    const author = data.createdBy
+    if (!author) {
+      console.log(`no author for project: ${id}, skipping`)
+      return null
+    }
+    if (data.collaboratorPermissions) {
+      console.log(`project: ${id} already has collaborator permissions?`)
+    }
+    const existingCollaborators = get(data, 'collaborators', {})
+    const existingCollaboratorPermissions = get(
+      data,
+      'collaboratorPermissions',
+      {}
+    )
+    const newPermissionsFromCollaborators = mapValues(
+      existingCollaborators,
+      collabUid => ({
+        role: 'admin',
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      })
+    )
+    const permissions = {
+      ...newPermissionsFromCollaborators,
+      ...existingCollaboratorPermissions,
+      [author]: {
+        role: 'owner',
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      }
+    }
+    // Check to see if author exist
+    // author does not exist, add it (only updates need to be returned)
+    return {
+      permissions,
+      roles: {
+        owner: {
+          name: 'Owner',
+          permissions: {
+            read: {
+              environments: true,
+              members: true,
+              permissions: true,
+              roles: true
+            },
+            update: {
+              environments: true,
+              members: true,
+              permissions: true,
+              roles: true
+            },
+            delete: {
+              environments: true,
+              members: true,
+              permissions: true,
+              roles: true
+            },
+            create: {
+              environments: true,
+              members: true,
+              permissions: true,
+              roles: true
+            }
+          }
+        },
+        editor: {
+          name: 'Editor',
+          permissions: {
+            read: { environments: true },
+            update: { environments: true },
+            create: { environments: true }
+          }
+        },
+        viewer: {
+          permissions: { read: { environments: true } }
+        }
+      }
+    }
+  }
 }

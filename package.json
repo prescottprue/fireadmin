@@ -15,6 +15,7 @@
     "start:simple": "cross-env NODE_ENV=development node build/scripts/start",
     "functions:start": "npm run start --prefix functions",
     "functions:build": "npm run build --prefix functions",
+    "functions:watch": "npm run watch --prefix functions",
     "functions:test": "npm run test --prefix functions",
     "lint": "eslint src functions/src functions/test build server project.config.js",
     "lint:fix": "npm run lint -- --fix",

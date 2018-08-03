@@ -191,7 +191,7 @@ export const RolesTableRow = ({
             variant="raised"
             aria-label="Run Action"
             type="submit">
-            Update Roles
+            Update Member
           </Button>
         </div>
       </form>

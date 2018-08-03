@@ -125,7 +125,7 @@ export const PermissionsTableRow = ({
             variant="raised"
             aria-label="Run Action"
             type="submit">
-            Update Role
+            Update Member
           </Button>
         </div>
       </form>
