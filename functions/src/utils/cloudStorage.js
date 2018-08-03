@@ -2,6 +2,7 @@ import os from 'os'
 import path from 'path'
 import fs from 'fs-extra'
 import mkdirp from 'mkdirp-promise'
+import * as admin from 'firebase-admin'
 const gcs = require('@google-cloud/storage')()
 
 const functionsConfig = JSON.parse(process.env.FIREBASE_CONFIG)
@@ -67,4 +68,19 @@ export async function uploadToStorage(app, pathInStorage, jsonObject) {
     console.error('Error uploading file to storage', err.message || err)
     throw err
   }
+}
+
+/**
+ * Get Google Cloud Storage reference from the file's path
+ * @param  {String} storagePath - relative path of file on Cloud Storage
+ * @return {Storage.Reference} Storage reference from firebase-admin library
+ */
+export function slashPathToStorageRef(storagePath) {
+  if (!admin.storage) {
+    throw new Error('Storage is not enabled on firebase-admin')
+  }
+  return admin
+    .storage()
+    .bucket()
+    .file(storagePath)
 }
