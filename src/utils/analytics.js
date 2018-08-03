@@ -39,7 +39,8 @@ const ANALYTICS_EVENT_NAMES = {
   removeRole: 'Delete Role',
   requestActionRun: 'Request Action Run',
   addCollaborator: 'Add Collaborator',
-  removeCollaborator: 'Remove Collaborator'
+  removeCollaborator: 'Remove Collaborator',
+  deleteRole: 'Delete Role'
 }
 
 /**
@@ -47,15 +48,11 @@ const ANALYTICS_EVENT_NAMES = {
  * @param  {Object} eventData - Data associated with the event.
  */
 export function triggerAnalyticsEvent(eventNameKey, eventData) {
-  if (segmentId && env === 'production') {
-    console.debug('Analytics Event:', eventData) // eslint-disable-line no-console
-    return
-  }
   const eventName = ANALYTICS_EVENT_NAMES[eventNameKey]
   if (!eventName) {
     console.warn(`Event name for event key: "${eventNameKey}" not found`) // eslint-disable-line no-console
   } else {
-    if (segmentId) {
+    if (segmentId && window.analytics && env !== 'local') {
       window.analytics.track(eventName, eventData)
     } else {
       console.debug('Analytics Event:', eventName, eventData) // eslint-disable-line no-console

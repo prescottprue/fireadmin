@@ -119,7 +119,7 @@ export const RolesTableRow = ({
                 className={classes.roleOption}
                 control={
                   <Field
-                    name={`createPermissions.${option.value}`}
+                    name={`create.${option.value}`}
                     disabled={updateRolesDisabled}
                     component={Checkbox}
                   />
@@ -135,7 +135,7 @@ export const RolesTableRow = ({
                 className={classes.roleOption}
                 control={
                   <Field
-                    name={`readPermissions.${option.value}`}
+                    name={`read.${option.value}`}
                     disabled={updateRolesDisabled}
                     component={Checkbox}
                   />
@@ -151,7 +151,7 @@ export const RolesTableRow = ({
                 className={classes.roleOption}
                 control={
                   <Field
-                    name={`updatePermissions.${option.value}`}
+                    name={`update.${option.value}`}
                     disabled={updateRolesDisabled}
                     component={Checkbox}
                   />
@@ -167,7 +167,7 @@ export const RolesTableRow = ({
                 className={classes.roleOption}
                 control={
                   <Field
-                    name={`deletePermissions.${option.value}`}
+                    name={`delete.${option.value}`}
                     disabled={updateRolesDisabled}
                     component={Checkbox}
                   />
@@ -191,7 +191,7 @@ export const RolesTableRow = ({
             variant="raised"
             aria-label="Run Action"
             type="submit">
-            Update Roles
+            Update Member
           </Button>
         </div>
       </form>

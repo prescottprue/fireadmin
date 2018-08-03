@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { withHandlers, setPropTypes } from 'recompose'
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form'
-import { currentUserPermissionsByType } from 'selectors'
+import { currentUserProjectPermissions } from 'selectors'
 
 export default compose(
   reduxForm({
@@ -16,7 +16,7 @@ export default compose(
     projectId: PropTypes.string.isRequired
   }),
   connect((state, props) => {
-    const permissionsByType = currentUserPermissionsByType(state, props)
+    const permissionsByType = currentUserProjectPermissions(state, props)
     return {
       lockEnvDisabled: get(permissionsByType, 'update.environments') !== true
     }

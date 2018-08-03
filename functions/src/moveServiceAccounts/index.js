@@ -1,7 +1,8 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import { get } from 'lodash'
+import { get, mapValues } from 'lodash'
 import { to } from '../utils/async'
+import { mapEachItemInCollection } from '../utils/firestore'
 import { handleServiceAccountCreate } from '../copyServiceAccountToFirestore'
 
 /**
@@ -40,7 +41,7 @@ async function moveServiceAccountsEvent(snap, context) {
   projectsSnap.forEach(projectSnap => {
     projectsSnaps.push(projectSnap)
   })
-  console.log('projects snaps:', projectsSnaps.length)
+  console.log(`Projects loaded. Count: ${projectsSnaps.length}`)
   await Promise.all(
     projectsSnaps.map(async projectSnap => {
       const projectData = projectSnap.data()
@@ -69,5 +70,94 @@ async function moveServiceAccountsEvent(snap, context) {
       )
     })
   )
-  console.log('Service accounts migrated successfully')
+  console.log('Service accounts migrated successfully, adding permissions...')
+
+  await mapEachItemInCollection(
+    admin.firestore(),
+    'projects',
+    createAddPermissionsMapper()
+  )
+  console.log('Permissions added successfully! Exiting')
+  return null
+}
+
+function createAddPermissionsMapper() {
+  return function addAuthor({ id, data }) {
+    const author = data.createdBy
+    if (!author) {
+      console.log(`no author for project: ${id}, skipping`)
+      return null
+    }
+    if (data.collaboratorPermissions) {
+      console.log(`project: ${id} already has collaborator permissions?`)
+    }
+    const existingCollaborators = get(data, 'collaborators', {})
+    const existingCollaboratorPermissions = get(
+      data,
+      'collaboratorPermissions',
+      {}
+    )
+    const newPermissionsFromCollaborators = mapValues(
+      existingCollaborators,
+      collabUid => ({
+        role: 'admin',
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      })
+    )
+    const permissions = {
+      ...newPermissionsFromCollaborators,
+      ...existingCollaboratorPermissions,
+      [author]: {
+        role: 'owner',
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      }
+    }
+    // Check to see if author exist
+    // author does not exist, add it (only updates need to be returned)
+    return {
+      permissions,
+      roles: {
+        owner: {
+          name: 'Owner',
+          permissions: {
+            read: {
+              environments: true,
+              members: true,
+              permissions: true,
+              roles: true
+            },
+            update: {
+              environments: true,
+              members: true,
+              permissions: true,
+              roles: true
+            },
+            delete: {
+              environments: true,
+              members: true,
+              permissions: true,
+              roles: true
+            },
+            create: {
+              environments: true,
+              members: true,
+              permissions: true,
+              roles: true
+            }
+          }
+        },
+        editor: {
+          name: 'Editor',
+          permissions: {
+            read: { environments: true },
+            update: { environments: true },
+            create: { environments: true }
+          }
+        },
+        viewer: {
+          permissions: { read: { environments: true } }
+        }
+      }
+    }
+  }
 }

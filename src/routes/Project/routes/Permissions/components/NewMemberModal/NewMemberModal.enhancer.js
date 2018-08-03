@@ -80,17 +80,13 @@ export default compose(
     }) => async newInstance => {
       // Get existing collaborators and permissions
       const collaborators = get(project, 'collaborators', {})
-      const collaboratorPermissions = get(
-        project,
-        'collaboratorPermissions',
-        {}
-      )
+      const permissions = get(project, 'permissions', {})
       // Add new collaborators from selectCollaborator prop
       selectedCollaborators.forEach(currentCollaborator => {
         // Only add new collaborators which do not already exist
         if (!get(project, `collaborators.${currentCollaborator.objectID}`)) {
           collaborators[currentCollaborator.objectID] = true
-          collaboratorPermissions[currentCollaborator.objectID] = {
+          permissions[currentCollaborator.objectID] = {
             permission: 'viewer',
             sharedAt: firestore.FieldValue.serverTimestamp()
           }
@@ -99,7 +95,7 @@ export default compose(
       try {
         await firestore
           .doc(`projects/${projectId}`)
-          .update({ collaborators, collaboratorPermissions })
+          .update({ collaborators, permissions })
         onRequestClose()
         showSuccess('Collaborator added successfully')
       } catch (err) {

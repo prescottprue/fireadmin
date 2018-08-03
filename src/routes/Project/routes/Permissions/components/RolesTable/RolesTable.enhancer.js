@@ -4,18 +4,11 @@ import { connect } from 'react-redux'
 import { withHandlers, withStateHandlers, withProps } from 'recompose'
 import { withFirestore } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
-import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
+import { spinnerWhileLoading } from 'utils/components'
 import { triggerAnalyticsEvent } from 'utils/analytics'
-import NoRolesFound from './NoRolesFound'
-import { getRoles, getProject } from 'selectors'
-
-const INITIAL_ROLES = {
-  owner: {
-    permissions: {
-      editPermissions: true
-    }
-  }
-}
+import { withStyles } from '@material-ui/core/styles'
+import { getOrderedRoles, getProject } from 'selectors'
+import styles from './RolesTable.styles'
 
 export default compose(
   withNotifications,
@@ -23,12 +16,10 @@ export default compose(
   // Map redux state to props
   connect((state, props) => ({
     project: getProject(state, props),
-    roles: getRoles(state, props),
-    initialValues: getRoles(state, props) || INITIAL_ROLES
+    orderedRoles: getOrderedRoles(state, props)
   })),
   // Show loading spinner until project and displayNames load
   spinnerWhileLoading(['project']),
-  renderWhileEmpty(['roles'], NoRolesFound),
   withStateHandlers(
     () => ({
       newRoleOpen: false
@@ -48,15 +39,21 @@ export default compose(
       dispatch,
       formProps
     ) => {
-      const currentRoles = get(project, `roles`)
+      const currentRoles = get(project, 'roles', {})
       await firestore.update(`projects/${projectId}`, {
         roles: {
           ...currentRoles,
-          [formProps.roleKey]: roleUpdates
+          [formProps.roleKey]: {
+            ...get(currentRoles, formProps.roleKey, {}),
+            permissions: roleUpdates
+          }
         }
       })
       showSuccess('Role updated successfully!')
-      triggerAnalyticsEvent('updateRole', { projectId })
+      triggerAnalyticsEvent('updateRole', {
+        projectId,
+        roleName: formProps.roleKey
+      })
     },
     addRole: props => async newRole => {
       const { firestore, project, projectId } = props
@@ -74,7 +71,7 @@ export default compose(
           }
         }
       })
-      props.showSuccess('Roles added successfully!')
+      props.showSuccess('New Role added successfully!')
       triggerAnalyticsEvent('addRole', { projectId })
       props.closeNewRole()
     },
@@ -93,5 +90,6 @@ export default compose(
   }),
   withProps(({ newRoleOpen, auth }) => ({
     addRoleDisabled: newRoleOpen
-  }))
+  })),
+  withStyles(styles)
 )
