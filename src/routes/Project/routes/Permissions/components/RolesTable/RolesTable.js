@@ -33,17 +33,16 @@ export const RolesTable = ({
     <Collapse in={newRoleOpen}>
       <NewRoleCard onRequestClose={closeNewRole} onSubmit={addRole} />
     </Collapse>
-    <div style={{ height: '100%' }}>
+    <div className={classes.rolesTable}>
       {map(roles, ({ name, permissions }, roleKey) => (
         <RolesTableRow
           key={roleKey}
           form={`${formNames.projectRoles}.${roleKey}`}
           roleKey={roleKey}
           name={name}
-          permissions={permissions}
           onSubmit={updateRole}
           projectId={projectId}
-          initialValues={roles[roleKey]}
+          initialValues={permissions}
           onDeleteClick={deleteRole}
         />
       ))}

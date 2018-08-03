@@ -9,22 +9,13 @@ import { triggerAnalyticsEvent } from 'utils/analytics'
 import NoRolesFound from './NoRolesFound'
 import { getRoles, getProject } from 'selectors'
 
-const INITIAL_ROLES = {
-  owner: {
-    permissions: {
-      editPermissions: true
-    }
-  }
-}
-
 export default compose(
   withNotifications,
   withFirestore,
   // Map redux state to props
   connect((state, props) => ({
     project: getProject(state, props),
-    roles: getRoles(state, props),
-    initialValues: getRoles(state, props) || INITIAL_ROLES
+    roles: getRoles(state, props)
   })),
   // Show loading spinner until project and displayNames load
   spinnerWhileLoading(['project']),
@@ -48,15 +39,21 @@ export default compose(
       dispatch,
       formProps
     ) => {
-      const currentRoles = get(project, `roles`)
+      const currentRoles = get(project, 'roles', {})
       await firestore.update(`projects/${projectId}`, {
         roles: {
           ...currentRoles,
-          [formProps.roleKey]: roleUpdates
+          [formProps.roleKey]: {
+            ...get(currentRoles, formProps.roleKey, {}),
+            permissions: roleUpdates
+          }
         }
       })
       showSuccess('Role updated successfully!')
-      triggerAnalyticsEvent('updateRole', { projectId })
+      triggerAnalyticsEvent('updateRole', {
+        projectId,
+        roleName: formProps.roleKey
+      })
     },
     addRole: props => async newRole => {
       const { firestore, project, projectId } = props
@@ -74,7 +71,7 @@ export default compose(
           }
         }
       })
-      props.showSuccess('Roles added successfully!')
+      props.showSuccess('New Role added successfully!')
       triggerAnalyticsEvent('addRole', { projectId })
       props.closeNewRole()
     },

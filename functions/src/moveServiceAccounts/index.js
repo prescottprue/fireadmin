@@ -106,6 +106,7 @@ async function moveServiceAccountsEvent(snap, context) {
           collaboratorPermissions,
           roles: {
             admin: {
+              name: 'Admin',
               permissions: {
                 read: { environments: true, members: true, permissions: true },
                 update: {
@@ -122,6 +123,7 @@ async function moveServiceAccountsEvent(snap, context) {
               }
             },
             editor: {
+              name: 'Editor',
               permissions: {
                 read: { environments: true },
                 update: { environments: true },

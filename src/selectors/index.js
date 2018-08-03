@@ -77,5 +77,5 @@ export const currentUserProjectPermissions = createSelector(
  * @return {Array<string>} Role option strings
  */
 export const getRoleOptions = createSelector(getRoles, roles =>
-  map(roles, (_, value) => ({ value }))
+  map(roles, ({ name }, value) => ({ value, name }))
 )

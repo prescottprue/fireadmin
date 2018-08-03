@@ -102,7 +102,7 @@ export const PermissionsTableRow = ({
                     value={option.value}
                     disabled={option.disabled}>
                     <ListItemText
-                      primary={option.label || capitalize(option.value)}
+                      primary={option.name || capitalize(option.value)}
                     />
                   </MenuItem>
                 ))}
