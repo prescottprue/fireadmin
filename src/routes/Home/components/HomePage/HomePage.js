@@ -2,11 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
-// import { Link } from 'react-router'
-// import { paths } from 'constants'
-import classes from './Home.scss'
+import classes from './HomePage.scss'
 
-export const Home = ({ goToLogin }) => (
+const srcUrl = 'https://github.com/prescottprue/fireadmin'
+
+export const HomePage = ({ goToLogin }) => (
   <div className={classes.container}>
     <Paper className={classes.paper}>
       <div className={classes.header}>
@@ -33,9 +33,7 @@ export const Home = ({ goToLogin }) => (
             <p>
               Don't want to run it online? Have your own features you want to
               add? The source code on is{' '}
-              <a href={'https://github.com/prescottprue/fireadmin'}>
-                available on Github .
-              </a>
+              <a href={srcUrl}>available on Github .</a>
             </p>
           </div>
           <div className={classes.section}>
@@ -88,8 +86,8 @@ export const Home = ({ goToLogin }) => (
   </div>
 )
 
-Home.propTypes = {
+HomePage.propTypes = {
   goToLogin: PropTypes.func.isRequired // from enhancer (withHandlers)
 }
 
-export default Home
+export default HomePage

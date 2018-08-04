@@ -1,6 +1,32 @@
 {
   "indexes": [
     {
+      "collectionId": "projects",
+      "fields": [
+        {
+          "fieldPath": "createdBy",
+          "mode": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "mode": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionId": "projects",
+      "fields": [
+        {
+          "fieldPath": "createdBy",
+          "mode": "ASCENDING"
+        },
+        {
+          "fieldPath": "desc",
+          "mode": "ASCENDING"
+        }
+      ]
+    },
+    {
       "collectionId": "events",
       "fields": [
         {

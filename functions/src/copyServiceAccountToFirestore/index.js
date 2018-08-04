@@ -1,7 +1,10 @@
 import * as functions from 'firebase-functions'
 import { encrypt } from '../utils/encryption'
 import { to } from '../utils/async'
-import { downloadFromStorage } from '../utils/cloudStorage'
+import {
+  downloadFromStorage,
+  slashPathToStorageRef
+} from '../utils/cloudStorage'
 
 /**
  * @name copyServiceAccountToFirestore
@@ -64,5 +67,20 @@ export async function handleServiceAccountCreate(snap) {
   }
 
   console.log('Service account copied to Firestore, cleaning up...')
-  return fileData
+
+  // Remove service account file from cloud storage
+  const fileRef = slashPathToStorageRef(fullPath)
+  const [deleteErr] = await to(fileRef.delete())
+
+  // Handle errors deleteting service account (still exists successfully)
+  if (deleteErr) {
+    console.error(
+      `Error removing service account from Cloud Storage: ${deleteErr.message}`,
+      deleteErr
+    )
+  }
+
+  console.log('Cleaning up successful, exiting.')
+
+  return null
 }

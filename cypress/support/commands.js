@@ -14,20 +14,8 @@ const fbConfig = {
   storageBucket: `${projectId}.appspot.com`
 }
 
-firebase.initializeApp(fbConfig)
+window.fbInstance = firebase.initializeApp(fbConfig)
 
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
 Cypress.Commands.add('login', (email, password) => {
   if (!Cypress.env('FIREBASE_AUTH_JWT')) {
     cy.log(
@@ -54,6 +42,31 @@ Cypress.Commands.add('login', (email, password) => {
     })
   }
 })
+
+Cypress.Commands.add('logout', (email, password) => {
+  cy.log('Confirming use is logged out...')
+  if (!firebase.auth().currentUser) {
+    cy.log('Current user already logged out.')
+  } else {
+    cy.log('Current user exists, logging out...')
+    firebase.auth().signOut()
+  }
+})
+
+// ***********************************************
+// This example commands.js shows you how to
+// create various custom commands and overwrite
+// existing commands.
+//
+// For more comprehensive examples of custom
+// commands please read more here:
+// https://on.cypress.io/custom-commands
+// ***********************************************
+//
+//
+// -- This is a parent command --
+// Cypress.Commands.add('login', (email, password) => { ... })
+//
 // -- This is a child command --
 // Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
 //
