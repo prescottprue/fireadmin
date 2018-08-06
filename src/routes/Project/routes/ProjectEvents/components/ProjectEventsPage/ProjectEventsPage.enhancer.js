@@ -16,7 +16,7 @@ export default compose(
       subcollections: [{ collection: 'events' }],
       orderBy: ['createdAt', 'desc'],
       storeAs: `projectEvents-${params.projectId}`,
-      limit: 300
+      limit: 100
     }
   ]),
   connect(({ firebase, firestore }, { params }) => ({
