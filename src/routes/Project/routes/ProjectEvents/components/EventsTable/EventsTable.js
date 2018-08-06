@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { map, get, flatMap, startCase } from 'lodash'
+import { map, get, invoke, flatMap, startCase } from 'lodash'
 import Paper from '@material-ui/core/Paper'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -32,7 +32,7 @@ export const EventsTable = ({ groupedEvents }) => (
           map(eventGroup, (projectEvent, eventKey) => (
             <TableRow key={eventKey}>
               <TableCell>
-                {formatTime(projectEvent.createdAt.toDate())}
+                {formatTime(invoke(get(projectEvent, 'createdAt'), 'toDate'))}
               </TableCell>
               <TableCell>
                 {startCase(get(projectEvent, 'eventType', ''))}
