@@ -48,8 +48,8 @@ Build:
     untracked: true
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - node_modules
-      - functions/node_modules
+      - node_modules/
+      - functions/node_modules/
   script:
     - npm run build:config # create env specific src/config.js
     - npm run lint
@@ -121,7 +121,7 @@ E2E Tests:
     paths:
       - node_modules/
       - functions/node_modules/
-      - .cache/Cypress
+      - .cache/Cypress/
   artifacts:
     expire_in: 2 weeks
     paths:
