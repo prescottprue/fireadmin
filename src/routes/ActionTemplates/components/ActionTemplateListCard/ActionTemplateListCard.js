@@ -25,6 +25,7 @@ export const ActionTemplateListCard = ({
       }
       title={name}
       subheader={`${size(steps)} Steps`}
+      classes={{ title: classes.cardTitle }}
     />
     <CardContent className={classes.media}>
       <Typography component="p">{truncatedDescription}</Typography>

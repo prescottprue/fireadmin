@@ -100,7 +100,7 @@ function createAddPermissionsMapper() {
     const newPermissionsFromCollaborators = mapValues(
       existingCollaborators,
       collabUid => ({
-        role: 'admin',
+        role: 'owner',
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       })
     )
@@ -143,6 +143,43 @@ function createAddPermissionsMapper() {
               members: true,
               permissions: true,
               roles: true
+            },
+            features: {
+              actionRuns: true,
+              actionRunsWithProtected: true
+            }
+          }
+        },
+        admin: {
+          name: 'Admin',
+          permissions: {
+            read: {
+              environments: true,
+              members: true,
+              permissions: true,
+              roles: true
+            },
+            update: {
+              environments: true,
+              members: true,
+              permissions: true,
+              roles: true
+            },
+            delete: {
+              environments: true,
+              members: true,
+              permissions: true,
+              roles: true
+            },
+            create: {
+              environments: true,
+              members: true,
+              permissions: true,
+              roles: true
+            },
+            features: {
+              actionRuns: true,
+              actionRunsWithProtected: true
             }
           }
         },
@@ -152,6 +189,9 @@ function createAddPermissionsMapper() {
             read: { environments: true },
             update: { environments: true },
             create: { environments: true }
+          },
+          features: {
+            actionRuns: true
           }
         },
         viewer: {
