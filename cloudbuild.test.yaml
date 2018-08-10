@@ -1,0 +1,41 @@
+steps:
+# Unencrypt cypress/config.json.enc using Cloud KMS
+- name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=build/enc/config.json.enc
+  - --plaintext-file=cypress/config.json
+  - --location=global
+  - --keyring=first
+  - --key=keyOne
+# Unencrypt serviceAccount.json.enc using Cloud KMS
+- name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=build/enc/serviceAccount.json.enc
+  - --plaintext-file=serviceAccount.json
+  - --location=global
+  - --keyring=first
+  - --key=keyOne
+# Build Fireadmin E2E Test Image
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-t',
+    'gcr.io/$PROJECT_ID/test-fireadmin',
+    '-f',
+    'cypress/Dockerfile',
+    '.'
+  ]
+  env: [
+    'STAGE_FIREBASE_PROJECT_ID=fireadmin-stage',
+    'PROD_FIREBASE_PROJECT_ID=fireadmin-33d82'
+  ]
+  timeout: 500s
+# Push Fireadmin E2E Test Image To Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/test-fireadmin']
+  timeout: 500s
+images: ['gcr.io/$PROJECT_ID/test-fireadmin']

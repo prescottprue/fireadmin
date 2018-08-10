@@ -11,14 +11,14 @@ COPY package*.json ./
 # Bundle app source
 COPY . .
 
-# Install dependencies
-RUN npm install
+# Install dependencies (skipping install of Cypress binary)
+RUN CYPRESS_INSTALL_BINARY=0 npm install
 
 # Install http-server to host after building html
 RUN npm install http-server
 
 ## Build app bundle and index.html
-RUN [ "npm", "run", "build" ]
+RUN npm run build
 
 # Run http-server so exit signals such as SIGTERM and SIGINT are recieved by
 # node process instead of being swallowed by npm

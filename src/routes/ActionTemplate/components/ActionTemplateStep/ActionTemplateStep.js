@@ -106,7 +106,7 @@ export const ActionTemplateStep = ({
                   <FormControlLabel
                     control={
                       <Field
-                        name="subcollections"
+                        name={`${index}.subcollections`}
                         disabled={
                           get(steps, `${index}.src.resource`) !== 'firestore'
                         }
