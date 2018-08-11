@@ -13,8 +13,7 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   policy: pull # only pull cache, skip uploading
   paths:
-    - node_modules/
-    - functions/node_modules/
+    - $HOME/.npm/ # node_modules and functions/node_modules
 
 # Script run before all stages unless otherwise overriden
 before_script:
@@ -48,8 +47,7 @@ Build:
     untracked: true
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - node_modules/
-      - functions/node_modules/
+      - $HOME/.npm/ # node_modules and functions/node_modules
   script:
     - npm run build:config # create env specific src/config.js
     - npm run lint
@@ -119,8 +117,7 @@ E2E Tests:
     untracked: true
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - node_modules/
-      - functions/node_modules/
+      - $HOME/.npm/ # node_modules and functions/node_modules
       - .cache/Cypress/
   artifacts:
     expire_in: 2 weeks

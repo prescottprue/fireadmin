@@ -33,13 +33,12 @@ export const ActionTemplateStep = ({
   fields,
   mainEditorPath,
   steps,
+  addStepClick,
   inputs
 }) => (
   <div>
     <Button
-      onClick={() =>
-        fields.push({ type: 'copy', src: { pathType: 'userInput' } })
-      }
+      onClick={addStepClick}
       color="primary"
       variant="raised"
       className={classes.addAction}>
@@ -106,7 +105,7 @@ export const ActionTemplateStep = ({
                   <FormControlLabel
                     control={
                       <Field
-                        name={`${index}.subcollections`}
+                        name="subcollections"
                         disabled={
                           get(steps, `${index}.src.resource`) !== 'firestore'
                         }
@@ -157,6 +156,7 @@ export const ActionTemplateStep = ({
 
 ActionTemplateStep.propTypes = {
   fields: PropTypes.object.isRequired,
+  addStepClick: PropTypes.func.isRequired,
   steps: PropTypes.array,
   inputs: PropTypes.array,
   mainEditorPath: PropTypes.string.isRequired

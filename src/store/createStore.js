@@ -73,7 +73,7 @@ export default (initialState = {}) => {
     initialState,
     compose(
       applyMiddleware(...middleware),
-      reduxFirestore(firebase),
+      reduxFirestore(window.fbInstance || firebase),
       reactReduxFirebase(window.fbInstance || firebase, combinedConfig),
       ...enhancers
     )
