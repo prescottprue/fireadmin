@@ -46,7 +46,7 @@ Interested in adding a feature or contributing? Open an issue or [reach out over
 
 ## Getting Started
 
-If you are just getting started with Fireadmin, it is probably best to checkout the [hosted version at fireadmin.io](http://fireadmin.io). After you become more familiar, feel free to run your own by pulling this source and proceeding to the [run your own section](#run-your-own).
+If you are just getting started with Fireadmin, it is probably best to checkout the [hosted version available at fireadmin.io](http://fireadmin.io). After you become more familiar, feel free to run your own by pulling this source and proceeding to the [run your own section](#running-your-own).
 
 ### Requirements
 * node `^6.14.0` (`8.11.3` suggested for function to match [Cloud Functions Runtime][functions-runtime-url])
@@ -140,12 +140,94 @@ If you are just getting started with Fireadmin, it is probably best to checkout 
     firebase functions:config:set gmail.email="<- inviter gmail account ->" gmail.password="<- password of inviter account ->"
     ```
 1. Build Project: `npm run build`
-1. Deploy to Firebase: `firebase deploy`
-1. Start Development server: `yarn start`
-  **NOTE:** You can also use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
+1. Deploy to Firebase: `firebase deploy` (deploys, Cloud Functions, Rules, and Hosting)
+1. Start Development server: `npm start`
+    **NOTE:** You can also use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
 1. View the deployed version of the site by running `firebase open hosting:site`
 
-## NPM Scripts
+### Deployment
+
+#### CI Deploy (recommended)
+**Note**: Config for this is located within `.gitlab-ci.yml`. `firebase-ci` has been added to simplify the CI deployment process by getting settings from the `.firebaserc`. All that is required is providing authentication with Firebase:
+
+1. Have at least two Firebase projects to ready to use, one for each environment (staging and production)
+1. Replace info within `.firebaserc` under both the `projects` and `ci` sections
+1. Replace environment settings within `.gitlab-ci.yml` with your own. This will make the "Operations" tab of Gitlab point to your environment URLs.
+1. Login: `firebase login:ci` to generate an authentication token. This token will be used to give the CI provider rights to deploy on your behalf. Settings are provided for Gitlab, but any CI provider can be used.
+1. Set `FIREBASE_TOKEN` environment variable within Gitlab-CI environment variables
+1. Add the following environment variables to Gitlab-CI's variables (within `/settings/ci_cd`):
+    ```js
+    FIREBASE_TOKEN // Used to deploy to Firebase (token generated in last step)
+    /* Stage Vars */
+    STAGE_FIREBASE_API_KEY // apiKey staging project (from Firebase Auth Tab)
+    STAGE_ALGOLIA_APP_ID // algolia app_id of staging project
+    STAGE_ALGOLIA_BROWSER_KEY // algolia browser_key of staging project
+    /* Prod Vars */
+    PROD_FIREBASE_API_KEY // apiKey staging project (from Firebase Auth Tab)
+    PROD_ALGOLIA_APP_ID // algolia app_id of staging project
+    PROD_ALGOLIA_BROWSER_KEY // algolia browser_key of staging project
+    /* Optional */
+    SENTRY_DSN // Sentry DSN for error tracking
+    STAGE_GOOGLE_API_KEY // API Key for Stackdriver error logging (can use firebase apiKey)
+    PROD_GOOGLE_API_KEY // API Key for Stackdriver error logging (can use firebase apiKey)
+    ```
+1. Run a build on Gitlab-CI by pushing code to your Git remote (most likely Github)
+
+For more options on CI settings checkout the [firebase-ci docs](https://github.com/prescottprue/firebase-ci).
+
+#### Manual deploy
+
+1. Make sure you have created a `src/config.js` file as mentioned above
+1. Initialize project with `firebase init` then answer:
+  * What file should be used for Database Rules?  -> `database.rules.json`
+  * What do you want to use as your public directory? -> `build`
+  * Configure as a single-page app (rewrite all urls to /index.html)? -> `Yes`
+  * What Firebase project do you want to associate as default?  -> **your Firebase project name**
+1. Build Project: `npm run build`
+1. Confirm Firebase config by running locally: `firebase serve`
+1. Deploy to firebase: `firebase deploy`
+**NOTE:** You can use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
+
+### Tests
+**NOTE**: If you have setup CI deployment, E2E tests can automatically run against your staging environment before running the production build. To do this, follow the automaticall
+
+#### Run Locally
+1. Create a service account within the Firebase console
+1. Save the service account as `serviceAccount.json` within the root of the project
+1. Get the UID of the user that you want to use while testing from the Authentication tab of the Firebase console to
+1. Create a `cypress/config.json` with the following format:
+    ```json
+    {
+      "TEST_UID": "<- user account's UID ->",
+      "FIREBASE_PROJECT_ID": "<- your projectId ->",
+      "FIREBASE_API_KEY": "<- your firebase apiKey ->"
+    }
+    ```
+1. Run `npm run test:ui`. This will:
+  1. Create test environment configuration (includes JWT created using service account)
+  1. Open Cypress's local test runner UI where you can run single tests or all tests
+
+#### Automatically on CI
+1. Add the following environment variables to Gitlab-CI's variables:
+    ```js
+    TEST_UID // uid of user for testing
+    /* Stage Vars */
+    STAGE_FIREBASE_PROJECT_ID // projectId of staging project
+    STAGE_FIREBASE_CERT_URL // from service account
+    STAGE_FIREBASE_CLIENT_EMAIL // from service account
+    STAGE_FIREBASE_CLIENT_ID // from service account
+    STAGE_FIREBASE_PRIVATE_KEY // from service account (make sure to wrap in "")
+    STAGE_FIREBASE_PRIVATE_KEY_ID // from service account
+    /* Prod Vars */
+    PROD_FIREBASE_PROJECT_ID // projectId of staging project
+    PROD_FIREBASE_CERT_URL // from service account
+    PROD_FIREBASE_CLIENT_EMAIL // from service account
+    PROD_FIREBASE_CLIENT_ID // from service account
+    PROD_FIREBASE_PRIVATE_KEY // from service account (make sure to wrap in "")
+    PROD_FIREBASE_PRIVATE_KEY_ID // from service account
+    ```
+
+### NPM Scripts
 
 While developing, you will probably rely mostly on `npm start`; however, there are additional scripts at your disposal:
 
@@ -197,41 +279,12 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 └── tests                    # Unit tests
 ```
 
-### Deployment
-
-#### CI Deploy (recommended)
-**Note**: Config for this is located within `travis.yml`. `firebase-ci` has been added to simplify the CI deployment process by getting settings from the `.firebaserc`. All that is required is providing authentication with Firebase:
-
-1. Login: `firebase login:ci` to generate an authentication token (will be used to give Travis-CI rights to deploy on your behalf)
-1. Set `FIREBASE_TOKEN` environment variable within Travis-CI environment
-1. Run a build on Travis-CI by pushing code to your Git remote (most likely Github)
-
-If you would like to deploy to different Firebase instances for different branches (i.e. `prod`), change `ci` settings within `.firebaserc`.
-
-For more options on CI settings checkout the [firebase-ci docs](https://github.com/prescottprue/firebase-ci).
-
-#### Manual deploy
-
-1. Run `firebase:login`
-1. Initialize project with `firebase init` then answer:
-  * What file should be used for Database Rules?  -> `database.rules.json`
-  * What do you want to use as your public directory? -> `build`
-  * Configure as a single-page app (rewrite all urls to /index.html)? -> `Yes`
-  * What Firebase project do you want to associate as default?  -> **your Firebase project name**
-1. Build Project: `npm run build`
-1. Confirm Firebase config by running locally: `firebase serve`
-1. Deploy to firebase: `firebase deploy`
-**NOTE:** You can use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
-
 ## FAQ
 
-1. Why node `8.11.3` instead of a newer version? [Cloud Functions runtime supports `6` or `8`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
+1. Why node `8.11.3` instead of a newer version?
+  [Cloud Functions runtime supports `6` or `8`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
 1. Uploading service accounts? Where do they go and how are my service accounts stored?
   Currently on a Google Cloud Storage Bucket which has security rules and does not have CORS access. As soon as the file has been converted into an encrypted string and stored within Firestore, it is removed from Cloud Storage.
-
-## What Happened To The Fireadmin NPM Library?
-
-It is now deprecated. It may come back in the future as a support library for Fireadmin.
 
 [functions-runtime-url]: https://cloud.google.com/functions/docs/writing/#the_cloud_functions_runtime
 [npm-image]: https://img.shields.io/npm/v/fireadmin.svg?style=flat-square
