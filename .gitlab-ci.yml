@@ -20,12 +20,12 @@ cache:
 
 # Script run before all stages unless otherwise overriden
 before_script:
+  - npm config set cache-min 9999999
   - npm config set cache /cache/.npm
   - CYPRESS_INSTALL_BINARY=0 npm i # Install dependencies skipping Cypress
   - npm i --prefix functions # Install functions dependencies
   - npm i firebase-ci@next # Install firebase-ci for config build and deploy
-  - ls -a /cache
-  - ls -a .cache
+  - ls -a /cache/.npm
 
 # Build Stage
 # Installs dependencies, builds app, and saves results for later (artifacts).
