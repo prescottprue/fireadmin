@@ -17,6 +17,7 @@ cache:
 
 # Script run before all stages unless otherwise overriden
 before_script:
+  - npm i -g npm@6.3.0 # Remove once newer npm version comes with node (npm@5.6.0 included by default)
   - CYPRESS_INSTALL_BINARY=0 npm ci # Install dependencies skipping Cypress
   - npm ci --prefix functions # Install functions dependencies
   - npm ci firebase-ci@next # Install firebase-ci for config build and deploy
