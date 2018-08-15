@@ -14,6 +14,9 @@ try {
   )
 }
 
+// Set timestamp settings to silence warning
+admin.firestore().settings({ timestampsInSnapshots: true })
+
 const codeFolder = process.env.NODE_ENV === 'test' ? './src' : './dist'
 
 // Load all folders within dist directory (mirrors layout of src)

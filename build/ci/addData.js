@@ -1,9 +1,9 @@
+#!/usr/bin/env node
 /* eslint-disable no-console */
-import * as admin from 'firebase-admin'
-import { pickBy, isUndefined, size, keys, isString } from 'lodash'
-import fs from 'fs'
-import path from 'path'
-const testEnvFilePath = path.join(__dirname, '../..', 'cypress.env.json')
+const admin = require('firebase-admin')
+const isString = require('lodash/isString')
+const fs = require('fs')
+const path = require('path')
 const localTestConfigPath = path.join(
   __dirname,
   '../..',
@@ -25,6 +25,28 @@ function getEnvPrefix() {
   return (
     prefixesByCiEnv[process.env.CI_ENVIRONMENT_SLUG] || prefixesByCiEnv.staging
   )
+}
+
+/**
+ * Convert slash path to Firestore reference
+ * @param  {firestore.Firestore} firestoreInstance - Instance on which to
+ * create ref
+ * @param  {String} slashPath - Path to convert into firestore refernce
+ * @return {firestore.CollectionReference|firestore.DocumentReference}
+ */
+function slashPathToFirestoreRef(firestoreInstance, slashPath) {
+  let ref = firestoreInstance
+  const srcPathArr = slashPath.split('/')
+  srcPathArr.forEach(pathSegment => {
+    if (ref.collection) {
+      ref = ref.collection(pathSegment)
+    } else if (ref.doc) {
+      ref = ref.doc(pathSegment)
+    } else {
+      throw new Error(`Invalid slash path: ${slashPath}`)
+    }
+  })
+  return ref
 }
 
 /**
@@ -112,7 +134,7 @@ function getServiceAccount() {
  * @param {functions.Context} context - Functions context
  * @return {Promise}
  */
-async function addData() {
+async function firestoreAction({ action = 'set', actionPath }) {
   const serviceAccount = getServiceAccount()
   // Get project ID from environment variable
   const projectId =
@@ -125,26 +147,56 @@ async function addData() {
     },
     'withServiceAccount'
   )
-  await appFromSA
-    .firestore()
-    .collection('projects')
-    .doc('test-project')
-    .set({
-      createdBy: envVarBasedOnCIEnv('TEST_UID')
+  appFromSA.firestore().settings({ timestampsInSnapshots: true })
+  const ref = slashPathToFirestoreRef(appFromSA.firestore(), actionPath)
+  if (typeof ref[action] !== 'function') {
+    const missingActionErr = `Ref at provided path "${actionPath}" does not have action "${action}"`
+    console.log(missingActionErr)
+    throw new Error(missingActionErr)
+  }
+  try {
+    await ref[action]({
+      createdBy: envVarBasedOnCIEnv('TEST_UID'),
+      name: 'test-project'
     })
-    .catch((err) => {
-      console.log('error setting new project')
-    })
-  console.log('Add Successful')
+    console.log(`action "${action}" at path "${actionPath}" successful`)
+  } catch (err) {
+    console.log(`Error with ${action} at path "${actionPath}": `, err)
+    throw err
+  }
 }
 
 ;(async function() {
   try {
-    await addData()
-    process.exit()
+    require('yargs') // eslint-disable-line
+      .command(
+        'firestore [action] [actionPath]',
+        'start the server',
+        yargs => {
+          yargs.positional('action', {
+            describe: 'action to run on Firestore',
+            default: 'set'
+          })
+          yargs.positional('actionPath', {
+            describe: 'path of action to run on Firestore',
+            default: 'projects/test-project'
+          })
+        },
+        argv => {
+          if (argv.verbose)
+            console.info(
+              `firestore command on :${argv.action} at ${argv.actionPath}`
+            )
+          firestoreAction(argv)
+        }
+      )
+      .option('verbose', {
+        alias: 'v',
+        default: false
+      }).argv
   } catch (err) {
     /* eslint-disable no-console */
-    console.error(`Error creating auth token: ${err.message || 'Error'}`)
+    console.error(`Error running firebase action: ${err.message || 'Error'}`)
     /* eslint-enable no-console */
     process.exit(1)
   }

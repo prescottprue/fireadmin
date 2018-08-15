@@ -16,10 +16,16 @@ export const DeleteEnvironmentDialog = ({ onSubmit, onRequestClose, open }) => (
       </div>
     </DialogContent>
     <DialogActions>
-      <Button color="secondary" onClick={onRequestClose}>
+      <Button
+        color="secondary"
+        onClick={onRequestClose}
+        data-test="environment-delete-cancel">
         Cancel
       </Button>
-      <Button color="primary" onClick={onSubmit}>
+      <Button
+        color="primary"
+        onClick={onSubmit}
+        data-test="environment-delete-submit">
         Delete
       </Button>
     </DialogActions>

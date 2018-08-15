@@ -30,7 +30,11 @@ export const EnvironmentsPage = ({
       Environments
     </Typography>
     <div style={{ marginBottom: '2rem' }}>
-      <Button variant="raised" color="primary" onClick={toggleNewDialog}>
+      <Button
+        variant="raised"
+        color="primary"
+        onClick={toggleNewDialog}
+        data-test="add-environment-button">
         Add Environment
       </Button>
     </div>
@@ -44,12 +48,15 @@ export const EnvironmentsPage = ({
                 instance={inst}
                 onEditClick={() => toggleEditDialog(inst, inst.id)}
                 onRemoveClick={() => toggleDeleteDialog(inst.id)}
+                data-test="environment-tile"
               />
             ))}
           </div>
         </div>
       ) : (
-        <Paper className={classesFromStyles.paper}>
+        <Paper
+          className={classesFromStyles.paper}
+          data-test="no-environments-message">
           <Typography className={classesFromStyles.paragraph}>
             An environment is a Firebase project for a specific phase of your
             project (such as "development" or "production"). Multiple
