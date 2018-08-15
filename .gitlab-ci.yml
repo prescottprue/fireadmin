@@ -13,7 +13,7 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   policy: pull # only pull cache, skip uploading
   paths:
-    - $(npm config get cache)/.npm # node_modules and functions/node_modules
+    - $(npm config get cache) # node_modules and functions/node_modules
 
 # Script run before all stages unless otherwise overriden
 before_script:
