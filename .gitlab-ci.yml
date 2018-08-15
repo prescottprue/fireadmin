@@ -16,7 +16,7 @@ cache:
   paths:
     - node_modules
     - functions/node_modules
-    - /cache/.npm/
+    - .cache/.npm/
 
 # Script run before all stages unless otherwise overriden
 before_script:
@@ -26,7 +26,7 @@ before_script:
   - CYPRESS_INSTALL_BINARY=0 npm i # Install dependencies skipping Cypress
   - npm i --prefix functions # Install functions dependencies
   - npm i firebase-ci@next # Install firebase-ci for config build and deploy
-  - ls -a .cache
+  - ls -a .cache/.npm
 
 # Build Stage
 # Installs dependencies, builds app, and saves results for later (artifacts).
@@ -57,7 +57,7 @@ Build:
     paths:
       - node_modules
       - functions/node_modules
-      - /cache/.npm/
+      - .cache/.npm/
   script:
     - npm run build:config # create env specific src/config.js
     - npm run lint
@@ -135,7 +135,7 @@ E2E Tests:
       - node_modules
       - functions/node_modules
       - .cache/Cypress/
-      - /cache/.npm/
+      - .cache/.npm/
   artifacts:
     expire_in: 2 weeks
     paths:
