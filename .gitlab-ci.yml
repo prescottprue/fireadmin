@@ -6,9 +6,6 @@ stages:
   - build_production
   - deploy_production
 
-variables:
-  npm_config_cache: $HOME/.npm # deploy using prod project in .firebaserc
-
 # Cache dependencies across jobs only pulling not uploading (upload to cache
 # happens in build stage)
 cache:
@@ -20,7 +17,7 @@ cache:
 
 # Script run before all stages unless otherwise overriden
 before_script:
-  - npm i -g npm@6.3.0 # Remove once newer npm version comes with node (npm@5.6.0 included by default)
+  - npm config set cache $HOME/.npm
   - CYPRESS_INSTALL_BINARY=0 npm ci # Install dependencies skipping Cypress
   - npm ci --prefix functions # Install functions dependencies
   - npm i firebase-ci@next # Install firebase-ci for config build and deploy
@@ -98,6 +95,7 @@ Deploy Staging:
       - $CI_COMMIT_MESSAGE =~ /skip-stage-deploy/
   # Override default before script to install firebase-tools
   before_script:
+    - npm config set cache $HOME/.npm
     - CYPRESS_INSTALL_BINARY=0 npm ci
     - npm ci --prefix functions # Install functions dependencies
     - npm i firebase-ci@next firebase-tools@4.1.0 # Install config build and deploy dependencies
@@ -134,6 +132,7 @@ E2E Tests:
       - cypress/screenshots
       - cypress.env.json
   before_script:
+    - npm config set cache $HOME/.npm
      # Install deps including Cypress binary (skipped in default before_script)
     - npm ci
     - npm ci cypress
@@ -191,6 +190,7 @@ Deploy Production:
       - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/
   # Override default before script to install firebase-tools
   before_script:
+    - npm config set cache $HOME/.npm
     - CYPRESS_INSTALL_BINARY=0 npm ci
     - npm ci --prefix functions # Install functions dependencies
     - npm i firebase-ci@next firebase-tools@4.1.0 # Install config build and deploy dependencies
