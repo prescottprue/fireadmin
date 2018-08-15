@@ -20,12 +20,13 @@ cache:
 
 # Script run before all stages unless otherwise overriden
 before_script:
+  - ls -a
   - npm config set cache-min 9999999
-  - npm config set cache /cache/.npm
+  - npm config set cache .cache/.npm
   - CYPRESS_INSTALL_BINARY=0 npm i # Install dependencies skipping Cypress
   - npm i --prefix functions # Install functions dependencies
   - npm i firebase-ci@next # Install firebase-ci for config build and deploy
-  - ls -a /cache/.npm
+  - ls -a .cache
 
 # Build Stage
 # Installs dependencies, builds app, and saves results for later (artifacts).
@@ -142,7 +143,7 @@ E2E Tests:
       - cypress/screenshots
       - cypress.env.json
   before_script:
-    - npm config set cache /cache/.npm
+    - npm config set cache .cache/.npm
      # Install deps including Cypress binary (skipped in default before_script)
     - npm i
     - npm i cypress
@@ -200,7 +201,7 @@ Deploy Production:
       - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/
   # Override default before script to install firebase-tools
   before_script:
-    - npm config set cache /cache/.npm
+    - npm config set cache .cache/.npm
     - CYPRESS_INSTALL_BINARY=0 npm i
     - npm i --prefix functions # Install functions dependencies
     - npm i firebase-ci@next firebase-tools@4.1.0 # Install config build and deploy dependencies
