@@ -13,13 +13,13 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   policy: pull # only pull cache, skip uploading
   paths:
-    - $HOME/.npm # node_modules and functions/node_modules
+    - $(npm config get cache)/.npm # node_modules and functions/node_modules
 
 # Script run before all stages unless otherwise overriden
 before_script:
-  - CYPRESS_INSTALL_BINARY=0 npm i # Install dependencies skipping Cypress
-  - npm i --prefix functions # Install functions dependencies
-  - npm i firebase-ci@next # Install firebase-ci for config build and deploy
+  - CYPRESS_INSTALL_BINARY=0 npm ci # Install dependencies skipping Cypress
+  - npm ci --prefix functions # Install functions dependencies
+  - npm ci firebase-ci@next # Install firebase-ci for config build and deploy
 
 # Build Stage
 # Installs dependencies, builds app, and saves results for later (artifacts).
@@ -72,7 +72,7 @@ Unit Tests:
       - functions/coverage # Test coverage report
       - functions/mochawesome-report # Test results in JSON and HTML
   before_script:
-    - npm i --prefix functions
+    - npm ci --prefix functions
   script:
     - npm run test:cov --prefix functions
 
@@ -94,9 +94,9 @@ Deploy Staging:
       - $CI_COMMIT_MESSAGE =~ /skip-stage-deploy/
   # Override default before script to install firebase-tools
   before_script:
-    - CYPRESS_INSTALL_BINARY=0 npm i
-    - npm i --prefix functions # Install functions dependencies
-    - npm i firebase-ci@next firebase-tools@4.1.0 # Install config build and deploy dependencies
+    - CYPRESS_INSTALL_BINARY=0 npm ci
+    - npm ci --prefix functions # Install functions dependencies
+    - npm ci firebase-ci@next firebase-tools@4.1.0 # Install config build and deploy dependencies
   script:
     - npm run deploy
 
@@ -131,8 +131,8 @@ E2E Tests:
       - cypress.env.json
   before_script:
      # Install deps including Cypress binary (skipped in default before_script)
-    - npm i
-    - npm i cypress
+    - npm ci
+    - npm ci cypress
     # Confirm Cypress is ready to use
     - $(npm bin)/cypress verify
   script:
@@ -187,8 +187,8 @@ Deploy Production:
       - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/
   # Override default before script to install firebase-tools
   before_script:
-    - CYPRESS_INSTALL_BINARY=0 npm i
-    - npm i --prefix functions # Install functions dependencies
-    - npm i firebase-ci@next firebase-tools@4.1.0 # Install config build and deploy dependencies
+    - CYPRESS_INSTALL_BINARY=0 npm ci
+    - npm ci --prefix functions # Install functions dependencies
+    - npm ci firebase-ci@next firebase-tools@4.1.0 # Install config build and deploy dependencies
   script:
     - npm run deploy # Deploy Cloud Functions and React App (Firebase Hosting)
