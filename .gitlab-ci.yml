@@ -16,11 +16,10 @@ cache:
   paths:
     - node_modules
     - functions/node_modules
-    - .cache/.npm/
+    - .cache/.npm
 
 # Script run before all stages unless otherwise overriden
 before_script:
-  - ls -a
   - npm config set cache-min 9999999
   - npm config set cache .cache/.npm
   - CYPRESS_INSTALL_BINARY=0 npm i # Install dependencies skipping Cypress
@@ -48,6 +47,8 @@ Build:
     paths:
       - dist
       - functions/dist
+      - .cache/.npm
+      - node_modules
   # Override cache behavior set above since we want to both pull and push to
   # the cache (no "policy" provided since pull-push is default)
   cache:
@@ -57,7 +58,7 @@ Build:
     paths:
       - node_modules
       - functions/node_modules
-      - .cache/.npm/
+      - .cache/.npm
   script:
     - npm run build:config # create env specific src/config.js
     - npm run lint
