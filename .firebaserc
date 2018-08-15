@@ -18,15 +18,6 @@
           "storageBucket": "fireadmin-stage.appspot.com",
           "messagingSenderId": "566109548798"
         },
-        "reduxFirebase": {
-          "userProfile": "users",
-          "enableLogging": false,
-          "updateProfileOnLogin": false,
-          "useFirestoreForProfile": true,
-          "useFirestoreForStorageMeta": true,
-          "presence": "presence",
-          "sessions": null
-        },
         "analyticsTrackingId": "${GA_TRACKING_ID}",
         "googleApis": {
           "apiKey": "${STAGE_GOOGLE_API_KEY}"
@@ -47,15 +38,6 @@
           "databaseURL": "https://fireadmin-33d82.firebaseio.com",
           "projectId": "fireadmin-33d82",
           "storageBucket": "fireadmin-33d82.appspot.com"
-        },
-        "reduxFirebase": {
-          "userProfile": "users",
-          "enableLogging": false,
-          "updateProfileOnLogin": false,
-          "useFirestoreForProfile": true,
-          "useFirestoreForStorageMeta": true,
-          "presence": "presence",
-          "sessions": null
         },
         "analyticsTrackingId": "${GA_TRACKING_ID}",
         "segmentId": "${PROD_SEGMENT_ID}",

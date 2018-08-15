@@ -1,7 +1,8 @@
 import * as admin from 'firebase-admin'
 const responsePath = `responses/actionRunner/1`
 
-describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', () => {
+describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
+  this.timeout(20000)
   let actionRunner
   let adminInitStub
   let databaseStub
