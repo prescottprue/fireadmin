@@ -17,9 +17,9 @@ cache:
 
 # Script run before all stages unless otherwise overriden
 before_script:
-  - CYPRESS_INSTALL_BINARY=0 npm i
-  - npm i --prefix functions
-  - npm i firebase-ci@next
+  - CYPRESS_INSTALL_BINARY=0 npm i # Install dependencies skipping Cypress
+  - npm i --prefix functions # Install functions dependencies
+  - npm i firebase-ci@next # Install firebase-ci for config build and deploy
 
 # Build Stage
 # Installs dependencies, builds app, and saves results for later (artifacts).
@@ -74,7 +74,6 @@ Unit Tests:
   before_script:
     - npm i --prefix functions
   script:
-    - npm run test --prefix functions
     - npm run test:cov --prefix functions
 
 # Deploy Staging
@@ -93,6 +92,11 @@ Deploy Staging:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
       - $CI_COMMIT_MESSAGE =~ /skip-stage-deploy/
+  # Override default before script to install firebase-tools
+  before_script:
+    - CYPRESS_INSTALL_BINARY=0 npm i
+    - npm i --prefix functions # Install functions dependencies
+    - npm i firebase-ci@next firebase-tools@4.1.0 # Install config build and deploy dependencies
   script:
     - npm run deploy
 
@@ -181,5 +185,10 @@ Deploy Production:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
       - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/
+  # Override default before script to install firebase-tools
+  before_script:
+    - CYPRESS_INSTALL_BINARY=0 npm i
+    - npm i --prefix functions # Install functions dependencies
+    - npm i firebase-ci@next firebase-tools@4.1.0 # Install config build and deploy dependencies
   script:
     - npm run deploy # Deploy Cloud Functions and React App (Firebase Hosting)

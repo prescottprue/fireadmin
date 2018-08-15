@@ -2,8 +2,8 @@
   "name": "fireadmin-functions",
   "description": "Cloud Functions for Fireadmin application.",
   "scripts": {
-    "test": "npm run build && mocha ./test/unit/** -R mochawesome",
-    "test:cov": "istanbul cover $(npm bin)/_mocha ./test/unit/**",
+    "test": "mocha ./test/unit/** -R mochawesome",
+    "test:cov": "istanbul cover $(npm bin)/_mocha ./test/unit/** -- -R mochawesome",
     "lint": "eslint -c .eslintrc src test",
     "lint:fix": "npm run lint -- --fix",
     "clean": "rimraf dist etc",
