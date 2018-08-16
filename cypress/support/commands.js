@@ -53,6 +53,27 @@ Cypress.Commands.add('logout', (email, password) => {
   }
 })
 
+Cypress.Commands.add('upload_file', (selector, fileUrl, type = '') => {
+  return cy.get(selector).then(subject => {
+    return cy
+      .fixture(fileUrl)
+      .then(JSON.stringify)
+      .then(json => new Blob([json], { type: 'application/json' }))
+      .then(blob => {
+        return cy.window().then(win => {
+          const el = subject[0]
+          const nameSegments = fileUrl.split('/')
+          const name = nameSegments[nameSegments.length - 1]
+          const testFile = new win.File([blob], name, { type })
+          const dataTransfer = new win.DataTransfer()
+          dataTransfer.items.add(testFile)
+          el.files = dataTransfer.files
+          return subject
+        })
+      })
+  })
+})
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite

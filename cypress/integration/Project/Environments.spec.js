@@ -5,7 +5,9 @@ describe('Project - Environments', () => {
   let open // eslint-disable-line no-unused-vars
   // Setup before tests including creating a server to listen for external requests
   beforeEach(() => {
-    cy.server()
+    cy.server({
+      whitelist: xhr => xhr.url.includes('identitytoolkit')
+    })
       // Firebase JS SDK request - Called when project data is written
       .route('POST', /google.firestore.v1beta1.Firestore\/Listen/)
       .as('listenForProjects')
@@ -14,14 +16,25 @@ describe('Project - Environments', () => {
         // Create a spy on the servers onOpen event so we can later expect
         // it to be called with specific arguments
         open = cy.spy(cy.state('server').options, 'onOpen')
+        // window.___INITIAL_STATE__ = {
+        //   firebase: { authError: null },
+        //   firestore: {
+        //     data: { projects: { 'test-project': { name: 'test-project' } } },
+        //     ordered: {
+        //       projects: [{ id: 'test-project', name: 'test-project' }]
+        //     }
+        //   }
+        // }
         return null
       })
-    cy.exec(`${actionRunScriptPath} firestore set projects/test-project`)
     // Go to home page
     // Login using custom token
+    cy.exec(`${actionRunScriptPath} firestore set projects/test-project`)
     cy.login()
+    // cy.visit('projects')
     // Go to projects page
     cy.visit('projects/test-project/environments')
+    // cy.wait(6000)
     cy.wait('@listenForProjects')
   })
 
@@ -31,7 +44,8 @@ describe('Project - Environments', () => {
   })
 
   describe('Add Environment', () => {
-    // TODO: Unskip once selectors work
+    // TODO: Unskip once solved issue:
+    // "Firebase Storage: Invalid argument in `put` at index 0: Expected Blob or File."
     it('creates environment when provided a valid name', () => {
       const newProjectTitle = 'Staging'
       cy.get(createSelector('add-environment-button')).click()
@@ -39,11 +53,19 @@ describe('Project - Environments', () => {
       cy.get(createSelector('new-environment-name'))
         .find('input')
         .type(newProjectTitle)
-      cy.get(createSelector('new-environment-name'))
+      cy.get(createSelector('new-environment-db-url'))
         .find('input')
         .type(`https://some-project.firebaseio.com`)
       // Click on the new environment button
-      cy.get(createSelector('file-uploader')).click()
+      cy.upload_file(
+        createSelector('file-uploader'),
+        'fakeServiceAccount.json',
+        'application/json'
+      )
+      // force: true used since drop area is under title (i.e. "hidden")
+      // cy.get(createSelector('file-uploader')).trigger('drop', dropEvent)
+      cy.wait(4000)
+      cy.pause()
       // TODO: Upload service-account file
       cy.get(createSelector('new-environment-create-button')).click()
     })

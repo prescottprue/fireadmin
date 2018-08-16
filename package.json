@@ -67,6 +67,7 @@
     "redux-firestore": "^0.5.7",
     "redux-form": "^7.4.0",
     "redux-form-material-ui": "^5.0.0-beta.3",
+    "redux-persist": "^5.10.0",
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "whatwg-fetch": "^2.0.3"
@@ -118,6 +119,7 @@
     "ip": "^1.1.5",
     "node-sass": "^4.5.3",
     "prettier": "^1.14.0",
+    "redux-logger": "^3.0.6",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.5",
     "style-loader": "^0.17.0",

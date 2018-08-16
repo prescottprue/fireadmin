@@ -20,7 +20,7 @@ initScripts()
 const initialState = window.___INITIAL_STATE__ || {
   firebase: { authError: null }
 }
-const store = createStore(initialState)
+const { store, persistor } = createStore(initialState)
 
 // Render Setup
 // ------------------------------------
@@ -30,7 +30,10 @@ let render = () => {
   const App = require('./containers/App').default
   const routes = require('./routes/index').default(store)
 
-  ReactDOM.render(<App store={store} routes={routes} />, MOUNT_NODE)
+  ReactDOM.render(
+    <App store={store} routes={routes} persistor={persistor} />,
+    MOUNT_NODE
+  )
 }
 
 // Development Tools

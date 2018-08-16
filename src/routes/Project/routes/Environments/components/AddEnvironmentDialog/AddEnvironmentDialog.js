@@ -92,14 +92,14 @@ export const AddEnvironmentDialog = ({
         color="secondary"
         disabled={submitting}
         onClick={closeAndReset}
-        data-test="new-environment-create">
+        data-test="new-environment-cancel-button">
         Cancel
       </Button>
       <Button
         color="primary"
         disabled={pristine || submitting}
         onClick={callSubmit}
-        data-test="new-environment-create">
+        data-test="new-environment-create-button">
         Create
       </Button>
     </DialogActions>
