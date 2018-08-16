@@ -53,24 +53,46 @@ Cypress.Commands.add('logout', (email, password) => {
   }
 })
 
+/**
+ * Converts fixture to Blob. All file types are converted to base64 then
+ * converted to a Blob using Cypress expect application/json. Json files are
+ * just stringified then converted to a blob (fixes issue invalid Blob issues).
+ * @param {String} fileUrl - The file url to upload
+ * @param {String} type - content type of the uploaded file
+ * @return {Promise} Resolves with blob containing fixture contents
+ */
+function getFixtureBlob(fileUrl, type) {
+  return type === 'application/json'
+    ? cy
+        .fixture(fileUrl)
+        .then(JSON.stringify)
+        .then(json => new Blob([json], { type: 'application/json' }))
+    : cy.fixture(fileUrl, 'base64').then(Cypress.Blob.base64StringToBlob)
+}
+
+/**
+ * Uploads a file to an input
+ * @memberOf Cypress.Chainable#
+ * @name upload_file
+ * @function
+ * @param {String} selector - element to target
+ * @param {String} fileUrl - The file url to upload
+ * @param {String} type - content type of the uploaded file
+ */
 Cypress.Commands.add('upload_file', (selector, fileUrl, type = '') => {
   return cy.get(selector).then(subject => {
-    return cy
-      .fixture(fileUrl)
-      .then(JSON.stringify)
-      .then(json => new Blob([json], { type: 'application/json' }))
-      .then(blob => {
-        return cy.window().then(win => {
-          const el = subject[0]
-          const nameSegments = fileUrl.split('/')
-          const name = nameSegments[nameSegments.length - 1]
-          const testFile = new win.File([blob], name, { type })
-          const dataTransfer = new win.DataTransfer()
-          dataTransfer.items.add(testFile)
-          el.files = dataTransfer.files
-          return subject
-        })
+    return getFixtureBlob(fileUrl, type).then(blob => {
+      return cy.window().then(win => {
+        const el = subject[0]
+        const nameSegments = fileUrl.split('/')
+        const name = nameSegments[nameSegments.length - 1]
+        const testFile = new win.File([blob], name, { type })
+        const dataTransfer = new win.DataTransfer()
+        dataTransfer.items.add(testFile)
+        el.files = dataTransfer.files
+        return subject
       })
+    })
   })
 })
 
