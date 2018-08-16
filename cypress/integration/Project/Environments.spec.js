@@ -2,7 +2,7 @@ import { createSelector } from '../../utils'
 const actionRunScriptPath = 'build/ci/addData.js'
 
 describe('Project - Environments', () => {
-  let open // eslint-disable-line no-unused-vars
+  let openSpy // eslint-disable-line no-unused-vars
   // Setup before tests including creating a server to listen for external requests
   beforeEach(() => {
     cy.server({
@@ -17,32 +17,24 @@ describe('Project - Environments', () => {
       .then(win => {
         // Create a spy on the servers onOpen event so we can later expect
         // it to be called with specific arguments
-        open = cy.spy(cy.state('server').options, 'onOpen')
-        // window.___INITIAL_STATE__ = {
-        //   firebase: { authError: null },
-        //   firestore: {
-        //     data: { projects: { 'test-project': { name: 'test-project' } } },
-        //     ordered: {
-        //       projects: [{ id: 'test-project', name: 'test-project' }]
-        //     }
-        //   }
-        // }
+        openSpy = cy.spy(cy.state('server').options, 'onOpen')
         return null
       })
-    // Go to home page
-    // Login using custom token
+    // Create a fake project in Firestore
     cy.exec(`${actionRunScriptPath} firestore set projects/test-project`)
+    // Login using custom token
     cy.login()
-    // cy.visit('projects')
-    // Go to projects page
+    // Go to environments page
     cy.visit('projects/test-project/environments')
-    // cy.wait(6000)
     cy.wait('@listenForProjects')
   })
 
   after(() => {
     // Remove project
     // cy.exec(`${actionRunScriptPath} firestore delete projects/test-project`)
+    // TODO: Handle deleting all subcollections by either calling firebase-tools
+    // Delete through firebase-tools so that call subcollections will be deleted as well
+    cy.exec(`npx firebase firestore delete -r projects/test-project`)
   })
 
   describe('Add Environment', () => {
@@ -59,7 +51,7 @@ describe('Project - Environments', () => {
         .find('input')
         .type(`https://some-project.firebaseio.com`)
       // Click on the new environment button
-      cy.upload_file(
+      cy.uploadFile(
         createSelector('file-uploader'),
         'fakeServiceAccount.json',
         'application/json'
