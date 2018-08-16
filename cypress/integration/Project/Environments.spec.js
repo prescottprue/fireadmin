@@ -11,6 +11,8 @@ describe('Project - Environments', () => {
       // Firebase JS SDK request - Called when project data is written
       .route('POST', /google.firestore.v1beta1.Firestore\/Listen/)
       .as('listenForProjects')
+      .route('POST', /google.firestore.v1beta1.Firestore\/Write/)
+      .as('addProject')
       .window()
       .then(win => {
         // Create a spy on the servers onOpen event so we can later expect
@@ -64,10 +66,8 @@ describe('Project - Environments', () => {
       )
       // force: true used since drop area is under title (i.e. "hidden")
       // cy.get(createSelector('file-uploader')).trigger('drop', dropEvent)
-      cy.wait(4000)
-      cy.pause()
-      // TODO: Upload service-account file
       cy.get(createSelector('new-environment-create-button')).click()
+      cy.wait(4000)
     })
   })
 
