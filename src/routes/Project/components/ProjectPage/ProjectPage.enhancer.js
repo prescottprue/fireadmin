@@ -7,8 +7,7 @@ import { firestoreConnect } from 'react-redux-firebase'
 import {
   spinnerWhileLoading,
   renderWhileEmpty,
-  renderIfError,
-  logProps
+  renderIfError
 } from 'utils/components'
 import styles from './ProjectPage.styles'
 import ProjectNotFoundPage from './ProjectNotFoundPage'
@@ -48,7 +47,6 @@ export default compose(
     project: get(data, `projects.${params.projectId}`)
   })),
   spinnerWhileLoading(['project']),
-  logProps(),
   renderWhileEmpty(['project'], ProjectNotFoundPage),
   renderIfError(
     [

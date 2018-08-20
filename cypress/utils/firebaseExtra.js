@@ -129,71 +129,139 @@ function getServiceAccount() {
   }
 }
 
+let adminInstance
+
+/**
+ * Initialize Firebase instance from service account (from either local
+ * serviceAccount.json or environment variables)
+ * @return {Firebase} Initialized Firebase instance
+ */
+function initializeFirebase() {
+  try {
+    // Get service account from local file falling back to environment variables
+    const serviceAccount = getServiceAccount()
+
+    if (!adminInstance) {
+      if (!fs.existsSync(serviceAccountPath)) {
+        const missingAccountErr = `Service account not found, check: ${serviceAccountPath}`
+        console.error(missingAccountErr)
+        throw new Error(missingAccountErr)
+      }
+      console.log(
+        'service account exists, project id: ',
+        serviceAccount.project_id
+      )
+      adminInstance = admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
+      })
+      adminInstance.firestore().settings({ timestampsInSnapshots: true })
+    }
+    return adminInstance
+  } catch (err) {
+    console.log(
+      'Error initializing firebase-admin instance from service account.'
+    )
+    throw err
+  }
+}
+
 /**
  * @param  {functions.Event} event - Function event
  * @param {functions.Context} context - Functions context
  * @return {Promise}
  */
-async function firestoreAction({ action = 'set', actionPath }) {
-  const serviceAccount = getServiceAccount()
-  // Get project ID from environment variable
-  const projectId =
-    process.env.GCLOUD_PROJECT || envVarBasedOnCIEnv('FIREBASE_PROJECT_ID')
-  // Initialize Firebase app with service account
-  const appFromSA = admin.initializeApp(
-    {
-      credential: admin.credential.cert(serviceAccount),
-      databaseURL: `https://${projectId}.firebaseio.com`
-    },
-    'withServiceAccount'
-  )
-  appFromSA.firestore().settings({ timestampsInSnapshots: true })
-  const ref = slashPathToFirestoreRef(appFromSA.firestore(), actionPath)
+async function firestoreAction({
+  action = 'set',
+  actionPath,
+  fixturePath,
+  withMeta
+}) {
+  const fbInstance = initializeFirebase()
+  const ref = slashPathToFirestoreRef(fbInstance.firestore(), actionPath)
+
+  // Confirm ref has action as a method
   if (typeof ref[action] !== 'function') {
     const missingActionErr = `Ref at provided path "${actionPath}" does not have action "${action}"`
     console.log(missingActionErr)
     throw new Error(missingActionErr)
   }
+
+  // Confirm fixture exists
+  const pathToFixtureFile = path.join(__dirname, '..', 'fixtures', fixturePath)
+  if (!cy.existsSync(pathToFixtureFile)) {
+    throw new Error(`Fixture not found at path: ${fixturePath}`)
+  }
+
+  const fixtureData = cy.fixture(pathToFixtureFile)
+
+  // Add meta if withMeta option exists
+  if (withMeta) {
+    if (action === 'update') {
+      fixtureData.updatedBy = envVarBasedOnCIEnv('TEST_UID')
+      fixtureData.updatedAt = fbInstance.firestore.FieldValue.serverTimestamp()
+    } else {
+      fixtureData.createdBy = envVarBasedOnCIEnv('TEST_UID')
+      fixtureData.createdAt = fbInstance.firestore.FieldValue.serverTimestamp()
+    }
+  }
+
   try {
-    await ref[action]({
-      createdBy: envVarBasedOnCIEnv('TEST_UID'),
-      name: 'test-project'
-    })
-    console.log(`action "${action}" at path "${actionPath}" successful`)
+    // Call action with fixture data
+    await ref[action](fixtureData)
+    console.log(
+      `action "${action}" at path "${actionPath}" successful with fixture: "${fixturePath}"`
+    )
   } catch (err) {
     console.log(`Error with ${action} at path "${actionPath}": `, err)
     throw err
   }
 }
 
+const commands = [
+  {
+    command: 'firestore [action] [actionPath] [fixturePath]',
+    describe: 'run action on Firebase using service account',
+    builder: yargsInstance => {
+      yargsInstance.positional('action', {
+        describe: 'action to run on Firestore',
+        default: 'set'
+      })
+      yargsInstance.positional('actionPath', {
+        describe: 'path of action to run on Firestore',
+        default: 'projects/test-project'
+      })
+      yargsInstance.positional('fixturePath', {
+        describe: 'path of fixture to use ',
+        default: 'fakeProject.json'
+      })
+    },
+    handler: argv => {
+      if (argv.verbose)
+        console.info(
+          `firestore command on :${argv.action} at ${argv.actionPath}`
+        )
+      return firestoreAction(argv)
+    }
+  }
+]
 ;(async function() {
+  const yargs = require('yargs')
   try {
-    require('yargs') // eslint-disable-line
-      .command(
-        'firestore [action] [actionPath]',
-        'start the server',
-        yargs => {
-          yargs.positional('action', {
-            describe: 'action to run on Firestore',
-            default: 'set'
-          })
-          yargs.positional('actionPath', {
-            describe: 'path of action to run on Firestore',
-            default: 'projects/test-project'
-          })
-        },
-        argv => {
-          if (argv.verbose)
-            console.info(
-              `firestore command on :${argv.action} at ${argv.actionPath}`
-            )
-          firestoreAction(argv)
-        }
-      )
-      .option('verbose', {
-        alias: 'v',
-        default: false
-      }).argv
+    // TODO: Replace with commandDir when moving config to a directory
+    for (let command in commands) {
+      yargs.command(command)
+    }
+    yargs.option('withMeta', {
+      alias: 'm',
+      default: false
+    })
+    /* eslint-disable chai-friendly/no-unused-expressions */
+    yargs.option('verbose', {
+      alias: 'v',
+      default: false
+    }).argv
+    /* eslint-enable chai-friendly/no-unused-expressions */
   } catch (err) {
     /* eslint-disable no-console */
     console.error(`Error running firebase action: ${err.message || 'Error'}`)

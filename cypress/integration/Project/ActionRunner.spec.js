@@ -1,37 +1,37 @@
 import { createSelector } from '../../utils'
 
 describe('Project - Action Runner', () => {
-  let open // eslint-disable-line no-unused-vars
-  // Setup before tests including creating a server to listen for external requests
-  beforeEach(() => {
-    // const testUid = Cypress.env('TEST_UID')
-    cy.exec('babel-node ./build/ci/addData')
-    // Go to home page
-    cy.visit('/')
+  // Setup before tests including creating a fake project
+  before(() => {
+    // Add a fake project owned by the test user
+    cy.callFirestore('set', 'projects/test-project', 'fakeProject.json', {
+      withMeta: true
+    })
     // Login using custom token
     cy.login()
-    // TODO: Add a project owned by the test user
-    // TODO: Setup util to change attributes of transaction
-    // Go to projects page
-    cy.visit('/projects/test-project')
+  })
+
+  beforeEach(() => {
+    // Go to fake project page actions page
+    cy.visit('/projects/test-project/actions')
+  })
+
+  after(() => {
+    // Remove project and subcollections
+    cy.callFirestore('delete', 'projects/test-project', { recursive: true })
   })
 
   describe('Run Action', () => {
-    it.skip('creates project when provided a valid name', () => {
-      const newProjectTitle = 'Test project'
-      cy.get(createSelector('new-project-tile')).click()
-      // Type name of new project into input
-      cy.get(createSelector('new-project-name'))
-        .find('input')
-        .type(newProjectTitle)
-      // Click on the new project button
-      cy.get(createSelector('new-project-create-button')).click()
-      // Wait for request to Firebase to add project to return
-      cy.wait('@addProject')
-      // Confirm first project tile has title passed to new project input
-      cy.get(createSelector('project-tile-name'))
-        .first()
-        .should('have.text', newProjectTitle)
+    it.skip('runs action if using non-disabled environment', () => {
+      cy.get(createSelector('run-action-button'))
+        .should('be.disabled')
+        .click()
+    })
+
+    it.skip('is disabled if protected environment is selected', () => {
+      // TODO: Add an environment which has protected: true
+      // TODO: Confirm that Run Action button is disabled
+      cy.get(createSelector('run-action-button')).should('be.disabled')
     })
   })
 })

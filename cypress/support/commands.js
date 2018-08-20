@@ -1,3 +1,4 @@
+import path from 'path'
 import firebase from 'firebase/app'
 import 'firebase/database'
 import 'firebase/auth'
@@ -53,6 +54,62 @@ Cypress.Commands.add('logout', (email, password) => {
   }
 })
 
+function getArgsString(args) {
+  return args && args.length ? ` ${args.join(' ')}` : ''
+}
+
+/**
+ * Call Firestore instance with some specified action. Authentication is through serviceAccount.json since it is at the base
+ * level. If using delete, auth is through FIREBASE_TOKEN since firebase-tools is used (instead of firebaseExtra).
+ * @param {String} action - The action type to call with (set, push, update, remove)
+ * @param {String} actionPath - Path within RTDB that action should be applied
+ * @param {Object} opts - Options
+ * @param {Array} opts.args - Command line args to be passed
+ * @type {Cypress.Command}
+ * @type {[type]}
+ */
+Cypress.Commands.add('callFirestore', (action, actionPath, opts = {}) => {
+  const { args = [] } = opts
+  // callFirestore('delete', 'project/test-project', { args: '-r' })
+  // callFirestore('delete', 'project/test-project', { recursive: true })
+  // callFirestore('add', 'project/test-project', 'fakeProject.json')
+  const baseArgsString = getArgsString(args)
+  switch (action) {
+    case 'delete':
+      const argsString = `${baseArgsString}${opts.recursive ? ' -r' : ''}`
+      return cy.exec(
+        `npx firebase firestore ${action} ${actionPath}${argsString}`
+      )
+    default:
+      const argsWithMeta = `${baseArgsString}${opts.withMeta ? ' -m' : ''}`
+      cy.exec(
+        `cypress/utils/firebaseExtra firestore ${action} ${actionPath}${argsWithMeta}`
+      )
+  }
+})
+
+/**
+ * Call Real Time Database path with some specified action. Authentication is through FIREBASE_TOKEN since firebase-tools
+ * @param {String} action - The action type to call with (set, push, update, remove)
+ * @param {String} actionPath - Path within RTDB that action should be applied
+ * @param {Object} opts - Options
+ * @param {Array} opts.args - Command line args to be passed
+ * @type {Cypress.Command}
+ */
+Cypress.Commands.add('callRtdb', (action, actionPath, opts) => {
+  const { args = [] } = opts
+  // callRtdb('add', 'projects/test-project', { some: data })
+  // callRtdb('add', 'projects/test-project', 'somepath.json')
+  // TODO: Support loading fixtures into command
+  const baseArgsString = getArgsString(args)
+  switch (action) {
+    default:
+      return cy.exec(
+        `npx firebase database:${action}${baseArgsString} ${actionPath}`
+      )
+  }
+})
+
 /**
  * Converts fixture to Blob. All file types are converted to base64 then
  * converted to a Blob using Cypress expect application/json. Json files are
@@ -62,7 +119,7 @@ Cypress.Commands.add('logout', (email, password) => {
  * @return {Promise} Resolves with blob containing fixture contents
  */
 function getFixtureBlob(fileUrl, type) {
-  return type === 'application/json'
+  return type === 'application/json' || path.extname(fileUrl) === 'json'
     ? cy
         .fixture(fileUrl)
         .then(JSON.stringify)
@@ -83,12 +140,11 @@ Cypress.Commands.add('uploadFile', (selector, fileUrl, type = '') => {
   return cy.get(selector).then(subject => {
     return getFixtureBlob(fileUrl, type).then(blob => {
       return cy.window().then(win => {
-        const el = subject[0]
-        const nameSegments = fileUrl.split('/')
-        const name = nameSegments[nameSegments.length - 1]
-        const testFile = new win.File([blob], name, { type })
+        const name = fileUrl.split('/').pop()
+        const testFile = new win.File([blob], name, { type: blob.type })
         const dataTransfer = new win.DataTransfer()
         dataTransfer.items.add(testFile)
+        const el = subject[0]
         el.files = dataTransfer.files
         return subject
       })
