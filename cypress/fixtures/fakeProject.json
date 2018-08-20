@@ -2,7 +2,7 @@
   "name": "test-project",
   "roles": {
     "owner": {
-      "name": "Owner"
+      "name": "Owner",
       "permissions": {
         "read": {
           "environments": true,
