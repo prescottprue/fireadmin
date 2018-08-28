@@ -7,9 +7,20 @@
   <!-- Tracking/Reporting Bundles -->
   <script src=https://cdn.ravenjs.com/3.24.0/raven.min.js crossorigin=anonymous></script>
   <script defer src="https://cdn.rawgit.com/GoogleCloudPlatform/stackdriver-errors-js/v0.4.0/dist/stackdriver-errors-concat.min.js"></script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ef6c00" />
   <title>fireadmin</title>
 </head>
 <body>
   <div id="root" style="height: 100%"></div>
+  <!-- Error message for if JS is not enabled -->
+  <noscript>Javascript must be enabled for Barista to work. Please use a compatiable browser.</noscript>
+  <!-- Service Worker Registration -->
+  <script>
+    navigator.serviceWorker
+      .register('/firebase-messaging-sw.js', { scope: /public/ })
+      .then(function () { console.log("Service Worker Registered"); })
+      .catch((err) => console.log('err', err))
+  </script>
 </body>
 </html>

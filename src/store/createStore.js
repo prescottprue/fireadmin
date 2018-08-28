@@ -7,11 +7,13 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/database'
+import 'firebase/messaging'
 import 'firebase/storage'
 import { setAnalyticsUser } from '../utils/analytics'
 import makeRootReducer from './reducers'
 import { firebase as fbConfig, reduxFirebase as rrfConfig } from '../config'
 import { version } from '../../package.json'
+import { initializeMessaging } from 'utils/messaging'
 import { updateLocation } from './location'
 
 export default (initialState = {}) => {
@@ -64,6 +66,11 @@ export default (initialState = {}) => {
 
   // Initialize Firestore with settings
   firebase.firestore().settings({ timestampsInSnapshots: true })
+
+  // Initialize messaging
+  firebase.messaging()
+
+  initializeMessaging()
 
   // ======================================================
   // Store Instantiation and HMR Setup
