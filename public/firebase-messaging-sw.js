@@ -1,28 +1,26 @@
 /* eslint-disable no-console */
-/* global firebase */
+/* global firebase importScripts */
 // Import and configure the Firebase SDK
 // These scripts are made available when the app is served or deployed on Firebase Hosting
 // If you do not serve/host your project using Firebase Hosting see https://firebase.google.com/docs/web/setup
 importScripts('https://www.gstatic.com/firebasejs/5.4.1/firebase-app.js')
 importScripts('https://www.gstatic.com/firebasejs/5.4.1/firebase-messaging.js')
 
-const fbConfig = {}
+firebase.initializeApp({
+  messagingSenderId: '566109548798'
+})
 
-firebase.initializeApp()
-var messaging = firebase.messaging()
+const messaging = firebase.messaging()
 
-// If you would like to customize notifications that are received in the
-// background (Web app is closed or not in browser focus) then you should
-// implement this optional method.
-// [START background_handler]
+// Custom background message handler
 messaging.setBackgroundMessageHandler(function(payload) {
   console.log(
     '[firebase-messaging-sw.js] Received background message ',
     payload
   )
-  // Customize notification here
-  var notificationTitle = 'Background Message Title'
-  var notificationOptions = {
+
+  const notificationTitle = 'Fireadmin'
+  const notificationOptions = {
     body: 'Background Message body.',
     icon: '/firebase-logo.png'
   }
@@ -32,4 +30,3 @@ messaging.setBackgroundMessageHandler(function(payload) {
     notificationOptions
   )
 })
-// [END background_handler]

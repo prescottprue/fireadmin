@@ -26,12 +26,29 @@ export function initializeMessaging() {
   // Add the public key generated from the console here.
   messaging.usePublicVapidKey(publicVapidKey)
 
+  messaging
+    .getToken()
+    .then(refreshedToken => {
+      console.log('Original token get.', refreshedToken)
+      // Indicate that the new Instance ID token has not yet been sent to the
+      // app server.
+      // setTokenSentToServer(false)
+      // Send Instance ID token to app server.
+      // sendTokenToServer(refreshedToken)
+      // Display new Instance ID token and clear UI of all previous messages.
+      // resetUI()
+    })
+    .catch(err => {
+      console.log('Unable to retrieve refreshed token ', err)
+      return Promise.reject(err)
+    })
+
   // Callback fired if Instance ID token is updated.
   messaging.onTokenRefresh(() => {
     messaging
       .getToken()
       .then(refreshedToken => {
-        console.log('Token refreshed.')
+        console.log('Token refreshed.', refreshedToken)
         // Indicate that the new Instance ID token has not yet been sent to the
         // app server.
         // setTokenSentToServer(false)
@@ -55,5 +72,6 @@ export function initializeMessaging() {
     // Update the UI to include the received message.
     // appendMessage(payload)
   })
+
   requestPermission()
 }
