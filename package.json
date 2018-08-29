@@ -37,8 +37,8 @@
   "author": "prescottprue (https://github.com/prescottprue)",
   "license": "MIT",
   "dependencies": {
-    "@material-ui/core": "1.4.0",
-    "@material-ui/icons": "1.0.0",
+    "@material-ui/core": "3.0.0",
+    "@material-ui/icons": "3.0.0",
     "classnames": "^2.2.5",
     "codemirror": "^5.32.0",
     "date-fns": "^1.29.0",
