@@ -37,7 +37,7 @@ export async function getAppFromServiceAccount(opts, eventData) {
   }
   console.log(`Getting service account from Firestore...`)
   const { projectId } = eventData
-  console.log('projectid:', projectId)
+
   // Make unique app name (prevents issue of multiple apps initialized with same name)
   const appName = `app-${uniqueId()}`
   // Get Service account data from resource (i.e Storage, Firestore, etc)

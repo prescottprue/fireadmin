@@ -6,19 +6,20 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
   let adminInitStub
   let callGoogleApi
   let updateStub
-  let deleteStub
+  let getStub
   let docStub
   let collectionStub
+  let firestoreStub
 
   beforeEach(() => {
     updateStub = sinon.stub().returns(Promise.resolve({}))
-    deleteStub = sinon.stub().returns(Promise.resolve({}))
-    docStub = sinon.stub().returns({ update: updateStub, delete: deleteStub })
+    getStub = sinon.stub().returns(Promise.resolve({}))
+    docStub = sinon.stub().returns({ update: updateStub, get: getStub })
     collectionStub = sinon
       .stub()
       .returns({ add: sinon.stub().returns(Promise.resolve({})), doc: docStub })
     // Apply stubs as admin.firestore()
-    const firestoreStub = sinon
+    firestoreStub = sinon
       .stub()
       .returns({ doc: docStub, collection: collectionStub })
     sinon.stub(admin, 'firestore').get(() => firestoreStub)
@@ -63,6 +64,92 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
     expect(err).to.have.property(
       'message',
       'projectId, environment, and storageBucket are required parameters'
+    )
+  })
+
+  it('throws if service account is not found for provided project', async () => {
+    const objectID = 'asdf'
+    const [err] = await to(
+      callGoogleApi(
+        {
+          val: () => ({
+            api: 'compute',
+            projectId: 'asdf',
+            environment: 'test',
+            storageBucket: 'asdf'
+          })
+        },
+        { params: { templateId: objectID } }
+      )
+    )
+    expect(err).to.have.property(
+      'message',
+      'Project containing service account not at path: projects/asdf/environments/test'
+    )
+  })
+
+  it('throws if credential parameter is missing on serviceAccount object', async () => {
+    const objectID = 'asdf'
+    // Stub subcollection document get
+    getStub = sinon
+      .stub()
+      .returns(Promise.resolve({ exists: true, data: () => ({}) }))
+    docStub = sinon.stub().returns({ get: getStub })
+    // Stub collection with stubbed doc
+    collectionStub = sinon.stub().returns({ doc: docStub })
+    // Apply stubs as admin.firestore()
+    firestoreStub = sinon
+      .stub()
+      .returns({ doc: docStub, collection: collectionStub })
+    const [err] = await to(
+      callGoogleApi(
+        {
+          val: () => ({
+            api: 'compute',
+            projectId: 'asdf',
+            environment: 'test',
+            storageBucket: 'asdf'
+          })
+        },
+        { params: { templateId: objectID } }
+      )
+    )
+    expect(err).to.have.property(
+      'message',
+      'Credential parameter is required to load service account from Firestore'
+    )
+  })
+
+  it('gets service account provided a valid project', async () => {
+    const objectID = 'asdf'
+    // Stub subcollection document get
+    getStub = sinon
+      .stub()
+      .returns(Promise.resolve({ exists: true, data: () => ({}) }))
+    docStub = sinon.stub().returns({ update: updateStub, get: getStub })
+    collectionStub = sinon
+      .stub()
+      .returns({ add: sinon.stub().returns(Promise.resolve({})), doc: docStub })
+    // Apply stubs as admin.firestore()
+    firestoreStub = sinon
+      .stub()
+      .returns({ doc: docStub, collection: collectionStub })
+    const [err] = await to(
+      callGoogleApi(
+        {
+          val: () => ({
+            api: 'compute',
+            projectId: 'asdf',
+            environment: 'test',
+            storageBucket: 'asdf'
+          })
+        },
+        { params: { templateId: objectID } }
+      )
+    )
+    expect(err).to.have.property(
+      'message',
+      'Credential parameter is required to load service account from Firestore'
     )
   })
 })
