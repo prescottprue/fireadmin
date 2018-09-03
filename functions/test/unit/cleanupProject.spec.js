@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin'
+import { to } from 'utils/async'
 
-describe.skip('cleanupProject Firestore Cloud Function (onDelete)', () => {
+describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
   let adminInitStub
   let cleanupProject
   let firestoreStub = () => ({})
@@ -18,26 +19,23 @@ describe.skip('cleanupProject Firestore Cloud Function (onDelete)', () => {
       databaseURL: 'https://some-project.firebaseio.com',
       storageBucket: 'some-bucket.appspot.com'
     })
-
-    mockFunctionsConfig()
-    /* eslint-disable global-require */
     adminInitStub = sinon.stub(admin, 'initializeApp')
-    // Stub Firebase's functions.config()
     firestoreStub = sinon.stub()
     docStub = sinon.stub()
     docSetStub = sinon.stub()
     setStub = sinon.stub()
     rtdbStub = sinon.stub()
     setStub.returns(Promise.resolve(resultOfSet))
-    docStub.returns({ set: setStub, once: () => Promise.resolve({}) })
+    docStub.returns({
+      set: setStub,
+      once: () => Promise.resolve({})
+    })
     rtdbStub.returns({
       val: () => ({}),
       once: () => Promise.resolve(rtdbStub())
     })
     firestoreStub.returns({ doc: docStub })
-    sinon.stub(admin, 'firestore').get(() => firestoreStub)
-    // Syntax may change when this issue is addressed
-    // [#2](https://github.com/firebase/firebase-functions-test/issues/2)
+    /* eslint-disable global-require */
     cleanupProject = functionsTest.wrap(
       require(`${__dirname}/../../index`).cleanupProject
     )
@@ -50,13 +48,121 @@ describe.skip('cleanupProject Firestore Cloud Function (onDelete)', () => {
     adminInitStub.restore()
   })
 
-  it('handles event', async () => {
-    const fakeEvent = functionsTest.firestore.makeDocumentSnapshot(
-      { foo: 'bar' },
-      'projects/abc123'
-    )
+  it('Cleans up all data and exits if there are subcollections for a project', async () => {
+    const fakeEvent = {
+      data: () => ({}),
+      ref: { getCollections: () => Promise.resolve({}) }
+    }
     const fakeContext = { params: { projectId: 'abc123' } }
     const res = await cleanupProject(fakeEvent, fakeContext)
     expect(res).to.be.null
+  })
+
+  it('gracefully handles subcollections without any documents', async () => {
+    const fakeEvent = {
+      data: () => ({}),
+      ref: {
+        getCollections: () =>
+          Promise.resolve([
+            {
+              ref: { getCollections: () => Promise.resolve([]) },
+              get: sinon.stub().returns(Promise.resolve({}))
+            }
+          ])
+      }
+    }
+    const fakeContext = { params: { projectId: 'abc123' } }
+    const res = await cleanupProject(fakeEvent, fakeContext)
+    expect(res).to.be.null
+  })
+
+  it('handles error getting collection data', async () => {
+    const fakeError = new Error('test')
+    const fakeEvent = {
+      data: () => ({}),
+      ref: {
+        getCollections: () =>
+          Promise.resolve([
+            {
+              get: sinon.stub().returns(Promise.reject(fakeError))
+            }
+          ])
+      }
+    }
+    const fakeContext = { params: { projectId: 'abc123' } }
+    const [err] = await to(cleanupProject(fakeEvent, fakeContext))
+    expect(err).to.have.property('message', fakeError.message)
+  })
+
+  it('handles error getting child subcollection documents', async () => {
+    const fakeError = new Error('test')
+    const fakeEvent = {
+      data: () => ({}),
+      ref: {
+        getCollections: () =>
+          Promise.resolve([
+            {
+              ref: { getCollections: () => Promise.reject(fakeError) },
+              get: sinon.stub().returns(Promise.resolve({}))
+            }
+          ])
+      }
+    }
+    const fakeContext = { params: { projectId: 'abc123' } }
+    const [err] = await to(cleanupProject(fakeEvent, fakeContext))
+    expect(err).to.have.property('message', fakeError.message)
+  })
+
+  it('Cleans up all data and subcollections for a project', async () => {
+    const deleteStub = sinon.stub().returns(Promise.resolve())
+    const fakeEvent = {
+      data: () => ({}),
+      ref: {
+        getCollections: () =>
+          Promise.resolve([
+            {
+              get: sinon.stub().returns(
+                Promise.resolve({
+                  size: 1,
+                  forEach: feCb => {
+                    feCb({ ref: { delete: deleteStub } })
+                  }
+                })
+              )
+            }
+          ])
+      }
+    }
+    const fakeContext = { params: { projectId: 'abc123' } }
+    const res = await cleanupProject(fakeEvent, fakeContext)
+    expect(res).to.be.null
+    expect(deleteStub).to.have.been.calledOnce
+  })
+
+  it('Handles error deleting subcollection document for a project', async () => {
+    const fakeError = new Error('test')
+    const deleteStub = sinon.stub().returns(Promise.reject(fakeError))
+    const fakeEvent = {
+      data: () => ({}),
+      ref: {
+        getCollections: () =>
+          Promise.resolve([
+            {
+              get: sinon.stub().returns(
+                Promise.resolve({
+                  size: 1,
+                  forEach: feCb => {
+                    feCb({ ref: { delete: deleteStub } })
+                  }
+                })
+              )
+            }
+          ])
+      }
+    }
+    const fakeContext = { params: { projectId: 'abc123' } }
+    const [err] = await to(cleanupProject(fakeEvent, fakeContext))
+    expect(err).to.have.property('message', fakeError.message)
+    expect(deleteStub).to.have.been.calledOnce
   })
 })

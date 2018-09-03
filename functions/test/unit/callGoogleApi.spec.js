@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin'
 import fauxJax from 'faux-jax'
-import { to } from 'utils/async'
 import crypto from 'crypto'
+import { to } from 'utils/async'
 
 describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
   let adminInitStub
@@ -55,14 +55,11 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
 
   it('throws if request does not contain projectId, environment or storageBucket', async () => {
     const objectID = 'asdf'
-    const [err] = await to(
-      callGoogleApi(
-        {
-          val: () => ({ api: 'compute' })
-        },
-        { params: { templateId: objectID } }
-      )
-    )
+    const fakeRequest = {
+      val: () => ({ api: 'compute' })
+    }
+    const fakeContext = { params: { templateId: objectID } }
+    const [err] = await to(callGoogleApi(fakeRequest, fakeContext))
     expect(err).to.have.property(
       'message',
       'projectId, environment, and storageBucket are required parameters'

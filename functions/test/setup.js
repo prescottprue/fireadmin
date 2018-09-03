@@ -25,7 +25,7 @@ global.mockFunctionsConfig = (extraConfig = {}) =>
       app_id: 'asdf',
       api_key: 'asdf'
     },
-    email: {},
+    gmail: { email: 'test', password: 'test' },
     ...extraConfig
   })
 

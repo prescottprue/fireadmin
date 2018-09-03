@@ -9,6 +9,8 @@
   },
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "functions/dist",
+    "functions/node_modules"
   ]
 }
