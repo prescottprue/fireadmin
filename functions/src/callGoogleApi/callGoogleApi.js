@@ -5,18 +5,27 @@ import google from 'googleapis'
 import { serviceAccountFromFirestorePath } from '../utils/serviceAccounts'
 import { eventPathName, SCOPES } from './constants'
 import { to } from '../utils/async'
+import { hasAll } from '../utils'
 
 let jwtClient = null
+
+const serviceAccountParams = [
+  'type',
+  'project_id',
+  'private_key_id',
+  'private_key',
+  'client_email',
+  'client_id',
+  'auth_uri',
+  'token_uri'
+]
 
 /**
  * Get Google APIs auth client. Auth comes from serviceAccount.
  * @return {Promise} Resolves with JWT Auth Client (for attaching to request)
  */
 async function authClientFromServiceAccount(serviceAccount) {
-  if (
-    !get(serviceAccount, 'client_email') ||
-    !get(serviceAccount, 'private_key')
-  ) {
+  if (!hasAll(serviceAccount, serviceAccountParams)) {
     throw new Error('Invalid service account')
   }
   if (jwtClient) {

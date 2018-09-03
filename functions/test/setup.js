@@ -18,7 +18,9 @@ global.mockFunctionsConfig = (extraConfig = {}) =>
     firebase: {
       databaseURL: 'https://some-project.firebaseio.com'
     },
-    encryption: {},
+    encryption: {
+      password: 'asdf'
+    },
     algolia: {
       app_id: 'asdf',
       api_key: 'asdf'
