@@ -3,7 +3,9 @@
   "description": "Cloud Functions for Fireadmin application.",
   "scripts": {
     "test": "mocha ./test/unit/**",
+    "test:watch": "mocha ./test/unit/** --watch",
     "test:cov": "istanbul cover $(npm bin)/_mocha ./test/unit/**",
+    "test:cov:watch": "istanbul cover $(npm bin)/_mocha ./test/unit/** -- --watch",
     "lint": "eslint -c .eslintrc src test",
     "lint:fix": "npm run lint -- --fix",
     "clean": "rimraf dist etc",
