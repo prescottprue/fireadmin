@@ -4,37 +4,38 @@ import { to } from 'utils/async'
 describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
   let adminInitStub
   let cleanupProject
-  let firestoreStub = () => ({})
   let refStub // eslint-disable-line no-unused-vars
   let docStub
   let docSetStub // eslint-disable-line no-unused-vars
-  let rtdbStub
   let setStub
   const resultOfSet = {}
 
+  before(() => {
+    // Stub admin.initializeApp()
+    adminInitStub = sinon.stub(admin, 'initializeApp')
+    // Set GCLOUD_PROJECT to env
+    process.env.GCLOUD_PROJECT = 'test'
+  })
+
   beforeEach(() => {
+    // Set GCLOUD_PROJECT to test
+    process.env.GCLOUD_PROJECT = 'test'
+
     // Stub Firebase's functions.config() (default in test/setup.js)
-    // Stub Firebase's config environment var
     process.env.FIREBASE_CONFIG = JSON.stringify({
       databaseURL: 'https://some-project.firebaseio.com',
       storageBucket: 'some-bucket.appspot.com'
     })
-    adminInitStub = sinon.stub(admin, 'initializeApp')
-    firestoreStub = sinon.stub()
+    // Stubs for Firestore methods
     docStub = sinon.stub()
     docSetStub = sinon.stub()
-    setStub = sinon.stub()
-    rtdbStub = sinon.stub()
-    setStub.returns(Promise.resolve(resultOfSet))
+    setStub = sinon.stub().returns(Promise.resolve(resultOfSet))
     docStub.returns({
       set: setStub,
       once: () => Promise.resolve({})
     })
-    rtdbStub.returns({
-      val: () => ({}),
-      once: () => Promise.resolve(rtdbStub())
-    })
-    firestoreStub.returns({ doc: docStub })
+
+    // Load wrapped version of Cloud Function
     /* eslint-disable global-require */
     cleanupProject = functionsTest.wrap(
       require(`${__dirname}/../../index`).cleanupProject

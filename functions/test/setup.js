@@ -29,7 +29,7 @@ global.mockFunctionsConfig = (extraConfig = {}) =>
     ...extraConfig
   })
 
-// Stub Firebase's functions.config() (default in test/setup.js)
+// Stub Firebase's functions.config()
 mockFunctionsConfig()
 
 // Stub Firebase's config environment var

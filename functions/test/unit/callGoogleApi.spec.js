@@ -13,31 +13,43 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
   let firestoreStub
   let encryptedSa
 
+  before(() => {
+    // Stub Firebase's admin.initializeApp()
+    adminInitStub = sinon.stub(admin, 'initializeApp')
+    // Set GCLOUD_PROJECT to env
+    process.env.GCLOUD_PROJECT = 'test'
+  })
+
   beforeEach(() => {
+    // Stub Firebase's config environment var
+    process.env.FIREBASE_CONFIG = JSON.stringify({
+      databaseURL: 'https://some-project.firebaseio.com',
+      storageBucket: 'some-bucket.appspot.com'
+    })
+
+    // Stubs for Firestore methods
     updateStub = sinon.stub().returns(Promise.resolve({}))
     getStub = sinon.stub().returns(Promise.resolve({}))
     docStub = sinon.stub().returns({ update: updateStub, get: getStub })
     collectionStub = sinon
       .stub()
       .returns({ add: sinon.stub().returns(Promise.resolve({})), doc: docStub })
-    // Apply stubs as admin.firestore()
+
+    // Create Firestore stub out of stubbed methods
     firestoreStub = sinon
       .stub()
       .returns({ doc: docStub, collection: collectionStub })
+
+    // Apply stubs as admin.firestore()
     sinon.stub(admin, 'firestore').get(() => firestoreStub)
-    adminInitStub = sinon.stub(admin, 'initializeApp')
+
     // Intercept all http requests and respond with 200
     fauxJax.install()
     fauxJax.on('request', function respond(request) {
       request.respond(200, {}, '{}')
     })
-    // Set GCLOUD_PROJECT to env
-    process.env.GCLOUD_PROJECT = 'test'
-    // Stub Firebase's config environment var
-    process.env.FIREBASE_CONFIG = JSON.stringify({
-      databaseURL: 'https://some-project.firebaseio.com',
-      storageBucket: 'some-bucket.appspot.com'
-    })
+
+    // Load wrapped version of Cloud Function
     /* eslint-disable global-require */
     callGoogleApi = functionsTest.wrap(
       require(`${__dirname}/../../index`).callGoogleApi
@@ -50,7 +62,6 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
     functionsTest.cleanup()
     // Restore http request functionality
     fauxJax.restore()
-    process.env.GCLOUD_PROJECT = undefined
   })
 
   it('throws if request does not contain projectId, environment or storageBucket', async () => {
