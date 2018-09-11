@@ -18,8 +18,11 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
   before(() => {
     // Stub Firebase's admin.initializeApp()
     adminInitStub = sinon.stub(admin, 'initializeApp')
-    // Set GCLOUD_PROJECT to env
-    process.env.GCLOUD_PROJECT = 'test'
+  })
+
+  after(() => {
+    // Restore firebase-admin stub to the original
+    adminInitStub.restore()
   })
 
   beforeEach(() => {
@@ -75,13 +78,8 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
   })
 
   afterEach(() => {
-    // Restoring our stubs to the original methods
+    // Restoring our test-level stubs to the original methods
     functionsTest.cleanup()
-  })
-
-  after(() => {
-    // Restoring our stubs to the original methods
-    adminInitStub.restore()
   })
 
   it('throws and updates error if projectId is undefined', async () => {

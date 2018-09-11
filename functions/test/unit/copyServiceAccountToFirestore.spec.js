@@ -6,53 +6,29 @@ describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', ()
   let refStub // eslint-disable-line no-unused-vars
   let docSetStub // eslint-disable-line no-unused-vars
   let adminInitStub
-  let getStub
-  let setStub
-  let docStub
-  let collectionStub
-  let databaseStub
+
+  before(() => {
+    // Stub Firebase's admin.initializeApp()
+    adminInitStub = sinon.stub(admin, 'initializeApp')
+  })
+
+  after(() => {
+    // Restore firebase-admin stub to the original
+    adminInitStub.restore()
+  })
 
   beforeEach(() => {
-    // Stub Firebase's functions.config() (default in test/setup)
-    mockFunctionsConfig()
-    setStub = sinon.stub().returns(Promise.resolve({}))
-    getStub = sinon.stub().returns(Promise.resolve({}))
-    refStub = sinon.stub().returns({ set: setStub })
-    docStub = sinon.stub().returns({
-      set: setStub,
-      get: getStub,
-      collection: sinon.stub().returns({
-        add: sinon.stub().returns(Promise.resolve({})),
-        doc: docStub
-      })
-    })
-    collectionStub = sinon
-      .stub()
-      .returns({ add: sinon.stub().returns(Promise.resolve({})), doc: docStub })
-    databaseStub = sinon.stub()
-    // Stub Firebase's admin.initializeApp
-    adminInitStub = sinon.stub(admin, 'initializeApp')
-    refStub = sinon.stub()
-    setStub = sinon.stub()
-    refStub.returns({ set: setStub, update: setStub })
-    setStub.returns(Promise.resolve({ ref: 'new_ref' }))
-    databaseStub.ServerValue = { TIMESTAMP: 'test' }
-    databaseStub.returns({ ref: refStub })
-    sinon.stub(admin, 'database').get(() => databaseStub)
-    // Apply stubs as admin.firestore()
-    const firestoreStub = sinon
-      .stub()
-      .returns({ doc: docStub, collection: collectionStub })
-    sinon.stub(admin, 'firestore').get(() => firestoreStub)
-    const createdAt = 'timestamp'
-    admin.firestore.FieldValue = { serverTimestamp: () => createdAt }
     // Set GCLOUD_PROJECT to env
     process.env.GCLOUD_PROJECT = 'test'
-    // Stub Firebase's config environment var
-    process.env.FIREBASE_CONFIG = JSON.stringify({
-      databaseURL: 'https://some-project.firebaseio.com',
-      storageBucket: 'some-bucket.appspot.com'
+    const storageStub = sinon.stub().returns({
+      bucket: sinon.stub().returns({
+        file: sinon.stub().returns({
+          download: sinon.stub().returns(Promise.resolve({}))
+        })
+      })
     })
+    sinon.stub(admin, 'storage').get(() => storageStub)
+    // Load wrapped version of Cloud Function
     /* eslint-disable global-require */
     copyServiceAccountToFirestore = functionsTest.wrap(
       require(`${__dirname}/../../index`).copyServiceAccountToFirestore
@@ -61,7 +37,6 @@ describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', ()
   })
 
   afterEach(() => {
-    adminInitStub.restore()
     // Restoring stubs to the original methods
     functionsTest.cleanup()
   })
@@ -102,5 +77,41 @@ describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', ()
       copyServiceAccountToFirestore(fakeEvent, fakeContext)
     )
     expect(err).to.have.property('message', 'Not Found')
+  })
+
+  // Skipped due to issues mocking Google Cloud Storage library
+  // TODO: Unskip once GCS is switched with Firebase's admin.storage()
+  it.skip('throws if downloaded service account file can not be read as JSON', async () => {
+    const fakeEventData = { serviceAccount: { fullPath: 'test' } }
+
+    const fakeEvent = {
+      data: () => fakeEventData,
+      ref: {
+        update: sinon.stub().returns(Promise.resolve({}))
+      }
+    }
+    const fakeContext = { params: { projectId: 'abc123' } }
+    const [err] = await to(
+      copyServiceAccountToFirestore(fakeEvent, fakeContext)
+    )
+    expect(err).to.have.property('message', 'Error saving file as JSON')
+  })
+
+  // Skipped due to issues mocking Google Cloud Storage library
+  // TODO: Unskip once GCS is switched with Firebase's admin.storage()
+  it.skip('updates reference with serviceAccount param', async () => {
+    const fakeEventData = { serviceAccount: { fullPath: 'test' } }
+
+    const fakeEvent = {
+      data: () => fakeEventData,
+      ref: {
+        update: sinon.stub().returns(Promise.resolve({}))
+      }
+    }
+    const fakeContext = { params: { projectId: 'abc123' } }
+    const [err] = await to(
+      copyServiceAccountToFirestore(fakeEvent, fakeContext)
+    )
+    expect(err).to.have.property('message', 'Error saving file as JSON')
   })
 })

@@ -18,6 +18,19 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
     adminInitStub = sinon.stub(admin, 'initializeApp')
     // Set GCLOUD_PROJECT to env
     process.env.GCLOUD_PROJECT = 'test'
+
+    // Intercept all http requests and respond with 200
+    fauxJax.install()
+    fauxJax.on('request', function respond(request) {
+      request.respond(200, {}, '{}')
+    })
+  })
+
+  after(() => {
+    // Restore firebase-admin stub to the original
+    adminInitStub.restore()
+    // Restore http request functionality
+    fauxJax.restore()
   })
 
   beforeEach(() => {
@@ -43,12 +56,6 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
     // Apply stubs as admin.firestore()
     sinon.stub(admin, 'firestore').get(() => firestoreStub)
 
-    // Intercept all http requests and respond with 200
-    fauxJax.install()
-    fauxJax.on('request', function respond(request) {
-      request.respond(200, {}, '{}')
-    })
-
     // Load wrapped version of Cloud Function
     /* eslint-disable global-require */
     callGoogleApi = functionsTest.wrap(
@@ -58,10 +65,7 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
   })
 
   afterEach(() => {
-    adminInitStub.restore()
     functionsTest.cleanup()
-    // Restore http request functionality
-    fauxJax.restore()
   })
 
   it('throws if request does not contain projectId, environment or storageBucket', async () => {
