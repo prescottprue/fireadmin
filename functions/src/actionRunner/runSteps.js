@@ -184,7 +184,7 @@ export async function runBackupsFromEvent(snap, context) {
  */
 function validateAndConvertEnvironments(eventData, envsMetas, event) {
   if (!eventData.environments) {
-    return []
+    return Promise.resolve([])
   }
   return Promise.all(
     eventData.environments.map((envValue, envIdx) =>

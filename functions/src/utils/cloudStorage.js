@@ -29,13 +29,20 @@ export async function downloadFromStorage(app, pathInStorage) {
     await mkdirp(tempLocalDir)
     // Download file from bucket to local filesystem
     await bucket.file(pathInStorage).download({ destination: tempLocalPath })
+  } catch (err) {
+    const downloadErrMsg = 'Error downloading file from storage'
+    console.error(`${downloadErrMsg}: ${err.message || ''}`, err)
+    throw err
+  }
+  try {
     // Return JSON file contents
     const fileContents = await fs.readJson(tempLocalPath)
     // Once the file data has been read, remove local files to free up disk space
     fs.unlinkSync(tempLocalPath)
     return fileContents
   } catch (err) {
-    console.error('Error downloading file from storage', err.message || err)
+    const errMsg = 'Error saving file as JSON'
+    console.error(`${errMsg}: ${err.message || ''}`, err)
     throw err
   }
 }

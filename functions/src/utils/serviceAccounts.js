@@ -4,15 +4,14 @@ import os from 'os'
 import fs from 'fs-extra'
 import path from 'path'
 import rimraf from 'rimraf'
-import { get, uniqueId, isObject } from 'lodash'
+import { get, uniqueId } from 'lodash'
 import mkdirp from 'mkdirp-promise'
 import { decrypt } from './encryption'
 import { to } from './async'
+
 const gcs = require('@google-cloud/storage')()
 
 const functionsConfig = JSON.parse(process.env.FIREBASE_CONFIG)
-const bucket = gcs.bucket(functionsConfig.storageBucket)
-
 const missingCredMsg =
   'Credential parameter is required to load service account from Firestore'
 
@@ -37,7 +36,7 @@ export async function getAppFromServiceAccount(opts, eventData) {
   }
   console.log(`Getting service account from Firestore...`)
   const { projectId } = eventData
-  console.log('projectid:', projectId)
+
   // Make unique app name (prevents issue of multiple apps initialized with same name)
   const appName = `app-${uniqueId()}`
   // Get Service account data from resource (i.e Storage, Firestore, etc)
@@ -83,34 +82,65 @@ export async function serviceAccountFromFirestorePath(
 ) {
   const firestore = admin.firestore()
   const projectDoc = await firestore.doc(docPath).get()
+
+  // Handle project not existing in Firestore
   if (!projectDoc.exists) {
     const getProjErr = `Project containing service account not at path: ${docPath}`
     console.error(getProjErr)
     throw new Error(getProjErr)
   }
+
+  // Get serviceAccount parameter from project
   const projectData = projectDoc.data()
   const { credential } = get(projectData, 'serviceAccount', {})
+
+  // Handle credential parameter not existing on doc
   if (!credential) {
-    console.log('credential not found')
     console.error(missingCredMsg)
     throw new Error(missingCredMsg)
   }
-  const serviceAccountStr = decrypt(credential)
-  console.log('decrypted service account:', serviceAccountStr)
+
+  // Decrypt service account string
+  let serviceAccountStr
+  try {
+    serviceAccountStr = decrypt(credential)
+  } catch (err) {
+    console.error('Error decrypting credential string', err)
+    throw new Error('Error decrypting credential string')
+  }
+
+  // Parse Service Account string to an object
+  let serviceAccountData
+  try {
+    serviceAccountData = JSON.parse(serviceAccountStr)
+  } catch (err) {
+    console.error('Service account not a valid object', err)
+    throw new Error('Service account not a valid object')
+  }
+
   const localPath = `serviceAccounts/${name}.json`
   const tempLocalPath = path.join(os.tmpdir(), localPath)
   const tempLocalDir = path.dirname(tempLocalPath)
+
+  // Return service account data if specified by options
+  if (returnData) {
+    return serviceAccountData
+  }
+
+  // Write decrypted string as a local file and return
   try {
+    // Create local folder for decrypted serice account file
     await mkdirp(tempLocalDir)
-    const serviceAccountData = JSON.parse(serviceAccountStr)
-    if (!isObject(serviceAccountData)) {
-      throw new Error('Invalid service account data')
-    }
-    console.log('writing service account:', serviceAccountData)
+    // Write decrypted string as a local file
     await fs.writeJson(tempLocalPath, serviceAccountData)
-    return returnData ? serviceAccountData : tempLocalPath
+    // Return localPath of service account
+    return tempLocalPath
   } catch (err) {
-    console.error('Error getting service account form Firestore')
+    console.error(
+      `Error writing service account from Firestore to local file ${err.message ||
+        ''}`,
+      err
+    )
     throw err
   }
 }
@@ -129,8 +159,8 @@ export async function serviceAccountFromStoragePath(docPath, name) {
   // Create Temporary directory and download file to that folder
   await mkdirp(tempLocalDir)
   // Download file from bucket to local filesystem
+  const bucket = gcs.bucket(functionsConfig.storageBucket)
   await bucket.file(docPath).download({ destination: tempLocalPath })
-  console.log('File downloaded locally to', tempLocalPath)
   return tempLocalPath
 }
 

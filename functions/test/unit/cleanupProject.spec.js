@@ -1,43 +1,42 @@
 import * as admin from 'firebase-admin'
+import { to } from 'utils/async'
 
-describe.skip('cleanupProject Firestore Cloud Function (onDelete)', () => {
+describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
   let adminInitStub
   let cleanupProject
-  let firestoreStub = () => ({})
   let refStub // eslint-disable-line no-unused-vars
   let docStub
   let docSetStub // eslint-disable-line no-unused-vars
-  let rtdbStub
   let setStub
   const resultOfSet = {}
 
+  before(() => {
+    // Stub admin.initializeApp()
+    adminInitStub = sinon.stub(admin, 'initializeApp')
+    // Set GCLOUD_PROJECT to env
+    process.env.GCLOUD_PROJECT = 'test'
+  })
+
   beforeEach(() => {
+    // Set GCLOUD_PROJECT to test
+    process.env.GCLOUD_PROJECT = 'test'
+
     // Stub Firebase's functions.config() (default in test/setup.js)
-    // Stub Firebase's config environment var
     process.env.FIREBASE_CONFIG = JSON.stringify({
       databaseURL: 'https://some-project.firebaseio.com',
       storageBucket: 'some-bucket.appspot.com'
     })
-
-    mockFunctionsConfig()
-    /* eslint-disable global-require */
-    adminInitStub = sinon.stub(admin, 'initializeApp')
-    // Stub Firebase's functions.config()
-    firestoreStub = sinon.stub()
+    // Stubs for Firestore methods
     docStub = sinon.stub()
     docSetStub = sinon.stub()
-    setStub = sinon.stub()
-    rtdbStub = sinon.stub()
-    setStub.returns(Promise.resolve(resultOfSet))
-    docStub.returns({ set: setStub, once: () => Promise.resolve({}) })
-    rtdbStub.returns({
-      val: () => ({}),
-      once: () => Promise.resolve(rtdbStub())
+    setStub = sinon.stub().returns(Promise.resolve(resultOfSet))
+    docStub.returns({
+      set: setStub,
+      once: () => Promise.resolve({})
     })
-    firestoreStub.returns({ doc: docStub })
-    sinon.stub(admin, 'firestore').get(() => firestoreStub)
-    // Syntax may change when this issue is addressed
-    // [#2](https://github.com/firebase/firebase-functions-test/issues/2)
+
+    // Load wrapped version of Cloud Function
+    /* eslint-disable global-require */
     cleanupProject = functionsTest.wrap(
       require(`${__dirname}/../../index`).cleanupProject
     )
@@ -50,13 +49,121 @@ describe.skip('cleanupProject Firestore Cloud Function (onDelete)', () => {
     adminInitStub.restore()
   })
 
-  it('handles event', async () => {
-    const fakeEvent = functionsTest.firestore.makeDocumentSnapshot(
-      { foo: 'bar' },
-      'projects/abc123'
-    )
+  it('Cleans up all data and exits if there are subcollections for a project', async () => {
+    const fakeEvent = {
+      data: () => ({}),
+      ref: { getCollections: () => Promise.resolve({}) }
+    }
     const fakeContext = { params: { projectId: 'abc123' } }
     const res = await cleanupProject(fakeEvent, fakeContext)
     expect(res).to.be.null
+  })
+
+  it('gracefully handles subcollections without any documents', async () => {
+    const fakeEvent = {
+      data: () => ({}),
+      ref: {
+        getCollections: () =>
+          Promise.resolve([
+            {
+              ref: { getCollections: () => Promise.resolve([]) },
+              get: sinon.stub().returns(Promise.resolve({}))
+            }
+          ])
+      }
+    }
+    const fakeContext = { params: { projectId: 'abc123' } }
+    const res = await cleanupProject(fakeEvent, fakeContext)
+    expect(res).to.be.null
+  })
+
+  it('handles error getting collection data', async () => {
+    const fakeError = new Error('test')
+    const fakeEvent = {
+      data: () => ({}),
+      ref: {
+        getCollections: () =>
+          Promise.resolve([
+            {
+              get: sinon.stub().returns(Promise.reject(fakeError))
+            }
+          ])
+      }
+    }
+    const fakeContext = { params: { projectId: 'abc123' } }
+    const [err] = await to(cleanupProject(fakeEvent, fakeContext))
+    expect(err).to.have.property('message', fakeError.message)
+  })
+
+  it('handles error getting child subcollection documents', async () => {
+    const fakeError = new Error('test')
+    const fakeEvent = {
+      data: () => ({}),
+      ref: {
+        getCollections: () =>
+          Promise.resolve([
+            {
+              ref: { getCollections: () => Promise.reject(fakeError) },
+              get: sinon.stub().returns(Promise.resolve({}))
+            }
+          ])
+      }
+    }
+    const fakeContext = { params: { projectId: 'abc123' } }
+    const [err] = await to(cleanupProject(fakeEvent, fakeContext))
+    expect(err).to.have.property('message', fakeError.message)
+  })
+
+  it('Cleans up all data and subcollections for a project', async () => {
+    const deleteStub = sinon.stub().returns(Promise.resolve())
+    const fakeEvent = {
+      data: () => ({}),
+      ref: {
+        getCollections: () =>
+          Promise.resolve([
+            {
+              get: sinon.stub().returns(
+                Promise.resolve({
+                  size: 1,
+                  forEach: feCb => {
+                    feCb({ ref: { delete: deleteStub } })
+                  }
+                })
+              )
+            }
+          ])
+      }
+    }
+    const fakeContext = { params: { projectId: 'abc123' } }
+    const res = await cleanupProject(fakeEvent, fakeContext)
+    expect(res).to.be.null
+    expect(deleteStub).to.have.been.calledOnce
+  })
+
+  it('Handles error deleting subcollection document for a project', async () => {
+    const fakeError = new Error('test')
+    const deleteStub = sinon.stub().returns(Promise.reject(fakeError))
+    const fakeEvent = {
+      data: () => ({}),
+      ref: {
+        getCollections: () =>
+          Promise.resolve([
+            {
+              get: sinon.stub().returns(
+                Promise.resolve({
+                  size: 1,
+                  forEach: feCb => {
+                    feCb({ ref: { delete: deleteStub } })
+                  }
+                })
+              )
+            }
+          ])
+      }
+    }
+    const fakeContext = { params: { projectId: 'abc123' } }
+    const [err] = await to(cleanupProject(fakeEvent, fakeContext))
+    expect(err).to.have.property('message', fakeError.message)
+    expect(deleteStub).to.have.been.calledOnce
   })
 })

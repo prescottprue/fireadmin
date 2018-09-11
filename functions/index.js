@@ -14,8 +14,11 @@ try {
   )
 }
 
-// Set timestamp settings to silence warning
-admin.firestore().settings({ timestampsInSnapshots: true })
+// Set Firestore timestamp settings
+// NOTE: Skipped when running tests tests so it does not have to be mocked
+if (process.env.NODE_ENV !== 'test') {
+  admin.firestore().settings({ timestampsInSnapshots: true })
+}
 
 const codeFolder = process.env.NODE_ENV === 'test' ? './src' : './dist'
 
