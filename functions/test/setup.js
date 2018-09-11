@@ -18,16 +18,18 @@ global.mockFunctionsConfig = (extraConfig = {}) =>
     firebase: {
       databaseURL: 'https://some-project.firebaseio.com'
     },
-    encryption: {},
+    encryption: {
+      password: 'asdf'
+    },
     algolia: {
       app_id: 'asdf',
       api_key: 'asdf'
     },
-    email: {},
+    gmail: { email: 'test', password: 'test' },
     ...extraConfig
   })
 
-// Stub Firebase's functions.config() (default in test/setup.js)
+// Stub Firebase's functions.config()
 mockFunctionsConfig()
 
 // Stub Firebase's config environment var

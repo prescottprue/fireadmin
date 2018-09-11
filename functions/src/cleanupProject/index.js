@@ -8,7 +8,7 @@ import { to } from '../utils/async'
  */
 async function removeCollection(collectionSnap) {
   const [getErr, collectionQueryResult] = await to(collectionSnap.get())
-  // Handle errors in batch write
+  // Handle errors getting collection data
   if (getErr) {
     console.error('Error data for collection: ', getErr.message || getErr)
     throw getErr
@@ -16,7 +16,6 @@ async function removeCollection(collectionSnap) {
   if (!collectionQueryResult.size) {
     console.log(`No docs in ${collectionSnap.id}, removing all collections`)
     await removeAllCollections(collectionSnap.ref)
-    console.log('collection snap does not have length')
     return null
   }
   console.log(
@@ -106,6 +105,7 @@ async function cleanupProjectEvent(snap, context) {
     throw removeErr
   }
   console.log(`Cleanup successful for project: ${snap.id}`)
+  return null
 }
 
 /**

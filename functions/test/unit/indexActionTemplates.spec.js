@@ -1,9 +1,9 @@
 import * as admin from 'firebase-admin'
 import fauxJax from 'faux-jax'
 
-describe('indexUser RTDB Cloud Function (onWrite)', () => {
+describe('indexActionTemplates RTDB Cloud Function (onWrite)', () => {
   let adminInitStub
-  let indexUser
+  let indexActionTemplates
   let updateStub
   let deleteStub
   let docStub
@@ -30,8 +30,8 @@ describe('indexUser RTDB Cloud Function (onWrite)', () => {
     // Set GCLOUD_PROJECT to env
     process.env.GCLOUD_PROJECT = 'test'
     /* eslint-disable global-require */
-    indexUser = functionsTest.wrap(
-      require(`${__dirname}/../../index`).indexUser
+    indexActionTemplates = functionsTest.wrap(
+      require(`${__dirname}/../../index`).indexActionTemplates
     )
     /* eslint-enable global-require */
   })
@@ -44,16 +44,8 @@ describe('indexUser RTDB Cloud Function (onWrite)', () => {
     process.env.GCLOUD_PROJECT = undefined
   })
 
-  it('removes user when user profile is being deleted', async () => {
-    const res = await indexUser(
-      { after: { exists: false } },
-      { params: { userId: 'asdf' } }
-    )
-    expect(res).to.equal(null)
-  })
-
-  it('exits with null if display name did not change', async () => {
-    const res = await indexUser({
+  it('exits with null if not public', async () => {
+    const res = await indexActionTemplates({
       after: { exists: true, data: () => ({ displayName: 'asdf' }) },
       before: { exists: true, data: () => ({ displayName: 'asdf' }) }
     })
@@ -62,15 +54,18 @@ describe('indexUser RTDB Cloud Function (onWrite)', () => {
 
   it('updates profile with new displayName if changed', async () => {
     const objectID = 'asdf'
-    const afterData = { displayName: 'fdas' }
-    const res = await indexUser(
+    const res = await indexActionTemplates(
       {
-        after: { exists: true, data: () => afterData },
-        before: { exists: true, data: () => ({ displayName: 'asdf' }) }
+        after: {
+          exists: true,
+          data: () => ({ public: true, another: 'thing' })
+        },
+        before: { exists: true, data: () => ({ another: 'original' }) }
       },
-      { params: { userId: objectID } }
+      { params: { templateId: objectID } }
     )
-    expect(res).to.have.property('displayName', afterData.displayName)
+    expect(res).to.have.property('public', true)
+    expect(res).to.have.property('another', 'thing')
     expect(res).to.have.property('objectID', objectID)
   })
 })
