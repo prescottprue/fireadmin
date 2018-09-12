@@ -22,10 +22,8 @@ describe('Project - Action Runner', () => {
   })
 
   describe('Run Action', () => {
-    it.skip('runs action if using non-disabled environment', () => {
-      cy.get(createSelector('run-action-button'))
-        .should('be.disabled')
-        .click()
+    it('runs action if using non-disabled environment', () => {
+      cy.get(createSelector('run-action-button')).should('be.disabled')
     })
 
     it.skip('is disabled if protected environment is selected', () => {

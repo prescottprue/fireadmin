@@ -100,7 +100,7 @@ Deploy Staging:
   before_script:
     - CYPRESS_INSTALL_BINARY=0 npm i
     - npm i --prefix functions # Install functions dependencies
-    - npm i firebase-ci@next firebase-tools@4.1.0 # Install config build and deploy dependencies
+    - npm i firebase-ci@next # Install config build and deploy dependencies
   script:
     - npm run deploy
 

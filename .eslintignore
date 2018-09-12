@@ -8,4 +8,4 @@ functions/dist
 functions/test/mocha.opts
 functions/coverage/**
 functions/mochawesome-report/**
-cypress/fixtures/**
+test/e2e/fixtures/**
