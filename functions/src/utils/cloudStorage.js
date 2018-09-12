@@ -15,7 +15,7 @@ export async function downloadFromStorage(app, pathInStorage) {
     throw new Error('Storage is not enabled on firebase-admin')
   }
   // Handle default app
-  const bucket = !app ? admin.storage().bucket : app.storage().bucket
+  const bucket = !app ? admin.storage().bucket() : app.storage().bucket()
   const localPath = `actions/storage/${pathInStorage}/${Date.now()}.json`
   const tempLocalPath = path.join(os.tmpdir(), localPath)
   const tempLocalDir = path.dirname(tempLocalPath)
