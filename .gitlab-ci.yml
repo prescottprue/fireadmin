@@ -132,8 +132,8 @@ E2E Tests:
   artifacts:
     expire_in: 2 weeks
     paths:
-      - cypress/videos
-      - cypress/screenshots
+      - test/e2e/videos
+      - test/e2e/screenshots
       - cypress.env.json
   before_script:
      # Install deps including Cypress binary (skipped in default before_script)
