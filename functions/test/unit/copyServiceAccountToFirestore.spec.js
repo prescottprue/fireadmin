@@ -1,3 +1,4 @@
+import fs from 'fs'
 import * as admin from 'firebase-admin'
 import { to } from 'utils/async'
 
@@ -21,11 +22,11 @@ describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', ()
     // Set GCLOUD_PROJECT to env
     process.env.GCLOUD_PROJECT = 'test'
     const storageStub = sinon.stub().returns({
-      bucket: sinon.stub().returns({
+      bucket: {
         file: sinon.stub().returns({
           download: sinon.stub().returns(Promise.resolve({}))
         })
-      })
+      }
     })
     sinon.stub(admin, 'storage').get(() => storageStub)
     // Load wrapped version of Cloud Function
@@ -60,6 +61,19 @@ describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', ()
     const fakeEvent = {
       data: () => fakeEventData
     }
+    const storageStub = sinon.stub().returns({
+      bucket: {
+        file: sinon.stub().returns({
+          // Mock download method with promise rejection matching cloud storage
+          download: sinon
+            .stub()
+            .returns(
+              Promise.reject(new Error('A file name must be specified.'))
+            )
+        })
+      }
+    })
+    sinon.stub(admin, 'storage').get(() => storageStub)
     const fakeContext = { params: { projectId: 'abc123' } }
     const [err] = await to(
       copyServiceAccountToFirestore(fakeEvent, fakeContext)
@@ -73,6 +87,15 @@ describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', ()
       data: () => fakeEventData
     }
     const fakeContext = { params: { projectId: 'abc123' } }
+    const storageStub = sinon.stub().returns({
+      bucket: {
+        file: sinon.stub().returns({
+          // Mock download method with promise rejection matching cloud storage
+          download: sinon.stub().returns(Promise.reject(new Error('Not Found')))
+        })
+      }
+    })
+    sinon.stub(admin, 'storage').get(() => storageStub)
     const [err] = await to(
       copyServiceAccountToFirestore(fakeEvent, fakeContext)
     )
@@ -83,7 +106,18 @@ describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', ()
   // TODO: Unskip once GCS is switched with Firebase's admin.storage()
   it.skip('throws if downloaded service account file can not be read as JSON', async () => {
     const fakeEventData = { serviceAccount: { fullPath: 'test' } }
-
+    const storageStub = sinon.stub().returns({
+      bucket: {
+        file: sinon.stub().returns({
+          // Mock download method with invalid JSON file data
+          download: sinon.spy(({ destination }) => {
+            fs.writeFileSync(destination, JSON.stringify({ asdf: 'asdf' }))
+            return Promise.resolve()
+          })
+        })
+      }
+    })
+    sinon.stub(admin, 'storage').get(() => storageStub)
     const fakeEvent = {
       data: () => fakeEventData,
       ref: {
@@ -95,6 +129,7 @@ describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', ()
       copyServiceAccountToFirestore(fakeEvent, fakeContext)
     )
     expect(err).to.have.property('message', 'Error saving file as JSON')
+    admin.storage.restore()
   })
 
   // Skipped due to issues mocking Google Cloud Storage library
