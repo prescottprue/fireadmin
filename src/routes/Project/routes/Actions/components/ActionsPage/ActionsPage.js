@@ -35,7 +35,8 @@ export const ActionsPage = ({
           color="primary"
           variant="raised"
           aria-label="Run Action"
-          onClick={submitActionRunner}>
+          onClick={submitActionRunner}
+          data-test="run-action-button">
           Run Action
         </Button>
         {selectedTemplate && (
@@ -45,13 +46,16 @@ export const ActionsPage = ({
             variant="raised"
             aria-label="Clear"
             onClick={clearRunner}
-            className={classes.button}>
+            className={classes.button}
+            data-test="clear-action-button">
             Clear
           </Button>
         )}
       </div>
       <div className={classes.progress}>
-        {actionProcessing && <LinearProgress color="primary" />}
+        {actionProcessing && (
+          <LinearProgress color="primary" data-test="action-runner-progress" />
+        )}
       </div>
       <ActionRunnerForm
         projectId={params.projectId}

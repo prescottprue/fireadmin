@@ -3,18 +3,9 @@ import { createSelector } from '../utils'
 describe('Projects Page', () => {
   let open // eslint-disable-line no-unused-vars
   // Setup before tests including creating a server to listen for external requests
-  before(() => {
+  beforeEach(() => {
     // Create a server to listen to requests sent out to Google Auth and Firestore
     cy.server()
-      // Google get google account info (periodically called by Firebase JS SDK)
-      .route('POST', /identitytoolkit\/v3\/relyingparty\/getAccountInfo/)
-      .as('getGoogleAccountInfo')
-      // Firebase JS SDK request - Called when listener attached
-      .route('POST', /google.firestore.v1beta1.Firestore\/Listen/)
-      .as('listenForProjects')
-      // Firebase JS SDK request - Called when data is returned
-      .route('GET', /google.firestore.v1beta1.Firestore\/Listen/)
-      .as('getProjectData')
       // Firebase JS SDK request - Called when project data is written
       .route('POST', /google.firestore.v1beta1.Firestore\/Write/)
       .as('addProject')
@@ -31,9 +22,6 @@ describe('Projects Page', () => {
     cy.login()
     // Go to projects page
     cy.visit('/projects')
-    // Reload to start fresh (only auth state preserved from previous
-    // navigation or tests)
-    cy.reload()
   })
 
   describe('Add Project', () => {

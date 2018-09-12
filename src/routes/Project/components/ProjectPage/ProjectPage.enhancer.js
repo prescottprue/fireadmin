@@ -15,6 +15,10 @@ import ProjectErrorPage from './ProjectErrorPage'
 import { withNotifications } from 'modules/notification'
 
 export default compose(
+  // Map auth uid from state to props
+  connect(({ firebase: { auth: { uid } } }) => ({ uid })),
+  // Wait for uid to exist before going further
+  spinnerWhileLoading(['uid']),
   firestoreConnect(({ params }) => [
     // Project
     {
@@ -40,10 +44,9 @@ export default compose(
   ]),
   connect(({ firebase, firestore: { data } }, { params }) => ({
     auth: firebase.auth,
-    project: get(data, `projects.${params.projectId}`),
-    environments: get(data, `environments-${params.projectId}`)
+    project: get(data, `projects.${params.projectId}`)
   })),
-  spinnerWhileLoading(['project', 'environments']),
+  spinnerWhileLoading(['project']),
   renderWhileEmpty(['project'], ProjectNotFoundPage),
   renderIfError(
     [

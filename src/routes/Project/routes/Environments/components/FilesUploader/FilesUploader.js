@@ -24,7 +24,9 @@ export const FilesUploader = ({
           classes.dropzoneCompact}`}
         activeClassName={classes.dropzoneActive}
         disableClick={disabled}
-        accept={acceptedFormats.join(', ')}>
+        accept={acceptedFormats.join(', ')}
+        inputProps={{ 'data-test': 'file-uploader' }}>
+        {/* data-test="file-uploader"> */}
         <UploadIcon className={classes[`icon${isCompact ? 'Compact' : ''}`]} />
         <div className={classes[`dropzone${isCompact ? 'Text' : 'Title'}`]}>
           Drag & Drop
@@ -61,6 +63,7 @@ FilesUploader.defaultProps = {
     // 'image/jpeg',
     // 'image/gif',
     // 'image/bmp',
+    'application/octet-stream',
     'application/json'
   ]
 }

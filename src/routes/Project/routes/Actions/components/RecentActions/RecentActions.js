@@ -70,7 +70,8 @@ export const RecentActions = ({
                 <IconButton
                   onClick={() => rerunAction(action)}
                   color="secondary"
-                  className={classes.submit}>
+                  className={classes.submit}
+                  data-test="redo-action-button">
                   <RedoIcon />
                 </IconButton>
               </Tooltip>

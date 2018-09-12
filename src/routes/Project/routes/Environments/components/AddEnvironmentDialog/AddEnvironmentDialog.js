@@ -41,6 +41,7 @@ export const AddEnvironmentDialog = ({
           validate={required}
           fullWidth
           label="Environment Name"
+          data-test="new-environment-name"
         />
         <Field
           component={TextField}
@@ -49,6 +50,7 @@ export const AddEnvironmentDialog = ({
           fullWidth
           validate={[required, validateDatabaseUrl]}
           label="Database URL"
+          data-test="new-environment-db-url"
         />
         <Field
           component={TextField}
@@ -86,13 +88,18 @@ export const AddEnvironmentDialog = ({
       </div>
     </DialogContent>
     <DialogActions>
-      <Button color="secondary" disabled={submitting} onClick={closeAndReset}>
+      <Button
+        color="secondary"
+        disabled={submitting}
+        onClick={closeAndReset}
+        data-test="new-environment-cancel-button">
         Cancel
       </Button>
       <Button
         color="primary"
         disabled={pristine || submitting}
-        onClick={callSubmit}>
+        onClick={callSubmit}
+        data-test="new-environment-create-button">
         Create
       </Button>
     </DialogActions>

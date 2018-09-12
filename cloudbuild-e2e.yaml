@@ -1,11 +1,11 @@
 steps:
-# Unencrypt cypress/config.json.enc using Cloud KMS
+# Unencrypt test/e2e/config.json.enc using Cloud KMS
 - name: gcr.io/cloud-builders/gcloud
   args:
   - kms
   - decrypt
   - --ciphertext-file=build/enc/config.json.enc
-  - --plaintext-file=cypress/config.json
+  - --plaintext-file=test/e2e/config.json
   - --location=global
   - --keyring=first
   - --key=keyOne
@@ -26,7 +26,7 @@ steps:
     '-t',
     'gcr.io/$PROJECT_ID/test-fireadmin',
     '-f',
-    'cypress/Dockerfile',
+    'test/e2e/Dockerfile',
     '.'
   ]
   env: [
