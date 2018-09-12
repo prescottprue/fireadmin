@@ -249,10 +249,9 @@ async function getSubcollectionNames(subcollectionSetting, ref) {
   return collectionsSnapToArray(collections)
 }
 
+const MAX_DOCS_PER_BATCH = 500
+
 async function writeDocBatch({ dataFromSrc, destRef, opts }) {
-  if (!destRef.firestore.batch) {
-    throw new Error(JSON.stringify(Object.keys(destRef.firestore)))
-  }
   const batch = destRef.firestore.batch()
   const srcChildIds = []
   // Call set to dest instance for each doc within the original data
@@ -271,7 +270,6 @@ async function writeDocBatch({ dataFromSrc, destRef, opts }) {
   }
   return writeRes
 }
-const MAX_DOCS_PER_BATCH = 500
 
 /**
  * Write documents to Firestore in batches. If there are more docs than
