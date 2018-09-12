@@ -10,8 +10,10 @@ import 'firebase/database'
 import 'firebase/storage'
 import { persistStore, persistReducer } from 'redux-persist'
 import logger from 'redux-logger'
-import { setAnalyticsUser } from '../utils/analytics'
 import makeRootReducer from './reducers'
+import { updateLocation } from './location'
+import { setAnalyticsUser } from '../utils/analytics'
+import { initializeMessaging } from '../utils/messaging'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
 import {
   firebase as fbConfig,
@@ -19,7 +21,6 @@ import {
   env
 } from '../config'
 import { version } from '../../package.json'
-import { updateLocation } from './location'
 
 export default (initialState = {}) => {
   // ======================================================
@@ -58,9 +59,11 @@ export default (initialState = {}) => {
     useFirestoreForStorageMeta: true,
     presence: 'presence',
     sessions: null,
-    onAuthStateChanged: authState => {
+    onAuthStateChanged: (authState, firebase, dispatch) => {
       if (authState) {
         setAnalyticsUser(authState)
+        // Initalize messaging with dispatch
+        initializeMessaging(dispatch)
       }
     }
   }
