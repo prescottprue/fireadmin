@@ -13,22 +13,23 @@
 ## Table of Contents
 1. [Features](#features)
 1. [Getting Started](#getting-started)
-1. [Running Your Own](#running-your-own)
-  1. [Requirements](#requirements)
+1. [NPM Scripts](#npm-scripts)
 1. [Application Structure](#application-structure)
-1. [Development](#development)
-  1. [Routing](#routing)
+1. [Run Your Own](#run-your-own)
+  1. [Requirements](#requirements)
+  1. [Before Starting](#before-starting)
 1. [Testing](#testing)
-1. [Configuration](#configuration)
-1. [Production](#production)
+  1. [Cloud Functions Unit](#cloud-functions-unit-tests)
+  1. [App E2E](#app-e2e)
 1. [Deployment](#deployment)
+1. [FAQ](#faq)
 
 ## Features
 * Manage multiple environments as a single project
 * Project Sharing (invite by email coming soon)
-* "Action Runner" for common project tasks such as data migrations, and generating reports
+* "Action Runner" for common project actions such as data migrations, and generating reports
 * Action Features include support for:
-  * Multiple steps
+  * Multiple steps allowing many actions in one run
   * Backup phase (for easy backing up data before running your actions)
   * Custom logic (JS written in the browser with ESNext features like `async/await`)
 * Project level tracking of actions which have been run through Action Runner
@@ -47,12 +48,70 @@ Interested in adding a feature or contributing? Open an issue or [reach out over
 
 ## Getting Started
 
-If you are just getting started with Fireadmin, it is probably best to checkout the [hosted version available at fireadmin.io](http://fireadmin.io). After you become more familiar, feel free to run your own by pulling this source and proceeding to the [run your own section](#running-your-own).
+Checkout the [hosted version available at fireadmin.io](http://fireadmin.io). After you become more familiar, feel free to run your own by pulling this source and proceeding to the [run your own section](#run-your-own).
+
+### NPM Scripts
+
+While developing, you will probably rely mostly on `npm start`; however, there are additional scripts at your disposal:
+
+|`npm run <script>`    |Description|
+|-------------------|-----------|
+|`start`            |Serves your app at `localhost:3000` and displays [Webpack Dashboard](https://github.com/FormidableLabs/webpack-dashboard)|
+|`start:simple`     |Serves your app at `localhost:3000` without [Webpack Dashboard](https://github.com/FormidableLabs/webpack-dashboard)|
+|`start:dist`       |Builds the application to ./dist and Serves it at `localhost:3000` using `firebase serve`|
+|`functions:start`  |Runs Functions locally using `firebase functions:shell`|
+|`functions:build`  |Builds Cloud Functions to ./functions/dist|
+|`functions:test`   |Runs Functions Unit Tests with Mocha|
+|`build`            |Builds the application to ./dist|
+|`test`             |Runs E2E Tests with Cypress. See [testing](#testing)|
+|`lint`             |[Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors|
+|`lint:fix`         |Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix)|
+
+[Husky](https://github.com/typicode/husky) is used to enable `prepush` hook capability. The `prepush` script currently runs `eslint`, which will keep you from pushing if there is any lint within your code. If you would like to disable this, remove the `prepush` script from the `package.json`.
+
+## Application Structure
+
+```
+.
+├── bin                      # Scripts called from the command line
+│   └── firebase-extra.js    # Script called by tests to seed/clear Firebase
+├── build                    # All build-related configuration
+│   └── webpack.config.js    # Environment-specific configuration files for webpack
+├── server                   # Express application that provides webpack middleware
+│   └── main.js              # Server application entry point
+├── functions                # Cloud Functions (uses Cloud Functions for Firebase)
+│   └── index.js             # Functions entry point
+├── src                      # Application source code
+│   ├── index.html           # Main HTML page container for app
+│   ├── main.js              # Application bootstrap and rendering
+│   ├── normalize.js         # Browser normalization and polyfills
+│   ├── components           # Global Reusable Presentational Components
+│   ├── containers           # Global Reusable Container Components
+│   ├── layouts              # Components that dictate major page structure
+│   │   └── CoreLayout       # Global application layout in which to render routes
+│   ├── routes               # Main route definitions and async split points
+│   │   ├── index.js         # Bootstrap main application routes with store
+│   │   └── Home             # Fractal route
+│   │       ├── index.js     # Route definitions and async split points
+│   │       ├── assets       # Assets required to render components
+│   │       ├── components   # Presentational React Components
+│   │       ├── container    # Connect components to actions and store
+│   │       ├── modules      # Collections of reducers/constants/actions
+│   │       └── routes **    # Fractal sub-routes (** optional)
+│   ├── static               # Static assets
+│   ├── store                # Redux-specific pieces
+│   │   ├── createStore.js   # Create and instrument redux store
+│   │   └── reducers.js      # Reducer registry and injection
+│   └── styles               # Application-wide styles (generally settings)
+├── project.config.js        # Project configuration settings (includes ci settings)
+├── test                     # App Tests
+│   └── unit                 # Unit tests
+```
+
+## Run Your Own
 
 ### Requirements
 * node `^6.14.0` (`8.11.3` suggested for function to match [Cloud Functions Runtime][functions-runtime-url])
-
-## Running Your Own
 
 ### Before Starting
 
@@ -61,13 +120,13 @@ If you are just getting started with Fireadmin, it is probably best to checkout 
 1. Install Firebase Command Line Tools: `npm i -g firebase-tools`
 
 ### Local Environment Setup
-1. Install dependencies: `yarn install` (can also be done with `npm install`)
-1. Look for a `src/config.js` file. If one doesn't exist, create it to look like so (generated using [`firebase-ci`](https://www.npmjs.com/package/firebase-ci) in CI environments):
+1. Install dependencies: `npm install`
+1. Look for a `src/config.js` file. If one doesn't exist, create it to look like so (this is generated using [`firebase-ci`](https://www.npmjs.com/package/firebase-ci) in CI environments):
 
     ```js
     export const version = "0.*.*"; // matches package.json when using firebase-ci in CI environment
 
-    export const env = "local"; // matches branch/project when using firebase-ci in CI environment
+    export const env = "local"; // matches branch/project alias when using firebase-ci in CI environment
 
     // Get from Auth Tab with Firebase's Console
     // matches branch/project settings when using firebase-ci in CI environment
@@ -143,7 +202,7 @@ If you are just getting started with Fireadmin, it is probably best to checkout 
 1. Build Project: `npm run build`
 1. Deploy to Firebase: `firebase deploy` (deploys, Cloud Functions, Rules, and Hosting)
 1. Start Development server: `npm start`
-    **NOTE:** You can also use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
+    **NOTE:** You can also use `npm run start:dist` to test how your application will work when deployed to Firebase
 1. View the deployed version of the site by running `firebase open hosting:site`
 
 ### Deployment
@@ -189,19 +248,19 @@ For more options on CI settings checkout the [firebase-ci docs](https://github.c
 1. Deploy to firebase: `firebase deploy`
 **NOTE:** You can use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
 
-### Tests
-**NOTE**: If you have setup CI deployment, E2E tests can automatically run against your staging environment before running the production build.
+### Testing
+**NOTE**: If you have setup CI deployment, [E2E tests](#app-e2e-tests) and [Unit Tests](#cloud-functions-unit-tests) can automatically run against your staging environment before running the production build.
 
 #### Cloud Functions Unit Tests
 Cloud Functions Unit tests are written in [Mocha](https://github.com/mochajs/mocha) with code coverage generated by [Istanbul](https://github.com/gotwarlost/istanbul). These tests cover "backend functionality" handled by Cloud Functions by stubbing the functions environment (including dependencies).
 
-##### Running Locally
+##### Run Locally
 1. Go into the functions folder: `cd functions`
 1. Confirm you have dependencies installed: `npm i`
 1. Run unit tests: `npm test`
 1. To also generate coverage while testing, run `npm run test:cov`
 
-#### App E2E
+#### App E2E Tests
 End to End tests are done using [Cypress](https://cypress.io) and they live within the `test/e2e` folder. These tests cover UI functionality and are run directly on the hosted environment of Fireadmin. Application end to end tests are run automatically in Gitlab-CI the after deploying to the staging environment before deploying to production.
 
 ##### Run Locally
@@ -216,73 +275,14 @@ End to End tests are done using [Cypress](https://cypress.io) and they live with
       "FIREBASE_API_KEY": "<- your firebase apiKey ->"
     }
     ```
-1. Run `npm run test:ui`. This will:
-  1. Create test environment configuration (includes JWT created using service account)
-  1. Open Cypress's local test runner UI where you can run single tests or all tests
+1. Run `npm run start:dist`. This will:
+    1. Build the React app to the `dist` folder
+    1. Host the build app on a local server using `firebase serve`
+1. In a different terminal tab, run `npm run test:ui`. This will:
+    1. Create test environment configuration (includes JWT created using service account)
+    1. Open Cypress's local test runner UI where you can run single tests or all tests
 
-##### Automatically on CI
-1. Add the following environment variables to Gitlab-CI's variables:
-    ```js
-    TEST_UID // uid of user for testing
-    FIREBASE_PROJECT_ID // projectId of staging project
-    FIREBASE_CERT_URL // from service account
-    FIREBASE_CLIENT_EMAIL // from service account
-    FIREBASE_CLIENT_ID // from service account
-    FIREBASE_PRIVATE_KEY // from service account (make sure to wrap in "")
-    FIREBASE_PRIVATE_KEY_ID // from service account
-    ```
-
-### NPM Scripts
-
-While developing, you will probably rely mostly on `npm start`; however, there are additional scripts at your disposal:
-
-|`npm run <script>`    |Description|
-|-------------------|-----------|
-|`start`            |Serves your app at `localhost:3000` and displays [Webpack Dashboard](https://github.com/FormidableLabs/webpack-dashboard)|
-|`start:simple`     |Serves your app at `localhost:3000` without [Webpack Dashboard](https://github.com/FormidableLabs/webpack-dashboard)|
-|`build`            |Builds the application to ./dist|
-|`test`             |Runs unit tests with Karma. See [testing](#testing)|
-|`test:watch`       |Runs `test` in watch mode to re-run tests when changed|
-|`lint`             |[Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors|
-|`lint:fix`         |Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix)|
-
-[Husky](https://github.com/typicode/husky) is used to enable `prepush` hook capability. The `prepush` script currently runs `eslint`, which will keep you from pushing if there is any lint within your code. If you would like to disable this, remove the `prepush` script from the `package.json`.
-
-## Application Structure
-
-```
-.
-├── build                    # All build-related configuration
-│   └── create-config        # Script for building config.js in ci environments
-│   └── karma.config.js      # Test configuration for Karma
-│   └── webpack.config.js    # Environment-specific configuration files for webpack
-├── server                   # Express application that provides webpack middleware
-│   └── main.js              # Server application entry point
-├── src                      # Application source code
-│   ├── index.html           # Main HTML page container for app
-│   ├── main.js              # Application bootstrap and rendering
-│   ├── normalize.js         # Browser normalization and polyfills
-│   ├── components           # Global Reusable Presentational Components
-│   ├── containers           # Global Reusable Container Components
-│   ├── layouts              # Components that dictate major page structure
-│   │   └── CoreLayout       # Global application layout in which to render routes
-│   ├── routes               # Main route definitions and async split points
-│   │   ├── index.js         # Bootstrap main application routes with store
-│   │   └── Home             # Fractal route
-│   │       ├── index.js     # Route definitions and async split points
-│   │       ├── assets       # Assets required to render components
-│   │       ├── components   # Presentational React Components
-│   │       ├── container    # Connect components to actions and store
-│   │       ├── modules      # Collections of reducers/constants/actions
-│   │       └── routes **    # Fractal sub-routes (** optional)
-│   ├── static               # Static assets
-│   ├── store                # Redux-specific pieces
-│   │   ├── createStore.js   # Create and instrument redux store
-│   │   └── reducers.js      # Reducer registry and injection
-│   └── styles               # Application-wide styles (generally settings)
-├── project.config.js        # Project configuration settings (includes ci settings)
-└── tests                    # Unit tests
-```
+NOTE: `npm run start:dist` is used to start the local server in the example above for speed while running all tests. If you are developing the application while re-running a single test, or just a few, you can use `npm run start` instead.
 
 ## FAQ
 

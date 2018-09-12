@@ -1,51 +1,8 @@
-import { size, chunk, flatten, isArray } from 'lodash'
+import { isArray } from 'lodash'
 import * as admin from 'firebase-admin'
 import { ACTION_RUNNER_RESPONSES_PATH } from './constants'
-import { to, promiseWaterfall } from '../utils/async'
-
-/**
- * Create data object with values for each document with keys being doc.id.
- * @param  {firebase.database.DataSnapshot} snapshot - Data for which to create
- * an ordered array.
- * @return {Object|Null} Object documents from snapshot or null
- */
-export function dataArrayFromSnap(snap, onlyIds) {
-  const data = []
-  if (snap.data && snap.exists) {
-    const docData = { id: snap.id }
-    if (!onlyIds) {
-      docData.data = (snap.data && snap.data()) || snap
-    }
-    data.push(docData)
-  } else if (snap.forEach) {
-    snap.forEach(doc => {
-      const docData = { id: doc.id }
-      if (!onlyIds) {
-        docData.data = (doc.data && doc.data()) || doc
-      }
-      data.push(docData)
-    })
-  }
-  return data
-}
-
-/**
- * Create data object with values for each document with keys being doc.id.
- * @param  {firebase.database.DataSnapshot} snapshot - Data for which to create
- * an ordered array.
- * @return {Object|Null} Object documents from snapshot or null
- */
-export function dataByIdSnapshot(snap) {
-  const data = {}
-  if (snap.data && snap.exists) {
-    data[snap.id] = snap.data()
-  } else if (snap.forEach) {
-    snap.forEach(doc => {
-      data[doc.id] = doc.data() || doc
-    })
-  }
-  return size(data) ? data : null
-}
+import { to } from '../utils/async'
+import { writeDocsInBatches, dataArrayFromSnap } from '../utils/firestore'
 
 export function updateResponseOnRTDB(snap, context, error) {
   const response = {
@@ -249,60 +206,6 @@ async function getSubcollectionNames(subcollectionSetting, ref) {
   return collectionsSnapToArray(collections)
 }
 
-const MAX_DOCS_PER_BATCH = 500
-
-async function writeDocBatch({ dataFromSrc, destRef, opts }) {
-  const batch = destRef.firestore.batch()
-  const srcChildIds = []
-  // Call set to dest instance for each doc within the original data
-  dataFromSrc.forEach(({ id, data }) => {
-    const childRef = destRef.doc(id)
-    srcChildIds.push(id)
-    batch.set(childRef, data, opts)
-  })
-  const [writeErr, writeRes] = await to(batch.commit())
-  // Handle errors in batch write
-  if (writeErr) {
-    console.error('Error writing batch ', writeErr.message || writeErr, {
-      destId: destRef.id
-    })
-    throw writeErr
-  }
-  return writeRes
-}
-
-/**
- * Write documents to Firestore in batches. If there are more docs than
- * the max docs per batch count, multiple batches will be run in succession.
- * @param  {firestore.Firestore} firestoreInstance - Instance on which to
- * create ref
- * @param  {String} destPath - Destination path under which data should be
- * written
- * @param  {Array} docData - List of docs to be written
- * @param  {Object} opts - Options object (can contain merge)
- * @return {Promise} Resolves with results of batch commit
- */
-export async function writeDocsInBatches({ dataFromSrc, destRef, opts }) {
-  // Check if doc data is longer than max docs per batch
-  if (dataFromSrc && dataFromSrc.length < MAX_DOCS_PER_BATCH) {
-    // Less than the max number of docs in a batch
-    return writeDocBatch({ dataFromSrc, destRef, opts })
-  }
-  // More than max number of docs per batch - run multiple batches in succession
-  const promiseResult = await promiseWaterfall(
-    chunk(dataFromSrc, MAX_DOCS_PER_BATCH).map((dataChunk, chunkIdx) => {
-      // Return a function to fit promise waterfall pattern
-      return () => {
-        console.log(`Writing chunk #${chunkIdx} to ${destRef.id}`)
-        return writeDocBatch({ dataFromSrc: dataChunk, destRef, opts })
-      }
-    })
-  )
-  // Flatten array of arrays (one for each chunk) into an array of results
-  // and wrap in promise resolve
-  return flatten(promiseResult)
-}
-
 /**
  * Write document updates in a batch process.
  * @param  {firestore.Firestore} firestoreInstance - Instance on which to
@@ -336,7 +239,7 @@ export async function batchCopyBetweenFirestoreRefs({
 
   // Write docs (batching if nessesary)
   const [writeErr] = await to(
-    writeDocsInBatches({ dataFromSrc, destRef, opts })
+    writeDocsInBatches(destRef.firestore, destRef.path, dataFromSrc, opts)
   )
 
   // Handle errors in batch write

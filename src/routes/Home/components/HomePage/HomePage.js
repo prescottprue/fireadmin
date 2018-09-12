@@ -1,19 +1,20 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
+import { Link } from 'react-router'
+import { ACTION_TEMPLATES_PATH, LOGIN_PATH } from 'constants'
 import classes from './HomePage.scss'
 
 const srcUrl = 'https://github.com/prescottprue/fireadmin'
 
-export const HomePage = ({ goToLogin }) => (
+export const HomePage = () => (
   <div className={classes.container}>
     <Paper className={classes.paper}>
       <div className={classes.header}>
         Fireadmin helps you mange Firebase apps while you grow your team
       </div>
       <div className={classes.getStarted}>
-        <Button color="primary" onClick={goToLogin}>
+        <Button color="primary" component={Link} to={LOGIN_PATH}>
           Get Started
         </Button>
       </div>
@@ -59,12 +60,14 @@ export const HomePage = ({ goToLogin }) => (
             <p>Manage multiple Firebase Instances as one Project.</p>
           </div>
           <div className={classes.bottomSection}>
-            <h4>Custom Actions</h4>
+            <h4>Custom Action Templates</h4>
             <p>
-              Copy data from one instance to another without worrying about
-              selecting the wrong file. Create reports on the size of data
-              collections of your instances.
+              Copy data between environments all the way through your pipeline
+              without worrying about it changing along the way.
             </p>
+            <Button color="primary" component={Link} to={ACTION_TEMPLATES_PATH}>
+              Checkout Action Templates
+            </Button>
           </div>
         </div>
         <div className={classes.sectionVertical}>
@@ -86,8 +89,6 @@ export const HomePage = ({ goToLogin }) => (
   </div>
 )
 
-HomePage.propTypes = {
-  goToLogin: PropTypes.func.isRequired // from enhancer (withHandlers)
-}
+HomePage.propTypes = {}
 
 export default HomePage

@@ -48,9 +48,18 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
           batch: sinon.stub().returns({
             commit: sinon.stub().returns(Promise.resolve()),
             set: sinon.stub().returns({})
+          }),
+          collection: sinon.stub().returns({
+            doc: sinon.stub().returns({}),
+            get: sinon.stub().returns(
+              Promise.resolve({
+                data: () => ({ some: 'value' }),
+                exists: true
+              })
+            )
           })
         },
-        doc: sinon.stub().returns({})
+        path: 'projects'
       }),
       doc: sinon.stub().returns({
         update: sinon.stub().returns(Promise.resolve())

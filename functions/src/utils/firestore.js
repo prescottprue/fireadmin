@@ -69,7 +69,12 @@ export function dataByIdSnapshot(snap) {
  * @param  {Object} opts - Options object (can contain merge)
  * @return {Promise} Resolves with results of batch commit
  */
-async function batchWriteDocs(firestoreInstance, destPath, docData, opts) {
+export async function batchWriteDocs(
+  firestoreInstance,
+  destPath,
+  docData,
+  opts
+) {
   const batch = firestoreInstance.batch()
   // Call set to dest for each doc within the original data
   docData.forEach(({ id, data }) => {
