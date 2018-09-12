@@ -3,9 +3,6 @@ import path from 'path'
 import fs from 'fs-extra'
 import mkdirp from 'mkdirp-promise'
 import * as admin from 'firebase-admin'
-const gcs = require('@google-cloud/storage')()
-
-const functionsConfig = JSON.parse(process.env.FIREBASE_CONFIG)
 
 /**
  * Download JSON File from Google Cloud Storage and return is contents
@@ -18,9 +15,7 @@ export async function downloadFromStorage(app, pathInStorage) {
     throw new Error('Storage is not enabled on firebase-admin')
   }
   // Handle default app
-  const bucket = !app
-    ? gcs.bucket(functionsConfig.storageBucket)
-    : app.storage().bucket
+  const bucket = !app ? admin.storage().bucket() : app.storage().bucket()
   const localPath = `actions/storage/${pathInStorage}/${Date.now()}.json`
   const tempLocalPath = path.join(os.tmpdir(), localPath)
   const tempLocalDir = path.dirname(tempLocalPath)

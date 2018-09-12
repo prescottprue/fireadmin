@@ -5,8 +5,6 @@ import os from 'os'
 import path from 'path'
 import mkdirp from 'mkdirp-promise'
 
-const gcs = require('@google-cloud/storage')()
-
 const eventPathName = 'fileToDb'
 
 /**
@@ -20,19 +18,25 @@ export default functions.database
 
 async function copyFileToRTDB(snap, context) {
   const { filePath, databasePath, keepPushKey = false } = snap.val()
+  if (!filePath || !databasePath) {
+    throw new Error(
+      '"filePath" and "databasePath" are required to copy file to RTDB'
+    )
+  }
   const tempLocalFile = path.join(os.tmpdir(), filePath)
   // Create temp directory
   const tempLocalDir = path.dirname(tempLocalFile)
   await mkdirp(tempLocalDir)
-  const functionsConfig = JSON.parse(process.env.FIREBASE_CONFIG)
-
-  const bucket = gcs.bucket(functionsConfig.storageBucket)
 
   // Download file to temporary directory
-  await bucket.file(filePath).download({ destination: tempLocalFile })
+  await admin
+    .storage()
+    .bucket()
+    .file(filePath)
+    .download({ destination: tempLocalFile })
 
   // Read the file
-  const fileData = await fs.readJson(filePath)
+  const fileData = await fs.readJson(tempLocalFile)
   console.log('File data loaded, writing to database...')
 
   // Write File data to DB

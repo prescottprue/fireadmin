@@ -13,15 +13,18 @@ import * as functions from 'firebase-functions'
  * by default if not passed.
  */
 export function encrypt(text, options = {}) {
-  const { algorithm = 'aes-256-ctr', password } = options
+  const { algorithm = 'aes-256-ctr', password: passwordOption } = options
   if (!text) {
     return
   }
   const str = !isString(text) ? JSON.stringify(text) : text
-  const cipher = crypto.createCipher(
-    algorithm,
-    password || functions.config().encryption.password
-  )
+  const password = passwordOption || functions.config().encryption.password
+  if (!password) {
+    throw new Error(
+      'Password is required to encrypt. Check functions config for encryption.password'
+    )
+  }
+  const cipher = crypto.createCipher(algorithm, password)
   let crypted = cipher.update(str, 'utf8', 'hex')
   crypted += cipher.final('hex')
   return crypted

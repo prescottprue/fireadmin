@@ -18,7 +18,6 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
-    "@google-cloud/storage": "^1.7.0",
     "algoliasearch": "^3.24.6",
     "babel-core": "^6.26.0",
     "babel-plugin-module-resolver": "^3.1.1",

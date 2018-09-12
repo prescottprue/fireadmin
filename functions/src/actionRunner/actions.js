@@ -1,12 +1,8 @@
 import { invoke, get } from 'lodash'
-import {
-  slashPathToFirestoreRef,
-  dataByIdSnapshot,
-  batchCopyBetweenFirestoreRefs
-} from './utils'
+import { dataByIdSnapshot, batchCopyBetweenFirestoreRefs } from './utils'
 import { downloadFromStorage, uploadToStorage } from '../utils/cloudStorage'
 import { to } from '../utils/async'
-
+import { slashPathToFirestoreRef } from '../utils/firestore'
 /**
  * Copy data between Firestore instances from two different Firebase projects
  * @param  {firebase.App} app1 - First app for the action

@@ -4,28 +4,6 @@ import { ACTION_RUNNER_RESPONSES_PATH } from './constants'
 import { to, promiseWaterfall } from '../utils/async'
 
 /**
- * Convert slash path to Firestore reference
- * @param  {firestore.Firestore} firestoreInstance - Instance on which to
- * create ref
- * @param  {String} slashPath - Path to convert into firestore refernce
- * @return {firestore.CollectionReference|firestore.DocumentReference}
- */
-export function slashPathToFirestoreRef(firestoreInstance, slashPath) {
-  let ref = firestoreInstance
-  const srcPathArr = slashPath.split('/')
-  srcPathArr.forEach(pathSegment => {
-    if (ref.collection) {
-      ref = ref.collection(pathSegment)
-    } else if (ref.doc) {
-      ref = ref.doc(pathSegment)
-    } else {
-      throw new Error(`Invalid slash path: ${slashPath}`)
-    }
-  })
-  return ref
-}
-
-/**
  * Create data object with values for each document with keys being doc.id.
  * @param  {firebase.database.DataSnapshot} snapshot - Data for which to create
  * an ordered array.
@@ -68,8 +46,6 @@ export function dataByIdSnapshot(snap) {
   }
   return size(data) ? data : null
 }
-
-const MAX_DOCS_PER_BATCH = 500
 
 export function updateResponseOnRTDB(snap, context, error) {
   const response = {
@@ -248,6 +224,33 @@ export function collectionsSnapToArray(collectionsSnap) {
   return collectionsIds
 }
 
+/**
+ * Get collection names from provided settings falling back to getting all
+ * collection names for the provided Firestore ref using getCollections.
+ * @param  {Array|Boolean} subcollectionSetting [description]
+ * @param  {Object} ref - Firestore reference
+ * @return {Promise} Resolves with an array of collection names
+ */
+async function getSubcollectionNames(subcollectionSetting, ref) {
+  // Return if the provided setting is an array (assuming it is an array of names)
+  if (isArray(subcollectionSetting)) {
+    return subcollectionSetting
+  }
+  // all collection names
+  const [getCollectionsErr, collections] = await to(ref.getCollections())
+  // Handle errors in batch write
+  if (getCollectionsErr) {
+    console.error(
+      'Error getting collections: ',
+      getCollectionsErr.message || getCollectionsErr
+    )
+    throw getCollectionsErr
+  }
+  return collectionsSnapToArray(collections)
+}
+
+const MAX_DOCS_PER_BATCH = 500
+
 async function writeDocBatch({ dataFromSrc, destRef, opts }) {
   const batch = destRef.firestore.batch()
   const srcChildIds = []
@@ -298,31 +301,6 @@ export async function writeDocsInBatches({ dataFromSrc, destRef, opts }) {
   // Flatten array of arrays (one for each chunk) into an array of results
   // and wrap in promise resolve
   return flatten(promiseResult)
-}
-
-/**
- * Get collection names from provided settings falling back to getting all
- * collection names for the provided Firestore ref using getCollections.
- * @param  {Array|Boolean} subcollectionSetting [description]
- * @param  {Object} ref - Firestore reference
- * @return {Promise} Resolves with an array of collection names
- */
-async function getSubcollectionNames(subcollectionSetting, ref) {
-  // Return if the provided setting is an array (assuming it is an array of names)
-  if (isArray(subcollectionSetting)) {
-    return subcollectionSetting
-  }
-  // all collection names
-  const [getCollectionsErr, collections] = await to(ref.getCollections())
-  // Handle errors in batch write
-  if (getCollectionsErr) {
-    console.error(
-      'Error getting collections: ',
-      getCollectionsErr.message || getCollectionsErr
-    )
-    throw getCollectionsErr
-  }
-  return collectionsSnapToArray(collections)
 }
 
 /**

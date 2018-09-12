@@ -9,9 +9,6 @@ import mkdirp from 'mkdirp-promise'
 import { decrypt } from './encryption'
 import { to } from './async'
 
-const gcs = require('@google-cloud/storage')()
-
-const functionsConfig = JSON.parse(process.env.FIREBASE_CONFIG)
 const missingCredMsg =
   'Credential parameter is required to load service account from Firestore'
 
@@ -159,8 +156,11 @@ export async function serviceAccountFromStoragePath(docPath, name) {
   // Create Temporary directory and download file to that folder
   await mkdirp(tempLocalDir)
   // Download file from bucket to local filesystem
-  const bucket = gcs.bucket(functionsConfig.storageBucket)
-  await bucket.file(docPath).download({ destination: tempLocalPath })
+  await admin
+    .storage()
+    .bucket()
+    .file(docPath)
+    .download({ destination: tempLocalPath })
   return tempLocalPath
 }
 

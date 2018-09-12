@@ -10,6 +10,9 @@ import {
 /**
  * Run action based on action template. Multiple Service Account Types
  * supported (i.e. stored on Firestore or cloud storage)
+ * @param  {functions.database.DataSnapshot} snap - Data snapshot from cloud function
+ * @param  {functions.EventContext} context - The context in which an event occurred
+ * @param  {Object} context.params - Parameters from event
  */
 export default async function runAction(snap, context) {
   const eventData = snap.val() || {}
