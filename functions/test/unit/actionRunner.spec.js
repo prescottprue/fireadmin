@@ -685,7 +685,9 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
           status: 'success'
         })
       })
-      it('successfully copies multiple documents between Firestore instances', async () => {
+
+      it('successfully copies multiple documents between Firestore instances', async function() {
+        this.retries(3) // retry to avoid file already exists error for serviceAccount
         const { snapStub } = createValidActionRunnerStubs({
           srcResource: 'firestore',
           destResource: 'firestore'

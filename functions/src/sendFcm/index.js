@@ -61,6 +61,7 @@ async function sendFcmEvent(snap, context) {
   const callGoogleApiResponseRef = admin
     .database()
     .ref(`responses/callGoogleApi/${callGoogleApiRequestRef.key}`)
+  const userAlertsRef = admin.firestore().collection('user_alerts')
 
   // Call Google API with message send
   await callGoogleApiRequestRef.set({
@@ -110,7 +111,7 @@ async function sendFcmEvent(snap, context) {
     throw googleResponseErr
   }
 
-  // Set response to original sendFcm
+  // Set response to original sendFcm request
   const [writeErr, response] = await to(
     responseRef.set({
       complete: true,
@@ -120,6 +121,14 @@ async function sendFcmEvent(snap, context) {
       callGoogleApiRequestKey: callGoogleApiRequestRef.key
     })
   )
+
+  // Write to user_alerts
+  await userAlertsRef.add({
+    userId,
+    message,
+    title,
+    read: false
+  })
 
   // Handle errors writing response to sendFcm Request
   if (writeErr) {
