@@ -2,8 +2,19 @@ import { isArray } from 'lodash'
 import * as admin from 'firebase-admin'
 import { ACTION_RUNNER_RESPONSES_PATH } from './constants'
 import { to } from '../utils/async'
-import { writeDocsInBatches, dataArrayFromSnap } from '../utils/firestore'
+import {
+  writeDocsInBatches,
+  dataArrayFromSnap,
+  isDocPath
+} from '../utils/firestore'
 
+/**
+ * Write response object with status "success" or "error". If
+ * status is "error", message is also included.
+ * @param  {Object} snap - Functions snapshot object
+ * @param  {Object} context - Functions context object
+ * @return {Promise} Resolves with results of database write promise
+ */
 export function updateResponseOnRTDB(snap, context, error) {
   const response = {
     completed: true,
@@ -21,6 +32,11 @@ export function updateResponseOnRTDB(snap, context, error) {
     .set(response)
 }
 
+/**
+ * Update request with status "started"
+ * @param  {Object} snap - Functions snapshot object
+ * @return {Promise} Resolves with results of database update promise
+ */
 export async function updateRequestAsStarted(snap) {
   const response = {
     status: 'started',
@@ -37,6 +53,12 @@ export async function updateRequestAsStarted(snap) {
   return updateRes
 }
 
+/**
+ * Write event to project events subcollection
+ * @param  {Object} eventData - Functions snapshot object
+ * @param  {String} eventData.projectId - Functions snapshot object
+ * @return {Promise} Resolves with results of firstore add promise
+ */
 export async function emitProjectEvent(eventData) {
   const { projectId } = eventData
   const [writeErr, writeRes] = await to(
@@ -232,6 +254,30 @@ export async function batchCopyBetweenFirestoreRefs({
       getErr.message || getErr
     )
     throw getErr
+  }
+
+  // Handle single document copy
+  if (isDocPath(destRef.path)) {
+    const docData = firstSnap.data()
+
+    // Handle source document data not existing
+    if (!docData) {
+      throw new Error(`Document at path ${srcRef.path} not found`)
+    }
+
+    const [docWriteErr] = await to(destRef.set(docData, { merge: true }))
+
+    // Handle errors in single document write
+    if (docWriteErr) {
+      console.error(
+        `Error copying doc from "${srcRef.path}" to "${destRef.path}": `,
+        docWriteErr.message || docWriteErr
+      )
+      throw docWriteErr
+    }
+
+    // Set with merge to do updating while also handling docs not existing
+    return destRef.set(docData, { merge: true })
   }
 
   // Get data into array (regardless of single doc or collection)

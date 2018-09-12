@@ -59,6 +59,11 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
             )
           })
         },
+        doc: sinon.stub().returns({
+          get: sinon.stub().returns(Promise.resolve({ data: () => ({}) })),
+          set: sinon.stub().returns(Promise.resolve(null)),
+          path: 'projects/my-project'
+        }),
         path: 'projects'
       }),
       doc: sinon.stub().returns({
@@ -587,7 +592,8 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
       const {
         projectId = 'asdfasdf1',
         srcResource = 'rtdb',
-        destResource = 'rtdb'
+        destResource = 'rtdb',
+        inputValues = ['projects']
       } =
         opts || {}
       // Environment Doc Stub (subcollection of project document)
@@ -621,7 +627,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
       const snapStub = {
         val: () => ({
           projectId,
-          inputValues: ['projects'],
+          inputValues,
           environments: [
             {
               databaseURL: 'https://some-project.firebaseio.com',
@@ -652,7 +658,34 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     }
 
     describe('with src: "firestore" and dest: "firestore"', () => {
-      it('successfully copies between Firestore instances', async () => {
+      it('successfully copies a single document between Firestore instances', async () => {
+        const { snapStub } = createValidActionRunnerStubs({
+          srcResource: 'firestore',
+          destResource: 'firestore',
+          inputValues: ['projects/my-project']
+        })
+        const fakeContext = {
+          params: { pushId: 1 }
+        }
+        // Invoke with fake event object
+        const res = await actionRunner(snapStub, fakeContext)
+        // Response marked as started
+        expect(setStub).to.have.been.calledWith({
+          startedAt: 'test',
+          status: 'started'
+        })
+        // Confirm res
+        expect(res).to.be.null
+        // Ref for response is correct path
+        expect(refStub).to.have.been.calledWith(responsePath)
+        // Success object written to response
+        expect(setStub).to.have.been.calledWith({
+          completed: true,
+          completedAt: 'test',
+          status: 'success'
+        })
+      })
+      it('successfully copies multiple documents between Firestore instances', async () => {
         const { snapStub } = createValidActionRunnerStubs({
           srcResource: 'firestore',
           destResource: 'firestore'
