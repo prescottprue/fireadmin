@@ -1,8 +1,7 @@
-import { size, isArray } from 'lodash'
+import { size, chunk, flatten, isArray } from 'lodash'
 import * as admin from 'firebase-admin'
 import { ACTION_RUNNER_RESPONSES_PATH } from './constants'
-import { to } from '../utils/async'
-import { writeDocsInBatches } from '../utils/firestore'
+import { to, promiseWaterfall } from '../utils/async'
 
 /**
  * Create data object with values for each document with keys being doc.id.
@@ -248,6 +247,62 @@ async function getSubcollectionNames(subcollectionSetting, ref) {
     throw getCollectionsErr
   }
   return collectionsSnapToArray(collections)
+}
+
+async function writeDocBatch({ dataFromSrc, destRef, opts }) {
+  if (!destRef.firestore.batch) {
+    throw new Error(JSON.stringify(Object.keys(destRef.firestore)))
+  }
+  const batch = destRef.firestore.batch()
+  const srcChildIds = []
+  // Call set to dest instance for each doc within the original data
+  dataFromSrc.forEach(({ id, data }) => {
+    const childRef = destRef.doc(id)
+    srcChildIds.push(id)
+    batch.set(childRef, data, opts)
+  })
+  const [writeErr, writeRes] = await to(batch.commit())
+  // Handle errors in batch write
+  if (writeErr) {
+    console.error('Error writing batch ', writeErr.message || writeErr, {
+      destId: destRef.id
+    })
+    throw writeErr
+  }
+  return writeRes
+}
+const MAX_DOCS_PER_BATCH = 500
+
+/**
+ * Write documents to Firestore in batches. If there are more docs than
+ * the max docs per batch count, multiple batches will be run in succession.
+ * @param  {firestore.Firestore} firestoreInstance - Instance on which to
+ * create ref
+ * @param  {String} destPath - Destination path under which data should be
+ * written
+ * @param  {Array} docData - List of docs to be written
+ * @param  {Object} opts - Options object (can contain merge)
+ * @return {Promise} Resolves with results of batch commit
+ */
+export async function writeDocsInBatches({ dataFromSrc, destRef, opts }) {
+  // Check if doc data is longer than max docs per batch
+  if (dataFromSrc && dataFromSrc.length < MAX_DOCS_PER_BATCH) {
+    // Less than the max number of docs in a batch
+    return writeDocBatch({ dataFromSrc, destRef, opts })
+  }
+  // More than max number of docs per batch - run multiple batches in succession
+  const promiseResult = await promiseWaterfall(
+    chunk(dataFromSrc, MAX_DOCS_PER_BATCH).map((dataChunk, chunkIdx) => {
+      // Return a function to fit promise waterfall pattern
+      return () => {
+        console.log(`Writing chunk #${chunkIdx} to ${destRef.id}`)
+        return writeDocBatch({ dataFromSrc: dataChunk, destRef, opts })
+      }
+    })
+  )
+  // Flatten array of arrays (one for each chunk) into an array of results
+  // and wrap in promise resolve
+  return flatten(promiseResult)
 }
 
 /**

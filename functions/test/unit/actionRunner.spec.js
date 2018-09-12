@@ -20,7 +20,12 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     // Stub Firebase's admin.initializeApp()
     const firestoreStub = sinon.stub().returns({
       collection: sinon.stub().returns({
-        get: sinon.stub().returns(Promise.resolve({ data: () => ({}) }))
+        get: sinon.stub().returns(Promise.resolve({ data: () => ({}) })),
+        firestore: {
+          batch: sinon
+            .stub()
+            .returns({ commit: sinon.stub().returns(Promise.resolve()) })
+        }
       })
     })
     firestoreStub.batch = sinon.stub().returns({
@@ -67,9 +72,10 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
           })
         )
       })
-    collectionStub = sinon
-      .stub()
-      .returns({ add: sinon.stub().returns(Promise.resolve({})), doc: docStub })
+    collectionStub = sinon.stub().returns({
+      add: sinon.stub().returns(Promise.resolve({})),
+      doc: docStub
+    })
 
     // Create Firestore stub out of stubbed methods
     const firestoreStub = sinon
