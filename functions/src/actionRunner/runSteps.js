@@ -25,15 +25,15 @@ import {
 
 /**
  * Data action using Service account stored on Firestore
- * @param  {functions.Event} snap - Event from cloud function
- * @param  {Object} context
+ * @param  {functions.database.DataSnapshot} snap - Data snapshot from cloud function
+ * @param  {functions.EventContext} context - The context in which an event occurred
  * @param  {Object} context.params - Parameters from event
  * @return {Promise}
  */
 export async function runStepsFromEvent(snap, context) {
   const eventData = snap.val()
   if (!eventData) {
-    throw new Error('Event object does not contain a value.')
+    throw new Error('Run action request does not contain a value.')
   }
 
   if (!isObject(eventData.template)) {
@@ -80,8 +80,11 @@ export async function runStepsFromEvent(snap, context) {
     console.error('Error converting inputs:', convertInputsErr.message)
     throw convertInputsErr
   }
+
   const totalNumSteps = size(steps)
+
   console.log(`Running ${totalNumSteps} steps(s)`)
+
   // Run all action promises
   const [actionErr, actionResponse] = await to(
     promiseWaterfall(
@@ -99,21 +102,28 @@ export async function runStepsFromEvent(snap, context) {
       )
     )
   )
+
   // Cleanup temp directory
   cleanupServiceAccounts()
+
+  // Handle errors running action
   if (actionErr) {
+    // Write error back to RTDB response object
     await updateResponseWithError(snap, context)
     throw actionErr
   }
+
   // Write response to RTDB
   await updateResponseOnRTDB(snap, context)
+
   return actionResponse
 }
 
 /**
  * Data action using Service account stored on Firestore
- * @param  {firebase.Datatabase.Snapshot} snap - Snapshot from cloud function
- * @param  {Object} context - Context from cloud function
+ * @param  {functions.database.DataSnapshot} snap - Data snapshot from cloud function
+ * @param  {functions.EventContext} context - The context in which an event occurred
+ * @param  {Object} context.params - Parameters from event
  * @return {Promise}
  */
 export async function runBackupsFromEvent(snap, context) {
@@ -158,7 +168,7 @@ export async function runBackupsFromEvent(snap, context) {
         createStepRunner({
           inputs,
           convertedInputValues,
-          event,
+          snap,
           eventData,
           totalNumSteps
         })

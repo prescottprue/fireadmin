@@ -479,8 +479,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     })
   })
 
-  // TODO: Unskip by passing a valid encrypted object
-  it.skip('Works with backups', async () => {
+  it('Works with backups', async () => {
     const snap = {
       val: () => ({
         projectId: 'test',
@@ -493,25 +492,21 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
       params: { pushId: 1 }
     }
     // Invoke with fake event object
-    const [err] = await to(actionRunner(snap, fakeContext))
+    const res = await actionRunner(snap, fakeContext)
     // Response marked as started
     expect(setStub).to.have.been.calledWith({
       startedAt: 'test',
       status: 'started'
     })
-    // Confir error thrown with correct message
-    expect(err).to.have.property(
-      'message',
-      'Steps array was not provided to action request'
-    )
+    // Confirm res
+    expect(res).to.be.undefined
     // Ref for response is correct path
     expect(refStub).to.have.been.calledWith(responsePath)
-    // Error object written to response
+    // Success object written to response
     expect(setStub).to.have.been.calledWith({
       completed: true,
       completedAt: 'test',
-      error: 'Steps array was not provided to action request',
-      status: 'error'
+      status: 'success'
     })
   })
 })
