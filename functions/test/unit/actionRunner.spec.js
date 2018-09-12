@@ -1,7 +1,6 @@
 import * as admin from 'firebase-admin'
 import { to } from 'utils/async'
 import { encrypt } from 'utils/encryption'
-import google from 'googleapis'
 
 const responsePath = 'responses/actionRunner/1'
 const createdAt = 'timestamp'
@@ -19,7 +18,16 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
 
   before(() => {
     // Stub Firebase's admin.initializeApp()
-    adminInitStub = sinon.stub(admin, 'initializeApp')
+    const firestoreStub = sinon.stub().returns({
+      collection: sinon.stub().returns({
+        get: sinon.stub().returns(Promise.resolve({ data: () => ({}) }))
+      })
+    })
+    firestoreStub.batch = sinon.stub().returns({})
+    adminInitStub = sinon.stub(admin, 'initializeApp').returns({
+      firestore: firestoreStub
+    })
+    sinon.stub(admin.credential, 'cert')
   })
 
   after(() => {
@@ -442,7 +450,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     })
   })
 
-  it('Works provided a valid template', async () => {
+  it('Throws if template contains invalid steps', async () => {
     const validProjectId = 'aosidjfoaisjdfoi'
     docStub.withArgs(`projects/${validProjectId}/environments/asdf`).returns({
       get: sinon.stub().returns(
@@ -468,23 +476,24 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
         })
       )
     })
-    sinon.stub(google.auth, 'JWT').returns({
-      authorize: cb => {
-        cb()
-      }
-    })
     const snap = {
       val: () => ({
         projectId: validProjectId,
-        inputValues: [],
+        inputValues: ['projects'],
         environments: [
           {
             databaseURL: 'https://some-project.firebaseio.com',
             id: 'asdf'
           }
         ],
-        steps: [{ type: 'copy', dest: { path: 0 }, source: {} }],
-        template: { steps: [], inputs: [] }
+        template: {
+          steps: [
+            {
+              type: 'copy'
+            }
+          ],
+          inputs: []
+        }
       }),
       ref: refStub()
     }
@@ -498,22 +507,96 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
       startedAt: 'test',
       status: 'started'
     })
-    // Confir error thrown with correct message
+    // Confirm res
     expect(err).to.have.property(
       'message',
-      'Failed to parse certificate key file: Error: Failed to parse private key: Error: Invalid PEM formatted message.'
+      'Error running step: 0 : src, dest and src.resource are required to run step'
     )
     // Ref for response is correct path
     expect(refStub).to.have.been.calledWith(responsePath)
-    // Error object written to response
+    // Success object written to response
     expect(setStub).to.have.been.calledWith({
       completed: true,
       completedAt: 'test',
       error:
-        'Failed to parse certificate key file: Error: Failed to parse private key: Error: Invalid PEM formatted message.',
+        'Error running step: 0 : src, dest and src.resource are required to run step',
       status: 'error'
     })
-    google.auth.JWT.restore()
+  })
+
+  it('Supports copying between Firestore instances', async () => {
+    const validProjectId = 'aosidjfoaisjdfoi'
+    docStub.withArgs(`projects/${validProjectId}/environments/asdf`).returns({
+      get: sinon.stub().returns(
+        Promise.resolve({
+          data: () => ({
+            serviceAccount: {
+              credential: encrypt({
+                type: 'service_account',
+                project_id: 'asdf',
+                private_key_id: 'asdf',
+                private_key: 'asdf',
+                client_email: 'asdf',
+                client_id: 'sadf',
+                auth_uri: 'https://accounts.google.com/o/oauth2/auth',
+                token_uri: 'https://accounts.google.com/o/oauth2/token',
+                auth_provider_x509_cert_url:
+                  'https://www.googleapis.com/oauth2/v1/certs',
+                client_x509_cert_url: 'asdf'
+              })
+            }
+          }),
+          exists: true
+        })
+      )
+    })
+    const snap = {
+      val: () => ({
+        projectId: validProjectId,
+        inputValues: ['projects'],
+        environments: [
+          {
+            databaseURL: 'https://some-project.firebaseio.com',
+            id: 'asdf'
+          },
+          {
+            databaseURL: 'https://some-project.firebaseio.com',
+            id: 'asdf'
+          }
+        ],
+        template: {
+          steps: [
+            {
+              type: 'copy',
+              dest: { pathType: 'input', path: 0, resource: 'firestore' },
+              src: { pathType: 'input', path: 0, resource: 'firestore' }
+            }
+          ],
+          inputs: [{ type: 'userInput' }]
+        }
+      }),
+      ref: refStub()
+    }
+    const fakeContext = {
+      params: { pushId: 1 }
+    }
+    // Invoke with fake event object
+    const res = await actionRunner(snap, fakeContext)
+    // Response marked as started
+    expect(setStub).to.have.been.calledWith({
+      startedAt: 'test',
+      status: 'started'
+    })
+    // Confirm res
+    expect(res).to.be.null
+    // Ref for response is correct path
+    expect(refStub).to.have.been.calledWith(responsePath)
+    // Success object written to response
+    expect(setStub).to.have.been.calledWith({
+      completed: true,
+      completedAt: 'test',
+      status: 'success'
+    })
   })
 
   it('Works with backups', async () => {

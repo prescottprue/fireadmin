@@ -1,4 +1,4 @@
-import { size, chunk, filter, isFunction } from 'lodash'
+import { size, chunk, filter, isFunction, flatten } from 'lodash'
 import { to, promiseWaterfall } from '../utils/async'
 
 /**
@@ -117,7 +117,7 @@ export function writeDocsInBatches(firestoreInstance, destPath, docData, opts) {
   }
   const docChunks = chunk(docData, MAX_DOCS_PER_BATCH)
   // More than max number of docs per batch - run multiple batches in succession
-  return promiseWaterfall(
+  const promiseResult = promiseWaterfall(
     docChunks.map((dataChunk, chunkIdx) => {
       console.log(
         `Writing chunk #${chunkIdx} of ${
@@ -127,6 +127,9 @@ export function writeDocsInBatches(firestoreInstance, destPath, docData, opts) {
       return () => batchWriteDocs(firestoreInstance, destPath, dataChunk, opts)
     })
   )
+  // Flatten array of arrays (one for each chunk) into an array of results
+  // and wrap in promise resolve
+  return flatten(promiseResult)
 }
 
 /**
