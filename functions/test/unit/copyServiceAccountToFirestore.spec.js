@@ -117,21 +117,6 @@ describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', ()
     expect(err).to.have.property('message', 'Not Found')
   })
 
-  // it('throws if downloaded service account file can not be read as JSON', async () => {
-  //   const fakeEventData = { serviceAccount: { fullPath: 'test' } }
-  //   const fakeEvent = {
-  //     data: () => fakeEventData,
-  //     ref: {
-  //       update: sinon.stub().returns(Promise.resolve({}))
-  //     }
-  //   }
-  //   const fakeContext = { params: { projectId: 'abc123' } }
-
-  //   // Run wrapped function
-  //   const res = await copyServiceAccountToFirestore(fakeEvent, fakeContext)
-  //   expect(res).to.be.null
-  // })
-
   it('updates reference with serviceAccount param', async () => {
     const fakeEventData = { serviceAccount: { fullPath: 'test' } }
 

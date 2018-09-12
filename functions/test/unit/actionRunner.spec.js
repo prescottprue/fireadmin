@@ -23,9 +23,18 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
         get: sinon.stub().returns(Promise.resolve({ data: () => ({}) }))
       })
     })
-    firestoreStub.batch = sinon.stub().returns({})
+    firestoreStub.batch = sinon.stub().returns({
+      set: sinon.stub().returns(Promise.resolve()),
+      commit: sinon.stub().returns(Promise.resolve())
+    })
     adminInitStub = sinon.stub(admin, 'initializeApp').returns({
-      firestore: firestoreStub
+      firestore: firestoreStub,
+      database: sinon.stub().returns({
+        ref: sinon.stub().returns({
+          once: sinon.stub().returns(Promise.resolve({ val: () => ({}) })),
+          update: sinon.stub().returns(Promise.resolve())
+        })
+      })
     })
     sinon.stub(admin.credential, 'cert')
   })
@@ -92,7 +101,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     functionsTest.cleanup()
   })
 
-  it('throws and updates error if projectId is undefined', async () => {
+  it('Throws and updates error if projectId is undefined', async () => {
     const snap = {
       val: () => ({})
     }
@@ -109,7 +118,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     expect(setStub).to.have.been.calledOnce
   })
 
-  it('throws if action template is not included', async () => {
+  it('Throws if action template is not included', async () => {
     const snap = {
       val: () => ({ projectId: 'test' }),
       ref: refStub()
@@ -140,7 +149,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     })
   })
 
-  it('throws if action template is not an object', async () => {
+  it('Throws if action template is not an object', async () => {
     const snap = {
       val: () => ({ projectId: 'test', template: 'asdf' }),
       ref: refStub()
@@ -171,7 +180,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     })
   })
 
-  it('throws if action template does not contain steps', async () => {
+  it('Throws if action template does not contain steps', async () => {
     const snap = {
       val: () => ({ projectId: 'test', template: { asdf: 'asdf' } }),
       ref: refStub()
@@ -202,7 +211,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     })
   })
 
-  it('throws if action template does not contain inputs', async () => {
+  it('Throws if action template does not contain inputs', async () => {
     const snap = {
       val: () => ({ projectId: 'test', template: { steps: [] } }),
       ref: refStub()
@@ -233,7 +242,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     })
   })
 
-  it('throws if action template does not contain inputValues', async () => {
+  it('Throws if action template does not contain inputValues', async () => {
     const snap = {
       val: () => ({ projectId: 'test', template: { steps: [], inputs: [] } }),
       ref: refStub()
@@ -523,110 +532,203 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
       status: 'error'
     })
   })
-
-  it('Supports copying between Firestore instances', async () => {
-    const validProjectId = 'aosidjfoaisjdfoi'
-    docStub.withArgs(`projects/${validProjectId}/environments/asdf`).returns({
-      get: sinon.stub().returns(
-        Promise.resolve({
-          data: () => ({
-            serviceAccount: {
-              credential: encrypt({
-                type: 'service_account',
-                project_id: 'asdf',
-                private_key_id: 'asdf',
-                private_key: 'asdf',
-                client_email: 'asdf',
-                client_id: 'sadf',
-                auth_uri: 'https://accounts.google.com/o/oauth2/auth',
-                token_uri: 'https://accounts.google.com/o/oauth2/token',
-                auth_provider_x509_cert_url:
-                  'https://www.googleapis.com/oauth2/v1/certs',
-                client_x509_cert_url: 'asdf'
-              })
-            }
-          }),
-          exists: true
+  describe('Action templates with type "copy"', () => {
+    function createValidStubs(projectId) {
+      // Environment Doc Stub (subcollection of project document)
+      const environmentDocStub = docStub
+        .withArgs(`projects/${projectId}/environments/asdf`)
+        .returns({
+          get: sinon.stub().returns(
+            Promise.resolve({
+              data: () => ({
+                serviceAccount: {
+                  credential: encrypt({
+                    type: 'service_account',
+                    project_id: 'asdf',
+                    private_key_id: 'asdf',
+                    private_key: 'asdf',
+                    client_email: 'asdf',
+                    client_id: 'sadf',
+                    auth_uri: 'https://accounts.google.com/o/oauth2/auth',
+                    token_uri: 'https://accounts.google.com/o/oauth2/token',
+                    auth_provider_x509_cert_url:
+                      'https://www.googleapis.com/oauth2/v1/certs',
+                    client_x509_cert_url: 'asdf'
+                  })
+                }
+              }),
+              exists: true
+            })
+          )
         })
-      )
-    })
-    const snap = {
-      val: () => ({
-        projectId: validProjectId,
-        inputValues: ['projects'],
-        environments: [
-          {
-            databaseURL: 'https://some-project.firebaseio.com',
-            id: 'asdf'
-          },
-          {
-            databaseURL: 'https://some-project.firebaseio.com',
-            id: 'asdf'
-          }
-        ],
-        template: {
-          steps: [
+      // Event DataSnapshot stub
+      const snapStub = {
+        val: () => ({
+          projectId,
+          inputValues: ['projects'],
+          environments: [
             {
-              type: 'copy',
-              dest: { pathType: 'input', path: 0, resource: 'firestore' },
-              src: { pathType: 'input', path: 0, resource: 'firestore' }
+              databaseURL: 'https://some-project.firebaseio.com',
+              id: 'asdf'
+            },
+            {
+              databaseURL: 'https://some-project.firebaseio.com',
+              id: 'asdf'
             }
           ],
-          inputs: [{ type: 'userInput' }]
+          template: {
+            steps: [
+              {
+                type: 'copy',
+                dest: { pathType: 'input', path: 0, resource: 'rtdb' },
+                src: { pathType: 'input', path: 0, resource: 'rtdb' }
+              }
+            ],
+            inputs: [{ type: 'userInput' }]
+          }
+        }),
+        ref: refStub()
+      }
+      return {
+        snapStub,
+        environmentDocStub
+      }
+    }
+    describe('with src resource set to "firestore"', () => {
+      it('successfully copies between Firestore instances', async () => {
+        const validProjectId = 'aosidjfoaisjdfoi'
+        docStub
+          .withArgs(`projects/${validProjectId}/environments/asdf`)
+          .returns({
+            get: sinon.stub().returns(
+              Promise.resolve({
+                data: () => ({
+                  serviceAccount: {
+                    credential: encrypt({
+                      type: 'service_account',
+                      project_id: 'asdf',
+                      private_key_id: 'asdf',
+                      private_key: 'asdf',
+                      client_email: 'asdf',
+                      client_id: 'sadf',
+                      auth_uri: 'https://accounts.google.com/o/oauth2/auth',
+                      token_uri: 'https://accounts.google.com/o/oauth2/token',
+                      auth_provider_x509_cert_url:
+                        'https://www.googleapis.com/oauth2/v1/certs',
+                      client_x509_cert_url: 'asdf'
+                    })
+                  }
+                }),
+                exists: true
+              })
+            )
+          })
+        const snap = {
+          val: () => ({
+            projectId: validProjectId,
+            inputValues: ['projects'],
+            environments: [
+              {
+                databaseURL: 'https://some-project.firebaseio.com',
+                id: 'asdf'
+              },
+              {
+                databaseURL: 'https://some-project.firebaseio.com',
+                id: 'asdf'
+              }
+            ],
+            template: {
+              steps: [
+                {
+                  type: 'copy',
+                  dest: { pathType: 'input', path: 0, resource: 'firestore' },
+                  src: { pathType: 'input', path: 0, resource: 'firestore' }
+                }
+              ],
+              inputs: [{ type: 'userInput' }]
+            }
+          }),
+          ref: refStub()
         }
-      }),
-      ref: refStub()
-    }
-    const fakeContext = {
-      params: { pushId: 1 }
-    }
-    // Invoke with fake event object
-    const res = await actionRunner(snap, fakeContext)
-    // Response marked as started
-    expect(setStub).to.have.been.calledWith({
-      startedAt: 'test',
-      status: 'started'
+        const fakeContext = {
+          params: { pushId: 1 }
+        }
+        // Invoke with fake event object
+        const res = await actionRunner(snap, fakeContext)
+        // Response marked as started
+        expect(setStub).to.have.been.calledWith({
+          startedAt: 'test',
+          status: 'started'
+        })
+        // Confirm res
+        expect(res).to.be.null
+        // Ref for response is correct path
+        expect(refStub).to.have.been.calledWith(responsePath)
+        // Success object written to response
+        expect(setStub).to.have.been.calledWith({
+          completed: true,
+          completedAt: 'test',
+          status: 'success'
+        })
+      })
     })
-    // Confirm res
-    expect(res).to.be.null
-    // Ref for response is correct path
-    expect(refStub).to.have.been.calledWith(responsePath)
-    // Success object written to response
-    expect(setStub).to.have.been.calledWith({
-      completed: true,
-      completedAt: 'test',
-      status: 'success'
+    describe('with src resource set to "rtdb"', () => {
+      it('successfully copies between RTDB instances', async () => {
+        const validProjectId = 'aosidjfoaisjdfoi'
+        const { snapStub } = createValidStubs(validProjectId)
+        const fakeContext = {
+          params: { pushId: 1 }
+        }
+        // Invoke with fake event object
+        const res = await actionRunner(snapStub, fakeContext)
+        // Response marked as started
+        expect(setStub).to.have.been.calledWith({
+          startedAt: 'test',
+          status: 'started'
+        })
+        // Confirm res (result of calling "update" in adminInitStub)
+        expect(res).to.be.undefined
+        // Ref for response is correct path
+        expect(refStub).to.have.been.calledWith(responsePath)
+        // Success object written to response
+        expect(setStub).to.have.been.calledWith({
+          completed: true,
+          completedAt: 'test',
+          status: 'success'
+        })
+      })
     })
   })
-
-  it('Works with backups', async () => {
-    const snap = {
-      val: () => ({
-        projectId: 'test',
-        inputValues: [],
-        template: { steps: [], inputs: [], backups: [] }
-      }),
-      ref: refStub()
-    }
-    const fakeContext = {
-      params: { pushId: 1 }
-    }
-    // Invoke with fake event object
-    const res = await actionRunner(snap, fakeContext)
-    // Response marked as started
-    expect(setStub).to.have.been.calledWith({
-      startedAt: 'test',
-      status: 'started'
-    })
-    // Confirm res
-    expect(res).to.be.undefined
-    // Ref for response is correct path
-    expect(refStub).to.have.been.calledWith(responsePath)
-    // Success object written to response
-    expect(setStub).to.have.been.calledWith({
-      completed: true,
-      completedAt: 'test',
-      status: 'success'
+  describe('backups', () => {
+    it('Works with backups', async () => {
+      const snap = {
+        val: () => ({
+          projectId: 'test',
+          inputValues: [],
+          template: { steps: [], inputs: [], backups: [] }
+        }),
+        ref: refStub()
+      }
+      const fakeContext = {
+        params: { pushId: 1 }
+      }
+      // Invoke with fake event object
+      const res = await actionRunner(snap, fakeContext)
+      // Response marked as started
+      expect(setStub).to.have.been.calledWith({
+        startedAt: 'test',
+        status: 'started'
+      })
+      // Confirm res
+      expect(res).to.be.undefined
+      // Ref for response is correct path
+      expect(refStub).to.have.been.calledWith(responsePath)
+      // Success object written to response
+      expect(setStub).to.have.been.calledWith({
+        completed: true,
+        completedAt: 'test',
+        status: 'success'
+      })
     })
   })
 })
