@@ -1,5 +1,7 @@
 import * as admin from 'firebase-admin'
 import { to } from 'utils/async'
+import { encrypt } from 'utils/encryption'
+import google from 'googleapis'
 
 const responsePath = 'responses/actionRunner/1'
 const createdAt = 'timestamp'
@@ -440,15 +442,48 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     })
   })
 
-  // TODO: Unskip by passing a valid encrypted object
-  it.skip('Works provided a valid template', async () => {
+  it('Works provided a valid template', async () => {
+    const validProjectId = 'aosidjfoaisjdfoi'
+    docStub.withArgs(`projects/${validProjectId}/environments/asdf`).returns({
+      get: sinon.stub().returns(
+        Promise.resolve({
+          data: () => ({
+            serviceAccount: {
+              credential: encrypt({
+                type: 'service_account',
+                project_id: 'asdf',
+                private_key_id: 'asdf',
+                private_key: 'asdf',
+                client_email: 'asdf',
+                client_id: 'sadf',
+                auth_uri: 'https://accounts.google.com/o/oauth2/auth',
+                token_uri: 'https://accounts.google.com/o/oauth2/token',
+                auth_provider_x509_cert_url:
+                  'https://www.googleapis.com/oauth2/v1/certs',
+                client_x509_cert_url: 'asdf'
+              })
+            }
+          }),
+          exists: true
+        })
+      )
+    })
+    sinon.stub(google.auth, 'JWT').returns({
+      authorize: cb => {
+        cb()
+      }
+    })
     const snap = {
       val: () => ({
-        projectId: existingProjectId,
+        projectId: validProjectId,
         inputValues: [],
         environments: [
-          { databaseURL: 'https://some-project.firebaseio.com', id: 'asdf' }
+          {
+            databaseURL: 'https://some-project.firebaseio.com',
+            id: 'asdf'
+          }
         ],
+        steps: [{ type: 'copy', dest: { path: 0 }, source: {} }],
         template: { steps: [], inputs: [] }
       }),
       ref: refStub()
@@ -466,7 +501,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     // Confir error thrown with correct message
     expect(err).to.have.property(
       'message',
-      'Steps array was not provided to action request'
+      'Failed to parse certificate key file: Error: Failed to parse private key: Error: Invalid PEM formatted message.'
     )
     // Ref for response is correct path
     expect(refStub).to.have.been.calledWith(responsePath)
@@ -474,9 +509,11 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     expect(setStub).to.have.been.calledWith({
       completed: true,
       completedAt: 'test',
-      error: 'Steps array was not provided to action request',
+      error:
+        'Failed to parse certificate key file: Error: Failed to parse private key: Error: Invalid PEM formatted message.',
       status: 'error'
     })
+    google.auth.JWT.restore()
   })
 
   it('Works with backups', async () => {
