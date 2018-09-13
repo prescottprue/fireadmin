@@ -84,10 +84,12 @@ export function initializeMessaging(dispatch) {
   //   `messaging.setBackgroundMessageHandler` handler.
   messaging.onMessage(payload => {
     const DEFAULT_MESSAGE = 'Message!'
+    const message = get(payload, 'notification.body', DEFAULT_MESSAGE)
+    const messageMethod = message.toLowerCase().includes('success')
+      ? 'showSuccess'
+      : 'showMessage'
     // Dispatch showSuccess action
-    messageActions.showSuccess(
-      get(payload, 'notification.body', DEFAULT_MESSAGE)
-    )(dispatch)
+    messageActions[messageMethod](message)(dispatch)
   })
 
   // Request permission to setup browser notifications

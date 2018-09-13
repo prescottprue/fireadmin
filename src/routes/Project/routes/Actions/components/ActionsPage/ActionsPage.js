@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import LinearProgress from '@material-ui/core/LinearProgress'
 import ActionRunnerForm from '../ActionRunnerForm'
 import RecentActions from '../RecentActions'
 import classes from './ActionsPage.scss'
@@ -17,8 +16,7 @@ export const ActionsPage = ({
   templateEditExpanded,
   templateName,
   submitActionRunner,
-  params,
-  actionProcessing
+  params
 }) => (
   <div className={classes.container}>
     <Typography className={classes.pageHeader}>Actions</Typography>
@@ -41,7 +39,6 @@ export const ActionsPage = ({
         </Button>
         {selectedTemplate && (
           <Button
-            disabled={actionProcessing}
             color="secondary"
             variant="raised"
             aria-label="Clear"
@@ -50,11 +47,6 @@ export const ActionsPage = ({
             data-test="clear-action-button">
             Clear
           </Button>
-        )}
-      </div>
-      <div className={classes.progress}>
-        {actionProcessing && (
-          <LinearProgress color="primary" data-test="action-runner-progress" />
         )}
       </div>
       <ActionRunnerForm
@@ -80,7 +72,6 @@ ActionsPage.propTypes = {
   selectActionTemplate: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   toggleTemplateEdit: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   templateEditExpanded: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
-  actionProcessing: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
   runActionDisabled: PropTypes.bool.isRequired, // from enhancer (withProps)
   templateName: PropTypes.string.isRequired // from enhancer (withProps)
 }

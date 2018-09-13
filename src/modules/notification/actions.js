@@ -44,6 +44,16 @@ export function showSuccess(message) {
 }
 
 /**
+ * Show a success notification that hides itself
+ * after 5 seconds.
+ * @param {Object} message - Message to display in Snackbar
+ * @returns {Function}
+ */
+export function showMessage(message) {
+  return showNotification({ type: 'info', message })
+}
+
+/**
  * Show an error notification that hides itself
  * after 5 seconds.
  * @param {Object} message - Message to display in Snackbar

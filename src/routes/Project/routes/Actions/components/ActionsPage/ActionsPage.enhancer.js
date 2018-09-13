@@ -1,10 +1,16 @@
+import PropTypes from 'prop-types'
 import { get, map, some } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withFirebase, withFirestore } from 'react-redux-firebase'
 import { formValueSelector } from 'redux-form'
 import { formNames } from 'constants'
-import { withStateHandlers, withHandlers, withProps } from 'recompose'
+import {
+  withStateHandlers,
+  withHandlers,
+  withProps,
+  setPropTypes
+} from 'recompose'
 import { withNotifications } from 'modules/notification'
 import * as handlers from './ActionsPage.handlers'
 
@@ -14,6 +20,18 @@ export default compose(
   withNotifications,
   withFirestore,
   withFirebase,
+  setPropTypes({
+    params: PropTypes.shape({
+      projectId: PropTypes.string.isRequired
+    }),
+    firebase: PropTypes.shape({
+      pushWithMeta: PropTypes.func.isRequired // used in handlers
+    }),
+    firestore: PropTypes.shape({
+      add: PropTypes.func.isRequired // used in handlers
+    }),
+    showMessage: PropTypes.func.isRequired // used in handlers
+  }),
   // Map redux state to props
   connect((state, { params }) => {
     const {
@@ -38,9 +56,7 @@ export default compose(
   // State handlers as props
   withStateHandlers(
     () => ({
-      templateEditExpanded: true,
-      actionProcessing: false,
-      actionProgress: null
+      templateEditExpanded: true
     }),
     {
       toggleTemplateEdit: ({ templateEditExpanded }) => () => ({
@@ -56,21 +72,16 @@ export default compose(
       clearRunner: () => () => ({
         selectedTemplate: null,
         templateEditExpanded: true
-      }),
-      toggleActionProcessing: ({ actionProcessing }) => e => ({
-        actionProcessing: !actionProcessing
-      }),
-      setActionProgress: ({ actionProcessing }) => stepStatus => ({
-        actionProgress: !actionProcessing
       })
     }
   ),
-  // Handlers as props
-  withHandlers(handlers),
-  withProps(({ selectedTemplate, actionProcessing, lockedEnvInUse }) => ({
+  withProps(({ selectedTemplate, lockedEnvInUse, params }) => ({
     templateName: selectedTemplate
       ? `Template: ${get(selectedTemplate, 'name', '')}`
       : 'Template',
-    runActionDisabled: !selectedTemplate || actionProcessing || lockedEnvInUse
-  }))
+    runActionDisabled: !selectedTemplate || lockedEnvInUse,
+    projectId: params.projectId
+  })),
+  // Handlers as props
+  withHandlers(handlers)
 )

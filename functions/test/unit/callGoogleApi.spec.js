@@ -68,19 +68,6 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
     functionsTest.cleanup()
   })
 
-  it('throws if request does not contain projectId, environment or storageBucket', async () => {
-    const objectID = 'asdf'
-    const fakeRequest = {
-      val: () => ({ api: 'compute' })
-    }
-    const fakeContext = { params: { templateId: objectID } }
-    const [err] = await to(callGoogleApi(fakeRequest, fakeContext))
-    expect(err).to.have.property(
-      'message',
-      'projectId, environment, and storageBucket are required parameters'
-    )
-  })
-
   it('throws if service account is not found for provided project', async () => {
     const objectID = 'asdf'
     const [err] = await to(
@@ -201,7 +188,7 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
       )
     )
     // Message thrown for non encrypted string (not a buffer)
-    expect(err).to.have.property('message', 'Invalid service account')
+    expect(err).to.have.property('message', '{}')
   })
 
   it('throws for invalid service account object loaded from Firestore for a valid project', async () => {
@@ -254,10 +241,7 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
       )
     )
     // Message thrown for stubbed service account object passed
-    expect(err).to.have.property(
-      'message',
-      'error:0906D06C:PEM routines:PEM_read_bio:no start line'
-    )
+    expect(err).to.have.property('message', '{}')
   })
 })
 

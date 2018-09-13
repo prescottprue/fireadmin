@@ -1,9 +1,7 @@
-import { get, invoke, omit } from 'lodash'
+import { get, omit } from 'lodash'
 import { firebasePaths, formNames } from 'constants'
-import { pushAndWaitForStatus } from 'utils/firebaseFunctions'
 import { submit } from 'redux-form'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
-import { to } from 'utils/async'
 
 export function submitActionRunner({ dispatch }) {
   return () => {
@@ -18,16 +16,7 @@ export function submitActionRunner({ dispatch }) {
  * config
  */
 export function runAction(props) {
-  return async formValues => {
-    const {
-      firebase,
-      firestore,
-      params: { projectId },
-      uid,
-      selectedTemplate,
-      environments,
-      toggleActionProcessing
-    } = props
+  return formValues => {
     if (props.lockedEnvInUse) {
       const errMsg = 'Action Runner Disabled. Locked environment selected.'
       props.showError(errMsg)
@@ -35,85 +24,56 @@ export function runAction(props) {
       throw new Error(errMsg)
     }
     const { environmentValues } = formValues
-    const templateId = get(selectedTemplate, 'templateId')
+    const templateId = get(props, 'selectedTemplate.templateId')
     // Build request object for action run
     const actionRequest = {
-      projectId,
+      projectId: props.params.projectId,
       serviceAccountType: 'firestore',
-      templateId: get(selectedTemplate, 'templateId'),
-      template: omit(selectedTemplate, ['_highlightResult']),
-      ...formValues,
-      createdBy: uid,
-      createdAt: firestore.FieldValue.serverTimestamp()
+      templateId,
+      template: omit(props.selectedTemplate, ['_highlightResult']),
+      ...formValues
     }
     // Convert selected environment keys into their associated environment objects
     if (environmentValues) {
       actionRequest.environments = environmentValues.map(
-        envId => environments[envId] || envId
+        envId => props.environments[envId] || envId
       )
     }
 
     // TODO: Show error notification if required action inputs are not selected
     props.closeTemplateEdit()
-    toggleActionProcessing()
     triggerAnalyticsEvent('requestActionRun', {
-      projectId,
+      projectId: props.projectId,
       templateId,
       environmentValues
     })
-    // Write event to project events
-    const [err] = await to(
+    Promise.all([
+      props.firebase.pushWithMeta(
+        firebasePaths.actionRunnerRequests,
+        actionRequest
+      ),
       createProjectEvent(
-        { firestore, projectId },
+        { firestore: props.firestore, projectId: props.projectId },
         {
           eventType: 'requestActionRun',
           eventData: {
             ...actionRequest,
             template: {
-              ...omit(selectedTemplate, ['_highlightResult']),
+              ...omit(props.selectedTemplate, ['_highlightResult']),
               inputValues: actionRequest.inputValues || []
             }
           },
-          createdBy: uid
+          createdBy: props.uid
         }
       )
-    )
-    // Handle error pushing event
-    if (err) {
-      console.error('Error: ', err.message || err) // eslint-disable-line no-console
-      toggleActionProcessing()
-      return props.showError('Error staring action request')
-    }
-    props.showSuccess('Action Run Started!')
-    // Push request to real time database and wait for response
-    pushAndWaitForStatus(
-      {
-        firebase,
-        requestPath: firebasePaths.actionRunnerRequests,
-        responsePath: firebasePaths.actionRunnerResponses,
-        pushObj: actionRequest
-      },
-      responseSnap => {
-        const { error, progress, completed } = invoke(responseSnap, 'val') || {}
-        // Stop processing and show error if response contains error
-        if (error) {
-          toggleActionProcessing()
-          return props.showError(error)
-        }
-        // Update progress on every response update
-        props.setActionProgress(progress)
-        // When completed, mark the action as no longer processing and show success
-        if (completed) {
-          toggleActionProcessing()
-          // props.clearRunner()
-          props.showSuccess('Action complete!')
-        }
-      },
-      listenerError => {
-        console.error('Error: ', listenerError.message || listenerError) // eslint-disable-line no-console
-        toggleActionProcessing()
-        props.showError('Error with action request')
-      }
-    )
+    ])
+      .then(() => {
+        // Notify user that action run has started
+        props.showMessage('Action Run Started!')
+      })
+      .catch(err => {
+        console.error('Error: ', err.message || err) // eslint-disable-line no-console
+        return props.showError('Error staring action request')
+      })
   }
 }

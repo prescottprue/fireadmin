@@ -17,6 +17,7 @@ async function sendFcmEvent(snap, context) {
     params: { pushId }
   } = context
   const { userId, message = '', title = 'Fireadmin' } = snap.val() || {}
+  console.log('request recived for fcm:', pushId, userId)
 
   if (!userId) {
     const missingUserIdErr = 'userId is required to send FCM message'
@@ -61,7 +62,6 @@ async function sendFcmEvent(snap, context) {
   const callGoogleApiResponseRef = admin
     .database()
     .ref(`responses/callGoogleApi/${callGoogleApiRequestRef.key}`)
-  const userAlertsRef = admin.firestore().collection('user_alerts')
 
   // Call Google API with message send
   await callGoogleApiRequestRef.set({
@@ -122,6 +122,7 @@ async function sendFcmEvent(snap, context) {
     })
   )
 
+  const userAlertsRef = admin.firestore().collection('user_alerts')
   // Write to user_alerts
   await userAlertsRef.add({
     userId,

@@ -3,6 +3,8 @@ import { to } from 'utils/async'
 import { rtdbRef } from '../utils/rtdb'
 import { get } from 'lodash'
 
+const actionRunnerPath = 'actionRunner'
+
 /**
  * @param  {functions.Event} event - Function event
  * @param {functions.Context} context - Functions context
@@ -23,6 +25,10 @@ async function messageRunnerResultEvent(change, context) {
     return null
   }
 
+  console.log(
+    `Status updated to "${status}", which means a message should be sent...`
+  )
+
   // Get test run meta data (event is on the level of status)
   const testRunMetaRef = after.ref.parent
   const [getDataErr, jobRunDataSnap] = await to(testRunMetaRef.once('value'))
@@ -37,7 +43,7 @@ async function messageRunnerResultEvent(change, context) {
   }
 
   const [getRunnerDataErr, callRunnerRequestSnap] = await to(
-    rtdbRef(`requests/callRunner/${actionRunRequestKey}`).once('value')
+    rtdbRef(`requests/${actionRunnerPath}/${actionRunRequestKey}`).once('value')
   )
 
   if (getRunnerDataErr) {
@@ -64,7 +70,10 @@ async function messageRunnerResultEvent(change, context) {
   const [writeErr] = await to(
     rtdbRef('requests/sendFcm').push({
       userId: createdBy,
-      message: `Action Run completed with status: "${status}"`
+      message:
+        status === 'success'
+          ? `Action Run completed successfully`
+          : `Error With Action Run`
     })
   )
 
@@ -86,5 +95,5 @@ async function messageRunnerResultEvent(change, context) {
  * @type {functions.CloudFunction}
  */
 export default functions.database
-  .ref('/responses/actionRunner/{actionRunRequestKey}/status')
+  .ref(`/responses/${actionRunnerPath}/{actionRunRequestKey}/status`)
   .onWrite(messageRunnerResultEvent)
