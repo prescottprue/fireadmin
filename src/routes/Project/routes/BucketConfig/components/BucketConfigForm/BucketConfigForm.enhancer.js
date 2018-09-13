@@ -56,7 +56,7 @@ export default compose(
         const databaseName =
           databaseURL && databaseURLToProjectName(databaseURL)
         // Push request to callGoogleApi cloud function
-        const pushRef = await firebase.pushWithMeta('requests/googleApi', {
+        const pushRef = await firebase.pushWithMeta('requests/callGoogleApi', {
           api: 'storage',
           ...pick(bucketConfig, ['method', 'cors', 'environment']),
           projectId,
@@ -67,7 +67,7 @@ export default compose(
         const pushKey = pushRef.key
         // wait for response (written by cloud function)
         const results = await waitForCompleted(
-          firebase.ref(`responses/googleApi/${pushKey}`)
+          firebase.ref(`responses/callGoogleApi/${pushKey}`)
         )
         // Handle error calling google api (written to response)
         if (results.error) {

@@ -48,9 +48,23 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
           batch: sinon.stub().returns({
             commit: sinon.stub().returns(Promise.resolve()),
             set: sinon.stub().returns({})
+          }),
+          collection: sinon.stub().returns({
+            doc: sinon.stub().returns({}),
+            get: sinon.stub().returns(
+              Promise.resolve({
+                data: () => ({ some: 'value' }),
+                exists: true
+              })
+            )
           })
         },
-        doc: sinon.stub().returns({})
+        doc: sinon.stub().returns({
+          get: sinon.stub().returns(Promise.resolve({ data: () => ({}) })),
+          set: sinon.stub().returns(Promise.resolve(null)),
+          path: 'projects/my-project'
+        }),
+        path: 'projects'
       }),
       doc: sinon.stub().returns({
         update: sinon.stub().returns(Promise.resolve())
@@ -118,7 +132,11 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
 
     // Stubs for RTDB methods
     setStub = sinon.stub().returns(Promise.resolve({ ref: 'new_ref' }))
-    refStub = sinon.stub().returns({ set: setStub, update: setStub })
+    refStub = sinon.stub().returns({
+      set: setStub,
+      update: setStub,
+      push: sinon.stub().returns(Promise.resolve({}))
+    })
     databaseStub = sinon.stub().returns({ ref: refStub })
     databaseStub.ServerValue = { TIMESTAMP: 'test' }
 
@@ -578,7 +596,8 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
       const {
         projectId = 'asdfasdf1',
         srcResource = 'rtdb',
-        destResource = 'rtdb'
+        destResource = 'rtdb',
+        inputValues = ['projects']
       } =
         opts || {}
       // Environment Doc Stub (subcollection of project document)
@@ -612,7 +631,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
       const snapStub = {
         val: () => ({
           projectId,
-          inputValues: ['projects'],
+          inputValues,
           environments: [
             {
               databaseURL: 'https://some-project.firebaseio.com',
@@ -643,7 +662,36 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
     }
 
     describe('with src: "firestore" and dest: "firestore"', () => {
-      it('successfully copies between Firestore instances', async () => {
+      it('successfully copies a single document between Firestore instances', async () => {
+        const { snapStub } = createValidActionRunnerStubs({
+          srcResource: 'firestore',
+          destResource: 'firestore',
+          inputValues: ['projects/my-project']
+        })
+        const fakeContext = {
+          params: { pushId: 1 }
+        }
+        // Invoke with fake event object
+        const res = await actionRunner(snapStub, fakeContext)
+        // Response marked as started
+        expect(setStub).to.have.been.calledWith({
+          startedAt: 'test',
+          status: 'started'
+        })
+        // Confirm res
+        expect(res).to.be.null
+        // Ref for response is correct path
+        expect(refStub).to.have.been.calledWith(responsePath)
+        // Success object written to response
+        expect(setStub).to.have.been.calledWith({
+          completed: true,
+          completedAt: 'test',
+          status: 'success'
+        })
+      })
+
+      it('successfully copies multiple documents between Firestore instances', async function() {
+        this.retries(3) // retry to avoid file already exists error for serviceAccount
         const { snapStub } = createValidActionRunnerStubs({
           srcResource: 'firestore',
           destResource: 'firestore'
@@ -713,8 +761,8 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
           startedAt: 'test',
           status: 'started'
         })
-        // Confirm res (result of calling "update" in adminInitStub)
-        expect(res).to.be.undefined
+        // Confirm res
+        expect(res).to.be.null
         // Ref for response is correct path
         expect(refStub).to.have.been.calledWith(responsePath)
         // Success object written to response
@@ -743,7 +791,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
           status: 'started'
         })
         // Confirm res
-        expect(res).to.be.undefined
+        expect(res).to.be.null
         // Ref for response is correct path
         expect(refStub).to.have.been.calledWith(responsePath)
         // Success object written to response
@@ -772,7 +820,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
           status: 'started'
         })
         // Confirm res
-        expect(res).to.be.undefined
+        expect(res).to.be.null
         // Ref for response is correct path
         expect(refStub).to.have.been.calledWith(responsePath)
         // Success object written to response
@@ -801,7 +849,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
           status: 'started'
         })
         // Confirm res
-        expect(res).to.be.undefined
+        expect(res).to.be.null
         // Ref for response is correct path
         expect(refStub).to.have.been.calledWith(responsePath)
         // Success object written to response
@@ -835,7 +883,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
         status: 'started'
       })
       // Confirm res
-      expect(res).to.be.undefined
+      expect(res).to.be.null
       // Ref for response is correct path
       expect(refStub).to.have.been.calledWith(responsePath)
       // Success object written to response

@@ -1,4 +1,4 @@
-export const eventPathName = 'googleApi'
+export const eventPathName = 'callGoogleApi'
 
 export const SCOPES = [
   'https://www.googleapis.com/auth/devstorage.full_control',

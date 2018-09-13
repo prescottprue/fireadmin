@@ -61,25 +61,13 @@ export async function runStepsFromEvent(snap, context) {
     throw new Error('Input values array was not provided to action request')
   }
 
-  const [convertEnvsErr, convertedEnvs] = await to(
-    validateAndConvertEnvironments(eventData, environments)
+  const convertedEnvs = await validateAndConvertEnvironments(
+    eventData,
+    environments
   )
 
-  if (convertEnvsErr) {
-    console.error('Error converting envs:', convertEnvsErr.message)
-    throw convertEnvsErr
-  }
-
-  console.log('Converting inputs of step....')
-
-  const [convertInputsErr, convertedInputValues] = await to(
-    validateAndConvertInputs(eventData, inputs)
-  )
-
-  if (convertInputsErr) {
-    console.error('Error converting inputs:', convertInputsErr.message)
-    throw convertInputsErr
-  }
+  // Convert inputs into their values
+  const convertedInputValues = validateAndConvertInputs(eventData, inputs)
 
   const totalNumSteps = size(steps)
 
@@ -128,39 +116,31 @@ export async function runStepsFromEvent(snap, context) {
  */
 export async function runBackupsFromEvent(snap, context) {
   const eventData = snap.val()
-  if (!eventData) {
-    throw new Error('Event object does not contain a value.')
-  }
-  if (!isObject(eventData.template)) {
-    throw new Error('Action template is required to run steps')
-  }
   const {
     inputValues,
     template: { backups, inputs }
   } = eventData
   if (!isArray(backups)) {
     await updateResponseWithError(snap, context)
-    throw new Error('Steps array was not provided to action request')
+    throw new Error('Backups array was not provided to action request')
   }
+
   if (!isArray(inputs)) {
     await updateResponseWithError(snap, context)
     throw new Error('Inputs array was not provided to action request')
   }
+
   if (!isArray(inputValues)) {
     await updateResponseWithError(snap, context)
     throw new Error('Input values array was not provided to action request')
   }
-  console.log('Converting inputs of action....')
-  const [convertInputsErr, convertedInputValues] = await to(
-    validateAndConvertInputs(eventData, inputs)
-  )
-  if (convertInputsErr) {
-    console.error('Error converting inputs:', convertInputsErr.message)
-    throw convertInputsErr
-  }
+
+  const convertedInputValues = validateAndConvertInputs(eventData, inputs)
+
   const totalNumSteps = size(backups)
   console.log(`Running ${totalNumSteps} backup(s)`)
-  // Run all action promises
+
+  // Run all action promises in a waterfall
   const [actionErr, actionResponse] = await to(
     promiseWaterfall(
       map(
@@ -175,14 +155,18 @@ export async function runBackupsFromEvent(snap, context) {
       )
     )
   )
+
   // Cleanup temp directory
   cleanupServiceAccounts()
+
   if (actionErr) {
     await updateResponseWithError(snap, context)
     throw actionErr
   }
+
   // Write response to RTDB
   await updateResponseOnRTDB(snap, context)
+
   return actionResponse
 }
 
@@ -220,7 +204,7 @@ async function validateAndConvertEnvironment(eventData, inputMeta, inputValue) {
     !hasAll(inputValue, varsNeededForFirstoreType)
   ) {
     throw new Error(
-      'Service Account input is required and does not contain required parameters'
+      'Environment input is required and does not contain required parameters'
     )
   }
 
@@ -234,14 +218,8 @@ async function validateAndConvertEnvironment(eventData, inputMeta, inputValue) {
  * @return {Promise} Resolves with an array of results of converting inputs
  */
 function validateAndConvertInputs(eventData, inputsMetas, event) {
-  return Promise.all(
-    eventData.inputValues.map((inputValue, inputIdx) =>
-      validateAndConvertInputValues(
-        eventData,
-        get(inputsMetas, inputIdx),
-        inputValue
-      )
-    )
+  return eventData.inputValues.map((inputValue, inputIdx) =>
+    validateAndConvertInputValues(get(inputsMetas, inputIdx), inputValue)
   )
 }
 
@@ -252,40 +230,21 @@ function validateAndConvertInputs(eventData, inputsMetas, event) {
  * @return {Promise} Resolves with firebase app if service account type,
  * otherwise an dobject
  */
-async function validateAndConvertInputValues(eventData, inputMeta, inputValue) {
-  // Convert service account path and databaseURL to a Firebase App
+function validateAndConvertInputValues(inputMeta, inputValue) {
+  // Handle no longer supported input type "serviceAccount"
   if (get(inputMeta, 'type') === 'serviceAccount') {
-    // Throw if input is required and is missing serviceAccountPath or databaseURL
-    const missingParamsForAccountFromStorage = !hasAll(inputValue, [
-      'fullPath',
-      'databaseURL'
-    ])
-    const missingParamsForAccountFromFirstore = !hasAll(inputValue, [
-      'credential',
-      'databaseURL'
-    ])
-    if (
-      get(inputMeta, 'required') &&
-      missingParamsForAccountFromStorage &&
-      missingParamsForAccountFromFirstore
-    ) {
-      throw new Error(
-        'Service Account input is required and does not contain required parameters'
-      )
-    }
+    console.error('serviceAccount inputMeta type still being used: ', inputMeta)
+    throw new Error(
+      'serviceAccount input type is no longer supported. Please update your action template'
+    )
+  }
 
-    return getAppFromServiceAccount(inputValue, eventData)
-  }
-  if (get(inputMeta, 'pathType') === 'userInput') {
-    console.log('type of input is user input. Returning input value', {
-      inputMeta,
-      inputValue
-    })
-    return inputValue
-  }
+  // Confirm required inputs have a value
   if (get(inputMeta, 'required') && !size(inputValue)) {
     throw new Error('Input is required and does not contain a value')
   }
+
+  // Return input's value (assuming userInput type)
   return inputValue
 }
 
@@ -333,17 +292,22 @@ function createStepRunner({
           previousStepResult
         })
       )
+      // Handle errors running step
       if (err) {
+        // Write error back to response object
         await updateResponseWithActionError(snap, context, {
           totalNumSteps,
           stepIdx
         })
         throw new Error(`Error running step: ${stepIdx} : ${err.message}`)
       }
+
+      // Update response with step complete progress
       await updateResponseWithProgress(snap, context, {
         totalNumSteps,
         stepIdx
       })
+
       return stepResponse
     }
   }

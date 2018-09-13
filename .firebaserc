@@ -15,15 +15,15 @@
           "authDomain": "fireadmin-stage.firebaseapp.com",
           "databaseURL": "https://fireadmin-stage.firebaseio.com",
           "projectId": "fireadmin-stage",
-          "storageBucket": "fireadmin-stage.appspot.com",
-          "messagingSenderId": "566109548798"
+          "storageBucket": "fireadmin-stage.appspot.com"
         },
         "analyticsTrackingId": "${GA_TRACKING_ID}",
+        "segmentId": "${STAGE_SEGMENT_ID}",
+        "sentryDsn": "${SENTRY_DSN}",
+        "publicVapidKey": "${STAGE_PUBLIC_VAPID_KEY}",
         "googleApis": {
           "apiKey": "${STAGE_GOOGLE_API_KEY}"
         },
-        "segmentId": "${STAGE_SEGMENT_ID}",
-        "sentryDsn": "${SENTRY_DSN}",
         "algolia": {
           "appId": "${STAGE_ALGOLIA_APP_ID}",
           "apiKey": "${STAGE_ALGOLIA_BROWSER_KEY}"
@@ -42,6 +42,7 @@
         "analyticsTrackingId": "${GA_TRACKING_ID}",
         "segmentId": "${PROD_SEGMENT_ID}",
         "sentryDsn": "${SENTRY_DSN}",
+        "publicVapidKey": "${PROD_PUBLIC_VAPID_KEY}",
         "googleApis": {
           "apiKey": "${PROD_GOOGLE_API_KEY}"
         },
