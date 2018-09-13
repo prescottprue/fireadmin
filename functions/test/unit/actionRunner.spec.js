@@ -132,7 +132,11 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
 
     // Stubs for RTDB methods
     setStub = sinon.stub().returns(Promise.resolve({ ref: 'new_ref' }))
-    refStub = sinon.stub().returns({ set: setStub, update: setStub })
+    refStub = sinon.stub().returns({
+      set: setStub,
+      update: setStub,
+      push: sinon.stub().returns(Promise.resolve({}))
+    })
     databaseStub = sinon.stub().returns({ ref: refStub })
     databaseStub.ServerValue = { TIMESTAMP: 'test' }
 
@@ -757,8 +761,8 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
           startedAt: 'test',
           status: 'started'
         })
-        // Confirm res (result of calling "update" in adminInitStub)
-        expect(res).to.be.undefined
+        // Confirm res
+        expect(res).to.be.null
         // Ref for response is correct path
         expect(refStub).to.have.been.calledWith(responsePath)
         // Success object written to response
@@ -787,7 +791,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
           status: 'started'
         })
         // Confirm res
-        expect(res).to.be.undefined
+        expect(res).to.be.null
         // Ref for response is correct path
         expect(refStub).to.have.been.calledWith(responsePath)
         // Success object written to response
@@ -816,7 +820,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
           status: 'started'
         })
         // Confirm res
-        expect(res).to.be.undefined
+        expect(res).to.be.null
         // Ref for response is correct path
         expect(refStub).to.have.been.calledWith(responsePath)
         // Success object written to response
@@ -845,7 +849,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
           status: 'started'
         })
         // Confirm res
-        expect(res).to.be.undefined
+        expect(res).to.be.null
         // Ref for response is correct path
         expect(refStub).to.have.been.calledWith(responsePath)
         // Success object written to response
@@ -879,7 +883,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
         status: 'started'
       })
       // Confirm res
-      expect(res).to.be.undefined
+      expect(res).to.be.null
       // Ref for response is correct path
       expect(refStub).to.have.been.calledWith(responsePath)
       // Success object written to response

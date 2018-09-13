@@ -1,3 +1,4 @@
+import * as admin from 'firebase-admin'
 import { get } from 'lodash'
 import { runStepsFromEvent, runBackupsFromEvent } from './runSteps'
 import { to } from '../utils/async'
@@ -6,6 +7,7 @@ import {
   updateRequestAsStarted,
   writeProjectEvent
 } from './utils'
+import { rtdbRef } from '../utils/rtdb'
 
 /**
  * Run action based on action template. Multiple Service Account Types
@@ -25,14 +27,16 @@ export default async function runAction(snap, context) {
     throw missingProjectErr
   }
 
-  // Send start event
-  const startEvent = { eventType: 'startActionRun', eventData }
   await Promise.all([
     // Mark original request object as started
     updateRequestAsStarted(snap, context),
-    // Write an event to project's events subcollection
-    writeProjectEvent(eventData.projectId, startEvent)
+    // Write an event to project's "events" subcollection
+    writeProjectEvent(eventData.projectId, {
+      eventType: 'startActionRun',
+      eventData
+    })
   ])
+
   console.log('Start event sent successfully. Starting action run...')
 
   // Handle backups if they exist within the template
@@ -66,7 +70,7 @@ export default async function runAction(snap, context) {
   console.log('Starting steps run...')
 
   // Run steps
-  const [err, result] = await to(runStepsFromEvent(snap, context))
+  const [err] = await to(runStepsFromEvent(snap, context))
 
   // Handle errors within steps
   if (err) {
@@ -81,17 +85,42 @@ export default async function runAction(snap, context) {
       // Mark original request object with error
       updateResponseOnRTDB(snap, context, err),
       // Write an error event to project's events subcollection
-      writeProjectEvent(eventData.projectId, errorEvent)
+      writeProjectEvent(eventData.projectId, errorEvent),
+      // Request sendFcm Cloud Function to send error message to creator of run request
+      sendFcmMessageToUser({
+        userId: eventData.createdBy,
+        message: 'Error with Action Run'
+      })
     ])
     throw err
   }
 
-  console.log('Action completed writing event to project...')
+  console.log(
+    'Action completed successfully, writing event data and notifying user...'
+  )
 
-  // Write event to project indicating action run is complete
-  const finishedEvent = { eventType: 'finishActionRun', eventData }
-  await writeProjectEvent(eventData.projectId, finishedEvent)
+  await Promise.all([
+    // Write event to project "events" subcollection indicating action run is complete
+    writeProjectEvent(eventData.projectId, {
+      eventType: 'finishActionRun',
+      eventData
+    }),
+    // Request sendFcm Cloud Function to send message to creator of run request
+    sendFcmMessageToUser({
+      userId: eventData.createdBy,
+      message: `Action Run completed successfully`
+    })
+  ])
 
-  console.log('Action completed successfully!')
-  return result
+  console.log('Event and message request written successfully, exiting.')
+
+  return null
+}
+
+function sendFcmMessageToUser({ message, userId }) {
+  return rtdbRef('requests/sendFcm').push({
+    userId,
+    message,
+    createdAt: admin.database.ServerValue.TIMESTAMP
+  })
 }
