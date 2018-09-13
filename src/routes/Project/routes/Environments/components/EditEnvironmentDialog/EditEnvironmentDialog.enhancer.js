@@ -8,7 +8,8 @@ import { currentUserProjectPermissions } from 'selectors'
 
 export default compose(
   reduxForm({
-    form: 'editEnvironment'
+    form: 'editEnvironment',
+    enableReinitialize: true // needed is modal does not unmount once opening
   }),
   setPropTypes({
     reset: PropTypes.func.isRequired,
