@@ -6,7 +6,8 @@ export default theme => ({
     height: '10rem'
   },
   cardTitle: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    color: theme.palette.text.primary
   },
   media: {
     height: 194,

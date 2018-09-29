@@ -14,6 +14,28 @@ export const NEW_PROJECT_FORM_NAME = 'newProject'
 export const PROJECT_BUCKET_CONFIG_PATH = 'bucketConfig'
 export const PERMISSIONS_PATH = 'permissions'
 
+export const ANALYTICS_EVENT_NAMES = {
+  login: 'Login',
+  signup: 'Signup',
+  createProject: 'Create Project',
+  deleteProject: 'Delete Project',
+  bucketAction: 'Storage Bucket Action',
+  createEnvironment: 'Create Environment',
+  updateEnvironment: 'Update Environment',
+  deleteEnvironment: 'Delete Environment',
+  updatePermissions: 'Update Permissions',
+  createActionTemplate: 'Create Action Template',
+  updateActionTemplate: 'Update Action Template',
+  deleteActionTemplate: 'Delete Action Template',
+  addRole: 'Add Role',
+  updateRole: 'Update Role',
+  removeRole: 'Delete Role',
+  requestActionRun: 'Request Action Run',
+  addCollaborator: 'Add Collaborator',
+  removeCollaborator: 'Remove Collaborator',
+  deleteRole: 'Delete Role'
+}
+
 export const formNames = {
   account: ACCOUNT_FORM_NAME,
   signup: SIGNUP_FORM_NAME,

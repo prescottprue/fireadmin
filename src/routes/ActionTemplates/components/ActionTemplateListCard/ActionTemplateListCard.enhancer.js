@@ -4,14 +4,20 @@ import { withStateHandlers, flattenProp, withProps } from 'recompose'
 import styles from './ActionTemplateListCard.styles'
 
 export default compose(
-  withStyles(styles),
   withStateHandlers(
-    () => ({
-      expanded: false
+    ({ initialAnchorEl = null }) => ({
+      expanded: false,
+      anchorEl: initialAnchorEl
     }),
     {
       onExpandClick: ({ expanded }) => () => ({
         expanded: !expanded
+      }),
+      closeMenu: () => () => ({
+        anchorEl: null
+      }),
+      menuClick: () => e => ({
+        anchorEl: e.target
       })
     }
   ),
@@ -20,5 +26,6 @@ export default compose(
     truncatedDescription:
       description &&
       `${description.substring(0, 85)}${description.length >= 85 ? '...' : ''}`
-  }))
+  })),
+  withStyles(styles, { withTheme: true })
 )

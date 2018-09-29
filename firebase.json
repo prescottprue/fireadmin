@@ -12,7 +12,7 @@
       "**/.*",
       "**/node_modules/**",
       "build",
-      "cypress"
+      "test"
     ],
     "rewrites": [
       {

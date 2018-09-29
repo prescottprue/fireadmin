@@ -1,17 +1,20 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withStateHandlers, withHandlers } from 'recompose'
-import { firebasePaths, paths } from 'constants'
+import { firebasePaths } from 'constants'
 import { firestoreConnect } from 'react-redux-firebase'
 import { spinnerWhileLoading, withRouter } from 'utils/components'
 import { withNotifications } from 'modules/notification'
+import { withStyles } from '@material-ui/core/styles'
+import * as handlers from './ActionTemplatesList.handlers'
+import * as styles from './ActionTemplatesList.styles'
 
 export default compose(
   withNotifications,
   withRouter,
   // Map auth uid from state to props
   connect(({ firebase: { auth: { uid } } }) => ({ uid })),
-  // Wait for uid to exist before going further
+  // Show spinner while uid is loading
   spinnerWhileLoading(['uid']),
   // Set listeners for Firestore
   firestoreConnect(({ uid }) => [
@@ -28,20 +31,12 @@ export default compose(
     }
   ]),
   // map redux state to props
-  connect(
-    ({
-      firestore: {
-        ordered: { actionTemplates, myTemplates }
-      },
-      firebase: {
-        auth: { uid }
-      }
-    }) => ({
-      uid,
-      actionTemplates,
-      myTemplates
-    })
-  ),
+  connect(({ firestore: { ordered: { actionTemplates, myTemplates } } }) => ({
+    actionTemplates,
+    myTemplates
+  })),
+  // Show spinner while actionTemplates is loading
+  spinnerWhileLoading(['actionTemplates']),
   withStateHandlers(
     () => ({
       newDialogOpen: false
@@ -52,37 +47,6 @@ export default compose(
       })
     }
   ),
-  withHandlers({
-    createNewActionTemplate: props => async newTemplate => {
-      try {
-        const newTemplateWithMeta = {
-          public: false,
-          ...newTemplate,
-          createdBy: props.uid,
-          createdAt: props.firestore.FieldValue.serverTimestamp()
-        }
-        await props.firestore.add(
-          firebasePaths.actionTemplates,
-          newTemplateWithMeta
-        )
-        props.toggleNewDialog()
-        props.showSuccess('New action template created successfully')
-      } catch (err) {
-        props.showError('Error creating new template')
-        console.error('Error creating new template:', err.message || err) // eslint-disable-line no-console
-      }
-    },
-    deleteTemplate: props => async templateId => {
-      try {
-        // TODO: Add delete confirmation
-        await props.firestore.delete(firebasePaths.actionTemplates)
-        props.showSuccess('Action template deleted successfully')
-      } catch (err) {
-        props.showError('Error deleting action template')
-        console.error('Error deleting action template:', err.message || err) // eslint-disable-line no-console
-      }
-    },
-    goToTemplate: props => id =>
-      props.router.push(`${paths.actionTemplates}/${id}`)
-  })
+  withHandlers(handlers),
+  withStyles(styles)
 )
