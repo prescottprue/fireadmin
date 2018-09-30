@@ -7,7 +7,7 @@ let errorHandler
  * Initialize Raven
  */
 function initRaven() {
-  if (sentryDsn) {
+  if (sentryDsn && Raven) {
     Raven.config(sentryDsn, {
       environment,
       release: version
@@ -20,9 +20,9 @@ function initRaven() {
  */
 function initStackdriverErrorReporter() {
   let errorReporter
-  if (googleApis && googleApis.apiKey) {
+  if (googleApis && googleApis.apiKey && window.StackdriverErrorReporter) {
     window.addEventListener('DOMContentLoaded', () => {
-      const errorHandler = new StackdriverErrorReporter()
+      const errorHandler = new window.StackdriverErrorReporter()
       errorHandler.start({
         key: googleApis.apiKey,
         projectId: firebase.projectId,

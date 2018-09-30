@@ -1,9 +1,7 @@
-import { invoke, get, isFunction } from 'lodash'
+import { invoke, get } from 'lodash'
 
-export const isPromise = obj => obj && typeof obj.then === 'function'
-
-export const waitForResponseWith = (ref, pathForValue = 'completed', value) =>
-  new Promise((resolve, reject) => {
+export function waitForResponseWith(ref, pathForValue = 'completed', value) {
+  return new Promise((resolve, reject) => {
     ref.on(
       'value',
       responseSnap => {
@@ -21,38 +19,9 @@ export const waitForResponseWith = (ref, pathForValue = 'completed', value) =>
       }
     )
   })
+}
 
 export const createWaitForValue = (...args) => ref =>
   waitForResponseWith(ref, ...args)
 
 export const waitForCompleted = createWaitForValue('completed', true)
-
-export const pushAndWaitForReponse = async ({
-  firebase,
-  requestPath,
-  responsePath,
-  pushObj,
-  afterPush
-}) => {
-  const pushRes = await firebase.pushWithMeta(requestPath, pushObj)
-  const pushKey = pushRes.key
-  if (isFunction(afterPush)) {
-    afterPush(pushRes)
-  }
-  const responseRef = firebase.ref(`${responsePath}/${pushKey}`)
-  return waitForCompleted(responseRef)
-}
-
-export const pushAndWaitForStatus = async (
-  { firebase, requestPath, responsePath, pushObj, afterPush },
-  successCb,
-  errorCb
-) => {
-  const pushRes = await firebase.pushWithMeta(requestPath, pushObj)
-  const pushKey = pushRes.key
-  if (isFunction(afterPush)) {
-    afterPush(pushRes)
-  }
-  const responseRef = firebase.ref(`${responsePath}/${pushKey}`)
-  responseRef.on('value', successCb, errorCb)
-}

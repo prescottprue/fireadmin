@@ -22,6 +22,7 @@ export function setAnalyticsUser(auth) {
  * Initalize Segment Library when in production environment
  */
 export function initSegment() {
+  // Only initialize if in production and segmentId exists
   if (segmentId && env === 'production') {
   /* eslint-disable */
     !function(){
