@@ -28,8 +28,9 @@ import {
  * @param  {Function} condition - Condition function for when to show spinner
  * @return {HigherOrderComponent}
  */
-export const spinnerWhile = condition =>
-  branch(condition, renderComponent(LoadingSpinner))
+export function spinnerWhile(condition) {
+  return branch(condition, renderComponent(LoadingSpinner))
+}
 
 /**
  * Show a loading spinner while props are loading . Checks
@@ -52,8 +53,11 @@ export const spinnerWhile = condition =>
  * @param  {Array} propNames - List of prop names to check loading for
  * @return {HigherOrderComponent}
  */
-export const spinnerWhileLoading = propNames =>
-  spinnerWhile(props => some(propNames, name => !isLoaded(get(props, name))))
+export function spinnerWhileLoading(propNames) {
+  return spinnerWhile(props =>
+    some(propNames, name => !isLoaded(get(props, name)))
+  )
+}
 
 /**
  * HOC that shows a component while condition is true
@@ -63,8 +67,9 @@ export const spinnerWhileLoading = propNames =>
  * is true
  * @return {HigherOrderComponent}
  */
-export const renderWhile = (condition, component) =>
-  branch(condition, renderComponent(component))
+export function renderWhile(condition, component) {
+  return branch(condition, renderComponent(component))
+}
 
 /**
  * HOC that shows a component while any of a list of props loaded from Firebase
@@ -76,8 +81,8 @@ export const renderWhile = (condition, component) =>
  * @example
  * renderWhileEmpty(['todos'], () => <div>Todos Not Found</div>),
  */
-export const renderWhileEmpty = (propsNames, component) =>
-  renderWhile(
+export function renderWhileEmpty(propsNames, component) {
+  return renderWhile(
     // Any of the listed prop name correspond to empty props (supporting dot path names)
     props =>
       some(propsNames, name => {
@@ -89,6 +94,7 @@ export const renderWhileEmpty = (propsNames, component) =>
       }),
     component
   )
+}
 
 /**
  * HOC that shows a component while any of a list of props isEmpty
@@ -98,8 +104,8 @@ export const renderWhileEmpty = (propsNames, component) =>
  * the provied listener paths have errors
  * @return {HigherOrderComponent}
  */
-export const renderIfError = (listenerPaths, component) =>
-  compose(
+export function renderIfError(listenerPaths, component) {
+  return compose(
     connect((state, props) => {
       const {
         firestore: { errors }
@@ -133,6 +139,7 @@ export const renderIfError = (listenerPaths, component) =>
     ),
     setDisplayName('renderIfError')
   )
+}
 
 /**
  * HOC that logs props using console.log. Accepts an array list of prop names
@@ -153,37 +160,58 @@ export const renderIfError = (listenerPaths, component) =>
  * are logged
  * @return {HigherOrderComponent}
  */
-export const logProps = (propNames, logName = '') =>
-  mapProps(ownerProps => {
+export function logProps(propNames, logName = '') {
+  return mapProps(ownerProps => {
     console.log(
       `${logName} props:`,
       propNames ? pick(ownerProps, propNames) : ownerProps
     )
     return ownerProps
   })
-
-export const createWithFromContext = withVar => WrappedComponent => {
-  class WithFromContext extends Component {
-    render() {
-      const props = { [withVar]: this.context[withVar] }
-      if (this.context.store && this.context.store.dispatch) {
-        props.dispatch = this.context.store.dispatch
-      }
-      return <WrappedComponent {...this.props} {...props} />
-    }
-  }
-
-  WithFromContext.contextTypes = {
-    [withVar]: PropTypes.object.isRequired
-  }
-
-  return WithFromContext
 }
 
+/**
+ * Create a function which returns an HOC. The Higher Order Component
+ * has the provided variable pulled from context and passed as a prop
+ * @param {String} withVar - Variable to pass from context to props
+ * @example Router
+ * // HOC that adds route to props (from context)
+ * export const withRouter = createWithFromContext('router')
+ */
+export function createWithFromContext(withVar) {
+  return WrappedComponent => {
+    class WithFromContext extends Component {
+      render() {
+        const props = { [withVar]: this.context[withVar] }
+        if (this.context.store && this.context.store.dispatch) {
+          props.dispatch = this.context.store.dispatch
+        }
+        return <WrappedComponent {...this.props} {...props} />
+      }
+    }
+
+    WithFromContext.contextTypes = {
+      [withVar]: PropTypes.object.isRequired
+    }
+
+    return WithFromContext
+  }
+}
+
+/**
+ * HOC that adds router to props
+ * @return {HigherOrderComponent}
+ * @example Basic
+ * // Wrapped is SomeComponent with props.router from context
+ * const Wrapped = withRouter(SomeComponent)
+ */
 export const withRouter = createWithFromContext('router')
 
 /**
  * HOC that adds store to props
  * @return {HigherOrderComponent}
+ * @example Basic
+ * // Wrapped is SomeComponent with props.store from context
+ * const Wrapped = withStore(SomeComponent)
  */
 export const withStore = createWithFromContext('store')
