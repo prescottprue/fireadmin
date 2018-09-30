@@ -9,7 +9,7 @@ import 'firebase/firestore'
 import 'firebase/database'
 import 'firebase/storage'
 import { persistStore, persistReducer } from 'redux-persist'
-import logger from 'redux-logger'
+// import logger from 'redux-logger'
 import makeRootReducer from './reducers'
 import { updateLocation } from './location'
 import { setAnalyticsUser } from '../utils/analytics'
@@ -38,7 +38,7 @@ export default (initialState = {}) => {
 
   if (env === 'local') {
     // Add redux-logger to log action dispatches
-    middleware.push(logger)
+    // middleware.push(logger)
   }
 
   // ======================================================

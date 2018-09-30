@@ -1,6 +1,12 @@
 import { version } from '../../package.json'
 import { segmentId, env } from 'config' // eslint-disable-line import/no-unresolved
+import { ANALYTICS_EVENT_NAMES } from 'constants'
 
+/**
+ * Set User info to analytics context
+ * @param {Object} auth - User auth object
+ * @param {String} auth.uid - Current user's UID
+ */
 export function setAnalyticsUser(auth) {
   if (auth && auth.uid && window.analytics) {
     window.analytics.identify(auth.uid, {
@@ -12,7 +18,11 @@ export function setAnalyticsUser(auth) {
   }
 }
 
+/**
+ * Initalize Segment Library when in production environment
+ */
 export function initSegment() {
+  // Only initialize if in production and segmentId exists
   if (segmentId && env === 'production') {
   /* eslint-disable */
     !function(){
@@ -24,25 +34,6 @@ export function initSegment() {
   }
 }
 
-const ANALYTICS_EVENT_NAMES = {
-  login: 'Login',
-  signup: 'Signup',
-  createProject: 'Create Project',
-  deleteProject: 'Delete Project',
-  bucketAction: 'Storage Bucket Action',
-  createEnvironment: 'Create Environment',
-  updateEnvironment: 'Update Environment',
-  deleteEnvironment: 'Delete Environment',
-  updatePermissions: 'Update Permissions',
-  addRole: 'Add Role',
-  updateRole: 'Update Role',
-  removeRole: 'Delete Role',
-  requestActionRun: 'Request Action Run',
-  addCollaborator: 'Add Collaborator',
-  removeCollaborator: 'Remove Collaborator',
-  deleteRole: 'Delete Role'
-}
-
 /**
  * Trigger analytics event within google analytics through react-ga
  * @param  {Object} eventData - Data associated with the event.
@@ -50,9 +41,13 @@ const ANALYTICS_EVENT_NAMES = {
 export function triggerAnalyticsEvent(eventNameKey, eventData) {
   const eventName = ANALYTICS_EVENT_NAMES[eventNameKey]
   if (!eventName) {
-    console.warn(`Event name for event key: "${eventNameKey}" not found`) // eslint-disable-line no-console
+    /* eslint-disable no-console */
+    console.warn(
+      `Event name for event key: "${eventNameKey}" not found. Check ANALYTICS_EVENT_NAMES in src/constants.js.`
+    )
+    /* eslint-enable no-console */
   } else {
-    if (segmentId && window.analytics && env !== 'local') {
+    if (segmentId && window.analytics && env === 'production') {
       window.analytics.track(eventName, eventData)
     } else {
       console.debug('Analytics Event:', eventName, eventData) // eslint-disable-line no-console

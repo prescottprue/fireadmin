@@ -1,8 +1,8 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
-import { firebasePaths, paths } from 'constants'
-import { withHandlers, withStateHandlers, pure, withProps } from 'recompose'
+import { firebasePaths } from 'constants'
+import { withHandlers, withStateHandlers, withProps } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
 import {
@@ -13,6 +13,7 @@ import {
 } from 'utils/components'
 import TemplateLoadingError from './TemplateLoadingError'
 import TemplateNotFound from './TemplateNotFound'
+import * as handlers from './ActionTemplatePage.handlers'
 
 export default compose(
   withNotifications,
@@ -30,7 +31,7 @@ export default compose(
   })),
   // Show spinner while template is loading
   spinnerWhileLoading(['template']),
-  // Render Error page if there is an error in the
+  // Render Error page if there is an error loading the action template
   renderIfError(
     (state, { params: { templateId } }) => [
       `${firebasePaths.actionTemplates}.${templateId}`
@@ -38,7 +39,8 @@ export default compose(
     TemplateLoadingError
   ),
   withProps(({ template }) => ({ templateExists: !!template })),
-  renderWhile(({ template }) => !template, TemplateNotFound),
+  // Render Template Not Found page if template does not exist
+  renderWhile(({ templateExists }) => !templateExists, TemplateNotFound),
   withStateHandlers(
     ({ deleteDialogInitial = false }) => ({
       deleteDialogOpen: deleteDialogInitial
@@ -52,46 +54,6 @@ export default compose(
       })
     }
   ),
-  withHandlers({
-    updateTemplate: ({
-      firestore,
-      params: { templateId },
-      showSuccess,
-      showError
-    }) => async updateVals => {
-      const updatePath = `${firebasePaths.actionTemplates}/${templateId}`
-      const updatesWithMeta = {
-        ...updateVals,
-        templateId,
-        updatedAt: firestore.FieldValue.serverTimestamp()
-      }
-      try {
-        const res = await firestore.update(updatePath, updatesWithMeta)
-        showSuccess('Template Updated Successfully')
-        return res
-      } catch (err) {
-        showError('Error updating template')
-        throw err
-      }
-    },
-    deleteTemplate: ({
-      firestore,
-      params: { templateId },
-      router,
-      showSuccess,
-      showError
-    }) => async () => {
-      const updatePath = `${firebasePaths.actionTemplates}/${templateId}`
-      try {
-        const res = await firestore.delete(updatePath)
-        router.push(paths.actionTemplates)
-        showSuccess('Template Deleted Successfully')
-        return res
-      } catch (err) {
-        showError('Error Deleting Template')
-      }
-    },
-    goBack: ({ router }) => () => router.push(paths.actionTemplates)
-  }),
-  pure
+  // Add handlers as props
+  withHandlers(handlers)
 )

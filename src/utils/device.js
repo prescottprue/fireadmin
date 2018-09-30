@@ -1,3 +1,6 @@
+/**
+ * Detect whether UserAgent is that of a mobile device
+ */
 export function isMobileUserAgent() {
   var check = false
   /* eslint-disable no-useless-escape */

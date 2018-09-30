@@ -5,15 +5,8 @@ import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import NewActionTemplateDialog from '../NewActionTemplateDialog'
-import { withStyles } from '@material-ui/core/styles'
 import ActionTemplateListCard from '../ActionTemplateListCard'
 import classesFromStyles from './ActionTemplatesList.scss'
-
-const styles = theme => ({
-  root: {
-    flexGrow: 1
-  }
-})
 
 export const ActionTemplatesList = ({
   actionTemplates,
@@ -89,13 +82,13 @@ export const ActionTemplatesList = ({
 )
 
 ActionTemplatesList.propTypes = {
+  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   actionTemplates: PropTypes.array,
   myTemplates: PropTypes.array,
-  toggleNewDialog: PropTypes.func.isRequired,
-  createNewActionTemplate: PropTypes.func.isRequired,
-  newDialogOpen: PropTypes.bool.isRequired,
-  goToTemplate: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired
+  toggleNewDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
+  createNewActionTemplate: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  newDialogOpen: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
+  goToTemplate: PropTypes.func.isRequired
 }
 
-export default withStyles(styles)(ActionTemplatesList)
+export default ActionTemplatesList

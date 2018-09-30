@@ -1,15 +1,23 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <title>Fireadmin</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Manage Firebase Applications. Includes support for multiple environments and data migrations.">
+  <meta name="theme-color" content="#ef6c00" />
+  <!-- Use minimum-scale=1 to enable GPU rasterization -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0, maximum-scale=1, minimum-scale=1">
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <!-- Global Styling -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
   <link rel="stylesheet" href="https://unpkg.com/react-instantsearch-theme-algolia@4.0.0/style.min.css">
   <!-- Tracking/Reporting Bundles -->
   <script src=https://cdn.ravenjs.com/3.24.0/raven.min.js crossorigin=anonymous></script>
   <script defer src="https://cdn.rawgit.com/GoogleCloudPlatform/stackdriver-errors-js/v0.4.0/dist/stackdriver-errors-concat.min.js"></script>
-  <title>fireadmin</title>
 </head>
 <body>
   <div id="root" style="height: 100%"></div>
+  <noscript>Javascript must be enabled for Fireadmin to work. Please use a compatiable browser.</noscript>
 </body>
 </html>
