@@ -15,14 +15,7 @@ export const makeRootReducer = asyncReducers => {
       { key: 'firepersist', storage: localStorage, stateReconciler: hardSet },
       firebase
     ),
-    firestore: persistReducer(
-      {
-        key: 'firestorepersist',
-        storage: localStorage,
-        stateReconciler: hardSet
-      },
-      firestore
-    ),
+    firestore,
     form,
     location: locationReducer,
     notifications,
