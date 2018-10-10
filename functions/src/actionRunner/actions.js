@@ -3,6 +3,19 @@ import { batchCopyBetweenFirestoreRefs } from './utils'
 import { downloadFromStorage, uploadToStorage } from '../utils/cloudStorage'
 import { to } from '../utils/async'
 import { slashPathToFirestoreRef, dataByIdSnapshot } from '../utils/firestore'
+
+/**
+ * Get Firestore instance with settings applied
+ * @param {Object} app - Firebase app object
+ */
+function getFirestoreInstance(app) {
+  try {
+    return app.firestore().settings({ timestampsInSnapshots: true })
+  } catch (err) {
+    console.error('Error getting Firestore instance:', err)
+  }
+}
+
 /**
  * Copy data between Firestore instances from two different Firebase projects
  * @param  {firebase.App} app1 - First app for the action
@@ -19,9 +32,18 @@ export async function copyBetweenFirestoreInstances(
   const { merge = true, subcollections } = eventData
   const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
   const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
+  const firestore1 = getFirestoreInstance(app1)
+  const firestore2 = getFirestoreInstance(app2)
+
+  // Handle issues creating app instances
+  if (!firestore1 || !firestore2) {
+    const brokenEnv = !firestore1 ? 'src' : 'dest'
+    throw new Error(`${brokenEnv} environment is invalid`)
+  }
+
   // Get Firestore references from slash paths (handling both doc and collection)
-  const srcRef = slashPathToFirestoreRef(app1.firestore(), srcPath)
-  const destRef = slashPathToFirestoreRef(app2.firestore(), destPath)
+  const srcRef = slashPathToFirestoreRef(firestore1, srcPath)
+  const destRef = slashPathToFirestoreRef(firestore2, destPath)
 
   // Copy from src ref to dest ref with support for merging and subcollections
   const [copyErr, writeRes] = await to(

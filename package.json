@@ -65,7 +65,7 @@
     "redbox-react": "^1.3.6",
     "redux": "^4.0.0",
     "redux-auth-wrapper": "^1.0.0",
-    "redux-firestore": "^0.5.7",
+    "redux-firestore": "^0.5.8",
     "redux-form": "^7.4.0",
     "redux-form-material-ui": "^5.0.0-beta.3",
     "redux-persist": "^5.10.0",
