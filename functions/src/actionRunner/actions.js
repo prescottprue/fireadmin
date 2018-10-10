@@ -10,7 +10,8 @@ import { slashPathToFirestoreRef, dataByIdSnapshot } from '../utils/firestore'
  */
 function getFirestoreInstance(app) {
   try {
-    return app.firestore().settings({ timestampsInSnapshots: true })
+    app.firestore().settings({ timestampsInSnapshots: true })
+    return app.firestore()
   } catch (err) {
     console.error('Error getting Firestore instance:', err)
   }

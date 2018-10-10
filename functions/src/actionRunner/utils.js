@@ -262,7 +262,7 @@ export async function batchCopyBetweenFirestoreRefs({
 
     // Handle source document data not existing
     if (!docData) {
-      throw new Error(`Document at path ${srcRef.path} not found`)
+      throw new Error(`Doc "${srcRef.path}" not found`)
     }
 
     const [docWriteErr] = await to(destRef.set(docData, { merge: true }))
@@ -278,6 +278,13 @@ export async function batchCopyBetweenFirestoreRefs({
 
     // Set with merge to do updating while also handling docs not existing
     return destRef.set(docData, { merge: true })
+  }
+
+  // Handle collection data not existing
+  if (!firstSnap.exists) {
+    const dataNotFoundErr = `Collection "${srcRef.path}" not found`
+    console.error(dataNotFoundErr)
+    throw new Error(dataNotFoundErr)
   }
 
   // Get data into array (regardless of single doc or collection)

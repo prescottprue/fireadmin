@@ -1,9 +1,9 @@
 import * as admin from 'firebase-admin'
-import * as functions from 'firebase-functions'
 import { get, uniqueId } from 'lodash'
 import request from 'request-promise'
 import google from 'googleapis'
 import { serviceAccountFromFirestorePath } from '../utils/serviceAccounts'
+import { getLocalServiceAccount } from '../utils/firebaseFunctions'
 import { eventPathName, SCOPES } from './constants'
 import { to } from '../utils/async'
 import { hasAll } from '../utils'
@@ -112,12 +112,9 @@ async function getServiceAccount(eventVal = {}) {
     apiUrl.includes('fcm.googleapis.com/v1') ||
     !hasAll(eventVal, ['projectId', 'environment'])
   ) {
-    if (!functions.config().service_account) {
-      throw new Error('service_account functions config variable not set')
-    }
-
+    console.log('Using local service account')
     // Default to local service account
-    return functions.config().service_account
+    return getLocalServiceAccount()
   }
 
   // Only use project service account if projectId and environment exist
