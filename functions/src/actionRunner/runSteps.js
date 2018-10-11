@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin'
-import { get, isArray, size, map, isObject } from 'lodash'
+import { get, isArray, size, map, isObject, invoke } from 'lodash'
 import { CUSTOM_STEPS_PATH } from './constants'
 import { invokeFirepadContent } from './firepad'
 import {
@@ -302,6 +302,13 @@ function createStepRunner({
         throw new Error(`Error running step: ${stepIdx} : ${err.message}`)
       }
 
+      // Cleanup apps
+      const [cleanupErr] = await to(cleanupStep(stepResponse))
+
+      if (cleanupErr) {
+        console.error('Cleanup errored, skipping. Cleanup error: ', cleanupErr)
+      }
+
       // Update response with step complete progress
       await updateResponseWithProgress(snap, context, {
         totalNumSteps,
@@ -310,6 +317,76 @@ function createStepRunner({
 
       return stepResponse
     }
+  }
+}
+
+/**
+ * Run action within step
+ * @param {Object} stepSettings - Settings for steps
+ */
+async function runStepAction({
+  src,
+  dest,
+  app1,
+  app2,
+  step,
+  convertedInputValues
+}) {
+  switch (src.resource) {
+    case 'firestore':
+      if (dest.resource === 'firestore') {
+        return copyBetweenFirestoreInstances(
+          app1,
+          app2,
+          step,
+          convertedInputValues
+        )
+      } else if (dest.resource === 'rtdb') {
+        return copyFromFirestoreToRTDB(app1, app2, step, convertedInputValues)
+      } else {
+        throw new Error(
+          `Invalid dest.resource: ${dest.resource} for step: ${step}`
+        )
+      }
+    case 'rtdb':
+      if (dest.resource === 'firestore') {
+        return copyFromRTDBToFirestore(app1, app2, step, convertedInputValues)
+      } else if (dest.resource === 'rtdb') {
+        return copyBetweenRTDBInstances(app1, app2, step, convertedInputValues)
+      } else if (dest.resource === 'storage') {
+        return copyFromRTDBToStorage(app1, app2, step, convertedInputValues)
+      } else {
+        throw new Error(
+          `Invalid dest.resource: ${dest.resource} for step: ${step}`
+        )
+      }
+    case 'storage':
+      if (dest.resource === 'rtdb') {
+        return copyFromStorageToRTDB(app1, app2, step, convertedInputValues)
+      } else {
+        throw new Error(
+          `Invalid dest.resource: ${dest.resource} for step: ${step}`
+        )
+      }
+    default:
+      throw new Error(
+        'src.resource type not supported. Try firestore, rtdb, or storage'
+      )
+  }
+}
+
+/**
+ * Cleanup apps used within step
+ * @param {*} stepResponse - Response from step
+ */
+async function cleanupStep(stepResponse = {}) {
+  const { apps } = stepResponse
+  if (apps && apps.length) {
+    console.log('apps exist, deleting...')
+    apps.forEach(app => {
+      console.log('invoking delete on:', app)
+      invoke(app, 'delete')
+    })
   }
 }
 
@@ -367,45 +444,8 @@ export async function runStep({
     throw new Error('src, dest and src.resource are required to run step')
   }
 
-  switch (src.resource) {
-    case 'firestore':
-      if (dest.resource === 'firestore') {
-        return copyBetweenFirestoreInstances(
-          app1,
-          app2,
-          step,
-          convertedInputValues
-        )
-      } else if (dest.resource === 'rtdb') {
-        return copyFromFirestoreToRTDB(app1, app2, step, convertedInputValues)
-      } else {
-        throw new Error(
-          `Invalid dest.resource: ${dest.resource} for step: ${step}`
-        )
-      }
-    case 'rtdb':
-      if (dest.resource === 'firestore') {
-        return copyFromRTDBToFirestore(app1, app2, step, convertedInputValues)
-      } else if (dest.resource === 'rtdb') {
-        return copyBetweenRTDBInstances(app1, app2, step, convertedInputValues)
-      } else if (dest.resource === 'storage') {
-        return copyFromRTDBToStorage(app1, app2, step, convertedInputValues)
-      } else {
-        throw new Error(
-          `Invalid dest.resource: ${dest.resource} for step: ${step}`
-        )
-      }
-    case 'storage':
-      if (dest.resource === 'rtdb') {
-        return copyFromStorageToRTDB(app1, app2, step, convertedInputValues)
-      } else {
-        throw new Error(
-          `Invalid dest.resource: ${dest.resource} for step: ${step}`
-        )
-      }
-    default:
-      throw new Error(
-        'src.resource type not supported. Try firestore, rtdb, or storage'
-      )
-  }
+  // Run action inside of step (errors throw)
+  await runStepAction({ src, dest, app1, app2, step, convertedInputValues })
+
+  return { apps: [app1, app2] }
 }
