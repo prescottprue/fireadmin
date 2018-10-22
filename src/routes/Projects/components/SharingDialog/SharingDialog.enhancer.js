@@ -1,18 +1,36 @@
 import { get, findIndex, map } from 'lodash'
+import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withFirestore, firebaseConnect } from 'react-redux-firebase'
-import { withHandlers, withStateHandlers, withProps } from 'recompose'
+import {
+  withHandlers,
+  withStateHandlers,
+  withProps,
+  setPropTypes
+} from 'recompose'
 import { withNotifications } from 'modules/notification'
 import * as handlers from './SharingDialog.handlers'
 
 export default compose(
+  // Add props.firestore
   withFirestore,
+  // Add props.showSuccess and props.showError
   withNotifications,
+  // Attach/Detach RTDB listeners on mount/unmount
   firebaseConnect(['displayNames']),
+  // Set proptypes used in HOCs
+  setPropTypes({
+    firestore: PropTypes.shape({
+      doc: PropTypes.func.isRequired // used in handlers
+    }).isRequired,
+    showSuccess: PropTypes.func.isRequired, // used in handlers
+    showError: PropTypes.func.isRequired // used in handlers
+  }),
   connect(({ firebase: { data: { displayNames } } }, { params }) => ({
     displayNames
   })),
+  // State handlers as props
   withStateHandlers(
     ({ initialDialogOpen = false }) => ({
       sharingDialogOpen: initialDialogOpen,
@@ -53,6 +71,7 @@ export default compose(
       })
     }
   ),
+  // Handlers as props
   withHandlers(handlers),
   withProps(({ project, displayNames }) => {
     const collaborators = get(project, 'collaborators')

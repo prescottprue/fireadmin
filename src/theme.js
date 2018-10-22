@@ -8,6 +8,10 @@ import spacing from '@material-ui/core/styles/spacing'
 import zIndex from '@material-ui/core/styles/zIndex'
 
 export default {
+  // Enable typography v2: https://material-ui.com/style/typography/#migration-to-typography-v2
+  typography: {
+    useNextVariants: true
+  },
   spacing,
   zIndex: zIndex,
   fontFamily: 'Roboto, sans-serif',
