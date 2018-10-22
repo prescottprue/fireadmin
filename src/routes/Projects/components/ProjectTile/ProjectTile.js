@@ -21,7 +21,7 @@ export const ProjectTile = ({
   project,
   numberOfCollaborators,
   classes,
-  onSelect,
+  handleEditClick,
   onDelete,
   menuClick,
   closeMenu,
@@ -36,7 +36,7 @@ export const ProjectTile = ({
     <div className={classesFromStyles.top}>
       <span
         className={classesFromStyles.name}
-        onClick={() => onSelect(project)}
+        onClick={handleEditClick}
         data-test="project-tile-name">
         {project.name}
       </span>
@@ -45,13 +45,11 @@ export const ProjectTile = ({
           <MoreVertIcon />
         </IconButton>
         <Menu
-          id="simple-menu"
+          id="edit-menu"
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={closeMenu}>
-          <MenuItem
-            onClick={() => onSelect(project)}
-            data-test="project-tile-edit">
+          <MenuItem onClick={handleEditClick} data-test="project-tile-edit">
             <ListItemIcon className={classesFromStyles.icon}>
               <EditIcon />
             </ListItemIcon>
@@ -89,7 +87,7 @@ export const ProjectTile = ({
 ProjectTile.propTypes = {
   project: PropTypes.object.isRequired,
   numberOfCollaborators: PropTypes.number,
-  onSelect: PropTypes.func.isRequired,
+  handleEditClick: PropTypes.func.isRequired,
   menuClick: PropTypes.func.isRequired,
   closeMenu: PropTypes.func.isRequired,
   onDelete: PropTypes.func,

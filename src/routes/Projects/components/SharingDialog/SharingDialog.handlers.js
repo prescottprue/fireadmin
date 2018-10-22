@@ -21,13 +21,13 @@ export function saveCollaborators({
         collaborators[currentCollaborator.objectID] = true
         permissions[currentCollaborator.objectID] = {
           permission: 'viewer',
-          sharedAt: Date.now()
+          role: 'viewer',
+          sharedAt: firestore.FieldValue.serverTimestamp()
         }
       }
     })
     try {
-      await firebase
-        .firestore()
+      await firestore
         .doc(`projects/${project.id}`)
         .update({ collaborators, permissions })
       onRequestClose()
