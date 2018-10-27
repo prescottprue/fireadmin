@@ -40,7 +40,7 @@ export const ActionTemplateStep = ({
     <Button
       onClick={addStepClick}
       color="primary"
-      variant="raised"
+      variant="contained"
       className={classes.addAction}>
       Add Step
     </Button>

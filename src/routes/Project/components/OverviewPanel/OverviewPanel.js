@@ -17,7 +17,7 @@ export const OverviewPanel = ({
     <span className={classes.name}>{name}</span>
     <div className={classes.columns}>
       <div className={classes.column}>
-        <Typography variant="headline" component="h2">
+        <Typography variant="h5" component="h2">
           Environments
         </Typography>
         <div className={classes.columnInner}>
@@ -40,13 +40,13 @@ export const OverviewPanel = ({
           )}
         </div>
         <Link to={`${projectPath}/${paths.projectEnvironments}`}>
-          <Button variant="raised" color="primary">
+          <Button variant="contained" color="primary">
             Go To Environments
           </Button>
         </Link>
       </div>
       <div className={classes.column}>
-        <Typography variant="headline" component="h2">
+        <Typography variant="h5" component="h2">
           Actions
         </Typography>
         <div>
@@ -57,7 +57,10 @@ export const OverviewPanel = ({
           </p>
         </div>
         <Link to={`${projectPath}/${paths.projectActions}`}>
-          <Button variant="raised" color="primary" disabled={environmentsEmpty}>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={environmentsEmpty}>
             Go To Actions
           </Button>
         </Link>

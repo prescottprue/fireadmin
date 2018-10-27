@@ -19,7 +19,7 @@ export const Permissions = ({
       <Button
         disabled={addMemberDisabled}
         color="primary"
-        variant="raised"
+        variant="contained"
         aria-label="Add Member"
         onClick={toggleNewMemberModal}>
         Add Member

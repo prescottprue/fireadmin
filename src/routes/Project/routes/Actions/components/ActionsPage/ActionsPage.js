@@ -31,7 +31,7 @@ export const ActionsPage = ({
         <Button
           disabled={runActionDisabled}
           color="primary"
-          variant="raised"
+          variant="contained"
           aria-label="Run Action"
           onClick={submitActionRunner}
           data-test="run-action-button">
@@ -40,7 +40,7 @@ export const ActionsPage = ({
         {selectedTemplate && (
           <Button
             color="secondary"
-            variant="raised"
+            variant="contained"
             aria-label="Clear"
             onClick={clearRunner}
             className={classes.button}

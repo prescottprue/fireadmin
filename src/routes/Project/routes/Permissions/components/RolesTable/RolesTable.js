@@ -27,7 +27,7 @@ export const RolesTable = ({
     <div className={classesFromStyles.buttons}>
       <Button
         color="primary"
-        variant="raised"
+        variant="contained"
         aria-label="Add Role"
         onClick={openNewRole}
         disabled={addRoleDisabled}>

@@ -6,13 +6,17 @@ import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
-import Menu from '@material-ui/core/Menu'
+import MenuList from '@material-ui/core/MenuList'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+import Grow from '@material-ui/core/Grow'
 import MenuItem from '@material-ui/core/MenuItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
+import Paper from '@material-ui/core/Paper'
+import Popper from '@material-ui/core/Popper'
 import { databaseURLToProjectName } from 'utils'
 import classes from './Instance.scss'
 
@@ -39,24 +43,40 @@ export const Instance = ({
           <IconButton onClick={menuClick}>
             <MoreVertIcon />
           </IconButton>
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
+          <Popper
             open={Boolean(anchorEl)}
-            onClose={closeMenu}>
-            <MenuItem onClick={editAndClose}>
-              <ListItemIcon className={classes.icon}>
-                <EditIcon />
-              </ListItemIcon>
-              <ListItemText inset primary="Edit" />
-            </MenuItem>
-            <MenuItem onClick={removeAndClose}>
-              <ListItemIcon className={classes.icon}>
-                <DeleteIcon />
-              </ListItemIcon>
-              <ListItemText inset primary="Remove" />
-            </MenuItem>
-          </Menu>
+            anchorEl={anchorEl}
+            transition
+            placement="right-start">
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                id="menu-list-grow"
+                style={{
+                  transformOrigin:
+                    placement === 'bottom' ? 'left top' : 'right bottom'
+                }}>
+                <Paper>
+                  <ClickAwayListener onClickAway={closeMenu}>
+                    <MenuList>
+                      <MenuItem onClick={editAndClose}>
+                        <ListItemIcon className={classes.icon}>
+                          <EditIcon />
+                        </ListItemIcon>
+                        <ListItemText inset primary="Edit" />
+                      </MenuItem>
+                      <MenuItem onClick={removeAndClose}>
+                        <ListItemIcon className={classes.icon}>
+                          <DeleteIcon />
+                        </ListItemIcon>
+                        <ListItemText inset primary="Remove" />
+                      </MenuItem>
+                    </MenuList>
+                  </ClickAwayListener>
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
         </div>
       }
     />

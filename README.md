@@ -72,7 +72,6 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 ## Application Structure
 
 ```
-.
 ├── bin                      # Scripts called from the command line
 │   └── firebase-extra.js    # Script called by tests to seed/clear Firebase
 ├── build                    # All build-related configuration

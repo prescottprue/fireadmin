@@ -29,14 +29,14 @@ export const BucketConfigForm = ({
       <Button
         color="primary"
         type="submit"
-        variant="raised"
+        variant="contained"
         disabled={pristine || submitting || (method === 'PUT' && !body)}
         className={classes.button}>
         Run Bucket Action
       </Button>
       <Button
         color="secondary"
-        variant="raised"
+        variant="contained"
         disabled={pristine || submitting}
         onClick={reset}>
         Cancel
@@ -92,10 +92,7 @@ export const BucketConfigForm = ({
       </FormControl>
     </Paper>
     <Paper className={classes.paper}>
-      <Typography
-        className={classes.subHeader}
-        variant="headline"
-        component="h2">
+      <Typography className={classes.subHeader} variant="h5" component="h2">
         CORS Configuration
       </Typography>
       <FieldArray name="body.cors" component={CorsList} />

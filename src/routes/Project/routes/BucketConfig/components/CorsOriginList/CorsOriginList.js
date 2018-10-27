@@ -10,7 +10,7 @@ import classes from './CorsOriginList.scss'
 
 export const CorsOriginList = ({ fields, meta: { error, submitFailed } }) => (
   <div style={{ marginBottom: '1rem' }}>
-    <Typography className={classes.originHeader} variant="headline">
+    <Typography className={classes.originHeader} variant="h5">
       Origins
     </Typography>
     <div className={classes.add}>
