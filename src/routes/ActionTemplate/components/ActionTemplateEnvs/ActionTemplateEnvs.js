@@ -23,7 +23,7 @@ export const ActionTemplateEnvs = ({ fields, environments }) => (
       onClick={() => fields.push({ type: 'serviceAccount' })}
       color="primary"
       className={classes.addAction}
-      variant="raised">
+      variant="contained">
       Add Environment
     </Button>
     {fields.map((member, index, field) => (

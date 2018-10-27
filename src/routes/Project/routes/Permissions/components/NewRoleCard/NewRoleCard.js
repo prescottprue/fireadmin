@@ -14,7 +14,7 @@ export const NewRoleCard = ({
 }) => (
   <Paper className={classes.root} elevation={1}>
     <form onSubmit={handleSubmit}>
-      <Typography variant="headline" component="h3">
+      <Typography variant="h5" component="h3">
         New Role
       </Typography>
       <Field
@@ -35,7 +35,7 @@ export const NewRoleCard = ({
         <Button
           disabled={pristine}
           color="primary"
-          variant="raised"
+          variant="contained"
           aria-label="Run Action"
           type="submit">
           Add New Role

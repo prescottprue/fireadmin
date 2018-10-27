@@ -122,7 +122,7 @@ export const PermissionsTableRow = ({
           <Button
             disabled={pristine}
             color="primary"
-            variant="raised"
+            variant="contained"
             aria-label="Run Action"
             type="submit">
             Update Member

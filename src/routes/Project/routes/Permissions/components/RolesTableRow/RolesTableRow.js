@@ -188,7 +188,7 @@ export const RolesTableRow = ({
           <Button
             disabled={pristine || updateRolesDisabled}
             color="primary"
-            variant="raised"
+            variant="contained"
             aria-label="Run Action"
             type="submit">
             Update Member

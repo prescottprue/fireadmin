@@ -19,10 +19,7 @@ export const CorsList = ({ fields, meta: { error, submitFailed } }) => (
     {fields.map((member, index) => (
       <div key={index} className={classes.item}>
         <div className="flex-row">
-          <Typography
-            className={classes.subHeader}
-            variant="headline"
-            component="h4">
+          <Typography className={classes.subHeader} variant="h5" component="h4">
             CORS Config #{index + 1}
           </Typography>
           <IconButton onClick={() => fields.remove(index)}>

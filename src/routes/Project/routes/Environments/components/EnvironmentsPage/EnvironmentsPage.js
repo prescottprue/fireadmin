@@ -31,7 +31,7 @@ export const EnvironmentsPage = ({
     </Typography>
     <div style={{ marginBottom: '2rem' }}>
       <Button
-        variant="raised"
+        variant="contained"
         color="primary"
         onClick={toggleNewDialog}
         data-test="add-environment-button">

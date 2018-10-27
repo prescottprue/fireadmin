@@ -9,7 +9,7 @@ import classes from './AccountPage.scss'
 export const AccountPage = ({ avatarUrl, updateAccount, cleanProfile }) => (
   <div className={classes.container}>
     <Paper className={classes.pane}>
-      <Typography variant="title" className={classes.title}>
+      <Typography variant="h6" className={classes.title}>
         Account
       </Typography>
       <div className={classes.settings}>
