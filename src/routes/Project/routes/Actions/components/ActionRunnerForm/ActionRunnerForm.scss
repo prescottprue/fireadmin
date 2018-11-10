@@ -17,7 +17,16 @@
 }
 .inputs {
   @extend .flex-row;
-  align-items: center !important;
+  flex-wrap: 'wrap';
+  align-items: flex-start !important;
+  @include mobile {
+    flex-direction: column;
+    align-items: center !important;
+  };
+  @include tablet {
+    flex-direction: column;
+    align-items: center !important;
+  };
 }
 .button {
   margin-left: 2rem;
