@@ -4,15 +4,12 @@ import { get, map } from 'lodash'
 import Button from '@material-ui/core/Button'
 import { Field } from 'redux-form'
 import { Link } from 'react-router'
-import { Select } from 'redux-form-material-ui'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Grid from '@material-ui/core/Grid'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -22,6 +19,7 @@ import CollectionSearch from 'components/CollectionSearch'
 import TabContainer from 'components/TabContainer'
 import { databaseURLToProjectName } from 'utils'
 import { paths } from 'constants'
+import OutlinedSelect from 'components/OutlinedSelect'
 import ActionInput from '../ActionInput'
 import StepsViewer from '../StepsViewer'
 import PrivateActionTemplates from '../PrivateActionTemplates'
@@ -104,44 +102,28 @@ export const ActionRunnerForm = ({
         <ExpansionPanelDetails className={classes.inputs}>
           {selectedTemplate.environments ? (
             selectedTemplate.environments.map((input, index) => (
-              <ExpansionPanel
-                defaultExpanded
-                className={classes.panel}
-                key={index}>
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <div style={{ display: 'block' }}>
-                    <Typography className={classes.title}>
-                      {get(input, `name`) || `Environment ${index + 1}`}
-                    </Typography>
-                  </div>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <FormControl className={classes.field}>
-                    <InputLabel htmlFor="environment">
-                      Select An Environment
-                    </InputLabel>
-                    <Field
-                      name={`environmentValues.${index}`}
-                      component={Select}
-                      fullWidth
-                      inputProps={{
-                        name: 'environment',
-                        id: 'environment'
-                      }}>
-                      {map(environments, (environment, environmentKey) => (
-                        <MenuItem key={environmentKey} value={environmentKey}>
-                          <ListItemText
-                            primary={environment.name || environmentKey}
-                            secondary={databaseURLToProjectName(
-                              environment.databaseURL
-                            )}
-                          />
-                        </MenuItem>
-                      ))}
-                    </Field>
-                  </FormControl>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
+              <Field
+                name={`environmentValues.${index}`}
+                component={OutlinedSelect}
+                fullWidth
+                props={{
+                  label: get(input, `name`) || `Environment ${index + 1}`
+                }}
+                inputProps={{
+                  name: 'environment',
+                  id: 'environment'
+                }}>
+                {map(environments, (environment, environmentKey) => (
+                  <MenuItem key={environmentKey} value={environmentKey}>
+                    <ListItemText
+                      primary={environment.name || environmentKey}
+                      secondary={databaseURLToProjectName(
+                        environment.databaseURL
+                      )}
+                    />
+                  </MenuItem>
+                ))}
+              </Field>
             ))
           ) : (
             <div className="flex-row-center">No Environments</div>

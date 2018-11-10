@@ -1,3 +1,4 @@
 import ActionInput from './ActionInput'
+import enhance from './ActionInput.enhancer'
 
-export default ActionInput
+export default enhance(ActionInput)

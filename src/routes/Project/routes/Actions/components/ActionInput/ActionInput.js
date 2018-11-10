@@ -1,38 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { get, startCase } from 'lodash'
+import { get } from 'lodash'
 import { Field } from 'redux-form'
-import { TextField } from 'redux-form-material-ui'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import Typography from '@material-ui/core/Typography'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import OutlinedTextField from 'components/OutlinedTextField'
 import classes from './ActionInput.scss'
 
 export const ActionInput = ({ inputMeta, name, index }) => (
-  <ExpansionPanel defaultExpanded className={classes.container}>
-    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-      <div style={{ display: 'block' }}>
-        <Typography className={classes.title}>
-          {get(inputMeta, `name`) || `Input ${index + 1}`}
-        </Typography>
-        {get(inputMeta, `type`, null) && (
-          <Typography className={classes.type}>
-            Type: {startCase(get(inputMeta, `type`))}
-          </Typography>
-        )}
-      </div>
-    </ExpansionPanelSummary>
-    <ExpansionPanelDetails>
-      <Field
-        name={name}
-        component={TextField}
-        label="Name"
-        className={classes.field}
-      />
-    </ExpansionPanelDetails>
-  </ExpansionPanel>
+  <Field
+    name={name}
+    props={{
+      label: get(inputMeta, `name`) || `Input ${index + 1}`
+    }}
+    component={OutlinedTextField}
+    className={classes.field}
+  />
 )
 
 ActionInput.propTypes = {
