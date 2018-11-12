@@ -39,7 +39,7 @@ export const SidebarList = ({
     ))}
     <Divider />
     <Divider />
-    <ListItem button selected onClick={toggleDrawer} style={listItemStyle}>
+    <ListItem button onClick={toggleDrawer} style={listItemStyle}>
       <ListItemIcon>
         {drawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
       </ListItemIcon>

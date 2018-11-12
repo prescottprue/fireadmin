@@ -16,7 +16,13 @@ export const ActionsPage = ({
   templateEditExpanded,
   templateName,
   submitActionRunner,
-  params
+  params,
+  inputsExpanded,
+  toggleInputs,
+  environmentsExpanded,
+  toggleEnvironments,
+  stepsExpanded,
+  toggleSteps
 }) => (
   <div className={classes.container}>
     <Typography className={classes.pageHeader}>Actions</Typography>
@@ -56,6 +62,12 @@ export const ActionsPage = ({
         templateName={templateName}
         templateEditExpanded={templateEditExpanded}
         toggleTemplateEdit={toggleTemplateEdit}
+        inputsExpanded={inputsExpanded}
+        toggleInputs={toggleInputs}
+        environmentsExpanded={environmentsExpanded}
+        toggleEnvironments={toggleEnvironments}
+        stepsExpanded={stepsExpanded}
+        toggleSteps={toggleSteps}
         selectActionTemplate={selectActionTemplate}
         onSubmit={runAction}
       />
@@ -71,7 +83,13 @@ ActionsPage.propTypes = {
   clearRunner: PropTypes.func.isRequired, // from enhancer (withHandlers)
   selectActionTemplate: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   toggleTemplateEdit: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
+  inputsExpanded: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
+  toggleInputs: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
+  environmentsExpanded: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
+  toggleEnvironments: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   templateEditExpanded: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
+  stepsExpanded: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
+  toggleSteps: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   runActionDisabled: PropTypes.bool.isRequired, // from enhancer (withProps)
   templateName: PropTypes.string.isRequired // from enhancer (withProps)
 }

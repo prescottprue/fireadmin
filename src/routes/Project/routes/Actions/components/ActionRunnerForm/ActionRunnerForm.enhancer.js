@@ -12,21 +12,9 @@ export default compose(
   })),
   withStateHandlers(
     ({ initialExpanded = true }) => ({
-      inputsExpanded: true,
-      stepsExpanded: true,
-      environmentsExpanded: true,
       selectedTab: 0
     }),
     {
-      toggleInputs: ({ inputsExpanded }) => () => ({
-        inputsExpanded: !inputsExpanded
-      }),
-      toggleEnvironments: ({ environmentsExpanded }) => () => ({
-        environmentsExpanded: !environmentsExpanded
-      }),
-      toggleSteps: ({ stepsExpanded }) => () => ({
-        stepsExpanded: !stepsExpanded
-      }),
       selectTab: () => (e, selectedTab) => ({
         selectedTab
       })

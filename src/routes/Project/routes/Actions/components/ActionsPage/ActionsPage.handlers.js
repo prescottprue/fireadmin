@@ -47,7 +47,7 @@ export function runAction(props) {
       templateId,
       environmentValues
     })
-    Promise.all([
+    return Promise.all([
       props.firebase.pushWithMeta(
         firebasePaths.actionRunnerRequests,
         actionRequest
@@ -68,6 +68,8 @@ export function runAction(props) {
       )
     ])
       .then(() => {
+        // Close sections used for action runner input
+        props.closeRunnerSections()
         // Notify user that action run has started
         props.showMessage('Action Run Started!')
       })
