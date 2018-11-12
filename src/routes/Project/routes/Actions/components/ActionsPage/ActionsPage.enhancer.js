@@ -56,7 +56,12 @@ export default compose(
   // State handlers as props
   withStateHandlers(
     () => ({
-      templateEditExpanded: true
+      templateEditExpanded: true,
+      // Values for ActionRunnerForm at this level so they can be cleared
+      // during actionRunner submission
+      inputsExpanded: true,
+      stepsExpanded: true,
+      environmentsExpanded: true
     }),
     {
       toggleTemplateEdit: ({ templateEditExpanded }) => () => ({
@@ -72,6 +77,22 @@ export default compose(
       clearRunner: () => () => ({
         selectedTemplate: null,
         templateEditExpanded: true
+      }),
+      // Sections of ActionRunnerForm at this level so that they can be cleared
+      // during actionRunner submission
+      toggleInputs: ({ inputsExpanded }) => () => ({
+        inputsExpanded: !inputsExpanded
+      }),
+      toggleEnvironments: ({ environmentsExpanded }) => () => ({
+        environmentsExpanded: !environmentsExpanded
+      }),
+      toggleSteps: ({ stepsExpanded }) => () => ({
+        stepsExpanded: !stepsExpanded
+      }),
+      closeRunnerSections: () => () => ({
+        stepsExpanded: false,
+        inputsExpanded: false,
+        environmentsExpanded: false
       })
     }
   ),
