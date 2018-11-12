@@ -106,6 +106,7 @@ export const ActionRunnerForm = ({
                 name={`environmentValues.${index}`}
                 component={OutlinedSelect}
                 fullWidth
+                key={`Environment-${index}`}
                 props={{
                   label: get(input, `name`) || `Environment ${index + 1}`
                 }}
@@ -114,7 +115,9 @@ export const ActionRunnerForm = ({
                   id: 'environment'
                 }}>
                 {map(environments, (environment, environmentKey) => (
-                  <MenuItem key={environmentKey} value={environmentKey}>
+                  <MenuItem
+                    key={`Environment-Option-${environmentKey}`}
+                    value={environmentKey}>
                     <ListItemText
                       primary={environment.name || environmentKey}
                       secondary={databaseURLToProjectName(
@@ -140,7 +143,7 @@ export const ActionRunnerForm = ({
           {selectedTemplate.inputs
             ? selectedTemplate.inputs.map((input, index) => (
                 <ActionInput
-                  key={index}
+                  key={`Input-${index}`}
                   name={`inputValues.${index}`}
                   inputs={selectedTemplate.inputs}
                   inputMeta={get(selectedTemplate.inputs, index)}
