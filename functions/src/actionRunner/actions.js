@@ -170,17 +170,32 @@ export async function copyBetweenRTDBInstances(
     const secondRTDB = app2.database()
     const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
     const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
+
+    // Handle source path not being provided
+    if (!srcPath) {
+      const noSrcPathErr =
+        'Copying whole database is not currently supported, please provide a source path.'
+      console.warn('Attempted to copy whole database, throwing an error')
+      throw new Error(noSrcPathErr)
+    }
+    // Load data from first database
     const dataSnapFromFirst = await firstRTDB.ref(srcPath).once('value')
     const dataFromFirst = invoke(dataSnapFromFirst, 'val')
+
+    // Handle data not existing in source database
     if (!dataFromFirst) {
       const errorMessage =
         'Path does not exist in Source Real Time Database Instance'
       console.error(errorMessage)
       throw new Error(errorMessage)
     }
-    const updateRes = await secondRTDB.ref(destPath).update(dataFromFirst)
+
+    // Update second database with data from first datbase
+    await secondRTDB.ref(destPath).update(dataFromFirst)
+
     console.log('Copy between RTDB instances successful')
-    return updateRes
+
+    return null
   } catch (err) {
     console.log('Error copying between RTDB instances', err.message || err)
     throw err

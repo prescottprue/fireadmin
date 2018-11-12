@@ -60,7 +60,7 @@ OutlinedSelect.propTypes = {
   label: PropTypes.string.isRequired,
   meta: PropTypes.object.isRequired,
   input: PropTypes.object.isRequired,
-  children: PropTypes.object.isRequired,
+  children: PropTypes.array.isRequired,
   classes: PropTypes.object.isRequired // from enhancer (withStyles)
 }
 

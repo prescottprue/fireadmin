@@ -10,6 +10,7 @@ export const OutlinedTextField = ({ input, label, classes }) => (
     margin="normal"
     variant="outlined"
     {...input}
+    InputProps={input}
   />
 )
 
