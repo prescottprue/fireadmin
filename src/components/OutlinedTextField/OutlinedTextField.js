@@ -2,15 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
 
-export const OutlinedTextField = ({ input, label, classes }) => (
+export const OutlinedTextField = ({ input, label, classes, ...other }) => (
   <TextField
     id="outlined-helperText"
     label={label}
     className={classes.root}
     margin="normal"
     variant="outlined"
-    {...input}
     InputProps={input}
+    inputProps={other}
   />
 )
 

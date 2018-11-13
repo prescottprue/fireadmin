@@ -9,7 +9,8 @@ export const ActionInput = ({ inputMeta, name, index }) => (
   <Field
     name={name}
     props={{
-      label: get(inputMeta, `name`) || `Input ${index + 1}`
+      label: get(inputMeta, `name`) || `Input ${index + 1}`,
+      'data-test': 'action-input'
     }}
     component={OutlinedTextField}
     className={classes.field}

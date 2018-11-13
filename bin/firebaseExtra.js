@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 const isString = require('lodash/isString')
-const admin = require('firebase-admin')
 const fs = require('fs')
 const path = require('path')
 const yargs = require('yargs') // eslint-disable-line import/no-extraneous-dependencies
@@ -93,22 +92,9 @@ function firestoreAction(originalArgv, action = 'set', actionPath, thirdArg) {
   const parsedVal = parseFixturePath(thirdArg)
 
   // Check to see if parsedVal is fixture path
-  if (isString(parsedVal)) {
-    fixtureData = readFixture(thirdArg)
-    // Add meta if withMeta option exists
-    if (originalArgv.withMeta) {
-      const actionPrefix = action === 'update' ? 'updated' : 'created'
-      fixtureData[`${actionPrefix}By`] = utils.envVarBasedOnCIEnv('TEST_UID')
-      /* eslint-disable standard/computed-property-even-spacing */
-      fixtureData[
-        `${actionPrefix}At`
-      ] = admin.firestore.FieldValue.serverTimestamp()
-      /* eslint-enable standard/computed-property-even-spacing */
-    }
-  } else {
-    // Otherwise handle third argument as an options object
-    options = parsedVal
-  }
+
+  // Otherwise handle third argument as an options object
+  options = parsedVal
 
   // Create ref from slash and any provided query options
   const ref = utils.slashPathToFirestoreRef(
@@ -122,11 +108,11 @@ function firestoreAction(originalArgv, action = 'set', actionPath, thirdArg) {
     const missingActionErr = `Ref at provided path "${actionPath}" does not have action "${action}"`
     throw new Error(missingActionErr)
   }
-  console.log('fixture data:', fixtureData, typeof fixtureData)
+  console.log('fixture data:', parsedVal, actionPath)
 
   try {
     // Call action with fixture data
-    return ref[action](fixtureData).then(res => {
+    return ref[action](parsedVal).then(res => {
       const dataArray = dataArrayFromSnap(res)
 
       // Write results to stdout to be loaded in tests
@@ -137,6 +123,8 @@ function firestoreAction(originalArgv, action = 'set', actionPath, thirdArg) {
       return dataArray
     })
   } catch (err) {
+    console.log('parsed var:', parsedVal)
+    console.log('typeof:', typeof parseFixturePath(actionPath), typeof thirdArg)
     console.log(`Error with ${action} at path "${actionPath}": `, err)
     throw err
   }

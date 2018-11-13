@@ -4,8 +4,11 @@ import { size } from 'lodash'
 import MenuItem from '@material-ui/core/MenuItem'
 import { Highlight } from 'react-instantsearch/dom'
 
-const SuggestedUser = ({ hit, onClick }) => (
-  <MenuItem style={{ marginTop: '10px' }} onClick={() => onClick(hit)}>
+const SuggestedItem = ({ hit, onClick }) => (
+  <MenuItem
+    style={{ marginTop: '10px' }}
+    onClick={() => onClick(hit)}
+    data-test="search-result">
     <div className="flex-column">
       <span className="hit-name">
         <Highlight attributeName="name" hit={hit} />
@@ -21,9 +24,9 @@ const SuggestedUser = ({ hit, onClick }) => (
   </MenuItem>
 )
 
-SuggestedUser.propTypes = {
+SuggestedItem.propTypes = {
   hit: PropTypes.object,
   onClick: PropTypes.func
 }
 
-export default SuggestedUser
+export default SuggestedItem

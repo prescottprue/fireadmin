@@ -3,6 +3,7 @@ import 'firebase/database'
 import 'firebase/auth'
 import 'firebase/storage'
 import 'firebase/firestore'
+import { isObject } from 'lodash'
 import {
   getFixtureBlob,
   buildRtdbCommand,
@@ -107,20 +108,59 @@ Cypress.Commands.add('uploadFile', (selector, fileUrl, type = '') => {
  * @param {Object} opts - Options
  * @param {Array} opts.args - Command line args to be passed
  * @type {Cypress.Command}
- * @example Basic
- * cy.callRtdb('set', 'project/test-project', 'fakeProject.json')
+ * @example Set Data
+ * const fakeProject = { some: 'data' }
+ * cy.callRtdb('set', 'projects/ABC123', fakeProject)
+ * @example Set Data With Meta
+ * const fakeProject = { some: 'data' }
+ * // Adds createdAt and createdBy (current user's uid) on data
+ * cy.callRtdb('set', 'projects/ABC123', fakeProject, { withMeta: true })
+ * @example Get/Verify Data
+ * cy.callRtdb('get', 'projects/ABC123')
+ *   .then((project) => {
+ *     // Confirm new data has users uid
+ *     cy.wrap(project)
+ *       .its('createdBy')
+ *       .should('equal', Cypress.env('TEST_UID'))
+ *   })
  * @example Other Args
  * const opts = { args: ['-d'] }
- * cy.callRtdb('update', 'project/test-project', opts)
+ * const fakeProject = { some: 'data' }
+ * cy.callRtdb('update', 'project/test-project', fakeProject, opts)
  */
-Cypress.Commands.add(
-  'callRtdb',
-  (action, actionPath, fixturePath, opts = {}) => {
-    const rtdbCommand = buildRtdbCommand(action, actionPath, fixturePath, opts)
-    cy.log(`Calling RTDB command:\n${rtdbCommand}`)
-    return cy.exec(rtdbCommand)
+Cypress.Commands.add('callRtdb', (action, actionPath, data, opts = {}) => {
+  const dataToWrite = isObject(data) ? { ...data } : data
+  // Add metadata to dataToWrite if specified by options
+  if (isObject(data) && opts.withMeta) {
+    dataToWrite.createdBy = Cypress.env('TEST_UID')
+    dataToWrite.createdAt = firebase.database.ServerValue.TIMESTAMP
   }
-)
+
+  // Build command to pass to firebase-tools-extra
+  const rtdbCommand = buildRtdbCommand(action, actionPath, dataToWrite, opts)
+  cy.log(`Calling RTDB command:\n${rtdbCommand}`)
+
+  // Call firebase-tools-extra command
+  return cy.exec(rtdbCommand).then(out => {
+    const { stdout, stderr } = out || {}
+    // Reject with Error if error in rtdbCommand call
+    if (stderr) {
+      return Promise.reject(stderr)
+    }
+
+    // Parse result if using get action so that data can be verified
+    if (action === 'get' && typeof stdout === 'string') {
+      try {
+        return JSON.parse(stdout)
+      } catch (err) {
+        console.log('Error parsing data from callRtdb response', out)
+      }
+    }
+
+    // Otherwise return unparsed output
+    return stdout
+  })
+})
 
 /**
  * Call Firestore instance with some specified action. Authentication is through serviceAccount.json since it is at the base
@@ -149,15 +189,21 @@ Cypress.Commands.add(
       opts
     )
     cy.log(`Calling Firestore command:\n${firestoreCommand}`)
-    cy.exec(firestoreCommand, { timeout: 100000 }).then(res => {
-      if (res.stderr) {
-        return Promise.reject(res.stderr)
+    cy.exec(firestoreCommand, { timeout: 100000 }).then(out => {
+      const { stdout, stderr } = out || {}
+      // Reject with Error if error in firestoreCommand call
+      if (stderr) {
+        return Promise.reject(stderr)
       }
-      try {
-        return JSON.parse(res.stdout)
-      } catch (err) {
-        return res
+      // Parse result if using get action so that data can be verified
+      if (action === 'get' && typeof stdout === 'string') {
+        try {
+          return JSON.parse(stdout)
+        } catch (err) {
+          console.log('Error parsing data from callRtdb response', out)
+        }
       }
+      return stdout
     })
   }
 )
