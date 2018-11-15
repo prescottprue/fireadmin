@@ -1,8 +1,12 @@
 import { get, omit } from 'lodash'
 import { firebasePaths, formNames } from 'constants'
-import { submit } from 'redux-form'
+import { submit, initialize } from 'redux-form'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 
+/**
+ * A handler for remote submitting the action runner
+ * @param {Object} props - component props
+ */
 export function submitActionRunner({ dispatch }) {
   return () => {
     dispatch(submit(formNames.actionRunner))
@@ -10,7 +14,31 @@ export function submitActionRunner({ dispatch }) {
 }
 
 /**
- * Run action handler
+ * A handler which sets up the actionRunner with the same settings
+ * as a previous run.
+ * @param {Object} props - component props
+ * @return {Function} A handler function which sets up the action
+ * runner with the same settings as a previous run
+ */
+export function rerunAction(props) {
+  return action => {
+    const templateWithValues = {
+      ...action.eventData,
+      ...action.eventData.template,
+      inputValues: action.eventData.inputValues,
+      environmentValues: action.eventData.environmentValues
+    }
+    props.selectActionTemplate(templateWithValues)
+    props.dispatch(
+      initialize(formNames.actionRunner, templateWithValues, false, {
+        keepValues: false
+      })
+    )
+  }
+}
+
+/**
+ * A handler which starts an action run
  * @param  {Object} props - component props
  * @return {Function} A function which calls to run an action based on specified
  * config
