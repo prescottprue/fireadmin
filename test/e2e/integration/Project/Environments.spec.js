@@ -1,4 +1,5 @@
 import { createSelector } from '../../utils'
+import fakeProject from '../../fixtures/fakeProject.json'
 
 describe('Project - Environments', () => {
   let openSpy // eslint-disable-line no-unused-vars
@@ -19,8 +20,8 @@ describe('Project - Environments', () => {
         openSpy = cy.spy(cy.state('server').options, 'onOpen')
         return null
       })
-    // Create a fake project in Firestore
-    cy.callFirestore('set', 'projects/test-project', 'fakeProject.json', {
+    // Add a fake project owned by the test user
+    cy.callFirestore('set', 'projects/test-project', fakeProject, {
       withMeta: true
     })
     // Login using custom token

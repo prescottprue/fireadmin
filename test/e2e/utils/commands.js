@@ -1,4 +1,4 @@
-import { isObject } from 'lodash'
+import { isObject, isBoolean } from 'lodash'
 
 /**
  * Converts fixture to Blob. All file types are converted to base64 then
@@ -37,12 +37,17 @@ const FIREBASE_TOOLS_YES_ARGUMENT = '-y'
 // NPX is used so that globally installed firebase-tools is used first, then
 // falls back to local bin
 const FIREBASE_TOOLS_BASE_COMMAND = 'npx firebase'
+const BASE_FIXTURE_PATH = 'test/e2e/fixtures'
 
 /**
  * Add default Firebase arguments to arguments array.
  * @param {Array} args - arguments array
+ * @param  {Object} [opts={}] - Options object
+ * @param {Boolean} [opts.disableYes=false] - Whether or not to disable the
+ * yes argument
  */
-function addDefaultArgs(args) {
+function addDefaultArgs(args, opts = {}) {
+  const { disableYes = false } = opts
   const newArgs = [...args]
   const projectId = Cypress.env('FIREBASE_PROJECT_ID')
   // Include project id command so command runs on the current project
@@ -51,7 +56,7 @@ function addDefaultArgs(args) {
     newArgs.push(projectId)
   }
   // Add Firebase's automatic approval argument if it is not already in newArgs
-  if (!newArgs.includes(FIREBASE_TOOLS_YES_ARGUMENT)) {
+  if (!disableYes && !newArgs.includes(FIREBASE_TOOLS_YES_ARGUMENT)) {
     newArgs.push(FIREBASE_TOOLS_YES_ARGUMENT)
   }
   return newArgs
@@ -62,27 +67,44 @@ function addDefaultArgs(args) {
  * firebase-tools directly, so FIREBASE_TOKEN must exist in environment.
  * @param  {String} action - action to run on Firstore (i.e. "add", "delete")
  * @param  {String} actionPath - Firestore path where action should be run
- * @param  {Any} data - Data associated with action
+ * @param  {String|Object} fixturePath - Path to fixture. If object is passed,
+ * it is used as options.
  * @param  {Object} [opts={}] - Options object
  * @param  {Object} opts.args - Extra arguments to be passed with command
  * @return {String} Command string to be used with cy.exec
  */
-export function buildRtdbCommand(action, actionPath, data, opts = {}) {
-  const { args = [] } = opts
+export function buildRtdbCommand(action, actionPath, fixturePath, opts = {}) {
+  const options = isObject(fixturePath) ? fixturePath : opts
+  const { args = [] } = options
   const argsWithDefaults = addDefaultArgs(args)
   const argsStr = getArgsString(argsWithDefaults)
   switch (action) {
-    case 'remove':
-      return `${FIREBASE_TOOLS_BASE_COMMAND} database:${action} /${actionPath}${argsStr}`
+    case 'delete':
+      return `${FIREBASE_TOOLS_BASE_COMMAND} database:${action} ${actionPath}${argsStr}`
     case 'get': {
       const getDataArgsWithDefaults = addDefaultArgs(args, { disableYes: true })
+      if (options.limitToLast) {
+        const lastCount = isBoolean(options.limitToLast)
+          ? 1
+          : options.limitToLast
+        if (!options.orderByChild) {
+          getDataArgsWithDefaults.push(
+            `--order-by-key --limit-to-last ${lastCount}`
+          )
+        } else {
+          getDataArgsWithDefaults.push(
+            `--order-by-child ${
+              options.orderByChild
+            } --limit-to-last ${lastCount}`
+          )
+        }
+      }
       const getDataArgsStr = getArgsString(getDataArgsWithDefaults)
       return `${FIREBASE_TOOLS_BASE_COMMAND} database:${action} /${actionPath}${getDataArgsStr}`
     }
     default: {
-      return `${FIREBASE_TOOLS_BASE_COMMAND} database:${action} /${actionPath} -d '${JSON.stringify(
-        data
-      )}'${argsStr}`
+      const fullPathToFixture = `${BASE_FIXTURE_PATH}/${fixturePath}`
+      return `${FIREBASE_TOOLS_BASE_COMMAND} database:${action} /${actionPath} ${fullPathToFixture}${argsStr}`
     }
   }
 }
@@ -110,13 +132,13 @@ export function buildFirestoreCommand(
   const argsWithDefaults = addDefaultArgs(args, { disableYes: true })
   switch (action) {
     case 'delete': {
-      // Add -r to args string (recursive) if recursive option is true
-      if (options.recursive) {
-        argsWithDefaults.push('-r')
-      }
-      return `${FIREBASE_TOOLS_BASE_COMMAND} firestore:${action} ${actionPath}${getArgsString(
-        argsWithDefaults
-      )}`
+      const deleteArgsWithDefaults = addDefaultArgs(args)
+      // Add -r to args string (recursive) if recursive option is true otherwise specify shallow
+      const finalDeleteArgs = deleteArgsWithDefaults.concat(
+        options.recursive ? '-r' : '--shallow'
+      )
+      const deleteArgsStr = getArgsString(finalDeleteArgs)
+      return `${FIREBASE_TOOLS_BASE_COMMAND} firestore:${action} ${actionPath}${deleteArgsStr}`
     }
     case 'set': {
       // Add -m to argsWithDefaults string (meta) if withmeta option is true

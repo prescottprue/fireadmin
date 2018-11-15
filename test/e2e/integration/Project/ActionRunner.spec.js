@@ -1,6 +1,6 @@
 import { createSelector } from '../../utils'
 import fakeProject from '../../fixtures/fakeProject.json'
-import fakeEnvironment from '../../fixtures/fakeEnvironment.json'
+const destEnvName = 'dest env'
 
 describe('Project - Action Runner', () => {
   // Setup before tests including creating a fake project
@@ -9,24 +9,15 @@ describe('Project - Action Runner', () => {
     cy.callFirestore('set', 'projects/test-project', fakeProject, {
       withMeta: true
     })
-    cy.callFirestore(
-      'set',
-      'projects/test-project/src-env/abc',
-      fakeEnvironment
-    )
-    // TODO: Add fake environment
-    cy.callFirestore(
-      'set',
-      'projects/test-project/dest-env/bcd',
-      fakeEnvironment
-    )
     // Login using custom token
     cy.login()
+    // Go to fake project page actions page
+    cy.visit('/projects/test-project/actions')
   })
 
   beforeEach(() => {
-    // Go to fake project page actions page
-    cy.visit('/projects/test-project/actions')
+    // Reload using cache to clear action runner component state
+    cy.reload(false)
   })
 
   after(() => {
@@ -40,17 +31,13 @@ describe('Project - Action Runner', () => {
     })
   })
 
-  describe('Run Action', () => {
-    it.only('runs action if using non-disabled environment', () => {
-      cy.callRtdb('get', 'requests/actionRunner', {
-        args: ['--limit-to-first 1']
-      }).then(request => {
-        console.log('request:', request)
-        // Confirm new data has users uid
-        cy.wrap(request)
-          .its('createdBy')
-          .should('equal', Cypress.env('TEST_UID'))
-      })
+  describe('Environment Locking', () => {
+    before(() => {
+      const lockedEnv = { name: 'locked env', locked: true }
+      cy.addProjectEnvironment('test-project', 'locked-env', lockedEnv)
+    })
+
+    it('disables run action button if locked environment is selected', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
@@ -65,13 +52,57 @@ describe('Project - Action Runner', () => {
       cy.get(createSelector('environment-option'))
         .first()
         .click()
+      // Click away
+      cy.get('body').click()
       // Open destination select field
+      cy.get(createSelector('environment-select'))
+        .last()
+        .click()
+      // Pick first option for the destination environment
+      // TODO: Select actual environment instead of just last one
+      cy.get(createSelector('environment-option'))
+        .last()
+        .click()
+      // Fill out the input (which collection to copy)
+      cy.get(createSelector('action-input'))
+        .first()
+        .type('test')
+      cy.get(createSelector('run-action-button')).should('be.disabled')
+    })
+  })
+
+  describe('Running Action', () => {
+    before(() => {
+      cy.addProjectEnvironment('test-project', 'src-env')
+      cy.addProjectEnvironment('test-project', 'dest-env', {
+        name: destEnvName
+      })
+    })
+
+    it('requests valid action run provided valid inputs', () => {
+      // Search for an action template
+      cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
+      // Select the first action template
+      cy.get(createSelector('search-result'))
+        .first()
+        .click()
+      // Open source select field
       cy.get(createSelector('environment-select'))
         .first()
         .click()
-      // Pick first option for the destination environment
+      // Pick first option for the src environment
       cy.get(createSelector('environment-option'))
         .first()
+        .click()
+      // Click away
+      cy.get('body').dblclick()
+      // Open destination select field
+      cy.get(createSelector('environment-select'))
+        .last()
+        .click()
+      // Pick first option for the destination environment
+      cy.get(createSelector('environment-option'))
+        .last()
         .click()
       // Fill out the input (which collection to copy)
       cy.get(createSelector('action-input'))
@@ -83,20 +114,14 @@ describe('Project - Action Runner', () => {
         .click()
       // Confirm request was created with correct settings
       cy.callRtdb('get', 'requests/actionRunner', {
-        args: ['--limit-to-first 1']
-      }).then(request => {
-        console.log('request:', request)
+        limitToLast: 1
+      }).then(requests => {
+        cy.log('request:', requests)
         // Confirm new data has users uid
-        cy.wrap(request)
+        cy.wrap(requests[Object.keys(requests)[0]])
           .its('createdBy')
           .should('equal', Cypress.env('TEST_UID'))
       })
-    })
-
-    it.skip('is disabled if protected environment is selected', () => {
-      // TODO: Add an environment which has protected: true
-      // TODO: Confirm that Run Action button is disabled
-      cy.get(createSelector('run-action-button')).should('be.disabled')
     })
   })
 })

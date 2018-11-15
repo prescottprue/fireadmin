@@ -9,6 +9,7 @@ import {
   buildRtdbCommand,
   buildFirestoreCommand
 } from '../utils/commands'
+import fakeEnvironment from '../fixtures/fakeEnvironment.json'
 
 const projectId = Cypress.env('FIREBASE_PROJECT_ID')
 
@@ -129,7 +130,9 @@ Cypress.Commands.add('uploadFile', (selector, fileUrl, type = '') => {
  * cy.callRtdb('update', 'project/test-project', fakeProject, opts)
  */
 Cypress.Commands.add('callRtdb', (action, actionPath, data, opts = {}) => {
+  // If data is an object, create a copy to original object is not modified
   const dataToWrite = isObject(data) ? { ...data } : data
+
   // Add metadata to dataToWrite if specified by options
   if (isObject(data) && opts.withMeta) {
     dataToWrite.createdBy = Cypress.env('TEST_UID')
@@ -145,6 +148,7 @@ Cypress.Commands.add('callRtdb', (action, actionPath, data, opts = {}) => {
     const { stdout, stderr } = out || {}
     // Reject with Error if error in rtdbCommand call
     if (stderr) {
+      cy.log(`Error in Firestore Command:\n${stderr}`)
       return Promise.reject(stderr)
     }
 
@@ -179,31 +183,53 @@ Cypress.Commands.add('callRtdb', (action, actionPath, data, opts = {}) => {
  * const opts = { args: ['-r'] }
  * cy.callFirestore('delete', 'project/test-project', opts)
  */
+Cypress.Commands.add('callFirestore', (action, actionPath, data, opts = {}) => {
+  // If data is an object, create a copy to original object is not modified
+  const dataToWrite = isObject(data) ? { ...data } : data
+
+  // Add metadata to dataToWrite if specified by options
+  if (isObject(data) && opts.withMeta) {
+    dataToWrite.createdBy = Cypress.env('TEST_UID')
+    dataToWrite.createdAt = firebase.firestore.FieldValue.serverTimestamp()
+  }
+
+  const firestoreCommand = buildFirestoreCommand(
+    action,
+    actionPath,
+    dataToWrite,
+    opts
+  )
+  cy.log(`Calling Firestore command:\n${firestoreCommand}`)
+
+  cy.exec(firestoreCommand, { timeout: 100000 }).then(out => {
+    const { stdout, stderr } = out || {}
+    // Reject with Error if error in firestoreCommand call
+    if (stderr) {
+      cy.log(`Error in Firestore Command:\n${stderr}`)
+      return Promise.reject(stderr)
+    }
+    // Parse result if using get action so that data can be verified
+    if (action === 'get' && typeof stdout === 'string') {
+      try {
+        return JSON.parse(stdout)
+      } catch (err) {
+        console.log('Error parsing data from callFirestore response', out)
+      }
+    }
+    return stdout
+  })
+})
+
 Cypress.Commands.add(
-  'callFirestore',
-  (action, actionPath, fixturePath, opts = {}) => {
-    const firestoreCommand = buildFirestoreCommand(
-      action,
-      actionPath,
-      fixturePath,
-      opts
+  'addProjectEnvironment',
+  (project, environment, extraData = {}) => {
+    cy.callFirestore(
+      'set',
+      `projects/${project}/environments/${environment}`,
+      { ...fakeEnvironment, ...extraData },
+      {
+        withMeta: true
+      }
     )
-    cy.log(`Calling Firestore command:\n${firestoreCommand}`)
-    cy.exec(firestoreCommand, { timeout: 100000 }).then(out => {
-      const { stdout, stderr } = out || {}
-      // Reject with Error if error in firestoreCommand call
-      if (stderr) {
-        return Promise.reject(stderr)
-      }
-      // Parse result if using get action so that data can be verified
-      if (action === 'get' && typeof stdout === 'string') {
-        try {
-          return JSON.parse(stdout)
-        } catch (err) {
-          console.log('Error parsing data from callRtdb response', out)
-        }
-      }
-      return stdout
-    })
   }
 )
