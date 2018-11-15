@@ -72,7 +72,10 @@ export default compose(
       }),
       selectActionTemplate: () => newSelectedTemplate => ({
         selectedTemplate: newSelectedTemplate,
-        templateEditExpanded: false
+        templateEditExpanded: false,
+        inputsExpanded: true,
+        stepsExpanded: true,
+        environmentsExpanded: true
       }),
       clearRunner: () => () => ({
         selectedTemplate: null,

@@ -22,15 +22,13 @@ export const ActionsPage = ({
   environmentsExpanded,
   toggleEnvironments,
   stepsExpanded,
-  toggleSteps
+  toggleSteps,
+  rerunAction
 }) => (
   <div className={classes.container}>
     <Typography className={classes.pageHeader}>Actions</Typography>
     <Typography className={classes.subHeader}>Recently Run Actions</Typography>
-    <RecentActions
-      params={params}
-      selectActionTemplate={selectActionTemplate}
-    />
+    <RecentActions projectId={params.projectId} rerunAction={rerunAction} />
     <Typography className={classes.subHeader}>Action Runner</Typography>
     <div className={classes.container}>
       <div className={classes.buttons}>
@@ -79,6 +77,7 @@ ActionsPage.propTypes = {
   params: PropTypes.object.isRequired, // from react-router
   selectedTemplate: PropTypes.object, // from enhancer (withStateHandlers)
   runAction: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  rerunAction: PropTypes.func.isRequired, // from enhancer (withHandlers)
   submitActionRunner: PropTypes.func.isRequired, // from enhancer (withHandlers)
   clearRunner: PropTypes.func.isRequired, // from enhancer (withHandlers)
   selectActionTemplate: PropTypes.func.isRequired, // from enhancer (withStateHandlers)

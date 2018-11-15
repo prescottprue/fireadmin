@@ -20,7 +20,7 @@
   1. [Before Starting](#before-starting)
 1. [Testing](#testing)
   1. [Cloud Functions Unit](#cloud-functions-unit-tests)
-  1. [App E2E](#app-e2e)
+  1. [App E2E](#app-e2e-tests)
 1. [Deployment](#deployment)
 1. [FAQ](#faq)
 
@@ -102,15 +102,22 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 │   │   ├── createStore.js   # Create and instrument redux store
 │   │   └── reducers.js      # Reducer registry and injection
 │   └── styles               # Application-wide styles (generally settings)
-├── project.config.js        # Project configuration settings (includes ci settings)
 ├── test                     # App Tests
-│   └── unit                 # Unit tests
+│   └── e2e                  # App End To End tests
+├── .firebaserc              # Firebase project settings (including settings for CI deployment)
+├── cypress.json             # Cypress E2E Testing settings
+├── database.rules.json      # Firebase Real Time Database Rules
+├── firebase.json            # Firebase resource settings (including which folders are deployed)
+├── firestore.indexes.json   # Firestore Indexes
+├── firestore.rules          # Firestore Database Rules
+├── project.config.js        # Project configuration settings
+└── storage.rules            # Cloud Storage Rules
 ```
 
 ## Run Your Own
 
 ### Requirements
-* node `^6.14.0` (`8.11.3` suggested for function to match [Cloud Functions Runtime][functions-runtime-url])
+* node `^8.11.3` (node 8 suggested in order to match [Cloud Functions Runtime][functions-runtime-url])
 
 ### Before Starting
 
@@ -286,9 +293,9 @@ NOTE: `npm run start:dist` is used to start the local server in the example abov
 ## FAQ
 
 1. Why node `8.11.3` instead of a newer version?
-  [Cloud Functions runtime supports `6` or `8`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
+    [Cloud Functions runtime supports `6` or `8`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
 1. Uploading service accounts? Where do they go and how are my service accounts stored?
-  Currently on a Google Cloud Storage Bucket which has security rules and does not have CORS access. As soon as the file has been converted into an encrypted string and stored within Firestore, it is removed from Cloud Storage.
+    When uploading a service account, it first goes to a Google Cloud Storage Bucket which [has security rules](/storage.rules) and does not have CORS access. The [copyServiceAccountToFirestore Cloud Function](/functions/src/copyServiceAccountToFirestore) converts it into an encrypted string, stores it within Firestore, then removes the original file from Cloud Storage. Firestore rules keep anyone that is not a collaborator on your project using or reading the service account. Since it is associated with a specific environment, you can then limit access to what can be done with it right in the Users/Permissions tab of Fireadmin.
 
 [functions-runtime-url]: https://cloud.google.com/functions/docs/writing/#the_cloud_functions_runtime
 [npm-image]: https://img.shields.io/npm/v/fireadmin.svg?style=flat-square
