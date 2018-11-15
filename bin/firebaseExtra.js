@@ -87,11 +87,8 @@ function parseFixturePath(unparsed) {
 function firestoreAction(originalArgv, action = 'set', actionPath, thirdArg) {
   const fbInstance = utils.initializeFirebase()
 
-  let fixtureData
   let options = {}
   const parsedVal = parseFixturePath(thirdArg)
-
-  // Check to see if parsedVal is fixture path
 
   // Otherwise handle third argument as an options object
   options = parsedVal
@@ -108,24 +105,26 @@ function firestoreAction(originalArgv, action = 'set', actionPath, thirdArg) {
     const missingActionErr = `Ref at provided path "${actionPath}" does not have action "${action}"`
     throw new Error(missingActionErr)
   }
-  console.log('fixture data:', parsedVal, actionPath)
 
   try {
     // Call action with fixture data
-    return ref[action](parsedVal).then(res => {
-      const dataArray = dataArrayFromSnap(res)
+    return ref[action](parsedVal)
+      .then(res => {
+        const dataArray = dataArrayFromSnap(res)
 
-      // Write results to stdout to be loaded in tests
-      if (action === 'get') {
-        process.stdout.write(JSON.stringify(dataArray))
-      }
+        // Write results to stdout to be loaded in tests
+        if (action === 'get') {
+          process.stdout.write(JSON.stringify(dataArray))
+        }
 
-      return dataArray
-    })
+        return dataArray
+      })
+      .catch(err => {
+        console.log(`Error with ${action} at path "${actionPath}": `, err)
+        return Promise.reject(err)
+      })
   } catch (err) {
-    console.log('parsed var:', parsedVal)
-    console.log('typeof:', typeof parseFixturePath(actionPath), typeof thirdArg)
-    console.log(`Error with ${action} at path "${actionPath}": `, err)
+    console.log(`${action} at path "${actionPath}" threw an error: `, err)
     throw err
   }
 }
