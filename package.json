@@ -118,6 +118,7 @@
     "file-loader": "^0.11.1",
     "firebase-tools": "^6.1.0",
     "firebase-tools-extra": "0.0.6",
+    "fs-extra": "^7.0.1",
     "html-webpack-plugin": "^2.29.0",
     "husky": "^0.14.3",
     "ip": "^1.1.5",
