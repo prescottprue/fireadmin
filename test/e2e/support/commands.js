@@ -3,16 +3,18 @@ import 'firebase/database'
 import 'firebase/auth'
 import 'firebase/storage'
 import 'firebase/firestore'
-import {
-  getFixtureBlob,
-  buildRtdbCommand,
-  buildFirestoreCommand
-} from '../utils/commands'
+import { attachCustomCommands } from 'cypress-firebase'
+import { getFixtureBlob } from '../utils/commands'
+import fakeEnvironment from '../fixtures/fakeEnvironment.json'
 
 const projectId = Cypress.env('FIREBASE_PROJECT_ID')
+const env = Cypress.env('env') || 'stage'
+const apiKey =
+  Cypress.env(`${env.toUpperCase()}_FIREBASE_API_KEY`) ||
+  Cypress.env('FIREBASE_API_KEY')
 
 const fbConfig = {
-  apiKey: Cypress.env('FIREBASE_API_KEY'),
+  apiKey,
   authDomain: `${projectId}.firebaseapp.com`,
   databaseURL: `https://${projectId}.firebaseio.com`,
   projectId: `${projectId}`,
@@ -21,58 +23,8 @@ const fbConfig = {
 
 window.fbInstance = firebase.initializeApp(fbConfig)
 
-/**
- * Login to Firebase auth using FIREBASE_AUTH_JWT environment variable
- * which is generated using firebase-admin authenticated with serviceAccount
- * during test:buildConfig phase.
- * @type {Cypress.Command}
- * @example Basic
- * cy.login()
- */
-Cypress.Commands.add('login', () => {
-  /** Log in using token **/
-  if (!Cypress.env('FIREBASE_AUTH_JWT')) {
-    cy.log(
-      'FIREBASE_AUTH_JWT must be set to cypress environment in order to login'
-    )
-    return
-  }
-  if (firebase.auth().currentUser) {
-    cy.log('Current user already exists, login complete.')
-  } else {
-    return new Promise((resolve, reject) => {
-      // eslint-disable-line consistent-return
-      firebase.auth().onAuthStateChanged(auth => {
-        if (auth) {
-          resolve(auth)
-        }
-      })
-      firebase
-        .auth()
-        .signInWithCustomToken(Cypress.env('FIREBASE_AUTH_JWT'))
-        .then(() => {
-          console.debug('Login command successful')
-        })
-        .catch(reject)
-    })
-  }
-})
-
-/**
- * Logout of Firebase auth
- * @type {Cypress.Command}
- * @example Basic
- * cy.logout()
- */
-Cypress.Commands.add('logout', () => {
-  cy.log('Confirming user is logged out...')
-  if (!firebase.auth().currentUser) {
-    cy.log('Current user already logged out.')
-  } else {
-    cy.log('Current user exists, logging out...')
-    return firebase.auth().signOut()
-  }
-})
+// Custom commands including login, signup, callRtdb, and callFirestore
+attachCustomCommands({ Cypress, cy, firebase })
 
 /**
  * Uploads a file to an input
@@ -100,64 +52,16 @@ Cypress.Commands.add('uploadFile', (selector, fileUrl, type = '') => {
   })
 })
 
-/**
- * Call Real Time Database path with some specified action. Authentication is through FIREBASE_TOKEN since firebase-tools
- * @param {String} action - The action type to call with (set, push, update, remove)
- * @param {String} actionPath - Path within RTDB that action should be applied
- * @param {Object} opts - Options
- * @param {Array} opts.args - Command line args to be passed
- * @type {Cypress.Command}
- * @example Basic
- * cy.callRtdb('set', 'project/test-project', 'fakeProject.json')
- * @example Other Args
- * const opts = { args: ['-d'] }
- * cy.callRtdb('update', 'project/test-project', opts)
- */
 Cypress.Commands.add(
-  'callRtdb',
-  (action, actionPath, fixturePath, opts = {}) => {
-    const rtdbCommand = buildRtdbCommand(action, actionPath, fixturePath, opts)
-    cy.log(`Calling RTDB command:\n${rtdbCommand}`)
-    return cy.exec(rtdbCommand)
-  }
-)
-
-/**
- * Call Firestore instance with some specified action. Authentication is through serviceAccount.json since it is at the base
- * level. If using delete, auth is through FIREBASE_TOKEN since firebase-tools is used (instead of firebaseExtra).
- * @param {String} action - The action type to call with (set, push, update, remove)
- * @param {String} actionPath - Path within RTDB that action should be applied
- * @param {Object} opts - Options
- * @param {Array} opts.args - Command line args to be passed
- * @type {Cypress.Command}
- * @example Basic
- * cy.callFirestore('add', 'project/test-project', 'fakeProject.json')
- * @example Recursive Delete
- * const opts = { recursive: true }
- * cy.callFirestore('delete', 'project/test-project', opts)
- * @example Other Args
- * const opts = { args: ['-r'] }
- * cy.callFirestore('delete', 'project/test-project', opts)
- */
-Cypress.Commands.add(
-  'callFirestore',
-  (action, actionPath, fixturePath, opts = {}) => {
-    const firestoreCommand = buildFirestoreCommand(
-      action,
-      actionPath,
-      fixturePath,
-      opts
+  'addProjectEnvironment',
+  (project, environment, extraData = {}) => {
+    cy.callFirestore(
+      'set',
+      `projects/${project}/environments/${environment}`,
+      { ...fakeEnvironment, ...extraData },
+      {
+        withMeta: true
+      }
     )
-    cy.log(`Calling Firestore command:\n${firestoreCommand}`)
-    cy.exec(firestoreCommand, { timeout: 100000 }).then(res => {
-      if (res.stderr) {
-        return Promise.reject(res.stderr)
-      }
-      try {
-        return JSON.parse(res.stdout)
-      } catch (err) {
-        return res
-      }
-    })
   }
 )

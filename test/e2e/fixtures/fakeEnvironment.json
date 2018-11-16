@@ -1,0 +1,9 @@
+{
+  "name": "fake env",
+  "databaseURL": "https://testing.firebaseio.com",
+  "projectId": "test-project",
+  "serviceAccount": {
+    "credential": "asdf",
+    "fullPath": "adsf"
+  }
+}

@@ -39,10 +39,14 @@ Build:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-build/
   artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     expire_in: 2 weeks
+    when: always
     paths:
       - dist
       - functions/dist
+      - node_modules/ # Make available for "dependencies" in later stages
+      - functions/node_modules/ # Make available for "dependencies" in later stages
   # Override cache behavior set above since we want to both pull and push to
   # the cache (no "policy" provided since pull-push is default)
   cache:
@@ -70,11 +74,14 @@ Unit Tests:
       - $CI_COMMIT_MESSAGE =~ /skip-tests/
       - $CI_COMMIT_MESSAGE =~ /skip-unit-tests/
   artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     expire_in: 2 weeks
     paths:
       - functions/dist
       - functions/coverage # Test coverage report
       - functions/mochawesome-report # Test results in JSON and HTML
+  dependencies:
+    - Build
   before_script:
     - npm i --prefix functions
   script:
@@ -96,6 +103,14 @@ Deploy Staging:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
       - $CI_COMMIT_MESSAGE =~ /skip-stage-deploy/
+  artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    expire_in: 1 weeks
+    when: on_failure
+    paths:
+      - firebase-debug.log
+  dependencies:
+    - Build
   # Override default before script to install firebase-tools
   before_script:
     - CYPRESS_INSTALL_BINARY=0 npm i
@@ -130,11 +145,15 @@ E2E Tests:
       - functions/node_modules
       - .cache/Cypress/
   artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     expire_in: 2 weeks
+    when: always
     paths:
       - test/e2e/videos
       - test/e2e/screenshots
       - cypress.env.json
+  dependencies:
+    - Build
   before_script:
      # Install deps including Cypress binary (skipped in default before_script)
     - npm i
@@ -162,9 +181,13 @@ Build Production:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
       - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/
   artifacts:
-    expire_in: 2 weeks
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    expire_in: 1 week
+    when: always
     paths:
       - dist
+  dependencies:
+    - Build
   script:
     - npm run clean # remove existing dist folder
     - npm run build:config # create env specific src/config.js
@@ -191,6 +214,14 @@ Deploy Production:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
       - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/
+  artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    expire_in: 1 week
+    when: on_failure
+    paths:
+      - firebase-debug.log
+  dependencies:
+    - Build # Load artifacts from build stage
   # Override default before script to install firebase-tools
   before_script:
     - CYPRESS_INSTALL_BINARY=0 npm i

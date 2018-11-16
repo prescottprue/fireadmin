@@ -2,7 +2,7 @@ FROM cypress/base:8
 
 ## Build Arguments
 # URL which Cypress will run tests against (with default)
-ARG test_url=https://barista-stage.firebaseapp.com
+ARG test_url=https://fireadmin-stage.firebaseapp.com
 # Arguments to add to the cypress run command
 ARG test_command_args=""
 # Image Build Id (from Cloud Build) used in recording of test files
@@ -38,7 +38,7 @@ COPY bin/ /bin/
 COPY test/e2e/ /test/e2e/
 
 # Install Dependencies (only those used to build config files)
-RUN CYPRESS_INSTALL_BINARY=0 npm install babel-core babel-cli babel-preset-env lodash firebase-admin mocha barista-reporter@0.0.11 glob ip
+RUN CYPRESS_INSTALL_BINARY=0 npm install cypress-firebase
 
 # Install Cypress
 # Set CI=true to prevent a large number of messages during install of

@@ -25,7 +25,8 @@ class OutlinedSelect extends React.Component {
       label,
       input,
       children,
-      meta: { valid }
+      meta: { valid },
+      inputProps
     } = this.props
 
     return (
@@ -43,8 +44,8 @@ class OutlinedSelect extends React.Component {
             <OutlinedInput
               labelWidth={this.state.labelWidth}
               style={{ width: '100%' }}
-              name="age"
-              id="outlined-age-simple"
+              {...input}
+              {...inputProps}
             />
           }
           {...input}>
@@ -60,6 +61,7 @@ OutlinedSelect.propTypes = {
   label: PropTypes.string.isRequired,
   meta: PropTypes.object.isRequired,
   input: PropTypes.object.isRequired,
+  inputProps: PropTypes.object.isRequired,
   children: PropTypes.array.isRequired,
   classes: PropTypes.object.isRequired // from enhancer (withStyles)
 }
