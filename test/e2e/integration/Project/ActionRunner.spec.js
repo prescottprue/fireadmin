@@ -95,7 +95,7 @@ describe('Project - Action Runner', () => {
         .first()
         .click()
       // Click away
-      cy.get('body').dblclick()
+      cy.get('body').click()
       // Open destination select field
       cy.get(createSelector('environment-select'))
         .last()
