@@ -3,9 +3,9 @@ import 'firebase/database'
 import 'firebase/auth'
 import 'firebase/storage'
 import 'firebase/firestore'
+import { attachCustomCommands } from 'cypress-firebase'
 import { getFixtureBlob } from '../utils/commands'
 import fakeEnvironment from '../fixtures/fakeEnvironment.json'
-import { attachCustomCommands } from 'cypress-firebase'
 
 const projectId = Cypress.env('FIREBASE_PROJECT_ID')
 const env = Cypress.env('env') || 'stage'
@@ -23,6 +23,7 @@ const fbConfig = {
 
 window.fbInstance = firebase.initializeApp(fbConfig)
 
+// Custom commands including login, signup, callRtdb, and callFirestore
 attachCustomCommands({ Cypress, cy, firebase })
 
 /**
