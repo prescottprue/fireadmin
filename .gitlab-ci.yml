@@ -186,8 +186,6 @@ Build Production:
     when: always
     paths:
       - dist
-  dependencies:
-    - Build
   script:
     - npm run clean # remove existing dist folder
     - npm run build:config # create env specific src/config.js
@@ -220,12 +218,10 @@ Deploy Production:
     when: on_failure
     paths:
       - firebase-debug.log
-  dependencies:
-    - Build # Load artifacts from build stage
   # Override default before script to install firebase-tools
   before_script:
     - CYPRESS_INSTALL_BINARY=0 npm i
     - npm i --prefix functions # Install functions dependencies
-    - npm i firebase-ci@next firebase-tools@4.1.0 # Install config build and deploy dependencies
+    - npm i firebase-ci@next firebase-tools@6.1.0 # Install config build and deploy dependencies
   script:
     - npm run deploy # Deploy Cloud Functions and React App (Firebase Hosting)
