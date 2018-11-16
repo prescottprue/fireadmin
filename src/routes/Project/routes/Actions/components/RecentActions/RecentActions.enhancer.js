@@ -28,18 +28,36 @@ export default compose(
   // Map redux state to props
   connect(({ firebase, firestore }, { projectId }) => ({
     displayNames: get(firebase, 'data.displayNames'),
-    recentActions: get(firestore, `ordered.recentActions-${projectId}`)
+    recentActions: get(firestore, `ordered.recentActions-${projectId}`),
+    environments: get(firestore, `data.environments-${projectId}`)
   })),
   // Show a loading spinner while actions are loading
   spinnerWhileLoading(['recentActions']),
   // Render NoRecentActions component if no recent actions exist
   renderWhileEmpty(['recentActions'], NoRecentActions),
-  withProps(({ recentActions, displayNames }) => ({
+  withProps(({ recentActions, displayNames, environments }) => ({
     orderedActions: map(recentActions, event => {
       const createdBy = get(event, 'createdBy')
+      const envNameFromVal = (envVal = 0) => {
+        const envKey = get(event, `eventData.environmentValues.${envVal}`)
+        const envName = get(environments, `${envKey}.name`)
+        const envUrl = get(environments, `${envKey}.databaseURL`)
+        if (envName) {
+          return `${envName} (${databaseURLToProjectName(envUrl)})`
+        }
+        return databaseURLToProjectName(
+          get(
+            event,
+            `eventData.environments.${envVal}.databaseURL`,
+            get(event, `eventData.inputValues.${envVal}.databaseURL`, '')
+          )
+        )
+      }
       if (createdBy) {
         return {
           ...event,
+          src: envNameFromVal(0),
+          dest: envNameFromVal(1),
           createdBy: get(displayNames, createdBy, createdBy)
         }
       }
