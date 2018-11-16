@@ -63,9 +63,13 @@ export function runAction(props) {
     }
     // Convert selected environment keys into their associated environment objects
     if (environmentValues) {
-      actionRequest.environments = environmentValues.map(
-        envId => props.environments[envId] || envId
-      )
+      actionRequest.environments = environmentValues.map(envId => {
+        const environmentById = props.environmentsById[envId]
+        if (environmentById) {
+          return { ...environmentById, id: envId }
+        }
+        return props.environments[envId] || envId
+      })
     }
 
     // TODO: Show error notification if required action inputs are not selected
@@ -84,13 +88,16 @@ export function runAction(props) {
         { firestore: props.firestore, projectId: props.projectId },
         {
           eventType: 'requestActionRun',
-          eventData: {
-            ...actionRequest,
-            template: {
-              ...omit(props.selectedTemplate, ['_highlightResult']),
-              inputValues: actionRequest.inputValues || []
-            }
-          },
+          eventData: omit(
+            {
+              ...actionRequest,
+              template: {
+                ...omit(props.selectedTemplate, ['_highlightResult']),
+                inputValues: actionRequest.inputValues || []
+              }
+            },
+            ['_highlightResult']
+          ),
           createdBy: props.uid
         }
       )

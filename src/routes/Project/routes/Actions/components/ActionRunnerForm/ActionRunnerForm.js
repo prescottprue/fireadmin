@@ -115,13 +115,13 @@ export const ActionRunnerForm = ({
                   id: 'environment',
                   'data-test': 'environment-select'
                 }}>
-                {map(environments, (environment, environmentKey) => (
+                {map(environments, (environment, envIndex) => (
                   <MenuItem
-                    key={`Environment-Option-${environmentKey}`}
-                    value={environmentKey}
+                    key={`Environment-Option-${environment.id}-${envIndex}`}
+                    value={environment.id}
                     data-test="environment-option">
                     <ListItemText
-                      primary={environment.name || environmentKey}
+                      primary={environment.name || environment.id}
                       secondary={databaseURLToProjectName(
                         environment.databaseURL
                       )}

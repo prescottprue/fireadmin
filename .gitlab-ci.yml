@@ -123,7 +123,7 @@ Deploy Staging:
 # Install Cypress binary and run end to end tests using Cypress
 E2E Tests:
   stage: e2e_tests
-  image: cypress/base
+  image: cypress/browsers:chrome67
   when: on_success
   allow_failure: true
   only:

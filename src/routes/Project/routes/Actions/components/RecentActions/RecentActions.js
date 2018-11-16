@@ -44,9 +44,9 @@ export const RecentActions = ({
             </TableCell>
             <TableCell>
               <span>
-                Source: {actionToEnvironments(action).src}
+                <strong>Source:</strong> {action.src}
                 <br />
-                Dest: {actionToEnvironments(action).dest}
+                <strong>Dest:</strong> {action.dest}
               </span>
             </TableCell>
             <TableCell>
