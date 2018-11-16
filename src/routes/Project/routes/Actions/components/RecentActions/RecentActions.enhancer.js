@@ -38,46 +38,24 @@ export default compose(
   withProps(({ recentActions, displayNames, environments }) => ({
     orderedActions: map(recentActions, event => {
       const createdBy = get(event, 'createdBy')
-      const envNameFromVal = (envVal = 0) => {
-        const envKey = get(event, `eventData.environmentValues.${envVal}`)
+      const envLabelFromEnvironmentValIndex = (envIndex = 0) => {
+        const envKey = get(event, `eventData.environmentValues.${envIndex}`)
         const envName = get(environments, `${envKey}.name`)
-        const envUrl = get(environments, `${envKey}.databaseURL`)
-        if (envName) {
-          return `${envName} (${databaseURLToProjectName(envUrl)})`
-        }
-        return databaseURLToProjectName(
-          get(
-            event,
-            `eventData.environments.${envVal}.databaseURL`,
-            get(event, `eventData.inputValues.${envVal}.databaseURL`, '')
-          )
-        )
+        const envUrl =
+          get(environments, `${envKey}.databaseURL`) ||
+          get(event, `eventData.inputValues.${envIndex}.databaseURL`, '')
+        const firebaseProjectName = databaseURLToProjectName(envUrl)
+        return `${envName} (${firebaseProjectName})`
       }
       if (createdBy) {
         return {
           ...event,
-          src: envNameFromVal(0),
-          dest: envNameFromVal(1),
+          src: envLabelFromEnvironmentValIndex(0),
+          dest: envLabelFromEnvironmentValIndex(1),
           createdBy: get(displayNames, createdBy, createdBy)
         }
       }
       return event
-    }),
-    actionToEnvironments: action => ({
-      src: databaseURLToProjectName(
-        get(
-          action,
-          'eventData.environments.0.databaseURL',
-          get(action, 'eventData.inputValues.0.databaseURL', '')
-        )
-      ),
-      dest: databaseURLToProjectName(
-        get(
-          action,
-          'eventData.environments.1.databaseURL',
-          get(action, 'eventData.inputValues.1.databaseURL', '')
-        )
-      )
     })
   }))
 )

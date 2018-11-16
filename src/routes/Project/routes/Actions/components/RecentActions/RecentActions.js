@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Paper from '@material-ui/core/Paper'
-import { get, map, startCase, invoke, isNumber } from 'lodash'
+import { get, map, startCase, invoke } from 'lodash'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -71,11 +71,6 @@ export const RecentActions = ({
                   onClick={() => rerunAction(action)}
                   color="secondary"
                   className={classes.submit}
-                  disabled={
-                    /* Disable actions of the old data format */
-                    isNumber(get(action, 'eventData.environmentValues.0')) ||
-                    isNumber(get(action, 'eventData.environmentValues.1'))
-                  }
                   data-test="redo-action-button">
                   <RedoIcon />
                 </IconButton>

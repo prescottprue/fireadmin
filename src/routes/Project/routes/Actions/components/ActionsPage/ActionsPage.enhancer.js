@@ -42,6 +42,7 @@ export default compose(
       uid: firebase.auth.uid,
       project: get(data, `projects.${params.projectId}`),
       environments: get(ordered, `environments-${params.projectId}`),
+      environmentsById: get(data, `environments-${params.projectId}`),
       lockedEnvInUse: some(
         map(selector(state, 'environmentValues'), envInd =>
           get(
