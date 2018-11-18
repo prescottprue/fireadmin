@@ -96,7 +96,7 @@
     "cross-env": "^5.2.0",
     "css-loader": "^0.28.1",
     "cypress": "^3.1.1",
-    "cypress-firebase": "0.0.4",
+    "cypress-firebase": "^0.0.5",
     "eslint": "^3.19.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-config-standard": "^10.2.1",
