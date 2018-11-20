@@ -44,11 +44,8 @@ export default compose(
       environments: get(ordered, `environments-${params.projectId}`),
       environmentsById: get(data, `environments-${params.projectId}`),
       lockedEnvInUse: some(
-        map(selector(state, 'environmentValues'), envInd =>
-          get(
-            state.firestore.ordered,
-            `environments-${params.projectId}.${envInd}`
-          )
+        map(selector(state, 'environmentValues'), envKey =>
+          get(data, `environments-${params.projectId}.${envKey}`)
         ),
         { locked: true }
       )
