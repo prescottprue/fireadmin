@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.6.9",
+  "version": "0.7.0",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "main": "index.js",
   "scripts": {
@@ -96,7 +96,7 @@
     "cross-env": "^5.2.0",
     "css-loader": "^0.28.1",
     "cypress": "^3.1.1",
-    "cypress-firebase": "0.0.4",
+    "cypress-firebase": "^0.0.5",
     "eslint": "^3.19.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-config-standard": "^10.2.1",
