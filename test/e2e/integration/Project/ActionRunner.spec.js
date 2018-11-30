@@ -1,4 +1,4 @@
-import { createSelector } from '../../utils'
+import { createSelector, createIdSelector } from '../../utils'
 import fakeProject from '../../fixtures/fakeProject.json'
 const destEnvName = 'dest env'
 
@@ -37,7 +37,7 @@ describe('Project - Action Runner', () => {
       cy.addProjectEnvironment('test-project', 'locked-env', lockedEnv)
     })
 
-    it('disables run action button if locked environment is selected', () => {
+    it('is disabled as both a source and destination', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
@@ -48,10 +48,10 @@ describe('Project - Action Runner', () => {
       cy.get(createSelector('environment-select'))
         .first()
         .click()
-      // Pick first option for the src environment
-      cy.get(createSelector('environment-option'))
-        .first()
-        .click()
+      // Config that locked-env is disabled
+      cy.get(createIdSelector('locked-env'))
+        .invoke('attr', 'class')
+        .should('contain', 'disabled')
       // Click away
       cy.get('body').click()
       // Open destination select field
@@ -59,50 +59,43 @@ describe('Project - Action Runner', () => {
         .last()
         .click()
       // Pick first option for the destination environment
-      // TODO: Select actual environment instead of just last one
-      cy.get(createSelector('environment-option'))
-        .last()
-        .click()
-      // Fill out the input (which collection to copy)
-      cy.get(createSelector('action-input'))
-        .first()
-        .type('test')
-      cy.get(createSelector('run-action-button')).should('be.disabled')
+      // Config that locked-env is disabled
+      cy.get(createIdSelector('locked-env'))
+        .invoke('attr', 'class')
+        .should('contain', 'disabled')
     })
   })
-  describe('Environment with "Only Source" option', () => {
+
+  describe('Environment with "Read Only" option', () => {
     before(() => {
-      const lockedEnv = { name: 'only src env', onlySrc: true }
+      const lockedEnv = { name: 'only src env', readOnly: true }
       cy.addProjectEnvironment('test-project', 'src-only', lockedEnv)
     })
-    it('disables run action button if "Only Source" environment is selected as a destination', () => {
+    it('disables run action button if "Read Only" environment is selected as a destination', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
       cy.get(createSelector('search-result'))
         .first()
         .click()
-      // Open source select field
+      // Open dest select field
       cy.get(createSelector('environment-select'))
-        .first()
+        .last()
+        .scrollIntoView()
         .click()
-      // Pick first option for the src environment
-      cy.get(createSelector('environment-option'))
-        .first()
-        .click()
-      // Scroll up to run action button (in the case of a small window)
-      cy.get(createSelector('run-action-button')).scrollIntoView()
-      // Confirm that "Run Action" button is disabled
-      cy.get(createSelector('run-action-button')).should('be.disabled')
+      // Confirm that Source Only environment can not be selected as destination
+      cy.get(createIdSelector('src-only'))
+        .invoke('attr', 'class')
+        .should('contain', 'disabled')
     })
   })
 
-  describe('Environment with "Only Destination" option', () => {
+  describe('Environment with "Write Only" option', () => {
     before(() => {
-      const lockedEnv = { name: 'only dest env', onlyDest: true }
+      const lockedEnv = { name: 'only dest env', writeOnly: true }
       cy.addProjectEnvironment('test-project', 'dest-only', lockedEnv)
     })
-    it('disables run action button if "Only Destination" environment is selected as a source', () => {
+    it('disables run action button if "Write Only" environment is selected as a source', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
@@ -111,23 +104,19 @@ describe('Project - Action Runner', () => {
         .click()
       // Open destination select field
       cy.get(createSelector('environment-select'))
-        .last()
+        .first()
+        .scrollIntoView()
         .click()
-      // Pick first option for the destination environment
-      // TODO: Select actual environment instead of just last one
-      cy.get(createSelector('environment-option'))
-        .last()
-        .click()
-      // Scroll up to run action button (in the case of a small window)
-      cy.get(createSelector('run-action-button')).scrollIntoView()
-      // Confirm that "Run Action" button is disabled
-      cy.get(createSelector('run-action-button')).should('be.disabled')
+      // Confirm that Destination Only environment can not be selected as source
+      cy.get(createIdSelector('dest-only'))
+        .invoke('attr', 'class')
+        .should('contain', 'disabled')
     })
   })
 
   describe('Running Action', () => {
     before(() => {
-      cy.addProjectEnvironment('test-project', 'src-env')
+      cy.addProjectEnvironment('test-project', 'src-env', { name: '' })
       cy.addProjectEnvironment('test-project', 'dest-env', {
         name: destEnvName
       })
@@ -144,7 +133,7 @@ describe('Project - Action Runner', () => {
       cy.get(createSelector('environment-select'))
         .first()
         .click()
-      // Pick first option for the src environment
+      // Pick the src env
       cy.get(createSelector('environment-option'))
         .first()
         .click()
@@ -154,7 +143,7 @@ describe('Project - Action Runner', () => {
       cy.get(createSelector('environment-select'))
         .last()
         .click()
-      // Pick first option for the destination environment
+      // Pick the src env
       cy.get(createSelector('environment-option'))
         .last()
         .click()

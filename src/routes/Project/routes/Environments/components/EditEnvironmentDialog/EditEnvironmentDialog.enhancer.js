@@ -1,16 +1,20 @@
-import { get } from 'lodash'
+import { get, isBoolean, mapValues } from 'lodash'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { withHandlers, setPropTypes } from 'recompose'
 import { connect } from 'react-redux'
-import { reduxForm } from 'redux-form'
+import { reduxForm, formValueSelector } from 'redux-form'
 import { currentUserProjectPermissions } from 'selectors'
 import { withStyles } from '@material-ui/core'
 import styles from './EditEnvironmentDialog.styles'
 
+const formName = 'editEnvironment'
+
+const selector = formValueSelector(formName)
+
 export default compose(
   reduxForm({
-    form: 'editEnvironment',
+    form: formName,
     enableReinitialize: true // needed is modal does not unmount once opening
   }),
   setPropTypes({
@@ -20,8 +24,17 @@ export default compose(
   }),
   connect((state, props) => {
     const permissionsByType = currentUserProjectPermissions(state, props)
+    const envUpdateDisabled =
+      get(permissionsByType, 'update.environments') !== true
+    const formValues = selector(state, 'readOnly', 'writeOnly', 'locked')
+    const { locked = false, writeOnly = false, readOnly = false } = mapValues(
+      formValues,
+      val => (!isBoolean(val) ? false : val)
+    )
     return {
-      envUpdateDisabled: get(permissionsByType, 'update.environments') !== true
+      lockedDisabled: envUpdateDisabled || writeOnly || readOnly,
+      readOnlyDisabled: envUpdateDisabled || locked || writeOnly,
+      writeOnlyDisabled: envUpdateDisabled || locked || readOnly
     }
   }),
   withHandlers({
