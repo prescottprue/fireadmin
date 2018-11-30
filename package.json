@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "main": "index.js",
   "scripts": {
@@ -20,13 +20,10 @@
     "functions:test": "npm run test --prefix functions",
     "lint": "eslint src functions/src functions/test test/e2e build server project.config.js",
     "lint:fix": "npm run lint -- --fix",
-    "test:run:base": "npm run build:testConfig && cypress run --browser chrome",
-    "test:ui:base": "npm run build:testConfig && cypress open",
-    "test": "npm run test:run:base",
-    "test:ui": "npm run test:ui:base",
-    "test:stage": "npm run test:run:base -- --env firebaseProjectId=fireadmin-stage,env=stage",
-    "test:ui:stage": "npm run test:ui:base -- --env baseUrl=firebaseProjectId=fireadmin-stage,env=stage",
-    "test:ui:debug": "npm run build:testConfig && cross-env CYPRESS_baseUrl=http://localhost:3000 DEBUG=cypress:* cypress open",
+    "test:ui": "npm run build:testConfig && cypress run",
+    "test:ui:open": "npm run build:testConfig && cypress open",
+    "test:ui:stage": "npm run test -- --env envName=stage",
+    "test:ui:open:stage": "npm run test:open -- --env envName=stage",
     "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\"",
     "prepush": "npm run lint"
   },

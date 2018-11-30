@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { get, map, some } from 'lodash'
+import { get, map, some, findIndex, capitalize } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withFirebase, withFirestore } from 'react-redux-firebase'
@@ -14,12 +14,34 @@ import {
 import { withNotifications } from 'modules/notification'
 import * as handlers from './ActionsPage.handlers'
 
-const selector = formValueSelector(formNames.actionRunner)
+function instanceTypeInUse(environments, type = 'src') {
+  const lockedEnvIndex = findIndex(environments, {
+    [`only${capitalize(type)}`]: true
+  })
+  if (lockedEnvIndex === -1) {
+    return false
+  }
+  return type === 'src' ? lockedEnvIndex === 0 : lockedEnvIndex === 1
+}
+
+function getLockedEnvInUse(environments) {
+  if (!environments.length) {
+    return false
+  }
+  // TODO: Make this aware of if the action template is a copy or not
+  // TODO: Make this aware of if the position is actually src/dest instead of using index
+  return (
+    some(environments, 'locked') ||
+    instanceTypeInUse(environments, 'src') ||
+    instanceTypeInUse(environments, 'dest')
+  )
+}
 
 export default compose(
   withNotifications,
   withFirestore,
   withFirebase,
+  // Proptypes for props used in HOCs
   setPropTypes({
     params: PropTypes.shape({
       projectId: PropTypes.string.isRequired
@@ -38,17 +60,19 @@ export default compose(
       firebase,
       firestore: { data, ordered }
     } = state
+    const formSelector = formValueSelector(formNames.actionRunner)
+    const environmentValues = formSelector(state, 'environmentValues')
+    const environmentsById = get(data, `environments-${params.projectId}`)
+    // Populate selected keys from form into list of environment objects
+    const selectedEnvironments = map(environmentValues, envKey =>
+      get(data, `environments-${params.projectId}.${envKey}`)
+    )
     return {
       uid: firebase.auth.uid,
       project: get(data, `projects.${params.projectId}`),
       environments: get(ordered, `environments-${params.projectId}`),
-      environmentsById: get(data, `environments-${params.projectId}`),
-      lockedEnvInUse: some(
-        map(selector(state, 'environmentValues'), envKey =>
-          get(data, `environments-${params.projectId}.${envKey}`)
-        ),
-        { locked: true }
-      )
+      environmentsById,
+      lockedEnvInUse: getLockedEnvInUse(selectedEnvironments)
     }
   }),
   // State handlers as props
@@ -97,6 +121,7 @@ export default compose(
       })
     }
   ),
+  // Custom props
   withProps(({ selectedTemplate, lockedEnvInUse, params }) => ({
     templateName: selectedTemplate
       ? `Template: ${get(selectedTemplate, 'name', '')}`

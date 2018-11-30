@@ -13,11 +13,7 @@ import RedoIcon from '@material-ui/icons/Redo'
 import { formatDateTime } from 'utils/formatters'
 import classes from './RecentActions.scss'
 
-export const RecentActions = ({
-  orderedActions,
-  rerunAction,
-  actionToEnvironments
-}) => (
+export const RecentActions = ({ orderedActions, rerunAction }) => (
   <Paper className={classes.container}>
     <Table className={classes.table}>
       <TableHead>
@@ -85,7 +81,6 @@ export const RecentActions = ({
 
 RecentActions.propTypes = {
   orderedActions: PropTypes.array,
-  actionToEnvironments: PropTypes.func.isRequired,
   rerunAction: PropTypes.func.isRequired
 }
 
