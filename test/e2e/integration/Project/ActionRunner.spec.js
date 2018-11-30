@@ -77,9 +77,7 @@ describe('Project - Action Runner', () => {
     })
     it('disables run action button if "Only Source" environment is selected as a destination', () => {
       // Search for an action template
-      cy.get('.ais-SearchBox__input').type('Copy Firestore Collection', {
-        delay: 0
-      })
+      cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
       cy.get(createSelector('search-result'))
         .first()
@@ -106,9 +104,7 @@ describe('Project - Action Runner', () => {
     })
     it('disables run action button if "Only Destination" environment is selected as a source', () => {
       // Search for an action template
-      cy.get('.ais-SearchBox__input').type('Copy Firestore Collection', {
-        delay: 0
-      })
+      cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
       cy.get(createSelector('search-result'))
         .first()
