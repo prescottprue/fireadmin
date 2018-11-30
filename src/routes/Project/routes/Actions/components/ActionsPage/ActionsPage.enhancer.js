@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { get, map, some, findIndex, capitalize } from 'lodash'
+import { get, map, some, findIndex } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withFirebase, withFirestore } from 'react-redux-firebase'
@@ -9,6 +9,7 @@ import {
   withStateHandlers,
   withHandlers,
   withProps,
+  setDisplayName,
   setPropTypes
 } from 'recompose'
 import { withNotifications } from 'modules/notification'
@@ -16,7 +17,7 @@ import * as handlers from './ActionsPage.handlers'
 
 function instanceTypeInUse(environments, type = 'src') {
   const lockedEnvIndex = findIndex(environments, {
-    [`only${capitalize(type)}`]: true
+    [`${type}Only`]: true
   })
   if (lockedEnvIndex === -1) {
     return false
@@ -32,12 +33,13 @@ function getLockedEnvInUse(environments) {
   // TODO: Make this aware of if the position is actually src/dest instead of using index
   return (
     some(environments, 'locked') ||
-    instanceTypeInUse(environments, 'src') ||
-    instanceTypeInUse(environments, 'dest')
+    instanceTypeInUse(environments, 'read') ||
+    instanceTypeInUse(environments, 'write')
   )
 }
 
 export default compose(
+  setDisplayName('EnhancedActionsPage'),
   withNotifications,
   withFirestore,
   withFirebase,

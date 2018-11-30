@@ -15,8 +15,12 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
 import CollectionSearch from 'components/CollectionSearch'
 import TabContainer from 'components/TabContainer'
+import LockIcon from '@material-ui/icons/Lock'
+import VisibilityIcon from '@material-ui/icons/Visibility'
+import MoveToIcon from '@material-ui/icons/SaveAlt'
 import { databaseURLToProjectName } from 'utils'
 import { paths } from 'constants'
 import OutlinedSelect from 'components/OutlinedSelect'
@@ -119,13 +123,34 @@ export const ActionRunnerForm = ({
                   <MenuItem
                     key={`Environment-Option-${environment.id}-${envIndex}`}
                     value={environment.id}
-                    data-test="environment-option">
+                    disabled={
+                      environment.locked ||
+                      (environment.readOnly && index === 1) ||
+                      (environment.writeOnly && index === 0)
+                    }
+                    data-test="environment-option"
+                    data-test-id={environment.id}>
                     <ListItemText
                       primary={environment.name || environment.id}
                       secondary={databaseURLToProjectName(
                         environment.databaseURL
                       )}
                     />
+                    {environment.locked ? (
+                      <ListItemIcon className={classes.icon}>
+                        <LockIcon />
+                      </ListItemIcon>
+                    ) : null}
+                    {environment.readOnly ? (
+                      <ListItemIcon className={classes.icon}>
+                        <VisibilityIcon />
+                      </ListItemIcon>
+                    ) : null}
+                    {environment.writeOnly ? (
+                      <ListItemIcon className={classes.icon}>
+                        <MoveToIcon />
+                      </ListItemIcon>
+                    ) : null}
                   </MenuItem>
                 ))}
               </Field>

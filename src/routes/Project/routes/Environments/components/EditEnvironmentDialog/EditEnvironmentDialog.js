@@ -21,7 +21,9 @@ const EditEnvironmentDialog = ({
   pristine,
   onRequestClose,
   open,
-  envUpdateDisabled
+  lockedDisabled,
+  writeOnlyDisabled,
+  readOnlyDisabled
 }) => (
   <Dialog onClose={onRequestClose} open={open}>
     <DialogTitle id="dialog-title">Edit Environment</DialogTitle>
@@ -60,7 +62,7 @@ const EditEnvironmentDialog = ({
                     <Field
                       name="locked"
                       component={Checkbox}
-                      disabled={envUpdateDisabled}
+                      disabled={lockedDisabled}
                     />
                   }
                   label="Locked (prevents all actions)"
@@ -72,24 +74,24 @@ const EditEnvironmentDialog = ({
                 <FormControlLabel
                   control={
                     <Field
-                      name="onlySrc"
+                      name="readOnly"
                       component={Checkbox}
-                      disabled={envUpdateDisabled}
+                      disabled={readOnlyDisabled}
                     />
                   }
-                  label="Only A Source (prevents writes)"
+                  label="Read Only"
                 />
               </Grid>
               <Grid>
                 <FormControlLabel
                   control={
                     <Field
-                      name="onlyDest"
+                      name="writeOnly"
                       component={Checkbox}
-                      disabled={envUpdateDisabled}
+                      disabled={writeOnlyDisabled}
                     />
                   }
-                  label="Only A Destination (prevents reads)"
+                  label="Write Only"
                 />
               </Grid>
             </Grid>
@@ -113,7 +115,9 @@ const EditEnvironmentDialog = ({
 
 EditEnvironmentDialog.propTypes = {
   classes: PropTypes.object.isRequired, // from enhancer (withStyles)
-  envUpdateDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
+  lockedDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
+  readOnlyDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
+  writeOnlyDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
   submit: PropTypes.func.isRequired, // from enhancer (reduxForm)
   closeAndReset: PropTypes.func.isRequired, // from enhancer (reduxForm)
   submitting: PropTypes.bool.isRequired, // from enhancer (reduxForm)

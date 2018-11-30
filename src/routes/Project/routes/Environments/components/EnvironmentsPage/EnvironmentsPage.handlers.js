@@ -166,6 +166,7 @@ export const updateEnvironment = props => async newValues => {
     )
     triggerAnalyticsEvent('updateEnvironment', {
       projectId,
+      uid,
       environmentId: selectedKey
     })
   } catch (err) {
