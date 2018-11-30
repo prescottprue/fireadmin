@@ -164,25 +164,26 @@ Deploy Staging:
   before_script:
      # Install deps including Cypress binary (skipped in default before_script)
     - npm i
+    - npm i cypress
     # Confirm Cypress is ready to use
     - $(npm bin)/cypress verify
   script:
     # Create environment specific test config including auth token
     # (saved to cypress.env.json) then run E2E Tests through Cypress
     # run Cypress test in load balancing mode, pass id to tie jobs together
-    - npm run test:stage -- --record --key $CYPRESS_KEY --parallel --ci-build-id $CI_PIPELINE_ID --group electrons
+    - npm run test:stage -- --record --key $CYPRESS_KEY --parallel --ci-build-id $CI_PIPELINE_ID --group uitests
 
 # actual job definitions
 # all steps are the same, they come from the template above
-electrons-1:
+uitests-1:
   <<: *job
-electrons-2:
+uitests-2:
   <<: *job
-electrons-3:
+uitests-3:
   <<: *job
-electrons-4:
+uitests-4:
   <<: *job
-electrons-5:
+uitests-5:
   <<: *job
 
 # Build Production version of bundle (has different config)
