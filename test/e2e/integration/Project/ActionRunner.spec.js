@@ -70,6 +70,64 @@ describe('Project - Action Runner', () => {
       cy.get(createSelector('run-action-button')).should('be.disabled')
     })
   })
+  describe('Environment with "Only Source" option', () => {
+    before(() => {
+      const lockedEnv = { name: 'only src env', onlySrc: true }
+      cy.addProjectEnvironment('test-project', 'src-only', lockedEnv)
+    })
+    it('disables run action button if "Only Source" environment is selected as a destination', () => {
+      // Search for an action template
+      cy.get('.ais-SearchBox__input').type('Copy Firestore Collection', {
+        delay: 0
+      })
+      // Select the first action template
+      cy.get(createSelector('search-result'))
+        .first()
+        .click()
+      // Open source select field
+      cy.get(createSelector('environment-select'))
+        .first()
+        .click()
+      // Pick first option for the src environment
+      cy.get(createSelector('environment-option'))
+        .first()
+        .click()
+      // Scroll up to run action button (in the case of a small window)
+      cy.get(createSelector('run-action-button')).scrollIntoView()
+      // Confirm that "Run Action" button is disabled
+      cy.get(createSelector('run-action-button')).should('be.disabled')
+    })
+  })
+
+  describe('Environment with "Only Destination" option', () => {
+    before(() => {
+      const lockedEnv = { name: 'only dest env', onlyDest: true }
+      cy.addProjectEnvironment('test-project', 'dest-only', lockedEnv)
+    })
+    it('disables run action button if "Only Destination" environment is selected as a source', () => {
+      // Search for an action template
+      cy.get('.ais-SearchBox__input').type('Copy Firestore Collection', {
+        delay: 0
+      })
+      // Select the first action template
+      cy.get(createSelector('search-result'))
+        .first()
+        .click()
+      // Open destination select field
+      cy.get(createSelector('environment-select'))
+        .last()
+        .click()
+      // Pick first option for the destination environment
+      // TODO: Select actual environment instead of just last one
+      cy.get(createSelector('environment-option'))
+        .last()
+        .click()
+      // Scroll up to run action button (in the case of a small window)
+      cy.get(createSelector('run-action-button')).scrollIntoView()
+      // Confirm that "Run Action" button is disabled
+      cy.get(createSelector('run-action-button')).should('be.disabled')
+    })
+  })
 
   describe('Running Action', () => {
     before(() => {
