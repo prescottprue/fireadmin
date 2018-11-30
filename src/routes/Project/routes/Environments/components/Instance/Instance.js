@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
@@ -17,11 +16,11 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import Paper from '@material-ui/core/Paper'
 import Popper from '@material-ui/core/Popper'
-import { databaseURLToProjectName } from 'utils'
-import classes from './Instance.scss'
 
-export const Instance = ({
-  instance,
+const Instance = ({
+  projectId,
+  instanceName,
+  classes,
   anchorEl,
   closeMenu,
   menuClick,
@@ -34,10 +33,10 @@ export const Instance = ({
     <CardHeader
       title={
         <span onClick={onEditClick} className={classes.title}>
-          {get(instance, 'name', '')}
+          {instanceName}
         </span>
       }
-      subheader={databaseURLToProjectName(get(instance, 'databaseURL', ''))}
+      subheader={projectId}
       action={
         <div>
           <IconButton onClick={menuClick}>
@@ -89,14 +88,16 @@ export const Instance = ({
 )
 
 Instance.propTypes = {
-  instance: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-  removeAndClose: PropTypes.func.isRequired,
-  onEditClick: PropTypes.func.isRequired,
-  editAndClose: PropTypes.func.isRequired,
-  instanceDescription: PropTypes.string,
-  menuClick: PropTypes.func.isRequired,
-  closeMenu: PropTypes.func.isRequired,
-  anchorEl: PropTypes.object
+  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
+  projectId: PropTypes.string.isRequired, // from enhancer (withProps)
+  instanceName: PropTypes.string.isRequired, // from enhancer (withProps)
+  instanceDescription: PropTypes.string, // from enhancer (withProps)
+  removeAndClose: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  editAndClose: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  menuClick: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
+  closeMenu: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
+  anchorEl: PropTypes.object, // from enhancer (withStateHandlers)
+  onEditClick: PropTypes.func.isRequired
 }
 
 export default Instance

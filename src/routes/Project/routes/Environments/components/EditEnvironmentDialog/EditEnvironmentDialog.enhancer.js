@@ -5,6 +5,8 @@ import { withHandlers, setPropTypes } from 'recompose'
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form'
 import { currentUserProjectPermissions } from 'selectors'
+import { withStyles } from '@material-ui/core'
+import styles from './EditEnvironmentDialog.styles'
 
 export default compose(
   reduxForm({
@@ -19,7 +21,7 @@ export default compose(
   connect((state, props) => {
     const permissionsByType = currentUserProjectPermissions(state, props)
     return {
-      lockEnvDisabled: get(permissionsByType, 'update.environments') !== true
+      envUpdateDisabled: get(permissionsByType, 'update.environments') !== true
     }
   }),
   withHandlers({
@@ -27,5 +29,7 @@ export default compose(
       reset()
       onRequestClose && onRequestClose()
     }
-  })
+  }),
+  // Styles as props.classes
+  withStyles(styles)
 )

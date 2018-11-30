@@ -2,16 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormLabel from '@material-ui/core/FormLabel'
 import { TextField, Checkbox } from 'redux-form-material-ui'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
+import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import { required, validateDatabaseUrl } from 'utils/form'
-import classes from './EditEnvironmentDialog.scss'
 
-export const EditEnvironmentDialog = ({
+const EditEnvironmentDialog = ({
+  classes,
   submit,
   closeAndReset,
   submitting,
@@ -19,7 +21,7 @@ export const EditEnvironmentDialog = ({
   pristine,
   onRequestClose,
   open,
-  lockEnvDisabled
+  envUpdateDisabled
 }) => (
   <Dialog onClose={onRequestClose} open={open}>
     <DialogTitle id="dialog-title">Edit Environment</DialogTitle>
@@ -48,16 +50,51 @@ export const EditEnvironmentDialog = ({
           name="description"
           label="Instance Description"
         />
-        <FormControlLabel
-          control={
-            <Field
-              name="locked"
-              component={Checkbox}
-              disabled={lockEnvDisabled}
-            />
-          }
-          label="Locked (prevents actions)"
-        />
+        <Grid container className={classes.settings} spacing={16}>
+          <Grid item xs={12}>
+            <FormLabel>Action Settings</FormLabel>
+            <Grid container>
+              <Grid item>
+                <FormControlLabel
+                  control={
+                    <Field
+                      name="locked"
+                      component={Checkbox}
+                      disabled={envUpdateDisabled}
+                    />
+                  }
+                  label="Locked (prevents all actions)"
+                />
+              </Grid>
+            </Grid>
+            <Grid container>
+              <Grid>
+                <FormControlLabel
+                  control={
+                    <Field
+                      name="onlySrc"
+                      component={Checkbox}
+                      disabled={envUpdateDisabled}
+                    />
+                  }
+                  label="Only A Source (prevents writes)"
+                />
+              </Grid>
+              <Grid>
+                <FormControlLabel
+                  control={
+                    <Field
+                      name="onlyDest"
+                      component={Checkbox}
+                      disabled={envUpdateDisabled}
+                    />
+                  }
+                  label="Only A Destination (prevents reads)"
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       </div>
     </DialogContent>
     <DialogActions>
@@ -75,14 +112,15 @@ export const EditEnvironmentDialog = ({
 )
 
 EditEnvironmentDialog.propTypes = {
+  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
+  envUpdateDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
+  submit: PropTypes.func.isRequired, // from enhancer (reduxForm)
+  closeAndReset: PropTypes.func.isRequired, // from enhancer (reduxForm)
+  submitting: PropTypes.bool.isRequired, // from enhancer (reduxForm)
+  pristine: PropTypes.bool.isRequired, // from enhancer (reduxForm)
   onRequestClose: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,
-  open: PropTypes.bool.isRequired,
-  lockEnvDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
-  submit: PropTypes.func.isRequired, // from reduxForm
-  closeAndReset: PropTypes.func.isRequired, // from reduxForm
-  submitting: PropTypes.bool.isRequired, // from reduxForm
-  pristine: PropTypes.bool.isRequired // from reduxForm
+  open: PropTypes.bool.isRequired
 }
 
 export default EditEnvironmentDialog

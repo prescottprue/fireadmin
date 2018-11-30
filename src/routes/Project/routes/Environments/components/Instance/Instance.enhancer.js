@@ -7,6 +7,9 @@ import {
   withProps,
   setPropTypes
 } from 'recompose'
+import { databaseURLToProjectName } from 'utils'
+import { withStyles } from '@material-ui/core'
+import styles from './Instance.styles'
 
 export default compose(
   withStateHandlers(
@@ -36,14 +39,20 @@ export default compose(
       closeMenu()
     }
   }),
+  // Custom props
   withProps(({ onEditClick, closeMenu, instance }) => {
     const originalDesc = get(instance, 'description', '')
+    const projectId = databaseURLToProjectName(get(instance, 'databaseURL', ''))
     return {
+      instanceName: get(instance, 'name', ''),
+      projectId,
       instanceDescription: originalDesc.length
         ? originalDesc.length > 50
           ? originalDesc.substring(0, 50).concat('...')
           : originalDesc
         : null
     }
-  })
+  }),
+  // Styles as props.classes
+  withStyles(styles)
 )

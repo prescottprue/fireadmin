@@ -7,14 +7,12 @@
 // You can read more here:
 // https://on.cypress.io/plugins-guide
 // ***********************************************************
+const cypressFirebasePlugin = require('cypress-firebase').plugin
 
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
-  if (!config.env.firebaseProjectId) {
-    config.baseUrl = 'http://localhost:3000'
-  } else {
-    config.baseUrl = `https://${config.env.firebaseProjectId}.firebaseapp.com`
-  }
-  return config
+
+  // Loads config from .firebaserc
+  return cypressFirebasePlugin(config)
 }

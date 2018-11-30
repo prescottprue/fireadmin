@@ -27,8 +27,6 @@ export const ActionsPage = ({
 }) => (
   <div className={classes.container}>
     <Typography className={classes.pageHeader}>Actions</Typography>
-    <Typography className={classes.subHeader}>Recently Run Actions</Typography>
-    <RecentActions projectId={params.projectId} rerunAction={rerunAction} />
     <Typography className={classes.subHeader}>Action Runner</Typography>
     <div className={classes.container}>
       <div className={classes.buttons}>
@@ -70,6 +68,8 @@ export const ActionsPage = ({
         onSubmit={runAction}
       />
     </div>
+    <Typography className={classes.subHeader}>Recently Run Actions</Typography>
+    <RecentActions projectId={params.projectId} rerunAction={rerunAction} />
   </div>
 )
 
