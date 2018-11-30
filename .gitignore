@@ -4,20 +4,20 @@
 .DS_Store
 **/.DS_Store
 
-# Main dependencies
+# Dependencies
 **/node_modules
 
 # React App
 **/dist
+build
 src/config.js
+.env
 
 # Functions
 functions/etc
 functions/dist
 functions/.runtimeconfig.json
-functions/serviceAccount.json
 functions/coverage
-functions/mochawesome-report
 
 # Tests
 cypress/videos

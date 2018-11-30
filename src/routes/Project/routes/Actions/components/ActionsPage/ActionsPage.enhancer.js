@@ -22,6 +22,7 @@ function instanceTypeInUse(environments, type = 'src') {
   if (lockedEnvIndex === -1) {
     return false
   }
+  // TODO: Make this aware of if the position is actually src/dest based on template instead of using index
   return type === 'src' ? lockedEnvIndex === 0 : lockedEnvIndex === 1
 }
 
@@ -30,7 +31,6 @@ function getLockedEnvInUse(environments) {
     return false
   }
   // TODO: Make this aware of if the action template is a copy or not
-  // TODO: Make this aware of if the position is actually src/dest instead of using index
   return (
     some(environments, 'locked') ||
     instanceTypeInUse(environments, 'read') ||

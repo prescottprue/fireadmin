@@ -1,12 +1,10 @@
 import { connect } from 'react-redux'
-import { withStyles } from '@material-ui/core/styles'
 import {
   withHandlers,
   compose,
   withProps,
   flattenProp,
-  withStateHandlers,
-  setDisplayName
+  withStateHandlers
 } from 'recompose'
 import { withFirebase, isEmpty, isLoaded } from 'react-redux-firebase'
 import { ACCOUNT_PATH } from 'constants'
@@ -14,19 +12,13 @@ import { withRouter, spinnerWhileLoading } from 'utils/components'
 import styles from './Navbar.styles'
 
 export default compose(
-  setDisplayName('Navbar'),
-  // add props.firebase
-  withFirebase,
-  // add props.router (router.push used in enhancers)
-  withRouter,
-  // get auth and profile from state
+  setDisplayName('EnhancedNavbar'),
+  // Map redux state to props
   connect(({ firebase: { auth, profile } }) => ({
     auth,
     profile
   })),
-  // Wait for auth to be loaded before going further
-  spinnerWhileLoading(['profile']),
-  // State handlers for account menu
+  // State handlers as props
   withStateHandlers(
     ({ accountMenuOpenInitially = false }) => ({
       accountMenuOpen: accountMenuOpenInitially,
@@ -42,22 +34,28 @@ export default compose(
       })
     }
   ),
-  // Handlers
+  // Add props.router (used in handlers)
+  withRouter,
+  // Add props.firebase (used in handlers)
+  withFirebase,
+  // Handlers as props
   withHandlers({
     handleLogout: props => () => {
       props.firebase.logout()
-      props.router.push('/')
+      props.history.push('/')
       props.closeAccountMenu()
     },
     goToAccount: props => () => {
-      props.router.push(ACCOUNT_PATH)
+      props.history.push(ACCOUNT_PATH)
       props.closeAccountMenu()
     }
   }),
+  // Add custom props
   withProps(({ auth, profile }) => ({
     authExists: isLoaded(auth) && !isEmpty(auth)
   })),
-  // Flatten profile prop (adds avatarUrl and displayName to props)
+  // Flatten profile so that avatarUrl and displayName are props
   flattenProp('profile'),
+  // Add styles as classes prop
   withStyles(styles)
 )

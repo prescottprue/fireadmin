@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Navbar from 'containers/Navbar'
-import classes from './CoreLayout.scss'
 import { Notifications } from 'modules/notification'
 import VersionChangeReloader from 'components/VersionChangeReloader'
-import 'styles/core.scss'
+import classes from './CoreLayout.scss'
 
 function CoreLayout({ children }) {
   return (

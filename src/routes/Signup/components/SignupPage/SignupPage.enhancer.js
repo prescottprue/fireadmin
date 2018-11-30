@@ -1,24 +1,33 @@
 import { withFirebase } from 'react-redux-firebase'
-import { withHandlers, pure, compose } from 'recompose'
+import { withHandlers, compose } from 'recompose'
 import { UserIsNotAuthenticated } from 'utils/router'
 import { withNotifications } from 'modules/notification'
-import { triggerAnalyticsEvent } from 'utils/analytics'
+import { withStyles } from '@material-ui/core/styles'
+import styles from './SignupPage.styles'
 
 export default compose(
-  UserIsNotAuthenticated, // redirect to list page if logged in
-  withNotifications, // add props.showError
-  withFirebase, // add props.firebase (firebaseConnect() can also be used)
-  // Handlers
+  // Redirect to list page if logged in
+  UserIsNotAuthenticated,
+  // Add props.showError
+  withNotifications,
+  // Add props.firebase (used in handlers)
+  withFirebase,
+  // Add handlers as props
   withHandlers({
     onSubmitFail: props => (formErrs, dispatch, err) =>
       props.showError(formErrs ? 'Form Invalid' : err.message || 'Error'),
     googleLogin: ({ firebase, showError }) => e =>
       firebase
         .login({ provider: 'google', type: 'popup' })
-        .then(() => {
-          triggerAnalyticsEvent('signup')
+        .catch(err => showError(err.message)),
+    emailSignup: ({ firebase, showError }) => creds =>
+      firebase
+        .createUser(creds, {
+          email: creds.email,
+          username: creds.username
         })
-        .catch(err => showError(err.message || 'Error with Signup'))
+        .catch(err => showError(err.message))
   }),
-  pure // shallow equals comparison on props (prevent unessesary re-renders)
+  // Add styles as props.classes
+  withStyles(styles)
 )

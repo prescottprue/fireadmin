@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { browserHistory, Router } from 'react-router'
+import { BrowserRouter as Router } from 'react-router-dom'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Provider } from 'react-redux'

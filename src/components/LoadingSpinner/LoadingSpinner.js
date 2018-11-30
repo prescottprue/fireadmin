@@ -1,11 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import classes from './LoadingSpinner.scss'
 
-function LoadingSpinner({ size }) {
+function LoadingSpinner({ size, classes }) {
   return (
-    <div className={classes.container}>
+    <div className={classes.root}>
       <div className={classes.progress}>
         <CircularProgress mode="indeterminate" size={size || 80} />
       </div>
@@ -14,6 +13,7 @@ function LoadingSpinner({ size }) {
 }
 
 LoadingSpinner.propTypes = {
+  classes: PropTypes.object.isRequired,
   size: PropTypes.number
 }
 

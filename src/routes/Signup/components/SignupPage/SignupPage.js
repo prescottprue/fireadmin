@@ -4,10 +4,8 @@ import { Link } from 'react-router'
 import GoogleButton from 'react-google-button'
 import { LOGIN_PATH } from 'constants'
 
-import classes from './SignupPage.scss'
-
-export const SignupPage = ({ emailSignup, googleLogin, onSubmitFail }) => (
-  <div className={classes.container}>
+const SignupPage = ({ classes, emailSignup, googleLogin, onSubmitFail }) => (
+  <div className={classes.root}>
     <div className={classes.providers}>
       <GoogleButton onClick={googleLogin} />
     </div>
@@ -21,9 +19,10 @@ export const SignupPage = ({ emailSignup, googleLogin, onSubmitFail }) => (
 )
 
 SignupPage.propTypes = {
-  emailSignup: PropTypes.func,
-  onSubmitFail: PropTypes.func,
-  googleLogin: PropTypes.func
+  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
+  emailSignup: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  googleLogin: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  onSubmitFail: PropTypes.func.isRequired // from enhancer (reduxForm)
 }
 
 export default SignupPage

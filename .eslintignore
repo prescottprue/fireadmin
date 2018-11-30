@@ -1,14 +1,13 @@
-coverage/**
+**/coverage/**
 **/node_modules/**
 dist/**
 src/index.html
 blueprints/**
 src/config.js
-functions/dist
+functions/dist/**
 functions/test/mocha.opts
 functions/coverage/**
 functions/mochawesome-report/**
-test/e2e/fixtures/**
 docs/.cache/**
 docs/public/**
 docs/content/**

@@ -2,12 +2,13 @@ stages:
   - unit_tests
   - build
   - deploy_staging
-  - e2e_tests
+  - ui_tests
   - build_production
   - deploy_production
 
-# Cache dependencies across jobs only pulling not uploading (upload to cache
-# happens in build stage)
+# Shared Settings
+## Cache dependencies across jobs only pulling not uploading (upload to cache
+## happens in build stage)
 cache:
   policy: pull # only pull cache, skip uploading
   key: ${CI_COMMIT_REF_SLUG}
@@ -158,9 +159,11 @@ Build Functions:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-tests/
       - $CI_COMMIT_MESSAGE =~ /skip-unit-tests/
+      - $CI_COMMIT_MESSAGE =~ /skip-functions-tests/
   artifacts:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     expire_in: 2 weeks
+    when: always
     paths:
       - functions/coverage # Test coverage report
       - functions/dist
@@ -213,8 +216,30 @@ Build Staging:
     - yarn lint:app
     - yarn build
 
-# Deploy Staging
-# Deploy React App and Cloud Functions
+## React Components Unit + Snapshot Tests (Jest)
+Component Tests:
+  stage: unit_tests
+  image: node:8
+  when: on_success
+  allow_failure: true
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-tests/
+      - $CI_COMMIT_MESSAGE =~ /skip-unit-tests/
+      - $CI_COMMIT_MESSAGE =~ /skip-component-tests/
+  artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    expire_in: 2 weeks
+    when: always
+    paths:
+      - coverage
+  dependencies:
+    - Build
+  script:
+    - npm run test
+
+# Deploy Staging Stage
+## Deploy React App and Firebase Functions
 Deploy Staging:
   stage: deploy_staging
   image: node:8
@@ -261,7 +286,6 @@ UI Tests:
   cache:
     untracked: true
     key: ${CI_COMMIT_REF_SLUG}
-    # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
     paths:
       - .yarn
       - node_modules
@@ -308,8 +332,6 @@ Build Prod App:
     - master
     - prod
     - web
-  variables:
-    FIREBASE_CI_PROJECT: "prod" # deploy using prod project in .firebaserc
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
@@ -327,14 +349,14 @@ Build Prod App:
     # Note: Functions are not rebuilt since a bundle with env specific config
     # is not created as with React App
 
-# Deploy Production
-# Deploy React App and Cloud Functions to production environment
+# Deploy Production Stage
+## Deploy React App and Cloud Functions to production environment
 Deploy Production:
   stage: deploy_production
   image: node:8
   environment:
     name: production
-    url: https://fireadmin.io
+    url: https://fireadmin.firebaseapp.com
   when: manual # Only allow run through button on Gitlab site
   only:
     - master
@@ -342,10 +364,6 @@ Deploy Production:
     - web
   variables:
     FIREBASE_CI_PROJECT: "prod" # deploy using prod project in .firebaserc
-  except:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-deploy/
-      - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/
   artifacts:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     expire_in: 1 week
