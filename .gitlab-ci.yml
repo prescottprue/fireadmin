@@ -158,8 +158,7 @@ Deploy Staging:
     - $(npm bin)/cypress verify
   script:
     # Create environment specific test config including auth token
-    # (saved to cypress.env.json) then run E2E Tests through Cypress
-    # run Cypress test in load balancing mode, pass id to tie jobs together
+    # (saved to cypress.env.json) then run E2E Tests through Cypress in load balancing mode
     - npm run test:ui:stage -- --record --key $CYPRESS_KEY --parallel --ci-build-id $CI_PIPELINE_ID --group uitests
 
 # actual job definitions
