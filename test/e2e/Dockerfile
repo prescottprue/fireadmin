@@ -16,8 +16,8 @@ ENV TEST_ARGS "${test_command_args}"
 
 # Token used to auth firebase-tools for use in seeding/checking Firebase (RTDB + Firestore)
 ENV FIREBASE_TOKEN $FIREBASE_TOKEN
-# Key used to specifiy job
-ENV JOB_RUN_KEY $JOB_RUN_KEY
+# Token used to auth firebase-tools for use in seeding/checking Firebase (RTDB + Firestore)
+ENV CYPRESS_KEY $CYPRESS_KEY
 # Image Build Id (from Cloud Build) used in recording of test files
 ENV BUILD_ID=$build_id
 
@@ -34,7 +34,6 @@ COPY package*.json cypress.json serviceAccount.json project.config.js ./
 
 ### Directories
 COPY build/ /build/
-COPY bin/ /bin/
 COPY test/e2e/ /test/e2e/
 
 # Install Dependencies (only those used to build config files)
@@ -48,6 +47,5 @@ RUN CI=true npm install cypress
 # Verify Cypress Installed correctly
 RUN $(npm bin)/cypress verify
 
-# Run Cypress tests (URL set by ENV above) reporting results using Barista Reporter.
-# Results are written to test_runs_data/$JOB_RUN_KEY and test_runs_meta/$JOB_RUN_KEY
-ENTRYPOINT $(npm bin)/cypress run $TEST_ARGS; echo \"$?\" | bin/testsComplete.js
+# Run Cypress tests (URL set by ENV above) reporting results to Cypress
+ENTRYPOINT npm run test:ui:stage -- --record --key $CYPRESS_KEY$TEST_ARGS

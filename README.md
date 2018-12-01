@@ -117,6 +117,7 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 ## Run Your Own
 
 ### Requirements
+
 * node `^8.11.3` (node 8 suggested in order to match [Cloud Functions Runtime][functions-runtime-url])
 
 ### Before Starting
@@ -126,6 +127,7 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 1. Install Firebase Command Line Tools: `npm i -g firebase-tools`
 
 ### Local Environment Setup
+
 1. Install dependencies: `npm install`
 1. Look for a `src/config.js` file. If one doesn't exist, create it to look like so (this is generated using [`firebase-ci`](https://www.npmjs.com/package/firebase-ci) in CI environments):
 
@@ -214,6 +216,7 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 ### Deployment
 
 #### CI Deploy (recommended)
+
 **Note**: Config for this is located within `.gitlab-ci.yml`. `firebase-ci` has been added to simplify the CI deployment process by getting settings from the `.firebaserc`. All that is required is providing authentication with Firebase:
 
 1. Have at least two Firebase projects to ready to use, one for each environment (staging and production)
@@ -267,9 +270,11 @@ Cloud Functions Unit tests are written in [Mocha](https://github.com/mochajs/moc
 1. To also generate coverage while testing, run `npm run test:cov`
 
 #### App E2E Tests
+
 End to End tests are done using [Cypress](https://cypress.io) and they live within the `test/e2e` folder. These tests cover UI functionality and are run directly on the hosted environment of Fireadmin. Application end to end tests are run automatically in Gitlab-CI the after deploying to the staging environment before deploying to production.
 
 ##### Run Locally
+
 1. Create a service account within the Firebase console
 1. Save the service account as `serviceAccount.json` within the root of the project
 1. Get the UID of the user that you want to use while testing from the Authentication tab of the Firebase console to

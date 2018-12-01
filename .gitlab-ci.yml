@@ -49,9 +49,6 @@ Build:
     when: always
     paths:
       - dist
-      - functions/dist
-      - node_modules/ # Make available for "dependencies" in later stages
-      - functions/node_modules/ # Make available for "dependencies" in later stages
   # Override cache behavior set above since we want to both pull and push to
   # the cache (no "policy" provided since pull-push is default)
   cache:
@@ -66,7 +63,6 @@ Build:
     - npm run build:config # create env specific src/config.js
     - npm run lint
     - npm run build
-    - npm run build:functions
 
 # Unit Testing Stage
 # Run unit tests for Cloud Functions
@@ -83,9 +79,7 @@ Unit Tests:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     expire_in: 2 weeks
     paths:
-      - functions/dist
       - functions/coverage # Test coverage report
-      - functions/mochawesome-report # Test results in JSON and HTML
   dependencies:
     - Build
   before_script:
@@ -117,11 +111,6 @@ Deploy Staging:
       - firebase-debug.log
   dependencies:
     - Build
-  # Override default before script to install firebase-tools
-  before_script:
-    - CYPRESS_INSTALL_BINARY=0 npm i
-    - npm i --prefix functions # Install functions dependencies
-    - npm i firebase-ci@next # Install config build and deploy dependencies
   script:
     - npm run deploy
 
@@ -139,7 +128,7 @@ Deploy Staging:
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-tests/
-      - $CI_COMMIT_MESSAGE =~ /skip-e2e-tests/
+      - $CI_COMMIT_MESSAGE =~ /skip-ui-tests/
   # Cache dependencies across jobs only pulling not uploading (upload to cache
   # happens in build stage)
   cache:
@@ -169,9 +158,8 @@ Deploy Staging:
     - $(npm bin)/cypress verify
   script:
     # Create environment specific test config including auth token
-    # (saved to cypress.env.json) then run E2E Tests through Cypress
-    # run Cypress test in load balancing mode, pass id to tie jobs together
-    - npm run test:stage -- --record --key $CYPRESS_KEY --parallel --ci-build-id $CI_PIPELINE_ID --group uitests
+    # (saved to cypress.env.json) then run E2E Tests through Cypress in load balancing mode
+    - npm run test:ui:stage -- --record --key $CYPRESS_KEY --parallel --ci-build-id $CI_PIPELINE_ID --group uitests
 
 # actual job definitions
 # all steps are the same, they come from the template above
@@ -239,10 +227,5 @@ Deploy Production:
     when: on_failure
     paths:
       - firebase-debug.log
-  # Override default before script to install firebase-tools
-  before_script:
-    - CYPRESS_INSTALL_BINARY=0 npm i
-    - npm i --prefix functions # Install functions dependencies
-    - npm i firebase-ci@next firebase-tools@6.1.0 # Install config build and deploy dependencies
   script:
     - npm run deploy # Deploy Cloud Functions and React App (Firebase Hosting)
