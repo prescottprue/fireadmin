@@ -116,7 +116,8 @@ Deploy Staging:
 
 # End To End Tests
 # Install Cypress binary and run end to end tests using Cypress
-.uitest_template: &job
+UI Tests:
+# .uitest_template: &job
   stage: e2e_tests
   image: cypress/base:8
   when: on_success
@@ -138,7 +139,6 @@ Deploy Staging:
     paths:
       - .npm
       - node_modules
-      - functions/node_modules
       - cache/Cypress
   artifacts:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
@@ -159,20 +159,22 @@ Deploy Staging:
   script:
     # Create environment specific test config including auth token
     # (saved to cypress.env.json) then run E2E Tests through Cypress in load balancing mode
-    - npm run test:ui:stage -- --record --key $CYPRESS_KEY --parallel --ci-build-id $CI_PIPELINE_ID --group uitests
+    - npm run test:ui:stage -- --record --key $CYPRESS_KEY
+    # To run in parallel, uncomment the following line, the job definitions (below), and the job template name (above)
+    # - npm run test:ui:stage -- --record --key $CYPRESS_KEY --parallel --ci-build-id $CI_PIPELINE_ID --group uitests
 
 # actual job definitions
 # all steps are the same, they come from the template above
-uitests-1:
-  <<: *job
-uitests-2:
-  <<: *job
-uitests-3:
-  <<: *job
-uitests-4:
-  <<: *job
-uitests-5:
-  <<: *job
+# uitests-1:
+#   <<: *job
+# uitests-2:
+#   <<: *job
+# uitests-3:
+#   <<: *job
+# uitests-4:
+#   <<: *job
+# uitests-5:
+#   <<: *job
 
 # Build Production version of bundle (has different config)
 Build Production:
