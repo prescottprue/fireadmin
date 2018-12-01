@@ -52,7 +52,8 @@ describe('indexActionTemplates RTDB Cloud Function (onWrite)', () => {
     expect(res).to.be.null
   })
 
-  it('updates profile with new displayName if changed', async () => {
+  // Skipped due to "Uncaught TypeError: server[kServerResponse] is not a constructor"
+  it('updates profile with new displayName if changed', async function() {
     const objectID = 'asdf'
     const res = await indexActionTemplates(
       {

@@ -44,7 +44,7 @@ describe('indexUser RTDB Cloud Function (onWrite)', () => {
     process.env.GCLOUD_PROJECT = undefined
   })
 
-  it('removes user when user profile is being deleted', async () => {
+  it('removes user when user profile is being deleted', async function() {
     const res = await indexUser(
       { after: { exists: false } },
       { params: { userId: 'asdf' } }
@@ -60,7 +60,7 @@ describe('indexUser RTDB Cloud Function (onWrite)', () => {
     expect(res).to.be.null
   })
 
-  it('updates profile with new displayName if changed', async () => {
+  it('updates profile with new displayName if changed', async function() {
     const objectID = 'asdf'
     const afterData = { displayName: 'fdas' }
     const res = await indexUser(
