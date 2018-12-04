@@ -22,18 +22,19 @@ export default compose(
       const doc = new CodeMirror.Doc('', 'javascript')
       const editor = getCodeMirror(el, doc)
       editor.setOption('theme', 'monokai')
-      const Firepad = require('firepad')
-      const fbRef = firebase.ref(rtdbPath)
-      window.firebase = firebase // needed for Firepad to access Firebase lib
-      const settings = {
-        defaultText: `// run custom code here including promises
-        // admin.firebase.ref('some/path').once('value').then(snap => snap.numChildren())`
-      }
-      try {
-        firepadEditor = Firepad.fromCodeMirror(fbRef, editor, settings)
-      } catch (err) {
-        console.error('It threw :(') // eslint-disable-line
-      }
+      // eslint-disable-next-line
+      // const Firepad = require('firepad')
+      // const fbRef = firebase.ref(rtdbPath)
+      // window.firebase = firebase // needed for Firepad to access Firebase lib
+      // const settings = {
+      //   defaultText: `// run custom code here including promises
+      //   // admin.firebase.ref('some/path').once('value').then(snap => snap.numChildren())`
+      // }
+      // try {
+      //   firepadEditor = Firepad.fromCodeMirror(fbRef, editor, settings)
+      // } catch (err) {
+      //   console.error('It threw :(') // eslint-disable-line
+      // }
       // editor.setOption('lineNumbers', false)
     }
   })

@@ -29,7 +29,7 @@ const MOUNT_NODE = document.getElementById('root')
 let render = () => {
   const App = require('./containers/App').default
   const routes = require('./routes/index').default(store)
-
+  console.log('routes:', routes) // eslint-disable-line
   ReactDOM.render(
     <App store={store} routes={routes} persistor={persistor} />,
     MOUNT_NODE
@@ -38,7 +38,7 @@ let render = () => {
 
 // Development Tools
 // ------------------------------------
-if (__DEV__) {
+if (env === 'local') {
   if (module.hot) {
     const renderApp = render
     const renderError = error => {
@@ -68,4 +68,4 @@ if (__DEV__) {
 
 // Let's Go!
 // ------------------------------------
-if (!__TEST__) render()
+render()

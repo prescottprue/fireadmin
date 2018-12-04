@@ -1,24 +1,10 @@
+import { Loadable } from 'utils/components'
 import { PERMISSIONS_PATH as path } from 'constants'
 
-export default store => ({
+export default {
   path,
-  /*  Async getComponent is only invoked when route matches   */
-  getComponent(nextState, cb) {
-    /*  Webpack - use 'require.ensure' to create a split point
-        and embed an async module loader (jsonp) when bundling   */
-    require.ensure(
-      [],
-      require => {
-        /*  Webpack - use require callback to define
-          dependencies for bundling   */
-        const Permissions = require('./components/Permissions').default
-
-        /*  Return getComponent   */
-        cb(null, Permissions)
-
-        /* Webpack named bundle   */
-      },
-      'Permissions'
-    )
-  }
-})
+  component: Loadable({
+    loader: () =>
+      import(/* webpackChunkName: 'Permissions' */ './components/Permissions')
+  })
+}

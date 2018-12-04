@@ -1,23 +1,10 @@
 import { paths } from 'constants'
+import { Loadable } from 'utils/components'
 
-export default store => ({
+export default {
   path: paths.actionTemplates,
-  /*  Async getComponent is only invoked when route matches   */
-  getComponent(nextState, cb) {
-    /*  Webpack - use 'require.ensure' to create a split point
-        and embed an async module loader (jsonp) when bundling   */
-    require.ensure(
-      [],
-      require => {
-        const ActionTemplates = require('./components/ActionTemplatesPage')
-          .default
-
-        /*  Return getComponent   */
-        cb(null, ActionTemplates)
-
-        /* Webpack named bundle   */
-      },
-      'ActionTemplates'
-    )
-  }
-})
+  component: Loadable({
+    loader: () =>
+      import(/* webpackChunkName: 'ActionTemplates' */ './components/ActionTemplatesPage')
+  })
+}

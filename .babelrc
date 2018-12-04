@@ -1,9 +1,23 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "node": "6.11"
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "chrome": "58",
+          "ie": "11"
+        }
       }
-    }]
+    ]
+  ],
+  "plugins": [
+    ["module-resolver", {
+      "root": ["./src"],
+      "alias": {
+        "constants": "./src/constants"
+      }
+    }],
+    "@babel/plugin-proposal-export-default-from",
+    "@babel/plugin-proposal-export-namespace-from"
   ]
 }

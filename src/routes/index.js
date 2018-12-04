@@ -19,15 +19,15 @@ export const createRoutes = store => ({
   indexRoute: Home,
   onEnter: createOnEnter(store),
   childRoutes: [
-    AccountRoute(store),
-    LoginRoute(store),
-    SignupRoute(store),
-    ProjectsRoute(store),
-    ProjectRoute(store),
-    ActionTemplates(store),
-    ActionTemplate(store),
+    AccountRoute,
+    LoginRoute,
+    SignupRoute,
+    ProjectsRoute,
+    ProjectRoute,
+    ActionTemplates,
+    ActionTemplate,
     /* Place all Routes above here so NotFoundRoute can act as a 404 page */
-    NotFoundRoute(store)
+    NotFoundRoute
   ]
 })
 

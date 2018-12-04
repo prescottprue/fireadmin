@@ -11,6 +11,7 @@ import {
   size,
   isArray
 } from 'lodash'
+import LoadableComponent from 'react-loadable'
 import { connect } from 'react-redux'
 import LoadingSpinner from 'components/LoadingSpinner'
 import { isLoaded, isEmpty } from 'react-redux-firebase'
@@ -215,3 +216,16 @@ export const withRouter = createWithFromContext('router')
  * const Wrapped = withStore(SomeComponent)
  */
 export const withStore = createWithFromContext('store')
+
+/**
+ * Create component which is loaded async, showing a loading spinner
+ * in the meantime.
+ * @param {Object} opts - Loading options
+ * @param {Function} opts.loader - Loader function (should return import promise)
+ */
+export function Loadable(opts) {
+  return LoadableComponent({
+    loading: LoadingSpinner,
+    ...opts
+  })
+}
