@@ -24,7 +24,7 @@ export function encrypt(text, options = {}) {
       'Password is required to encrypt. Check functions config for encryption.password'
     )
   }
-  const cipher = crypto.createCipher(algorithm, password)
+  const cipher = crypto.createCipher(algorithm, password) // eslint-disable-line node/no-deprecated-api
   let crypted = cipher.update(str, 'utf8', 'hex')
   crypted += cipher.final('hex')
   return crypted

@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin'
 import fauxJax from 'faux-jax'
-import crypto from 'crypto'
+import { createCipher } from 'crypto'
 import { to } from 'utils/async'
 
 describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
@@ -259,7 +259,7 @@ const TEST_PASSWORD = 'asdf'
  */
 function encrypt(text, options = {}) {
   const { algorithm = 'aes-256-ctr' } = options
-  const cipher = crypto.createCipher(algorithm, TEST_PASSWORD)
+  const cipher = createCipher(algorithm, TEST_PASSWORD) // eslint-disable-line node/no-deprecated-api
   let crypted = cipher.update(text, 'utf8', 'hex')
   crypted += cipher.final('hex')
   return crypted
