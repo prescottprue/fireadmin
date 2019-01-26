@@ -5,6 +5,7 @@ import { groupBy, map, get, filter } from 'lodash'
 import { withStyles } from '@material-ui/core/styles'
 import { Link } from '@reach/router'
 import Drawer from '@material-ui/core/Drawer'
+import Button from '@material-ui/core/Button'
 import AppBar from '@material-ui/core/AppBar'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -25,6 +26,9 @@ const styles = theme => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     backgroundColor: themeColor
+  },
+  grow: {
+    flexGrow: 1
   },
   drawer: {
     width: drawerWidth,
@@ -54,6 +58,8 @@ function topLevelChapters(pages) {
   })
 }
 
+const fireadminHome = "https://fireadmin.io"
+
 function Layout(props) {
   const { classes, children, pages, location } = props
   const groupedPages = groupBySlugLength(pages)
@@ -71,6 +77,8 @@ function Layout(props) {
             to="/">
             Fireadmin Docs
           </Typography>
+          <div className={classes.grow} /> 
+          <Button color="inherit" component="a" href={fireadminHome}>Go To Fireadmin</Button>
         </Toolbar>
       </AppBar>
       <Drawer

@@ -29,8 +29,9 @@
           "destination": "/index.html"
         },
         {
-          "source": "docs/**",
-          "destination": "https://fireadmin-docs.firebaseapp.com"
+          "source": "/docs/:page*",
+          "destination": "https://fireadmin-docs.firebaseapp.com/:page",
+          "type": 301
         }
       ]
     },

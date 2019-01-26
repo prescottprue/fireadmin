@@ -8,10 +8,10 @@ import {
   withStateHandlers,
   setDisplayName
 } from 'recompose'
-import Theme from 'theme'
 import { withFirebase, isEmpty, isLoaded } from 'react-redux-firebase'
 import { ACCOUNT_PATH } from 'constants'
 import { withRouter, spinnerWhileLoading } from 'utils/components'
+import styles from './Navbar.styles'
 
 export default compose(
   setDisplayName('Navbar'),
@@ -59,5 +59,5 @@ export default compose(
   })),
   // Flatten profile prop (adds avatarUrl and displayName to props)
   flattenProp('profile'),
-  withStyles({ color: Theme.palette.primary1Color })
+  withStyles(styles)
 )
