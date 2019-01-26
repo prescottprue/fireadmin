@@ -1,5 +1,5 @@
 # OS
-*.log
+*.log*
 **/*.log
 .DS_Store
 **/.DS_Store
@@ -25,3 +25,11 @@ test/e2e/screenshots
 test/e2e/config.json
 cypress.env.json
 serviceAccount.json
+
+
+# Docs
+docs/public
+docs/.gatsby-context.js
+docs/.cache/
+.intermediate-representation/
+
