@@ -11,7 +11,7 @@ module.exports = {
   siteCover: '/images/cover.jpg',
   googleAnalyticsId: '',
   background_color: '#ffffff',
-  theme_color: '#23819E',
+  theme_color: '#ef6c00',
   icon: 'src/assets/FireadminLogo.png',
   headerLinks: [
     {

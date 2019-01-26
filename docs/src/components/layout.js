@@ -11,6 +11,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import List from '@material-ui/core/List'
 import Typography from '@material-ui/core/Typography'
 import SidebarItem from './SidebarItem'
+import { theme_color as themeColor } from '../../data/siteConfig'
 
 import './index.css'
 import 'prismjs/themes/prism-tomorrow.css'
@@ -22,7 +23,8 @@ const styles = theme => ({
     display: 'flex'
   },
   appBar: {
-    zIndex: theme.zIndex.drawer + 1
+    zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: themeColor
   },
   drawer: {
     width: drawerWidth,
