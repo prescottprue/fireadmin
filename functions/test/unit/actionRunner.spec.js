@@ -598,8 +598,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
         srcResource = 'rtdb',
         destResource = 'rtdb',
         inputValues = ['projects']
-      } =
-        opts || {}
+      } = opts || {}
       // Environment Doc Stub (subcollection of project document)
       const environmentDocStub = docStub
         .withArgs(`projects/${projectId}/environments/asdf`)

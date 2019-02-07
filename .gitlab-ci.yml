@@ -101,11 +101,7 @@ Build Docs:
 Deploy Docs:
   stage: deploy_production
   image: node:8
-  only:
-    changes:
-      - docs/**/* # Run only when docs are changed
-      - firebase.json
-      - .gitlab-ci.yml
+  when: on_success
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/

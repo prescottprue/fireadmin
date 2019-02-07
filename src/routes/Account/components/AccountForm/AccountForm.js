@@ -29,13 +29,12 @@ export const AccountForm = ({
         fullWidth
       />
     </div>
-    {!!account &&
-      !!account.providerData && (
-        <div>
-          <h4>Linked Accounts</h4>
-          <ProviderDataForm providerData={account.providerData} />
-        </div>
-      )}
+    {!!account && !!account.providerData && (
+      <div>
+        <h4>Linked Accounts</h4>
+        <ProviderDataForm providerData={account.providerData} />
+      </div>
+    )}
     <Button color="primary" type="submit" disabled={pristine || submitting}>
       {submitting ? 'Saving' : 'Save'}
     </Button>

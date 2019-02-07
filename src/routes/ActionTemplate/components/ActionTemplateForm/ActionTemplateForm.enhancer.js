@@ -39,8 +39,8 @@ export default compose(
     submitTooltip: !editable
       ? 'Must be owner'
       : !pristine && !submitting
-        ? 'Save Template'
-        : 'Nothing to publish',
+      ? 'Save Template'
+      : 'Nothing to publish',
     cancelTooltip: pristine || submitting ? 'Nothing to undo' : 'Undo',
     deleteTooltip: editable ? 'Delete Template' : 'Must be owner'
   })),
