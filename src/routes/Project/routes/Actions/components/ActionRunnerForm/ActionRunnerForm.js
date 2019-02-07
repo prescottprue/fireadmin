@@ -69,7 +69,7 @@ export const ActionRunnerForm = ({
             </Typography>
           </div>
           <AppBar position="static">
-            <Tabs value={selectedTab} onChange={selectTab} fullWidth>
+            <Tabs value={selectedTab} onChange={selectTab} variant="fullWidth">
               <Tab label="Public" />
               <Tab label="Private" />
             </Tabs>
