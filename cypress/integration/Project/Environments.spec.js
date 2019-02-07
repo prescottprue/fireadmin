@@ -5,21 +5,6 @@ describe('Project - Environments', () => {
   let openSpy // eslint-disable-line no-unused-vars
   // Setup before tests including creating a server to listen for external requests
   before(() => {
-    cy.server({
-      whitelist: xhr => xhr.url.includes('identitytoolkit')
-    })
-      // Firebase JS SDK request - Called when project data is written
-      .route('POST', /google.firestore.v1beta1.Firestore\/Listen/)
-      .as('listenForProjects')
-      .route('POST', /google.firestore.v1beta1.Firestore\/Write/)
-      .as('addProject')
-      .window()
-      .then(win => {
-        // Create a spy on the servers onOpen event so we can later expect
-        // it to be called with specific arguments
-        openSpy = cy.spy(cy.state('server').options, 'onOpen')
-        return null
-      })
     // Add a fake project owned by the test user
     cy.callFirestore('set', 'projects/test-project', fakeProject, {
       withMeta: true
@@ -31,8 +16,6 @@ describe('Project - Environments', () => {
   beforeEach(() => {
     // Go to environments page
     cy.visit('projects/test-project/environments')
-    // Wait for projects data listener
-    cy.wait('@listenForProjects')
   })
 
   describe('Add Environment', () => {

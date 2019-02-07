@@ -157,8 +157,8 @@ UI Tests:
     expire_in: 2 weeks
     when: always
     paths:
-      - test/e2e/videos
-      - test/e2e/screenshots
+      - cypress/videos
+      - cypress/screenshots
       - cypress.env.json
   dependencies:
     - Build

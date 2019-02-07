@@ -20,8 +20,8 @@ functions/coverage
 functions/mochawesome-report
 
 # Tests
-test/e2e/videos
-test/e2e/screenshots
-test/e2e/config.json
+cypress/videos
+cypress/screenshots
+cypress/config.json
 cypress.env.json
 serviceAccount.json
