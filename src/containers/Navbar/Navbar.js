@@ -7,7 +7,6 @@ import Typography from '@material-ui/core/Typography'
 import AccountMenu from './AccountMenu'
 import LoginMenu from './LoginMenu'
 import { LIST_PATH } from 'constants'
-import classes from './Navbar.scss'
 
 export const Navbar = ({
   avatarUrl,
@@ -17,6 +16,7 @@ export const Navbar = ({
   handleLogout,
   closeAccountMenu,
   anchorEl,
+  classes,
   handleMenu
 }) => (
   <AppBar position="static" className={classes.appBar} elevation={24}>
@@ -24,12 +24,20 @@ export const Navbar = ({
       <Typography
         type="title"
         color="inherit"
-        className={classes.flex}
         component={Link}
         to={authExists ? LIST_PATH : '/'}
-        style={{ fontSize: '1.4rem' }}
+        className={classes.brand}
         data-test="brand">
         Fireadmin
+      </Typography>
+      <Typography
+        type="title"
+        color="inherit"
+        className={classes.flex}
+        component={Link}
+        to="/docs"
+        data-test="docs">
+        Docs
       </Typography>
       {authExists ? (
         <AccountMenu
@@ -49,6 +57,7 @@ export const Navbar = ({
 )
 
 Navbar.propTypes = {
+  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   displayName: PropTypes.string, // from enhancer (flattenProps - profile)
   avatarUrl: PropTypes.string, // from enhancer (flattenProps - profile)
   authExists: PropTypes.bool, // from enhancer (withProps - auth)

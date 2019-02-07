@@ -21,8 +21,8 @@ module.exports = {
     '__DEV__': false,
     '__COVERAGE__': false,
     '__TEST__': false,
-    'StackdriverErrorReporter': false,
-    'Raven': false
+    StackdriverErrorReporter: false,
+    Raven: false
   },
   rules: {
     semi: [2,'never'],

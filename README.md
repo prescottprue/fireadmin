@@ -257,6 +257,14 @@ For more options on CI settings checkout the [firebase-ci docs](https://github.c
 1. Deploy to firebase: `firebase deploy`
 **NOTE:** You can use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
 
+### Docs
+
+Documentation is available at [fireadmin.io/docs](https://fireadmin.io/docs)
+
+All source code and content for docs is located within the [`docs`](/docs) folder. Docs are generated from markdown into static files using Gatsby [based on settings in `gatsby-config.js`](/docs/gatsby-config.js).
+
+Visit the [docs README for more info](/docs/README.md).
+
 ### Testing
 **NOTE**: If you have setup CI deployment, [E2E tests](#app-e2e-tests) and [Unit Tests](#cloud-functions-unit-tests) can automatically run against your staging environment before running the production build.
 
