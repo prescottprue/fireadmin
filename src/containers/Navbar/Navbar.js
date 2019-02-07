@@ -8,7 +8,7 @@ import AccountMenu from './AccountMenu'
 import LoginMenu from './LoginMenu'
 import { LIST_PATH } from 'constants'
 
-export const Navbar = ({
+function Navbar({
   avatarUrl,
   displayName,
   authExists,
@@ -18,43 +18,45 @@ export const Navbar = ({
   anchorEl,
   classes,
   handleMenu
-}) => (
-  <AppBar position="static" className={classes.appBar} elevation={24}>
-    <Toolbar>
-      <Typography
-        type="title"
-        color="inherit"
-        component={Link}
-        to={authExists ? LIST_PATH : '/'}
-        className={classes.brand}
-        data-test="brand">
-        Fireadmin
-      </Typography>
-      <Typography
-        type="title"
-        color="inherit"
-        className={classes.flex}
-        component={Link}
-        to="/docs"
-        data-test="docs">
-        Docs
-      </Typography>
-      {authExists ? (
-        <AccountMenu
-          avatarUrl={avatarUrl}
-          displayName={displayName}
-          onLogoutClick={handleLogout}
-          goToAccount={goToAccount}
-          closeAccountMenu={closeAccountMenu}
-          handleMenu={handleMenu}
-          anchorEl={anchorEl}
-        />
-      ) : (
-        <LoginMenu />
-      )}
-    </Toolbar>
-  </AppBar>
-)
+}) {
+  return (
+    <AppBar position="static" className={classes.appBar} elevation={24}>
+      <Toolbar>
+        <Typography
+          type="title"
+          color="inherit"
+          component={Link}
+          to={authExists ? LIST_PATH : '/'}
+          className={classes.brand}
+          data-test="brand">
+          Fireadmin
+        </Typography>
+        <Typography
+          type="title"
+          color="inherit"
+          className={classes.flex}
+          component={Link}
+          to="/docs"
+          data-test="docs">
+          Docs
+        </Typography>
+        {authExists ? (
+          <AccountMenu
+            avatarUrl={avatarUrl}
+            displayName={displayName}
+            onLogoutClick={handleLogout}
+            goToAccount={goToAccount}
+            closeAccountMenu={closeAccountMenu}
+            handleMenu={handleMenu}
+            anchorEl={anchorEl}
+          />
+        ) : (
+          <LoginMenu />
+        )}
+      </Toolbar>
+    </AppBar>
+  )
+}
 
 Navbar.propTypes = {
   classes: PropTypes.object.isRequired, // from enhancer (withStyles)

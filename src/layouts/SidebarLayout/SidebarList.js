@@ -16,36 +16,38 @@ const listItemStyle = {
   paddingLeft: '18px'
 }
 
-export const SidebarList = ({
+function SidebarList({
   classes,
   drawerOpen,
   itemIsActive,
   optionsConfig,
   goTo,
   toggleDrawer
-}) => (
-  <List className={classes.list}>
-    {optionsConfig.map(({ value, iconElement, label }, i) => (
-      <ListItem
-        button
-        key={`SidebarItem-${i}-${value}`}
-        selected={itemIsActive(value)}
-        className={itemIsActive(value) ? classes.activeListItem : undefined}
-        onClick={() => goTo(value)}
-        style={listItemStyle}>
-        <ListItemIcon>{iconElement || <LayersIcon />}</ListItemIcon>
-        <ListItemText primary={label || capitalize(value)} />
+}) {
+  return (
+    <List className={classes.list}>
+      {optionsConfig.map(({ value, iconElement, label }, i) => (
+        <ListItem
+          button
+          key={`SidebarItem-${i}-${value}`}
+          selected={itemIsActive(value)}
+          className={itemIsActive(value) ? classes.activeListItem : undefined}
+          onClick={() => goTo(value)}
+          style={listItemStyle}>
+          <ListItemIcon>{iconElement || <LayersIcon />}</ListItemIcon>
+          <ListItemText primary={label || capitalize(value)} />
+        </ListItem>
+      ))}
+      <Divider />
+      <Divider />
+      <ListItem button onClick={toggleDrawer} style={listItemStyle}>
+        <ListItemIcon>
+          {drawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+        </ListItemIcon>
       </ListItem>
-    ))}
-    <Divider />
-    <Divider />
-    <ListItem button onClick={toggleDrawer} style={listItemStyle}>
-      <ListItemIcon>
-        {drawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-      </ListItemIcon>
-    </ListItem>
-  </List>
-)
+    </List>
+  )
+}
 
 SidebarList.propTypes = {
   toggleDrawer: PropTypes.func,

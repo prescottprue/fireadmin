@@ -8,15 +8,17 @@ import ThemeSettings from 'theme'
 
 const theme = createMuiTheme(ThemeSettings)
 
-const App = ({ routes, store, persistor }) => (
-  <MuiThemeProvider theme={theme}>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <Router history={browserHistory}>{routes}</Router>
-      </PersistGate>
-    </Provider>
-  </MuiThemeProvider>
-)
+function App({ routes, store, persistor }) {
+  return (
+    <MuiThemeProvider theme={theme}>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <Router history={browserHistory}>{routes}</Router>
+        </PersistGate>
+      </Provider>
+    </MuiThemeProvider>
+  )
+}
 
 App.propTypes = {
   routes: PropTypes.object.isRequired,
