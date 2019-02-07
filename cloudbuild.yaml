@@ -1,8 +1,0 @@
-steps:
-# Build Fireadmin App Image
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/fireadmin', '.']
-# Push App Image To Container Registry (Fireadmin uses this)
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/fireadmin']
-images: ['gcr.io/$PROJECT_ID/fireadmin']

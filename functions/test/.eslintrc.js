@@ -1,16 +1,16 @@
 module.exports = {
-  extends: "../.eslintrc.js",
+  'extends': '../.eslintrc.js',
   env: {
-    "mocha": true
+    mocha: true
   },
   globals: {
-    "sinon": true,
-    "expect": true,
-    "should": true,
-    "functionsTest": true,
-    "mockFunctionsConfig": true
+    sinon: true,
+    expect: true,
+    should: true,
+    functionsTest: true,
+    mockFunctionsConfig: true
   },
   rules: {
-    "no-unused-expressions": 0
+    'no-unused-expressions': 0
   }
 }

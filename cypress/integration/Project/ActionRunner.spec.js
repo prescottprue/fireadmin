@@ -71,6 +71,7 @@ describe('Project - Action Runner', () => {
       const lockedEnv = { name: 'only src env', readOnly: true }
       cy.addProjectEnvironment('test-project', 'src-only', lockedEnv)
     })
+
     it('disables run action button if "Read Only" environment is selected as a destination', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
@@ -95,6 +96,7 @@ describe('Project - Action Runner', () => {
       const lockedEnv = { name: 'only dest env', writeOnly: true }
       cy.addProjectEnvironment('test-project', 'dest-only', lockedEnv)
     })
+
     it('disables run action button if "Write Only" environment is selected as a source', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
