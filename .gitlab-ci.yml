@@ -1,6 +1,6 @@
 stages:
-  - build
   - unit_tests
+  - build
   - deploy_staging
   - e2e_tests
   - build_production
@@ -26,7 +26,43 @@ cache:
 before_script:
   - CYPRESS_INSTALL_BINARY=0 npm i # Install dependencies skipping Cypress
   - npm i --prefix functions # Install functions dependencies
-  - npm i firebase-ci@next # Install firebase-ci for config build and deploy
+
+# Unit Testing Stage
+# Run unit tests for Cloud Functions
+Functions Unit Tests:
+  stage: unit_tests
+  image: node:8
+  when:
+    changes:
+      - functions/**/* # Run only when functions are changed
+      - firebase.json
+      - .gitlab-ci.yml
+  allow_failure: true
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-tests/
+      - $CI_COMMIT_MESSAGE =~ /skip-unit-tests/
+  artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    expire_in: 2 weeks
+    paths:
+      - functions/coverage # Test coverage report
+  # Override cache behavior set above since we want to both pull and push to
+  # the cache (no "policy" provided since pull-push is default)
+  cache:
+    untracked: true
+    key: ${CI_COMMIT_REF_SLUG}
+    # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
+    paths:
+      - .npm
+      - functions/node_modules
+  dependencies:
+    - Build
+  before_script:
+    - npm i --prefix functions
+  script:
+    - npm run lint --prefix functions
+    - npm run test:cov --prefix functions
 
 # Build Stage
 # Installs dependencies, builds app, and saves results for later (artifacts).
@@ -36,7 +72,7 @@ before_script:
 # 3. Confirm there is no lint within code (after config is injected for import linting)
 # 4. Build React app to dist folder
 # 5. Preserve build results and dependencies for future jobs in the pipeline
-Build:
+Build Staging:
   stage: build
   image: node:8
   when: always
@@ -58,34 +94,10 @@ Build:
     paths:
       - .npm
       - node_modules
-      - functions/node_modules
   script:
     - npm run build:config # create env specific src/config.js
     - npm run lint
     - npm run build
-
-# Unit Testing Stage
-# Run unit tests for Cloud Functions
-Unit Tests:
-  stage: unit_tests
-  image: node:8
-  when: on_success
-  allow_failure: true
-  except:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-tests/
-      - $CI_COMMIT_MESSAGE =~ /skip-unit-tests/
-  artifacts:
-    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
-    expire_in: 2 weeks
-    paths:
-      - functions/coverage # Test coverage report
-  dependencies:
-    - Build
-  before_script:
-    - npm i --prefix functions
-  script:
-    - npm run test:cov --prefix functions
 
 # Deploy Staging
 # Deploy React App and Cloud Functions
