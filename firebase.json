@@ -7,7 +7,7 @@
   },
   "hosting": [
     {
-      "target": "web",
+      "target": "app",
       "public": "dist",
       "ignore": [
         "**/node_modules/**",

@@ -56,8 +56,6 @@ Functions Unit Tests:
     paths:
       - .npm
       - functions/node_modules
-  dependencies:
-    - Build
   before_script:
     - npm i --prefix functions
   script:
@@ -128,7 +126,7 @@ Deploy Docs:
     - yarn config set cache-folder docs/.yarn
     - yarn --cwd docs --frozen-lockfile install
   script:
-    - yarn --cwd publisher deploy --only hosting:publisher  # Deploy publisher React App (Firebase Hosting)
+    - npm run deploy:docs  # Deploy docs React App (Firebase Hosting)
 
 # ---------------------------- React App -------------------------- #
 # Build App
@@ -189,9 +187,9 @@ Deploy Staging:
     paths:
       - firebase-debug.log
   dependencies:
-    - Build
+    - Build Staging
   script:
-    - npm run deploy
+    - npm run deploy:app  # Deploy docs React App (Firebase Hosting)
 
 # End To End Tests
 # Install Cypress binary and run end to end tests using Cypress
@@ -227,8 +225,6 @@ UI Tests:
       - cypress/videos
       - cypress/screenshots
       - cypress.env.json
-  dependencies:
-    - Build
   before_script:
      # Install deps including Cypress binary (skipped in default before_script)
     - npm i
