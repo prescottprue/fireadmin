@@ -1,14 +1,9 @@
 stages:
-  - unit_tests
   - build
   - deploy_staging
   - e2e_tests
   - build_production
   - deploy_production
-
-variables:
-  npm_config_cache: "$CI_PROJECT_DIR/.npm"
-  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
 
 # Cache dependencies across jobs only pulling not uploading (upload to cache
 # happens in build stage)
@@ -19,17 +14,15 @@ cache:
   # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
   paths:
     - .yarn
-
+    - node_modules
 # Script run before all stages unless otherwise overriden
 before_script:
-  - yarn config set cache-folder .yarn
-  - CYPRESS_INSTALL_BINARY=0 yarn --frozen-lockfile install # Install dependencies skipping Cypress
-  - yarn --cwd functions --frozen-lockfile install # Install functions dependencies
+  - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
 
-# Unit Testing Stage
+# Lint + Unit Test Cloud Functions - Staging
 # Run unit tests for Cloud Functions
-Functions Unit Tests:
-  stage: unit_tests
+Build Functions:
+  stage: build
   image: node:8
   only:
     changes:
@@ -46,19 +39,22 @@ Functions Unit Tests:
     expire_in: 2 weeks
     paths:
       - functions/coverage # Test coverage report
+      - functions/dist
   # Override cache behavior set above since we want to both pull and push to
   # the cache (no "policy" provided since pull-push is default)
   cache:
     untracked: true
-    key: ${CI_COMMIT_REF_SLUG}-app
+    key: ${CI_COMMIT_REF_SLUG}-functions
     # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
     paths:
-      - .npm
+      - functions/.yarn
+      - functions/node_modules
   before_script:
-    - yarn --cwd functions --frozen-lockfile install
+    - yarn --cwd functions install --frozen-lockfile --cache-folder functions/.yarn
   script:
     - yarn --cwd functions lint
     - yarn --cwd functions test:cov
+    - yarn --cwd functions build
 
 # ---------------------------- Docs -------------------------- #
 # Build Docs
@@ -88,7 +84,7 @@ Build Docs:
       - docs/.yarn
       - docs/node_modules
   before_script:
-    - yarn --cwd docs --frozen-lockfile install
+    - yarn --cwd docs --frozen-lockfile install --cache-folder docs/.yarn
   script:
     - yarn --cwd docs lint
     - yarn --cwd docs build
@@ -116,8 +112,7 @@ Deploy Docs:
       - docs/.yarn
       - docs/node_modules
   before_script:
-    - yarn config set cache-folder docs/.yarn
-    - yarn --cwd docs --frozen-lockfile install
+    - yarn --cwd docs install --frozen-lockfile --cache-folder docs/.yarn
   script:
     - yarn deploy:docs  # Deploy docs React App (Firebase Hosting)
 
@@ -217,7 +212,7 @@ UI Tests:
       - cypress.env.json
   before_script:
      # Install deps including Cypress binary (skipped in default before_script)
-    - yarn --cwd cypress install
+    - yarn install --frozen-lockfile --cache-folder .yarn
     # Confirm Cypress is ready to use
     - $(npm bin)/cypress verify
   script:
