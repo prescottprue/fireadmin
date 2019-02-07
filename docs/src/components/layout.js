@@ -58,7 +58,7 @@ function topLevelChapters(pages) {
   })
 }
 
-const fireadminHome = "https://fireadmin.io"
+const fireadminHome = 'https://fireadmin.io'
 
 function Layout(props) {
   const { classes, children, pages, location } = props
@@ -77,8 +77,10 @@ function Layout(props) {
             to="/">
             Fireadmin Docs
           </Typography>
-          <div className={classes.grow} /> 
-          <Button color="inherit" component="a" href={fireadminHome}>Go To Fireadmin</Button>
+          <div className={classes.grow} />
+          <Button color="inherit" component="a" href={fireadminHome}>
+            Go To Fireadmin
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer

@@ -14,18 +14,17 @@ variables:
 # happens in build stage)
 cache:
   untracked: true
-  key: ${CI_COMMIT_REF_SLUG}
   policy: pull # only pull cache, skip uploading
+  key: ${CI_COMMIT_REF_SLUG}-app
   # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
   paths:
-    - .npm
-    - node_modules
-    - functions/node_modules
+    - .yarn
 
 # Script run before all stages unless otherwise overriden
 before_script:
-  - CYPRESS_INSTALL_BINARY=0 npm i # Install dependencies skipping Cypress
-  - npm i --prefix functions # Install functions dependencies
+  - yarn config set cache-folder .yarn
+  - CYPRESS_INSTALL_BINARY=0 yarn --frozen-lockfile install # Install dependencies skipping Cypress
+  - yarn --cwd functions --frozen-lockfile install # Install functions dependencies
 
 # Unit Testing Stage
 # Run unit tests for Cloud Functions
@@ -51,16 +50,15 @@ Functions Unit Tests:
   # the cache (no "policy" provided since pull-push is default)
   cache:
     untracked: true
-    key: ${CI_COMMIT_REF_SLUG}
+    key: ${CI_COMMIT_REF_SLUG}-app
     # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
     paths:
       - .npm
-      - functions/node_modules
   before_script:
-    - npm i --prefix functions
+    - yarn --cwd functions --frozen-lockfile install
   script:
-    - npm run lint --prefix functions
-    - npm run test:cov --prefix functions
+    - yarn --cwd functions lint
+    - yarn --cwd functions test:cov
 
 # ---------------------------- Docs -------------------------- #
 # Build Docs
@@ -85,12 +83,11 @@ Build Docs:
       - docs/public
   cache:
     untracked: true # track files that are untracked in git
-    key: docs
+    key: ${CI_COMMIT_REF_SLUG}-docs
     paths:
       - docs/.yarn
       - docs/node_modules
   before_script:
-    - yarn config set cache-folder docs/.yarn
     - yarn --cwd docs --frozen-lockfile install
   script:
     - yarn --cwd docs lint
@@ -114,7 +111,7 @@ Deploy Docs:
       - docs/public
   cache:
     untracked: true # track files that are untracked in git
-    key: docs
+    key: ${CI_COMMIT_REF_SLUG}-docs
     paths:
       - docs/.yarn
       - docs/node_modules
@@ -122,7 +119,7 @@ Deploy Docs:
     - yarn config set cache-folder docs/.yarn
     - yarn --cwd docs --frozen-lockfile install
   script:
-    - npm run deploy:docs  # Deploy docs React App (Firebase Hosting)
+    - yarn deploy:docs  # Deploy docs React App (Firebase Hosting)
 
 # ---------------------------- React App -------------------------- #
 # Build App
@@ -150,15 +147,13 @@ Build Staging:
   # the cache (no "policy" provided since pull-push is default)
   cache:
     untracked: true
-    key: ${CI_COMMIT_REF_SLUG}
-    # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
+    key: ${CI_COMMIT_REF_SLUG}-app
     paths:
-      - .npm
-      - node_modules
+      - .yarn
   script:
-    - npm run build:config # create env specific src/config.js
-    - npm run lint
-    - npm run build
+    - yarn build:config # create env specific src/config.js
+    - yarn lint
+    - yarn build
 
 # Deploy Staging
 # Deploy React App and Cloud Functions
@@ -185,7 +180,7 @@ Deploy Staging:
   dependencies:
     - Build Staging
   script:
-    - npm run deploy:app  # Deploy docs React App (Firebase Hosting)
+    - yarn deploy:app  # Deploy docs React App (Firebase Hosting)
 
 # End To End Tests
 # Install Cypress binary and run end to end tests using Cypress
@@ -207,12 +202,11 @@ UI Tests:
   # happens in build stage)
   cache:
     untracked: true
-    key: ${CI_COMMIT_REF_SLUG}
+    key: ${CI_COMMIT_REF_SLUG}-app
     # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
     paths:
-      - .npm
-      - node_modules
-      - cache/Cypress
+      - .yarn
+      - .cache/Cypress
   artifacts:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     expire_in: 2 weeks
@@ -223,16 +217,15 @@ UI Tests:
       - cypress.env.json
   before_script:
      # Install deps including Cypress binary (skipped in default before_script)
-    - npm i
-    - npm i cypress
+    - yarn --cwd cypress install
     # Confirm Cypress is ready to use
     - $(npm bin)/cypress verify
   script:
     # Create environment specific test config including auth token
     # (saved to cypress.env.json) then run E2E Tests through Cypress in load balancing mode
-    - npm run test:ui:stage -- --record --key $CYPRESS_KEY
+    - yarn test:ui:stage -- --record --key $CYPRESS_KEY
     # To run in parallel, uncomment the following line, the job definitions (below), and the job template name (above)
-    # - npm run test:ui:stage -- --record --key $CYPRESS_KEY --parallel --ci-build-id $CI_PIPELINE_ID --group uitests
+    # - yarn test:ui:stage -- --record --key $CYPRESS_KEY --parallel --ci-build-id $CI_PIPELINE_ID --group uitests
 
 # actual job definitions
 # all steps are the same, they come from the template above
@@ -269,9 +262,9 @@ Build Prod App:
     paths:
       - dist
   script:
-    - npm run clean # remove existing dist folder
-    - npm run build:config # create env specific src/config.js
-    - npm run build # rebuild bundle with new config
+    - yarn clean # remove existing dist folder
+    - yarn build:config # create env specific src/config.js
+    - yarn build # rebuild bundle with new config
     # Note: Functions are not rebuilt since a bundle with env specific config
     # is not created as with React App
 
@@ -301,4 +294,4 @@ Deploy Production:
     paths:
       - firebase-debug.log
   script:
-    - npm run deploy # Deploy Cloud Functions and React App (Firebase Hosting)
+    - yarn deploy:app # Deploy Cloud Functions and React App (Firebase Hosting)

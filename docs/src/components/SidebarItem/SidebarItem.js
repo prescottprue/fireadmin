@@ -57,16 +57,14 @@ export const SidebarItem = ({
         <List
           component="div"
           disablePadding
-          key={`${frontmatter.slug}-Children`}
-        >
+          key={`${frontmatter.slug}-Children`}>
           {childChapters.map(({ node }, index2) => (
             <ListItem
               button
               component={Link}
               key={`${frontmatter.slug}-${node.frontmatter.slug}=${index2}`}
               selected={trimmedPath === trim(node.frontmatter.slug, '/')}
-              to={node.frontmatter.slug}
-            >
+              to={node.frontmatter.slug}>
               <ListItemText inset primary={node.frontmatter.title} />
             </ListItem>
           ))}
