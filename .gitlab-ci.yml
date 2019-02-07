@@ -32,7 +32,7 @@ before_script:
 Functions Unit Tests:
   stage: unit_tests
   image: node:8
-  when:
+  only:
     changes:
       - functions/**/* # Run only when functions are changed
       - firebase.json
