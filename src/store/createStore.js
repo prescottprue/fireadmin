@@ -46,7 +46,7 @@ export default (initialState = {}) => {
   // ======================================================
   const enhancers = []
   if (env === 'local') {
-    const devToolsExtension = window.devToolsExtension
+    const devToolsExtension = window.__REDUX_DEVTOOLS_EXTENSION__
     if (typeof devToolsExtension === 'function') {
       enhancers.push(devToolsExtension())
     }
@@ -76,9 +76,6 @@ export default (initialState = {}) => {
   if (!window.fbInstance) {
     firebase.initializeApp(fbConfig)
   }
-
-  // Initialize Firestore with settings
-  firebase.firestore().settings({ timestampsInSnapshots: true })
 
   // ======================================================
   // Store Instantiation and HMR Setup

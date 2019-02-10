@@ -4,25 +4,27 @@ import { size } from 'lodash'
 import MenuItem from '@material-ui/core/MenuItem'
 import { Highlight } from 'react-instantsearch/dom'
 
-const SuggestedItem = ({ hit, onClick }) => (
-  <MenuItem
-    style={{ marginTop: '10px' }}
-    onClick={() => onClick(hit)}
-    data-test="search-result">
-    <div className="flex-column">
-      <span className="hit-name">
-        <Highlight attributeName="name" hit={hit} />
-      </span>
-      <div
-        className="flex-column"
-        style={{ fontSize: '.75rem', color: '#757575' }}>
-        <span>
-          Steps: <strong>{size(hit.steps)}</strong>
+function SuggestedItem({ hit, onClick }) {
+  return (
+    <MenuItem
+      style={{ marginTop: '10px' }}
+      onClick={() => onClick(hit)}
+      data-test="search-result">
+      <div className="flex-column">
+        <span className="hit-name">
+          <Highlight attributeName="name" hit={hit} />
         </span>
+        <div
+          className="flex-column"
+          style={{ fontSize: '.75rem', color: '#757575' }}>
+          <span>
+            Steps: <strong>{size(hit.steps)}</strong>
+          </span>
+        </div>
       </div>
-    </div>
-  </MenuItem>
-)
+    </MenuItem>
+  )
+}
 
 SuggestedItem.propTypes = {
   hit: PropTypes.object,

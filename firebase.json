@@ -6,18 +6,31 @@
     "rules": "storage.rules"
   },
   "hosting": {
+    "target": "app",
     "public": "dist",
     "ignore": [
-      "firebase.json",
-      "**/.*",
       "**/node_modules/**",
+      "firebase.json",
+      "*.json",
+      "*.md",
+      "*.log",
+      "**/.*",
+      "Dockerfile",
+      "LICENSE",
       "build",
+      "docs",
+      "src",
       "test"
     ],
     "rewrites": [
       {
         "source": "**",
         "destination": "/index.html"
+      },
+      {
+        "source": "/docs/:page*",
+        "destination": "https://fireadmin-docs.firebaseapp.com/:page",
+        "type": 301
       }
     ]
   },

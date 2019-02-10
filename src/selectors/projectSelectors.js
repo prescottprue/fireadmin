@@ -54,12 +54,14 @@ export const getRoles = createSelector(
  * @param  {Object} state - redux state
  * @param  {Object} props - component props
  */
-export const getOrderedRoles = createSelector(getRoles, roles =>
-  orderBy(
-    map(roles, (role, key) => ({ ...role, key })),
-    [role => size(get(role, 'permissions'))],
-    ['desc']
-  )
+export const getOrderedRoles = createSelector(
+  getRoles,
+  roles =>
+    orderBy(
+      map(roles, (role, key) => ({ ...role, key })),
+      [role => size(get(role, 'permissions'))],
+      ['desc']
+    )
 )
 
 /**
@@ -122,6 +124,7 @@ export const currentUserProjectPermissions = createSelector(
  * @param  {Object} props - component props
  * @return {Array<string>} Role option strings
  */
-export const getRoleOptions = createSelector(getRoles, roles =>
-  map(roles, ({ name }, value) => ({ value, name }))
+export const getRoleOptions = createSelector(
+  getRoles,
+  roles => map(roles, ({ name }, value) => ({ value, name }))
 )

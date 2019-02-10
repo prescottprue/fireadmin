@@ -11,6 +11,7 @@ import {
 import { connect } from 'react-redux'
 
 export default compose(
+  setDisplayName('VersionChangeReloader'),
   firebaseConnect(['versionInfo']),
   connect(({ firebase: { data: { versionInfo } } }) => ({ versionInfo })),
   withHandlers({
@@ -55,6 +56,5 @@ export default compose(
     }
   }),
   pure,
-  setDisplayName('VersionChangeReloader'),
   renderNothing
 )

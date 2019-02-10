@@ -7,9 +7,8 @@ import Typography from '@material-ui/core/Typography'
 import AccountMenu from './AccountMenu'
 import LoginMenu from './LoginMenu'
 import { LIST_PATH } from 'constants'
-import classes from './Navbar.scss'
 
-export const Navbar = ({
+function Navbar({
   avatarUrl,
   displayName,
   authExists,
@@ -17,38 +16,50 @@ export const Navbar = ({
   handleLogout,
   closeAccountMenu,
   anchorEl,
+  classes,
   handleMenu
-}) => (
-  <AppBar position="static" className={classes.appBar} elevation={24}>
-    <Toolbar>
-      <Typography
-        type="title"
-        color="inherit"
-        className={classes.flex}
-        component={Link}
-        to={authExists ? LIST_PATH : '/'}
-        style={{ fontSize: '1.4rem' }}
-        data-test="brand">
-        Fireadmin
-      </Typography>
-      {authExists ? (
-        <AccountMenu
-          avatarUrl={avatarUrl}
-          displayName={displayName}
-          onLogoutClick={handleLogout}
-          goToAccount={goToAccount}
-          closeAccountMenu={closeAccountMenu}
-          handleMenu={handleMenu}
-          anchorEl={anchorEl}
-        />
-      ) : (
-        <LoginMenu />
-      )}
-    </Toolbar>
-  </AppBar>
-)
+}) {
+  return (
+    <AppBar position="static" className={classes.appBar} elevation={24}>
+      <Toolbar>
+        <Typography
+          type="title"
+          color="inherit"
+          component={Link}
+          to={authExists ? LIST_PATH : '/'}
+          className={classes.brand}
+          data-test="brand">
+          Fireadmin
+        </Typography>
+        <Typography
+          type="title"
+          color="inherit"
+          className={classes.flex}
+          component={Link}
+          to="/docs"
+          data-test="docs">
+          Docs
+        </Typography>
+        {authExists ? (
+          <AccountMenu
+            avatarUrl={avatarUrl}
+            displayName={displayName}
+            onLogoutClick={handleLogout}
+            goToAccount={goToAccount}
+            closeAccountMenu={closeAccountMenu}
+            handleMenu={handleMenu}
+            anchorEl={anchorEl}
+          />
+        ) : (
+          <LoginMenu />
+        )}
+      </Toolbar>
+    </AppBar>
+  )
+}
 
 Navbar.propTypes = {
+  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   displayName: PropTypes.string, // from enhancer (flattenProps - profile)
   avatarUrl: PropTypes.string, // from enhancer (flattenProps - profile)
   authExists: PropTypes.bool, // from enhancer (withProps - auth)

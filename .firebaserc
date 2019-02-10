@@ -54,5 +54,14 @@
         }
       }
     }
+  },
+  "targets": {
+    "fireadmin-stage": {
+      "hosting": {
+        "docs": [
+          "fireadmin-docs"
+        ]
+      }
+    }
   }
 }

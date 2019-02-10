@@ -257,6 +257,14 @@ For more options on CI settings checkout the [firebase-ci docs](https://github.c
 1. Deploy to firebase: `firebase deploy`
 **NOTE:** You can use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
 
+### Docs
+
+Documentation is available at [fireadmin.io/docs](https://fireadmin.io/docs)
+
+All source code and content for docs is located within the [`docs`](/docs) folder. Docs are generated from markdown into static files using Gatsby [based on settings in `gatsby-config.js`](/docs/gatsby-config.js).
+
+Visit the [docs README for more info](/docs/README.md).
+
 ### Testing
 **NOTE**: If you have setup CI deployment, [E2E tests](#app-e2e-tests) and [Unit Tests](#cloud-functions-unit-tests) can automatically run against your staging environment before running the production build.
 
@@ -269,16 +277,16 @@ Cloud Functions Unit tests are written in [Mocha](https://github.com/mochajs/moc
 1. Run unit tests: `npm test`
 1. To also generate coverage while testing, run `npm run test:cov`
 
-#### App E2E Tests
+#### App UI Tests
 
-End to End tests are done using [Cypress](https://cypress.io) and they live within the `test/e2e` folder. These tests cover UI functionality and are run directly on the hosted environment of Fireadmin. Application end to end tests are run automatically in Gitlab-CI the after deploying to the staging environment before deploying to production.
+End to End tests are done using [Cypress](https://cypress.io) and they live within the `cypress` folder. These tests cover UI functionality and are run directly on the hosted environment of Fireadmin. Application end to end tests are run automatically in Gitlab-CI the after deploying to the staging environment before deploying to production.
 
 ##### Run Locally
 
 1. Create a service account within the Firebase console
 1. Save the service account as `serviceAccount.json` within the root of the project
 1. Get the UID of the user that you want to use while testing from the Authentication tab of the Firebase console to
-1. Create a `test/e2e/config.json` with the following format:
+1. Create a `cypress/config.json` with the following format:
     ```json
     {
       "TEST_UID": "<- user account's UID ->",
@@ -291,7 +299,9 @@ End to End tests are done using [Cypress](https://cypress.io) and they live with
     1. Host the build app on a local server using `firebase serve`
 1. In a different terminal tab, run `npm run test:ui`. This will:
     1. Create test environment configuration (includes JWT created using service account)
-    1. Open Cypress's local test runner UI where you can run single tests or all tests
+    1. Run Cypress tests locally through cli
+
+To Open Cypress's local test runner UI where you can run single tests or all tests use `npm run test:ui:open`.
 
 NOTE: `npm run start:dist` is used to start the local server in the example above for speed while running all tests. If you are developing the application while re-running a single test, or just a few, you can use `npm run start` instead.
 

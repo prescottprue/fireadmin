@@ -129,7 +129,7 @@ export default async function callGoogleApi(snap, context) {
       `projects/${projectId}/environments/${environment}`
     )
     let getSAErr
-    // Get Service Account object by decryping string from Firestore
+      // Get Service Account object by decryping string from Firestore
     ;[getSAErr, serviceAccount] = await to(
       serviceAccountFromFirestorePath(
         `projects/${projectId}/environments/${environment}`,

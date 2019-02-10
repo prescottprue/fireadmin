@@ -11,24 +11,22 @@ import classes from './CollectionSearch.scss'
 import { algolia } from '../../config'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 
-export const CollectionSearch = ({
-  onSuggestionClick,
-  filterString,
-  indexName
-}) => (
-  <InstantSearch
-    appId={algolia.appId}
-    apiKey={algolia.apiKey}
-    indexName={indexName}>
-    <SearchBox autoFocus />
-    <div className={classes.poweredBy}>
-      <PoweredBy />
-    </div>
-    <div className={classes.spacer} />
-    <SearchResults onSuggestionClick={onSuggestionClick} />
-    <Configure filters={filterString} />
-  </InstantSearch>
-)
+function CollectionSearch({ onSuggestionClick, filterString, indexName }) {
+  return (
+    <InstantSearch
+      appId={algolia.appId}
+      apiKey={algolia.apiKey}
+      indexName={indexName}>
+      <SearchBox autoFocus />
+      <div className={classes.poweredBy}>
+        <PoweredBy />
+      </div>
+      <div className={classes.spacer} />
+      <SearchResults onSuggestionClick={onSuggestionClick} />
+      <Configure filters={filterString} />
+    </InstantSearch>
+  )
+}
 
 CollectionSearch.propTypes = {
   onSuggestionClick: PropTypes.func,
