@@ -5,6 +5,7 @@ import ActionTemplate from './ActionTemplate'
 import LoginRoute from './Login'
 import SignupRoute from './Signup'
 import ProjectsRoute from './Projects'
+import DocsRoute from './Docs'
 import ProjectRoute from './Project'
 import AccountRoute from './Account'
 import NotFoundRoute from './NotFound'
@@ -22,6 +23,7 @@ export const createRoutes = store => ({
     AccountRoute(store),
     LoginRoute(store),
     SignupRoute(store),
+    DocsRoute(store),
     ProjectsRoute(store),
     ProjectRoute(store),
     ActionTemplates(store),

@@ -29,7 +29,8 @@ const config = {
     alias: {
       // fix issue of loading multiple versions of react
       react: path.resolve('./node_modules/react'),
-      'react-dom': path.resolve('./node_modules/react-dom')
+      'react-dom': path.resolve('./node_modules/react-dom'),
+      docs: path.resolve('./docs')
     }
   },
   externals: project.externals,
@@ -281,5 +282,11 @@ if (__PROD__) {
     })
   )
 }
+
+// Add support for markdown docs
+config.module.rules.push({
+  test: /\.md$/,
+  use: 'raw-loader'
+})
 
 module.exports = config
