@@ -8,51 +8,59 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import { formatTime } from 'utils/formatters'
-import classes from './EventsTable.scss'
 
-export const EventsTable = ({ groupedEvents }) => (
-  <Paper>
-    <Table className={classes.table}>
-      <TableHead>
-        <TableRow>
-          <TableCell>Time</TableCell>
-          <TableCell>Event Type</TableCell>
-          <TableCell>Created By</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody className={classes.body}>
-        {flatMap(groupedEvents, (eventGroup, groupName) => [
-          <TableRow key={groupName} className={classes.tableRowDivider}>
-            <TableCell>
-              <span>{groupName}</span>
-            </TableCell>
-            <TableCell />
-            <TableCell />
-          </TableRow>,
-          map(eventGroup, (projectEvent, eventKey) => (
-            <TableRow key={eventKey}>
-              <TableCell>
-                {formatTime(invoke(get(projectEvent, 'createdAt'), 'toDate'))}
+function EventsTable({ groupedEvents, classes }) {
+  return (
+    <Paper>
+      <Table data-test="project-events">
+        <TableHead>
+          <TableRow>
+            <TableCell>Time</TableCell>
+            <TableCell>Event Type</TableCell>
+            <TableCell>Created By</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody className={classes.body}>
+          {flatMap(groupedEvents, (eventGroup, groupName) => [
+            <TableRow
+              key={groupName}
+              className={classes.tableRowDivider}
+              data-test="event-date-divider">
+              <TableCell data-test="event-date-divider-value">
+                <span>{groupName}</span>
               </TableCell>
-              <TableCell>
-                {startCase(get(projectEvent, 'eventType', ''))}
-              </TableCell>
-              <TableCell>
-                <span>
-                  {projectEvent.createdBy ||
-                    startCase(projectEvent.createdByType)}
-                </span>
-              </TableCell>
-            </TableRow>
-          ))
-        ])}
-      </TableBody>
-    </Table>
-  </Paper>
-)
+              <TableCell />
+              <TableCell />
+            </TableRow>,
+            map(eventGroup, (projectEvent, eventKey) => (
+              <TableRow
+                key={`Event-${eventKey}-${get(projectEvent, 'eventType', '')}`}
+                data-test="event-row"
+                data-test-id={eventKey}>
+                <TableCell data-test="event-createdAt">
+                  {formatTime(invoke(get(projectEvent, 'createdAt'), 'toDate'))}
+                </TableCell>
+                <TableCell>
+                  {startCase(get(projectEvent, 'eventType', ''))}
+                </TableCell>
+                <TableCell>
+                  <span>
+                    {projectEvent.createdBy ||
+                      startCase(projectEvent.createdByType)}
+                  </span>
+                </TableCell>
+              </TableRow>
+            ))
+          ])}
+        </TableBody>
+      </Table>
+    </Paper>
+  )
+}
 
 EventsTable.propTypes = {
-  groupedEvents: PropTypes.object
+  groupedEvents: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired // from enhancer (withStyles)
 }
 
 export default EventsTable

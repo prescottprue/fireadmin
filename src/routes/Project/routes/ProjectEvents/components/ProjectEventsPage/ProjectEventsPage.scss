@@ -10,33 +10,6 @@
   padding: .5rem;
   padding-bottom: 6rem;
 }
-.button {
-  margin-left: 2rem;
-  padding: 2rem;
-}
-.buttons {
-  @extend .flex-row;
-  margin-bottom: 2rem;
-}
-.or {
-  @extend .flex-row-center;
-  &Font {
-    font-size: 1.3rem !important;
-  }
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-.search {
-  @extend .flex-row-center;
-}
 .sectionHeader {
   font-size: 1.3rem !important;
-}
-.empty {
-  @extend .flex-column-center;
-  padding: 3rem;
-  &Header {
-    @extend .header;
-    font-size: 1.5rem !important;
-  }
 }

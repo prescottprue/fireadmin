@@ -115,7 +115,7 @@ Deploy Staging:
   dependencies:
     - Build Staging
   script:
-    - yarn deploy:app  # Deploy docs React App (Firebase Hosting)
+    - yarn deploy  # Deploy docs React App (Firebase Hosting)
 
 # End To End Tests
 # Install Cypress binary and run end to end tests using Cypress

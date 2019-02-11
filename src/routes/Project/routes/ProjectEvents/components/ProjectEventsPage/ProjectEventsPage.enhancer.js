@@ -5,7 +5,7 @@ import { withProps } from 'recompose'
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
 import { formatDate } from 'utils/formatters'
 import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
-import NoProjectEvents from './NoProjectEvents'
+import NoProjectEvents from '../EventsTable/NoProjectEvents'
 
 export default compose(
   firebaseConnect(['displayNames']),

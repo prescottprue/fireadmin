@@ -1,8 +1,10 @@
 import { compose } from 'redux'
-import { withHandlers } from 'recompose'
-import { withNotifications } from 'modules/notification'
+import { withStyles } from '@material-ui/core/styles'
+import { renderWhileEmpty } from 'utils/components'
+import NoProjectEvents from './NoProjectEvents'
+import styles from './EventsTable.styles'
 
 export default compose(
-  withNotifications,
-  withHandlers({})
+  renderWhileEmpty('groupedEvents', NoProjectEvents),
+  withStyles(styles)
 )
