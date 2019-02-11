@@ -32,5 +32,11 @@ export default {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center'
+  },
+  pageHeader: {
+    color: 'rgba(0, 0, 0, 0.54)',
+    fontSize: '2.25rem',
+    alignSelf: 'flex-start',
+    marginBottom: '2rem'
   }
 }

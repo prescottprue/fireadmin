@@ -5,6 +5,6 @@ import NoProjectEvents from './NoProjectEvents'
 import styles from './EventsTable.styles'
 
 export default compose(
-  renderWhileEmpty('groupedEvents', NoProjectEvents),
+  renderWhileEmpty(['groupedEvents'], NoProjectEvents),
   withStyles(styles)
 )

@@ -2,21 +2,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import EventsTable from '../EventsTable'
-import classes from './ProjectEventsPage.scss'
 
-function ProjectEventsPage({ groupedEvents }) {
+function ProjectEventsPage({ projectEvents, classes }) {
   return (
     <div className={classes.container}>
       <Typography className={classes.pageHeader}>Project Events</Typography>
       <div className={classes.content}>
-        <EventsTable groupedEvents={groupedEvents} />
+        <EventsTable groupedEvents={projectEvents} />
       </div>
     </div>
   )
 }
 
 ProjectEventsPage.propTypes = {
-  groupedEvents: PropTypes.object
+  projectEvents: PropTypes.object,
+  classes: PropTypes.object.isRequired
 }
 
 export default ProjectEventsPage
