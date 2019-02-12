@@ -6,6 +6,7 @@ import 'firebase/firestore'
 import { attachCustomCommands } from 'cypress-firebase'
 import { getFixtureBlob } from '../utils/commands'
 import fakeEnvironment from '../fixtures/fakeEnvironment.json'
+import fakeEvent from '../../fixtures/fakeEvent.json'
 
 const projectId = Cypress.env('FIREBASE_PROJECT_ID')
 const env = Cypress.env('env') || 'stage'
@@ -65,3 +66,10 @@ Cypress.Commands.add(
     )
   }
 )
+
+Cypress.Commands.add('addProjectEvent', (project, eventId, extraData = {}) => {
+  cy.callFirestore('add', `projects/${project}/events/${eventId}`, {
+    ...fakeEvent,
+    ...extraData
+  })
+})

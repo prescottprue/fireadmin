@@ -31,15 +31,7 @@ function Navbar({
           data-test="brand">
           Fireadmin
         </Typography>
-        <Typography
-          type="title"
-          color="inherit"
-          className={classes.flex}
-          component={Link}
-          to="/docs"
-          data-test="docs">
-          Docs
-        </Typography>
+        <div className={classes.flex} />
         {authExists ? (
           <AccountMenu
             avatarUrl={avatarUrl}

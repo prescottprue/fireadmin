@@ -1,0 +1,14 @@
+{
+  "createdByType": "user",
+  "eventData": {
+    "id": "asdf",
+    "projectId": "asdf",
+    "databaseURL": "",
+    "description": "",
+    "serviceAccount": {
+      "credential": "asdf",
+      "fullPath": "asdf/asdf/asdf.json"
+    }
+  },
+  "eventType": "updateEnvironment"
+}

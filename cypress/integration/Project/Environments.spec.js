@@ -1,7 +1,7 @@
 import { createSelector } from '../../utils'
 import fakeProject from '../../fixtures/fakeProject.json'
 
-describe('Project - Environments', () => {
+describe('Project - Environments Page', () => {
   let openSpy // eslint-disable-line no-unused-vars
   // Setup before tests including creating a server to listen for external requests
   before(() => {
