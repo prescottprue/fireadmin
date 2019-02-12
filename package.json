@@ -46,6 +46,7 @@
     "date-fns": "^1.29.0",
     "firebase": "^5.8.2",
     "firepad": "1.4.0",
+    "front-matter": "^3.0.1",
     "lodash": "^4.17.11",
     "normalize.css": "^7.0.0",
     "object-assign": "^4.1.1",

@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography'
 import Link from '@material-ui/core/Link'
 import Prism from 'prismjs'
 import LoadingSpinner from 'components/LoadingSpinner'
+import SideBar from '../DocsSideBar'
 
 function highlight(str, lang) {
   try {
@@ -17,14 +18,6 @@ function highlight(str, lang) {
 async function loadContent() {
   const content = await require(`docs/index.md`)
   return content
-}
-
-function nodeKeyToSize(nodeKey) {
-  const sizeNum = nodeKey.split('-')[1]
-  if (sizeNum <= 1) {
-    return 3
-  }
-  return sizeNum - 1
 }
 
 function DocsPage({ docs, classes }) {
@@ -47,6 +40,7 @@ function DocsPage({ docs, classes }) {
   }
   return (
     <div className={classes.container}>
+      <SideBar />
       <Markdown options={{ highlight }} renderers={renderers}>
         {markdownContent}
       </Markdown>

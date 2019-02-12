@@ -6,6 +6,7 @@ import { initScripts } from './utils'
 import { env } from './config'
 import { version } from '../package.json'
 import './styles/core.scss'
+import loadFiles from 'utils/loadFiles'
 
 // Window Variables
 // ------------------------------------
@@ -14,6 +15,7 @@ window.version = version
 window.rfversion = rfVersion
 window.env = env
 initScripts()
+// loadFiles()
 
 // Store Initialization
 // ------------------------------------
