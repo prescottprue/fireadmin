@@ -1,14 +1,16 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, invoke, map, groupBy } from 'lodash'
-import { withProps } from 'recompose'
+import { get } from 'lodash'
 import { firestoreConnect, firebaseConnect } from 'react-redux-firebase'
-import { formatDate } from 'utils/formatters'
-import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
-import NoProjectEvents from './NoProjectEvents'
+import { withStyles } from '@material-ui/core/styles'
+import { spinnerWhileLoading } from 'utils/components'
+import { getProjectEventsGroupedByDate } from 'selectors/projectSelectors'
+import styles from './ProjectEventsPage.styles'
 
 export default compose(
+  // Attach RTDB listeners
   firebaseConnect(['displayNames']),
+  // Attach Firestore listeners
   firestoreConnect(({ params }) => [
     {
       collection: 'projects',
@@ -19,29 +21,11 @@ export default compose(
       limit: 100
     }
   ]),
-  connect(({ firebase, firestore }, { params }) => ({
-    projectEvents: get(firestore, `data.projectEvents-${params.projectId}`),
-    displayNames: get(firebase, 'data.displayNames')
+  connect((state, props) => ({
+    projectEvents: getProjectEventsGroupedByDate(state, props)
   })),
+  // Show spinner while project events are loading
   spinnerWhileLoading(['projectEvents']),
-  renderWhileEmpty(['projectEvents'], NoProjectEvents),
-  withProps(({ projectEvents, displayNames }) => {
-    const events = map(projectEvents, event => {
-      const createdBy = get(event, 'createdBy')
-      if (createdBy) {
-        return {
-          ...event,
-          createdBy: get(displayNames, createdBy, createdBy)
-        }
-      }
-      return event
-    })
-    if (events) {
-      return {
-        groupedEvents: groupBy(events, event =>
-          formatDate(invoke(get(event, 'createdAt'), 'toDate'))
-        )
-      }
-    }
-  })
+  // Add styles as props.classes
+  withStyles(styles)
 )

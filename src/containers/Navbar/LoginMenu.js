@@ -10,16 +10,18 @@ const buttonStyle = {
   alignSelf: 'center'
 }
 
-export const LoginMenu = () => (
-  <div className={classes.menu}>
-    <Button
-      style={buttonStyle}
-      component={Link}
-      to={LOGIN_PATH}
-      data-test="sign-in">
-      Sign In
-    </Button>
-  </div>
-)
+function LoginMenu() {
+  return (
+    <div className={classes.menu}>
+      <Button
+        style={buttonStyle}
+        component={Link}
+        to={LOGIN_PATH}
+        data-test="sign-in">
+        Sign In
+      </Button>
+    </div>
+  )
+}
 
 export default LoginMenu

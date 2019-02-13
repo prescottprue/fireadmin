@@ -1,5 +1,6 @@
-import { get, map, size, orderBy } from 'lodash'
+import { get, map, size, orderBy, groupBy, invoke } from 'lodash'
 import { createSelector } from 'reselect'
+import { formatDate } from 'utils/formatters'
 
 /**
  * Get the currently logged in user's Auth UID from firebase state. Data is
@@ -9,7 +10,9 @@ import { createSelector } from 'reselect'
  * @param  {Object} props - component props
  * @return {String} Current logged in user's UID
  */
-export const getAuthUid = state => get(state, 'firebase.auth.uid')
+export function getAuthUid(state) {
+  return get(state, 'firebase.auth.uid')
+}
 
 /**
  * Get project from redux state using projectId prop.
@@ -17,8 +20,9 @@ export const getAuthUid = state => get(state, 'firebase.auth.uid')
  * @param  {Object} props - component props
  * @return {Object} Project data object from redux state
  */
-export const getProject = (state, props) =>
-  get(state, `firestore.data.projects.${props.projectId}`)
+export function getProject(state, props) {
+  return get(state, `firestore.data.projects.${props.projectId}`)
+}
 
 /**
  * Get project from redux state using projectId prop.
@@ -26,8 +30,54 @@ export const getProject = (state, props) =>
  * @param  {Object} props - component props
  * @return {Object} Project data object from redux state
  */
-export const getDisplayNames = (state, props) =>
-  get(state, `firebase.data.displayNames`)
+export function getDisplayNames(state, props) {
+  return get(state, `firebase.data.displayNames`)
+}
+
+/**
+ * Get projectId from props (projectId or params.projectId)
+ * @param  {Object} state - redux state
+ * @param  {Object} props - component props
+ * @return {Object} Project data object from redux state
+ */
+export function projectIdFromProps(state, props) {
+  const projectId = get(props, 'projectId', get(props, 'params.projectId'))
+  if (!projectId) {
+    /* eslint-disable no-console */
+    console.warn(
+      'projectId not found in props passed to connect. Props:',
+      props
+    )
+    /* eslint-enable no-console */
+  }
+  return projectId
+}
+
+/**
+ * Get project from redux state using projectId prop.
+ * @param  {Object} state - redux state
+ * @param  {Object} props - component props
+ * @return {Object} Project data object from redux state
+ */
+export function getProjectEvents(state, props) {
+  return get(
+    state,
+    `firestore.data.projectEvents-${projectIdFromProps(state, props)}`
+  )
+}
+
+/**
+ * Get project from redux state using projectId prop.
+ * @param  {Object} state - redux state
+ * @param  {Object} props - component props
+ * @return {Object} Project data object from redux state
+ */
+export function getOrderedProjectEvents(state, props) {
+  return get(
+    state,
+    `firestore.ordered.projectEvents-${projectIdFromProps(state, props)}`
+  )
+}
 
 /**
  * Get whether or not the currently logged in user is the project owner
@@ -54,12 +104,14 @@ export const getRoles = createSelector(
  * @param  {Object} state - redux state
  * @param  {Object} props - component props
  */
-export const getOrderedRoles = createSelector(getRoles, roles =>
-  orderBy(
-    map(roles, (role, key) => ({ ...role, key })),
-    [role => size(get(role, 'permissions'))],
-    ['desc']
-  )
+export const getOrderedRoles = createSelector(
+  getRoles,
+  roles =>
+    orderBy(
+      map(roles, (role, key) => ({ ...role, key })),
+      [role => size(get(role, 'permissions'))],
+      ['desc']
+    )
 )
 
 /**
@@ -86,6 +138,32 @@ export const getPopulatedProjectPermissions = createSelector(
       displayName: get(displayNames, uid),
       roleName: get(roles, permission.role)
     }))
+  }
+)
+
+/**
+ * Get project's events grouped by date
+ * @param  {Object} state - redux state
+ * @param  {Object} props - component props
+ */
+export const getProjectEventsGroupedByDate = createSelector(
+  [getProjectEvents, getDisplayNames],
+  (projectEvents, displayNames) => {
+    const events = map(projectEvents, event => {
+      const createdBy = get(event, 'createdBy')
+      if (createdBy) {
+        return {
+          ...event,
+          createdBy: get(displayNames, createdBy, createdBy)
+        }
+      }
+      return event
+    })
+    if (displayNames && events) {
+      return groupBy(events, event =>
+        formatDate(invoke(get(event, 'createdAt'), 'toDate'))
+      )
+    }
   }
 )
 
@@ -122,6 +200,7 @@ export const currentUserProjectPermissions = createSelector(
  * @param  {Object} props - component props
  * @return {Array<string>} Role option strings
  */
-export const getRoleOptions = createSelector(getRoles, roles =>
-  map(roles, ({ name }, value) => ({ value, name }))
+export const getRoleOptions = createSelector(
+  getRoles,
+  roles => map(roles, ({ name }, value) => ({ value, name }))
 )

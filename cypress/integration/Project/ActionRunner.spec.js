@@ -2,7 +2,7 @@ import { createSelector, createIdSelector } from '../../utils'
 import fakeProject from '../../fixtures/fakeProject.json'
 const destEnvName = 'dest env'
 
-describe('Project - Action Runner', () => {
+describe('Project - Actions Page', () => {
   // Setup before tests including creating a fake project
   before(() => {
     // Add a fake project owned by the test user

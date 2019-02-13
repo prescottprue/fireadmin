@@ -5,10 +5,10 @@ export default theme => ({
     fontSize: '1.2rem'
   },
   appBar: {
-    backgroundColor: theme.palette.primary1Color 
+    backgroundColor: theme.palette.primary1Color
   },
   brand: {
-    fontSize: '1.4rem',
+    fontSize: '1.4rem'
   },
-  color: theme.palette.primary1Color 
+  color: theme.palette.primary1Color
 })

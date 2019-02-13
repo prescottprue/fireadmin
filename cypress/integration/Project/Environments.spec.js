@@ -1,7 +1,7 @@
 import { createSelector } from '../../utils'
 import fakeProject from '../../fixtures/fakeProject.json'
 
-describe('Project - Environments', () => {
+describe('Project - Environments Page', () => {
   let openSpy // eslint-disable-line no-unused-vars
   // Setup before tests including creating a server to listen for external requests
   before(() => {
@@ -18,8 +18,15 @@ describe('Project - Environments', () => {
     cy.visit('projects/test-project/environments')
   })
 
-  describe('Add Environment', () => {
-    it('creates environment when provided a valid name', () => {
+  after(() => {
+    // Remove fake project and subcollections
+    cy.callFirestore('delete', 'projects/test-project', { recursive: true })
+  })
+
+  describe('Add Environment - ', () => {
+    // TODO: Unskip once file drag-drop uploading is figured out through cypress
+    // Error: Error: Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.
+    it.skip('creates environment when provided a valid name', () => {
       const newProjectTitle = 'Staging'
       cy.get(createSelector('add-environment-button')).click()
       // Type name of new project into input
@@ -38,7 +45,7 @@ describe('Project - Environments', () => {
     })
   })
 
-  describe('Delete Environment', () => {
+  describe('Delete Environment -', () => {
     it.skip('allows environment to be deleted by project owner', () => {
       // click on the more button
       cy.get(createSelector('environment-tile-more'))

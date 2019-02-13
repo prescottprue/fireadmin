@@ -6,7 +6,7 @@
     "test:watch": "mocha ./test/unit/** --watch",
     "test:cov": "istanbul cover $(npm bin)/_mocha ./test/unit/**",
     "test:cov:watch": "istanbul cover $(npm bin)/_mocha ./test/unit/** -- --watch",
-    "lint": "eslint -c .eslintrc src test",
+    "lint": "eslint -c .eslintrc.js src test",
     "lint:fix": "npm run lint -- --fix",
     "clean": "rimraf dist etc",
     "build": "npm run clean && babel src -d --out-dir dist --retainLines",

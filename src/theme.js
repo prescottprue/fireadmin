@@ -22,5 +22,21 @@ export default {
     primary3Color: orange[100],
     accent1Color: pink['A200'],
     accent2Color: teal['A100']
+  },
+  flexColumnCenter: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  flexRowCenter: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  pageHeader: {
+    color: 'rgba(0, 0, 0, 0.54)',
+    fontSize: '2.25rem',
+    alignSelf: 'flex-start',
+    marginBottom: '2rem'
   }
 }

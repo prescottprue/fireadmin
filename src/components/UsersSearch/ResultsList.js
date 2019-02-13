@@ -4,17 +4,19 @@ import PropTypes from 'prop-types'
 import { connectHits } from 'react-instantsearch/connectors'
 import SuggestedUser from './SuggestedUser'
 
-const ResultsList = ({ hits, onSuggestionClick }) => (
-  <div>
-    {hits.map((hit, i) => (
-      <SuggestedUser
-        key={`Hit-${hit.objectID}-${i}`}
-        hit={hit}
-        onClick={onSuggestionClick}
-      />
-    ))}
-  </div>
-)
+function ResultsList({ hits, onSuggestionClick }) {
+  return (
+    <div>
+      {hits.map((hit, i) => (
+        <SuggestedUser
+          key={`Hit-${hit.objectID}-${i}`}
+          hit={hit}
+          onClick={onSuggestionClick}
+        />
+      ))}
+    </div>
+  )
+}
 
 ResultsList.propTypes = {
   hits: PropTypes.array, // from connectHits

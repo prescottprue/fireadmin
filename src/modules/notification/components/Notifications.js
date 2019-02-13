@@ -24,14 +24,14 @@ const variantIcon = {
   info: InfoIcon
 }
 
-export const Notifications = ({
+function Notifications({
   classes,
   className,
   allIds,
   byId,
   variant = 'info',
   dismissNotification
-}) => {
+}) {
   return (
     <div>
       {allIds.map(id => {
@@ -109,7 +109,7 @@ const styles = theme => ({
   }
 })
 
-export default compose(
+const enhance = compose(
   pure,
   withStyles(styles),
   connect(
@@ -118,4 +118,6 @@ export default compose(
   ),
   branch(props => !size(props.allIds), renderNothing), // only render if notifications exist
   withStyles(styles)
-)(Notifications)
+)
+
+export default enhance(Notifications)
