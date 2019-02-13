@@ -53,7 +53,7 @@ Functions Unit Tests:
   before_script:
     - yarn --cwd functions install --frozen-lockfile --cache-folder .yarn
   script:
-    - yarn --cwd functions lint
+    - yarn lint:functions
     - yarn --cwd functions test:cov
 
 # ---------------------------- Docs -------------------------- #
@@ -86,7 +86,7 @@ Build Docs:
   before_script:
     - yarn --cwd docs install --frozen-lockfile --cache-folder .yarn
   script:
-    - yarn --cwd docs lint
+    - yarn lint:docs
     - yarn --cwd docs build
 
 # Deploy Docs
@@ -95,6 +95,7 @@ Deploy Docs:
   stage: deploy_production
   image: node:8
   only:
+    - master
     changes:
       - docs/**/* # Run only when docs are changed
       - firebase.json
@@ -153,7 +154,6 @@ Build Functions:
   before_script:
     - yarn --cwd functions install --frozen-lockfile --cache-folder functions/.yarn
   script:
-    - yarn --cwd functions lint
     - yarn --cwd functions test:cov
     - yarn --cwd functions build
 
@@ -181,7 +181,7 @@ Build Staging:
       - dist
   script:
     - yarn build:config # create env specific src/config.js
-    - yarn lint
+    - yarn lint:app
     - yarn build
 
 # Deploy Staging
