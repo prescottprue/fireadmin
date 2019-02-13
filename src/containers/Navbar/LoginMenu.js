@@ -1,8 +1,7 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Link } from 'react-router'
 import Button from '@material-ui/core/Button'
 import { LOGIN_PATH } from 'constants'
-import classes from './Navbar.scss'
 
 const buttonStyle = {
   color: 'white',
@@ -12,7 +11,7 @@ const buttonStyle = {
 
 function LoginMenu() {
   return (
-    <div className={classes.menu}>
+    <Fragment>
       <Button
         style={buttonStyle}
         component={Link}
@@ -20,7 +19,7 @@ function LoginMenu() {
         data-test="sign-in">
         Sign In
       </Button>
-    </div>
+    </Fragment>
   )
 }
 

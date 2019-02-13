@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import AccountMenu from './AccountMenu'
 import LoginMenu from './LoginMenu'
-import { LIST_PATH } from 'constants'
+import { LIST_PATH, DOCS_URL } from 'constants'
 
 function Navbar({
   avatarUrl,
@@ -34,9 +34,9 @@ function Navbar({
         <Typography
           type="title"
           color="inherit"
-          className={classes.flex}
+          className={classes.otherLink}
           component={Link}
-          to="/docs"
+          href={DOCS_URL}
           data-test="docs">
           Docs
         </Typography>

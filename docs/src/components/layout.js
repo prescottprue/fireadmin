@@ -58,7 +58,7 @@ function topLevelChapters(pages) {
   })
 }
 
-const fireadminHome = "https://fireadmin.io"
+const fireadminHome = process.env.FIREADMIN_URL || 'https://fireadmin.io'
 
 function Layout(props) {
   const { classes, children, pages, location } = props
@@ -75,10 +75,12 @@ function Layout(props) {
             noWrap
             component={Link}
             to="/">
-            Fireadmin Docs
+            Fireadmin Documentation
           </Typography>
-          <div className={classes.grow} /> 
-          <Button color="inherit" component="a" href={fireadminHome}>Go To Fireadmin</Button>
+          <div className={classes.grow} />
+          <Button color="inherit" component="a" href={fireadminHome}>
+            Go To Console
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer

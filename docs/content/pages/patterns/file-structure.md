@@ -41,11 +41,13 @@ yo react-firebase:component
 import React, { PropTypes } from 'react';
 import classes from './SomeComponent.scss';
 
-export const SomeComponent = ({ someProp }) => (
-  <div>
-    Some Component
-  </div>
-);
+function SomeComponent({ someProp }) {
+  return (
+    <div>
+      Some Component
+    </div>
+  );
+}
 
 SomeComponent.propTypes = {
   someProp: PropTypes.func.isRequired,

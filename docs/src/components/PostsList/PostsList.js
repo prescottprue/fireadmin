@@ -5,17 +5,18 @@ import PostsListItem from '../PostsListItem/PostsListItem'
 function PostsList({ posts }) {
   return (
     <Fragment>
-      {posts.map(post => {
-        const itemProps = {
-          title: post.node.frontmatter.title,
-          excerpt: post.node.excerpt,
-          slug: post.node.frontmatter.slug,
-          date: post.node.frontmatter.date,
-          language: post.node.frontmatter.language || 'fr',
-          tags: post.node.frontmatter.tags || []
-        }
-        return <PostsListItem key={itemProps.slug} {...itemProps} />
-      })}
+      {posts &&
+        posts.map(post => {
+          const itemProps = {
+            title: post.node.frontmatter.title,
+            excerpt: post.node.excerpt,
+            slug: post.node.frontmatter.slug,
+            date: post.node.frontmatter.date,
+            language: post.node.frontmatter.language || 'fr',
+            tags: post.node.frontmatter.tags || []
+          }
+          return <PostsListItem key={itemProps.slug} {...itemProps} />
+        })}
     </Fragment>
   )
 }

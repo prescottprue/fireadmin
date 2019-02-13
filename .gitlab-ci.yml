@@ -11,17 +11,15 @@ stages:
 cache:
   untracked: true
   policy: pull # only pull cache, skip uploading
-  key: ${CI_COMMIT_REF_SLUG}-app
+  key: ${CI_COMMIT_REF_SLUG}
   # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
   paths:
     - .yarn
     - node_modules
-# Script run before all stages unless otherwise overriden
+
+    # Script run before all stages unless otherwise overriden
 before_script:
   - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
-
-  - CYPRESS_INSTALL_BINARY=0 npm i # Install dependencies skipping Cypress
-  - npm i --prefix functions # Install functions dependencies
 
 # Unit Testing Stage
 # Run unit tests for Cloud Functions
@@ -50,13 +48,13 @@ Functions Unit Tests:
     key: ${CI_COMMIT_REF_SLUG}
     # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
     paths:
-      - .npm
+      - .yarn
       - functions/node_modules
   before_script:
-    - npm i --prefix functions
+    - yarn --cwd functions install --frozen-lockfile --cache-folder .yarn
   script:
-    - npm run lint --prefix functions
-    - npm run test:cov --prefix functions
+    - yarn --cwd functions lint
+    - yarn --cwd functions test:cov
 
 # ---------------------------- Docs -------------------------- #
 # Build Docs
@@ -81,13 +79,12 @@ Build Docs:
       - docs/public
   cache:
     untracked: true # track files that are untracked in git
-    key: docs
+    key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - docs/.yarn
+      - .yarn
       - docs/node_modules
   before_script:
-    - yarn config set cache-folder docs/.yarn
-    - yarn --cwd docs --frozen-lockfile install
+    - yarn --cwd docs install --frozen-lockfile --cache-folder .yarn
   script:
     - yarn --cwd docs lint
     - yarn --cwd docs build
@@ -114,13 +111,12 @@ Deploy Docs:
       - docs/public
   cache:
     untracked: true # track files that are untracked in git
-    key: docs
+    key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - docs/.yarn
+      - .yarn
       - docs/node_modules
   before_script:
-    - yarn config set cache-folder docs/.yarn
-    - yarn --cwd docs --frozen-lockfile install
+    - yarn --cwd docs install --frozen-lockfile --cache-folder .yarn
   script:
     - yarn deploy:docs  # Deploy docs React App (Firebase Hosting)
 
@@ -149,7 +145,7 @@ Build Functions:
   # the cache (no "policy" provided since pull-push is default)
   cache:
     untracked: true
-    key: ${CI_COMMIT_REF_SLUG}-functions
+    key: ${CI_COMMIT_REF_SLUG}
     # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
     paths:
       - functions/.yarn
@@ -183,13 +179,6 @@ Build Staging:
     when: always
     paths:
       - dist
-  # Override cache behavior set above since we want to both pull and push to
-  # the cache (no "policy" provided since pull-push is default)
-  cache:
-    untracked: true
-    key: ${CI_COMMIT_REF_SLUG}-app
-    paths:
-      - .yarn
   script:
     - yarn build:config # create env specific src/config.js
     - yarn lint
@@ -218,7 +207,7 @@ Deploy Staging:
     paths:
       - firebase-debug.log
   dependencies:
-    - Build Staging
+    - Build Staging # Require artifacts from build stage
   script:
     - yarn deploy  # Deploy docs React App (Firebase Hosting)
 
@@ -242,7 +231,7 @@ UI Tests:
   # happens in build stage)
   cache:
     untracked: true
-    key: ${CI_COMMIT_REF_SLUG}-app
+    key: ${CI_COMMIT_REF_SLUG}
     # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
     paths:
       - .yarn
