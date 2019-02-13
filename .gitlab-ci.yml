@@ -51,7 +51,8 @@ Functions Unit Tests:
       - .yarn
       - functions/node_modules
   before_script:
-    - yarn --cwd functions install --frozen-lockfile --cache-folder .yarn
+    - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
+    - yarn --cwd functions install --frozen-lockfile --cache-folder .yarn # Install functions dependencies
   script:
     - yarn lint:functions
     - yarn --cwd functions test:cov
@@ -84,7 +85,8 @@ Build Docs:
       - .yarn
       - docs/node_modules
   before_script:
-    - yarn --cwd docs install --frozen-lockfile --cache-folder .yarn
+    - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
+    - yarn --cwd docs install --frozen-lockfile --cache-folder .yarn # Install docs dependencies
   script:
     - yarn lint:docs
     - yarn --cwd docs build
