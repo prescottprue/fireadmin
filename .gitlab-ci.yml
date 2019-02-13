@@ -9,7 +9,6 @@ stages:
 # Cache dependencies across jobs only pulling not uploading (upload to cache
 # happens in build stage)
 cache:
-  untracked: true
   policy: pull # only pull cache, skip uploading
   key: ${CI_COMMIT_REF_SLUG}
   # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
@@ -44,11 +43,10 @@ Functions Unit Tests:
   # Override cache behavior set above since we want to both pull and push to
   # the cache (no "policy" provided since pull-push is default)
   cache:
-    untracked: true
     key: ${CI_COMMIT_REF_SLUG}
-    # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
     paths:
       - .yarn
+      - node_modules
       - functions/node_modules
   before_script:
     - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
@@ -79,10 +77,10 @@ Build Docs:
     paths:
       - docs/public
   cache:
-    untracked: true # track files that are untracked in git
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - .yarn
+      - node_modules
       - docs/node_modules
   before_script:
     - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
@@ -114,12 +112,6 @@ Deploy Docs Staging:
     when: always
     paths:
       - docs/public
-  cache:
-    untracked: true # track files that are untracked in git
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .yarn
-      - docs/node_modules
   dependencies:
     - Build Docs # Require artifacts from build stage
   script:
@@ -146,12 +138,6 @@ Deploy Docs Production:
     when: always
     paths:
       - docs/public
-  cache:
-    untracked: true # track files that are untracked in git
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - .yarn
-      - docs/node_modules
   dependencies:
     - Build Docs # Require artifacts from build stage
   script:
@@ -185,7 +171,8 @@ Build Functions:
     key: ${CI_COMMIT_REF_SLUG}
     # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
     paths:
-      - functions/.yarn
+      - .yarn
+      - node_modules
       - functions/node_modules
   before_script:
     - yarn --cwd functions install --frozen-lockfile --cache-folder functions/.yarn
@@ -271,6 +258,7 @@ UI Tests:
     # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
     paths:
       - .yarn
+      - node_modules
       - .cache/Cypress
   artifacts:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
