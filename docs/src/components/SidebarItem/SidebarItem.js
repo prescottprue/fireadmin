@@ -33,7 +33,7 @@ function slugToIcon(slug) {
   }
 }
 
-export const SidebarItem = ({
+function SidebarItem({
   frontmatter,
   childChapters,
   classes,
@@ -43,38 +43,38 @@ export const SidebarItem = ({
   parentMatchesPath,
   trimmedPath,
   matchesFullPath
-}) => (
-  <Fragment>
-    <ListItem button {...parentProps} selected={matchesFullPath}>
-      <Fragment>
-        <ListItemIcon>{slugToIcon(frontmatter.slug)}</ListItemIcon>
-        <ListItemText primary={frontmatter.title} />
-        {childChapters.length ? open ? <ExpandLess /> : <ExpandMore /> : null}
-      </Fragment>
-    </ListItem>
-    {childChapters.length ? (
-      <Collapse in={parentMatchesPath || open} timeout="auto">
-        <List
-          component="div"
-          disablePadding
-          key={`${frontmatter.slug}-Children`}
-        >
-          {childChapters.map(({ node }, index2) => (
-            <ListItem
-              button
-              component={Link}
-              key={`${frontmatter.slug}-${node.frontmatter.slug}=${index2}`}
-              selected={trimmedPath === trim(node.frontmatter.slug, '/')}
-              to={node.frontmatter.slug}
-            >
-              <ListItemText inset primary={node.frontmatter.title} />
-            </ListItem>
-          ))}
-        </List>
-      </Collapse>
-    ) : null}
-  </Fragment>
-)
+}) {
+  return (
+    <Fragment>
+      <ListItem button {...parentProps} selected={matchesFullPath}>
+        <Fragment>
+          <ListItemIcon>{slugToIcon(frontmatter.slug)}</ListItemIcon>
+          <ListItemText primary={frontmatter.title} />
+          {childChapters.length ? open ? <ExpandLess /> : <ExpandMore /> : null}
+        </Fragment>
+      </ListItem>
+      {childChapters.length ? (
+        <Collapse in={parentMatchesPath || open} timeout="auto">
+          <List
+            component="div"
+            disablePadding
+            key={`${frontmatter.slug}-Children`}>
+            {childChapters.map(({ node }, index2) => (
+              <ListItem
+                button
+                component={Link}
+                key={`${frontmatter.slug}-${node.frontmatter.slug}=${index2}`}
+                selected={trimmedPath === trim(node.frontmatter.slug, '/')}
+                to={node.frontmatter.slug}>
+                <ListItemText inset primary={node.frontmatter.title} />
+              </ListItem>
+            ))}
+          </List>
+        </Collapse>
+      ) : null}
+    </Fragment>
+  )
+}
 
 SidebarItem.propTypes = {
   classes: PropTypes.object, // from enhancer (withStyles)
