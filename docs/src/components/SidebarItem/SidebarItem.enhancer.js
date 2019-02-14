@@ -1,7 +1,7 @@
 import { compose } from 'redux'
 import { withStateHandlers, withProps } from 'recompose'
 import { withStyles } from '@material-ui/core/styles'
-import { get, filter, trim, compact, last } from 'lodash'
+import { get, filter, trim } from 'lodash'
 import { Link, withPrefix } from 'gatsby'
 import styles from './SidebarItem.styles'
 
