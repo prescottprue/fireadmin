@@ -80,6 +80,7 @@ Build Docs:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - .yarn
+      - .cache # used by gatsby
       - node_modules
       - docs/node_modules
   before_script:
@@ -164,7 +165,7 @@ Build Functions:
     paths:
       - functions/coverage # Test coverage report
       - functions/dist
-  # Override cache behavior set above since we want to both pull and push to
+  # Override cache behavior set above since we want to both pull from and push to
   # the cache (no "policy" provided since pull-push is default)
   cache:
     untracked: true

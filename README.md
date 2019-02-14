@@ -48,7 +48,7 @@ Interested in adding a feature or contributing? Open an issue or [reach out over
 
 ## Getting Started
 
-Checkout the [hosted version available at fireadmin.io](http://fireadmin.io). After you become more familiar, feel free to run your own by pulling this source and proceeding to the [run your own section](#run-your-own).
+Since this is source code, a great place to start is checking the [hosted version of Fireadmin available at fireadmin.io](http://fireadmin.io).
 
 ### NPM Scripts
 
@@ -72,14 +72,19 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 ## Application Structure
 
 ```
-├── bin                      # Scripts called from the command line
-│   └── firebase-extra.js    # Script called by tests to seed/clear Firebase
 ├── build                    # All build-related configuration
 │   └── webpack.config.js    # Environment-specific configuration files for webpack
-├── server                   # Express application that provides webpack middleware
-│   └── main.js              # Server application entry point
+├── cypress                  # App End To End tests
+├── docs                     # Docs application (built with Gatsby)
+│   ├── content              # Content of docs (written in markdown)
+│   ├── components           # React components used in docs app
+│   ├── gatsby-config.js     # Gatsby plugin settings
+│   ├── gatsby-node.js       # Gatsby node definitions (how templates are combined with content)
+│   └── package.json         # Docs package file (docs specific dependencies)
 ├── functions                # Cloud Functions (uses Cloud Functions for Firebase)
 │   └── index.js             # Functions entry point
+├── server                   # Express application that provides webpack middleware
+│   └── main.js              # Server application entry point
 ├── src                      # Application source code
 │   ├── index.html           # Main HTML page container for app
 │   ├── main.js              # Application bootstrap and rendering
@@ -102,8 +107,6 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 │   │   ├── createStore.js   # Create and instrument redux store
 │   │   └── reducers.js      # Reducer registry and injection
 │   └── styles               # Application-wide styles (generally settings)
-├── test                     # App Tests
-│   └── e2e                  # App End To End tests
 ├── .firebaserc              # Firebase project settings (including settings for CI deployment)
 ├── cypress.json             # Cypress E2E Testing settings
 ├── database.rules.json      # Firebase Real Time Database Rules

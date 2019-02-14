@@ -1,3 +1,4 @@
+const path = require('path')
 const config = require('./data/siteConfig')
 
 module.exports = {
@@ -13,16 +14,15 @@ module.exports = {
   pathPrefix: config.pathPrefix,
   plugins: [
     {
-      resolve: `gatsby-source-filesystem`,
+      resolve: 'gatsby-plugin-root-import',
       options: {
-        path: `${__dirname}/content/posts`,
-        name: 'pages'
+        root: path.join(__dirname, 'src')
       }
     },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        path: `${__dirname}/content/pages`,
+        path: `${__dirname}/content`,
         name: 'pages'
       }
     },

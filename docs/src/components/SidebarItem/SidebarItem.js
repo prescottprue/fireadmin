@@ -14,7 +14,7 @@ import WebIcon from '@material-ui/icons/Web'
 import PaintIcon from '@material-ui/icons/FormatPaint'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
-import { Link } from 'gatsby'
+import { Link, withPrefix } from 'gatsby'
 
 function slugToIcon(slug) {
   switch (slug) {
@@ -64,8 +64,10 @@ function SidebarItem({
                 button
                 component={Link}
                 key={`${frontmatter.slug}-${node.frontmatter.slug}=${index2}`}
-                selected={trimmedPath === trim(node.frontmatter.slug, '/')}
-                to={node.frontmatter.slug}>
+                selected={location.pathname.includes(
+                  withPrefix(node.frontmatter.slug)
+                )}
+                to={withPrefix(node.frontmatter.slug)}>
                 <ListItemText inset primary={node.frontmatter.title} />
               </ListItem>
             ))}

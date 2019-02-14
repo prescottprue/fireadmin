@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { graphql } from 'gatsby'
 import { groupBy, map, get, filter } from 'lodash'
 import { withStyles } from '@material-ui/core/styles'
 import { Link } from '@reach/router'
@@ -13,52 +12,24 @@ import List from '@material-ui/core/List'
 import Typography from '@material-ui/core/Typography'
 import SidebarItem from './SidebarItem'
 import { theme_color as themeColor } from '../../data/siteConfig'
+import { FIREADMIN_URL } from '../constants/paths'
 
 import './index.css'
 import 'prismjs/themes/prism-tomorrow.css'
 
-const drawerWidth = 260
-
-const styles = theme => ({
-  root: {
-    display: 'flex'
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: themeColor
-  },
-  grow: {
-    flexGrow: 1
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0
-  },
-  drawerPaper: {
-    width: drawerWidth
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing.unit * 3
-  },
-  toolbar: theme.mixins.toolbar
-})
-
 function groupBySlugLength(pages) {
-  return groupBy(
-    pages,
-    page => get(page, 'node.frontmatter.slug', '').split('/')[0]
-  )
+  return groupBy(pages, page => {
+    const slug = get(page, 'node.frontmatter.slug') || ''
+    return slug.split('/')[0]
+  })
 }
 
 function topLevelChapters(pages) {
   return filter(pages, page => {
-    const slug = get(page, 'node.frontmatter.slug', '')
+    const slug = get(page, 'node.frontmatter.slug') || ''
     return slug.split('/').length === 1
   })
 }
-
-const fireadminHome = process.env.FIREADMIN_URL || 'https://fireadmin.io'
 
 function Layout(props) {
   const { classes, children, pages, location } = props
@@ -78,7 +49,7 @@ function Layout(props) {
             Fireadmin Documentation
           </Typography>
           <div className={classes.grow} />
-          <Button color="inherit" component="a" href={fireadminHome}>
+          <Button color="inherit" component="a" href={FIREADMIN_URL}>
             Go To Console
           </Button>
         </Toolbar>
@@ -114,32 +85,31 @@ Layout.propTypes = {
   children: PropTypes.array
 }
 
-export default withStyles(styles)(Layout)
+const drawerWidth = 260
 
-export const pageQuery = graphql`
-  query {
-    site {
-      siteMetadata {
-        title
-        description
-      }
-    }
-    allMarkdownRemark(
-      sort: { fields: [frontmatter___date], order: DESC }
-      filter: { frontmatter: { type: { ne: "post" } } } # filter: { frontmatter: { type: { ne: "post" } } }
-    ) {
-      edges {
-        node {
-          excerpt
-          frontmatter {
-            date(formatString: "DD MMMM, YYYY")
-            title
-            tags
-            language
-            slug
-          }
-        }
-      }
-    }
-  }
-`
+const styles = theme => ({
+  root: {
+    display: 'flex'
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: themeColor
+  },
+  grow: {
+    flexGrow: 1
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0
+  },
+  drawerPaper: {
+    width: drawerWidth
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing.unit * 3
+  },
+  toolbar: theme.mixins.toolbar
+})
+
+export default withStyles(styles)(Layout)

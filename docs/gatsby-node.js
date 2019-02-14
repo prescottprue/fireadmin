@@ -1,24 +1,24 @@
 const { resolve } = require('path')
 const { createFilePath } = require('gatsby-source-filesystem')
 
-exports.createPages = async ({ graphql, actions }) => {
-  const { createPage } = actions
-
-  const blogPostTemplate = resolve('./src/templates/blog-post.js')
-  const pageTemplate = resolve('./src/templates/page.js')
-  const postsBytagTemplate = resolve('./src/templates/tags.js')
-
+/**
+ * Create pages by querying for data then filling it into templates
+ * which are stored in src/templates.
+ * @param {Object} createArgs
+ * @param {Function} createArgs.graphql - Graphql function used for querying
+ * @param {Object} createArgs.actions - Gatsby actions object
+ * @param {Function} createArgs.actions.createPage - Function for creating pages
+ */
+exports.createPages = async function createPages({ graphql, actions }) {
   const allMarkdown = await graphql(
     `
       {
-        allMarkdownRemark(
-          sort: { fields: [frontmatter___date], order: DESC }
-          limit: 1000
-        ) {
+        allMarkdownRemark(limit: 1000) {
           edges {
             node {
               frontmatter {
                 title
+                priority
                 slug
                 type
                 tags
@@ -36,28 +36,13 @@ exports.createPages = async ({ graphql, actions }) => {
   }
 
   const markdownFiles = allMarkdown.data.allMarkdownRemark.edges
-
-  // generate blog posts
-  markdownFiles
-    .filter(item => item.node.frontmatter.type !== 'page')
-    .forEach((post, index, posts) => {
-      const previous = index === posts.length - 1 ? null : posts[index + 1].node
-      const next = index === 0 ? null : posts[index - 1].node
-
-      createPage({
-        path: post.node.frontmatter.slug || `slug-${Date.now()}`,
-        component: blogPostTemplate,
-        context: {
-          slug: post.node.frontmatter.slug || `slug-${Date.now()}`,
-          previous,
-          next
-        }
-      })
-    })
+  const pageTemplate = resolve('./src/templates/page.js')
+  const { createPage } = actions
 
   // generate pages
   markdownFiles
     .filter(item => item.node.frontmatter.type === 'page')
+    .sort(item => item.node.frontmatter.priority)
     .forEach(page => {
       createPage({
         path: page.node.frontmatter.slug,
@@ -67,26 +52,17 @@ exports.createPages = async ({ graphql, actions }) => {
         }
       })
     })
-
-  // generate tags
-  markdownFiles
-    .filter(item => item.node.frontmatter.tags !== null)
-    .reduce(
-      (acc, cur) => [...new Set([...acc, ...cur.node.frontmatter.tags])],
-      []
-    )
-    .forEach(uniqTag => {
-      createPage({
-        path: `tags/${uniqTag}`,
-        component: postsBytagTemplate,
-        context: {
-          tag: uniqTag
-        }
-      })
-    })
 }
 
-exports.onCreateNode = ({ node, actions, getNode }) => {
+/**
+ * Actions to run when a new node is created. Currently just used to create
+ * node field for MarkdownRemark nodes.
+ * @param {Object} onCreateArgs
+ * @param {Function} onCreateArgs.node - Gatsby Node that was created
+ * @param {Object} onCreateArgs.actions - Gatsby actions object
+ * @param {Function} onCreateArgs.actions.createNodeField - Function for creating gatsby node field
+ */
+exports.onCreateNode = function onCreateNode({ node, actions, getNode }) {
   const { createNodeField } = actions
 
   if (node.internal.type === `MarkdownRemark`) {

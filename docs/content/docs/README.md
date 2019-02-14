@@ -3,6 +3,7 @@ title: Documentation
 slug: docs
 type: page
 language: en
+order: 4
 tags:
   - docs
   - react

@@ -3,6 +3,7 @@ title: Testing
 slug: testing
 type: page
 language: en
+order: 3
 tags:
   - testing
 ---

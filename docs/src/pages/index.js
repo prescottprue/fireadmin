@@ -1,7 +1,29 @@
+import React from 'react'
+import PropTypes from 'prop-types'
 import { graphql } from 'gatsby'
-import Home from './Home'
+import get from 'lodash/get'
+import Layout from '../components/layout'
+import Wrapper from '../components/Wrapper/Wrapper'
+import SEO from '../components/SEO/SEO'
+import HomePage from '../components/HomePage'
 
-export default Home
+function App({ data, location }) {
+  return (
+    <Layout location={location} pages={get(data, 'allMarkdownRemark.edges')}>
+      <SEO />
+      <Wrapper>
+        <HomePage />
+      </Wrapper>
+    </Layout>
+  )
+}
+
+App.propTypes = {
+  data: PropTypes.object,
+  location: PropTypes.object.isRequired
+}
+
+export default App
 
 export const pageQuery = graphql`
   query {
@@ -12,15 +34,15 @@ export const pageQuery = graphql`
       }
     }
     allMarkdownRemark(
-      sort: { fields: [frontmatter___title], order: ASC } # alphabetical sort
+      sort: { fields: [frontmatter___order], order: DESC }
       filter: { frontmatter: { type: { ne: "post" } } } # only those without type: "post"
     ) {
       edges {
         node {
           excerpt
           frontmatter {
-            date(formatString: "DD MMMM, YYYY")
             title
+            order
             tags
             language
             slug

@@ -7,12 +7,12 @@ tags:
   - docs
 ---
 
-All docs content lives in the `content` folder as markdown files. When building these are converted into static html which is then uploaded to Firebase Hosting.
+All docs content lives in the `docs/content` folder as markdown files. When building these are converted into static html which is then uploaded to Firebase Hosting.
 
 ### Updating Docs
 
 1. Make a branch for your changes
-1. Go into the `content` folder and look for the markdown file associated with the doc (structure is a mirror of what is in UI)
+1. Go into the `docs/content` folder and look for the markdown file associated with the doc (structure is a mirror of what is in UI)
 1. Change markdown file(s) and save
 1. Run locally using `yarn start` and visiting `localhost:8000` to confirm the looks of your changes
 1. Make a PR to this Repo and assign it to another engineer
