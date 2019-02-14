@@ -80,7 +80,6 @@ Build Docs:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - .yarn
-      - .cache # used by gatsby
       - node_modules
       - docs/node_modules
   before_script:
