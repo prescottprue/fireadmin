@@ -1,10 +1,10 @@
 ---
 title: Adding Features
-slug: patterns/adding-a-feature
+slug: source/adding-a-feature
 type: page
 language: en
 tags:
-  - patterns
+  - source
 ---
 
 Adding features is commonly done using some sort of scafolding in tool, in our case we are using [the subgenerators from generator-react-firebase](https://github.com/prescottprue/generator-react-firebase#sub-generators) to add new features.

@@ -1,10 +1,10 @@
 ---
 title: File Structure Patterns
-slug: patterns/file-structure
+slug: source/file-structure
 type: page
 language: en
 tags:
-  - patterns
+  - source
 ---
 
 Placement of files within a project repository is important, especially as the project scales. Below are our patterns for file structure organization:
@@ -18,7 +18,7 @@ Placement of files within a project repository is important, especially as the p
 
 ##### Creation
 
-As noted in [the adding features](/coding-patterns/adding-features.md) we use the component subgenerator like so:
+As noted in [the adding features](/coding-patterns/adding-features) we use the component subgenerator like so:
 
 ```bash
 yo react-firebase:component

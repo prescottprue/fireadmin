@@ -2,6 +2,7 @@
 title: Cloud Functions
 slug: testing/cloud-functions
 type: page
+order: 1
 language: en
 tags:
   - testing

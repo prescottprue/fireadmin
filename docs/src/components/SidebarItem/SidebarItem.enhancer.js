@@ -1,13 +1,15 @@
 import { compose } from 'redux'
 import { withStateHandlers, withProps } from 'recompose'
 import { withStyles } from '@material-ui/core/styles'
-import { get, filter, trim } from 'lodash'
-import { Link, withPrefix } from 'gatsby'
+import { get, filter } from 'lodash'
+import { Link } from 'gatsby'
 import styles from './SidebarItem.styles'
+import { slugIsInCurrentPath } from '../../utils'
 
 function getChildChapters(pages) {
   return filter(pages, page => {
-    return get(page, 'node.frontmatter.slug', '').split('/').length > 1
+    const slug = get(page, 'node.frontmatter.slug') || ''
+    return slug.split('/').length > 1
   })
 }
 
@@ -23,10 +25,7 @@ export default compose(
     const childChapters = getChildChapters(childPages)
     return {
       childChapters,
-      parentMatchesPath:
-        location.pathname.split('/').filter(v => !!v)[0] ===
-        trim(frontmatter.slug, '/'),
-      matchesFullPath: location.pathname === withPrefix(frontmatter.slug),
+      parentMatchesPath: slugIsInCurrentPath(frontmatter.slug),
       parentProps:
         childChapters && childChapters.length
           ? { onClick: toggleOpen }

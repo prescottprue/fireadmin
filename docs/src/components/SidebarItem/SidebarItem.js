@@ -1,35 +1,30 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
+import { Link, withPrefix } from 'gatsby'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import InboxIcon from '@material-ui/icons/MoveToInbox'
-import PersonAddIcon from '@material-ui/icons/PersonAdd'
+import BookIcon from '@material-ui/icons/Book'
+import GuideIcon from '@material-ui/icons/Assignment'
 import CodeIcon from '@material-ui/icons/Code'
 import Collapse from '@material-ui/core/Collapse'
-import QueueIcon from '@material-ui/icons/Queue'
 import WebIcon from '@material-ui/icons/Web'
-import PaintIcon from '@material-ui/icons/FormatPaint'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
-import { Link, withPrefix } from 'gatsby'
+import { slugIsInCurrentPath } from '../../utils'
+
+const ICONS_BY_SLUG = {
+  guides: <GuideIcon />,
+  source: <CodeIcon />,
+  testing: <WebIcon />,
+  docs: <BookIcon />,
+  default: <InboxIcon />
+}
 
 function slugToIcon(slug) {
-  switch (slug) {
-    case 'onboarding':
-      return <PersonAddIcon />
-    case 'repos':
-      return <CodeIcon />
-    case 'environments':
-      return <QueueIcon />
-    case 'patterns':
-      return <PaintIcon />
-    case 'testing':
-      return <WebIcon />
-    default:
-      return <InboxIcon />
-  }
+  return ICONS_BY_SLUG[slug] || ICONS_BY_SLUG.default
 }
 
 function SidebarItem({
@@ -40,16 +35,21 @@ function SidebarItem({
   parentProps,
   toggleOpen,
   parentMatchesPath,
-  trimmedPath,
-  matchesFullPath
+  trimmedPath
 }) {
   return (
     <Fragment>
-      <ListItem button {...parentProps} selected={matchesFullPath}>
+      <ListItem button {...parentProps}>
         <Fragment>
           <ListItemIcon>{slugToIcon(frontmatter.slug)}</ListItemIcon>
           <ListItemText primary={frontmatter.title} />
-          {childChapters.length ? open ? <ExpandLess /> : <ExpandMore /> : null}
+          {childChapters.length ? (
+            parentMatchesPath || open ? (
+              <ExpandLess />
+            ) : (
+              <ExpandMore />
+            )
+          ) : null}
         </Fragment>
       </ListItem>
       {childChapters.length ? (
@@ -63,9 +63,7 @@ function SidebarItem({
                 button
                 component={Link}
                 key={`${frontmatter.slug}-${node.frontmatter.slug}=${index2}`}
-                selected={location.pathname.includes(
-                  withPrefix(node.frontmatter.slug)
-                )}
+                selected={slugIsInCurrentPath(node.frontmatter.slug)}
                 to={withPrefix(node.frontmatter.slug)}>
                 <ListItemText inset primary={node.frontmatter.title} />
               </ListItem>

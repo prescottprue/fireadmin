@@ -2,12 +2,31 @@
 title: Web UI
 slug: testing/ui
 type: page
+order: 0
 language: en
 tags:
   - testing
 ---
 
-End to testing is done with [Cypress](https://cypress.io).
+UI testing is done with [Cypress](https://cypress.io). The tests confirm that the front end correctly writes to database. This is done using `callFirestore` and `callRTDB` from [cypress-firebase](https://github.com/prescottprue/cypress-firebase).
+
+## File/Folder Structure
+```
+├── cypress
+│   ├── fixtures           # Fake data to be used within tests
+│   ├── plugins            # Cypress Plugins (reacting to emitted events)
+│   │   └── index.js
+│   ├── support            # Global Code Applied to Cypress
+│   │   └── index.js
+│   ├── utils              # Utilties shared between custom commands, plugins, and tests
+│   │   └── index.js
+│   ├── integration        # Tests folder
+│   │   └── Some.spec.js   # Test files ending in .spec.js
+│   ├── config.json        # Config for generating test environment (contains UID of)
+│   └── Dockerfile         # Docker image used by Barista to run tests
+├── cypress.json               # Cypress configuration (including defaults)
+└── serviceAccount.json        # Service Account From Firebase/Google Project
+```
 
 ## Run Locally
 
@@ -30,7 +49,7 @@ NOTE: Setup requires a seviceAccount.json file, if you have not already created 
 
 That will open Cypress's local test runner UI where you can run single tests or all tests. In the background a JWT was generated for the user which you provided the UID for.
 
-### Locally
+### Run Tests
 Running tests locally requires starting a server with a local version of the app you are testing.
 
 Run the app locally with the following:
@@ -47,34 +66,18 @@ Then start the cypress local test runner ui by running the following in a new te
 
 NOTE: If you are actively developing the app you are testing, it is also possible to run `yarn start` instead of `yarn start:dist`, but this causes tests to time out much more often. This is due to the fact that the dev setup (non minified bundle, hot module reloading) takes much longer to load in the browser than the built version.
 
-### Remotely
+### Open Test Dashboard
+The default is to run all of the cypress tests in headless mode (i.e. `cypress run`), but if you would like to open up the local Cypress Dashboard to run single suites at a time you can run the following:
 
-Visit [Barista](https://barista-stage.firebaseapp.com)
+  ```bash
+  yarn test:ui:open
+  ```
 
-## Writing UI Tests
+## Run In CI
 
-# Writing Cypress Tests
+Tests are setup to run automatically in the Gitlab CI environment based on settings in [`.gitlab-ci.yml`](https://github.com/prescottprue/fireadmin/blob/master/.gitlab-ci.yml).
 
-## UI E2E
-### File/Folder Structure
-```
-├── test
-│   └── e2e                    # End To End Test Folder
-│       ├── fixtures           # Fake data to be used within tests
-│       ├── plugins            # Cypress Plugins (reacting to emitted events)
-│       │   └── index.js
-│       ├── support            # Global Code Applied to Cypress
-│       │   └── index.js
-│       ├── utils              # Utilties shared between custom commands, plugins, and tests
-│       │   └── index.js
-│       ├── integration        # Tests folder
-│       │   └── Some.spec.js   # Test files ending in .spec.js
-│       ├── config.json        # Config for generating test environment (contains UID of)
-│       └── Dockerfile         # Docker image used by Barista to run tests
-├── cypress.json               # Cypress configuration (including defaults)
-├── cloudbuild-e2e.yaml              # Cypress configuration (including defaults)
-└── serviceAccount.json        # Service Account From Firebase/Google Project
-```
+## Writing Tests
 
 ### Selectors
 
@@ -281,7 +284,6 @@ describe('Listings Page', () => {
 })
 ```
 
-
 ## Custom Commands
 Cypress supports creating your custom API through adding commands on the cypress object. We have already used this ability to add some commands which are outlined in the [existing commands section](#existing-commands).
 
@@ -317,30 +319,6 @@ Then use it in tests:
 
 ```js
 cy.myFunc()
-```
-
-## Other Cypress Features
-
-### Custom Listening/Labeling for external servers
-
-```js
-cy.server()
-  // Firebase JS SDK request - Called when listener attached
-  .route('POST', /google.firestore.v1beta1.Firestore\/Listen/)
-  .as('listenForProjects')
-  // Firebase JS SDK request - Called when data is returned
-  .route('GET', /google.firestore.v1beta1.Firestore\/Listen/)
-  .as('getProjectData')
-  // Firebase JS SDK request - Called when project data is written
-  .route('POST', /google.firestore.v1beta1.Firestore\/Write/)
-  .as('addProject')
-  .window()
-  .then(win => {
-    // Create a spy on the servers onOpen event so we can later expect
-    // it to be called with specific arguments
-    openSpy = cy.spy(cy.state('server').options, 'onOpen')
-    return null
-  })
 ```
 
 [cypress-custom-commands-url]: https://docs.cypress.io/api/cypress-api/custom-commands.html#Syntax
