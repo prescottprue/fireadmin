@@ -182,7 +182,7 @@ Build Functions:
     - yarn --cwd functions build
 
 # ---------------------------- React App -------------------------- #
-# Build App
+# Build Staging App
 # Installs dependencies, builds app, and saves results for later (artifacts).
 # 1. Install dependencies for React App and Cloud Functions. Installing of
 # cypress binary is skipped (done in E2E Testing Stage)
@@ -193,7 +193,13 @@ Build Functions:
 Build Staging:
   stage: build
   image: node:8
-  when: always
+  only:
+    changes:
+      - src/**/* # Run only when app is changed
+      - package.json
+      - .eslintrc.js
+      - firebase.json
+      - .gitlab-ci.yml
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-build/

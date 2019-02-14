@@ -19,5 +19,8 @@ export function getChildChapters(pages) {
  * @param {String} slug - Slug value to check for in path
  */
 export function slugIsInCurrentPath(slug) {
-  return get(location, 'pathname', '').includes(withPrefix(slug))
+  return (
+    typeof location !== 'undefined' &&
+    location.pathname.includes(withPrefix(slug))
+  )
 }
