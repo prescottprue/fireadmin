@@ -18,7 +18,7 @@ NOTE: Setup requires a seviceAccount.json file, if you have not already created 
 1. Create a service account within the Firebase console
 2. Save the service account as `serviceAccount.json` within the root of the project
 3. Get the UID of the user that you want to use while testing from the Authentication tab of the Firebase console to
-4. Create a `test/e2e/config.json` with the following format:
+4. Create a `cypress/config.json` with the following format:
   ```js
     {
       "TEST_UID": "<- user account's UID ->",
@@ -26,7 +26,7 @@ NOTE: Setup requires a seviceAccount.json file, if you have not already created 
       "FIREBASE_API_KEY": "<- your firebase apiKey ->"
     }
   ```
-1. Run `npm run test:ui`
+1. Run `yarn test:ui`
 
 That will open Cypress's local test runner UI where you can run single tests or all tests. In the background a JWT was generated for the user which you provided the UID for.
 
@@ -36,16 +36,16 @@ Running tests locally requires starting a server with a local version of the app
 Run the app locally with the following:
 
   ```bash
-  npm run start
+  yarn start
   ```
 
 Then start the cypress local test runner ui by running the following in a new terminal:
 
   ```bash
-  npm run test:ui
+  yarn test:ui
   ```
 
-NOTE: If you are actively developing the app you are testing, it is also possible to run `npm run start` instead of `npm run start:dist`, but this causes tests to time out much more often. This is due to the fact that the dev setup (non minified bundle, hot module reloading) takes much longer to load in the browser than the built version.
+NOTE: If you are actively developing the app you are testing, it is also possible to run `yarn start` instead of `yarn start:dist`, but this causes tests to time out much more often. This is due to the fact that the dev setup (non minified bundle, hot module reloading) takes much longer to load in the browser than the built version.
 
 ### Remotely
 

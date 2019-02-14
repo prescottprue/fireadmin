@@ -4968,10 +4968,10 @@ firebase-admin@^6.4.0:
     "@google-cloud/storage" "^1.6.0"
     "@types/google-cloud__storage" "^1.7.1"
 
-firebase-ci@^0.5.4:
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/firebase-ci/-/firebase-ci-0.5.4.tgz#1f14cc0bbcb7d23766409441d5e3542a01133eec"
-  integrity sha512-Crt2i9hlnIDxEnMEk2/ZWCIIdKemCC/rBPCK2L8eDlw+WMLkZwlOsBdHNwqlM1sGNSjvOkV/cblKQL3/sAtEzA==
+firebase-ci@^0.5.5:
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/firebase-ci/-/firebase-ci-0.5.5.tgz#c32248584f918b58dbf3d45798d6a8434619174a"
+  integrity sha512-JVUEvowXLjCkgXZmSzifQcag/4gsvqD8hsFCq0y0XMwbfPjOxhAy0goGk7CASJ7HR+NjqDHaRPjFMKlnf2opWA==
   dependencies:
     chalk "^2.4.1"
     command-exists "^1.2.8"

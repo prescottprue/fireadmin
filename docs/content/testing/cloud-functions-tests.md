@@ -14,13 +14,13 @@ Tests for Cloud functions are written using Mocha/Chai. They live in the Horchat
 Unit tests are run through mocha when calling:
   
   ```bash
-  npm run test --prefix functions
+  yarn functions:test
   ```
 
 **Note:** Coverage is genearted when running:
 
   ```bash
-  npm run test:cov --prefix functions
+  yarn functions:test:cov
   ```
 
 ## Writing

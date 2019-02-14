@@ -104,32 +104,6 @@ Create a new container name "SomeRoute" by running \`redux g container SomeRoute
 
 `index.js`
 
-## Actions/Thunks
-
-##### Location
-
-\* Under \`module/actions.js\` in respective route
-
-##### Handles
-
-\* Changes in state
-
-\* Interactions with Firebase \(\`set\`, \`update\`, \`uniqueSet\`\)
-
-##### Patterns
-
-If using Firebase within action, it should be retrieved from the third Argument of thunk:
-
-```js
-export const someAction = (someData) =>
-  (dispatch, getState, { getFirebase }) => {
-    getFirebase()
-      .set('some/path', someData)
-      .then() => {
-        dispatch({ type: 'SOME_ACTION' })
-      })
-  }
-```
 
 ## Assets
 
@@ -174,3 +148,5 @@ Component: `src/components/SomeComponent/SomeComponent.scss`
   @extend .flex-row;
 }
 ```
+
+Some components use the new styles.js pattern - more to come on this once the full switch has happened.

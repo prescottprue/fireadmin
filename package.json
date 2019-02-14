@@ -21,6 +21,7 @@
     "functions:build": "yarn --cwd functions build",
     "functions:watch": "yarn --cwd functions watch",
     "functions:test": "yarn --cwd functions test",
+    "functions:test:cov": "yarn --cwd functions test:cov",
     "lint": "yarn lint:app && yarn lint:functions && yarn lint:tests && yarn lint:docs",
     "lint:functions": "eslint functions",
     "lint:app": "eslint src build server project.config.js",
