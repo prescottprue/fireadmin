@@ -18,7 +18,7 @@ exports.createPages = async function createPages({ graphql, actions }) {
             node {
               frontmatter {
                 title
-                priority
+                order
                 slug
                 type
                 tags
@@ -42,7 +42,6 @@ exports.createPages = async function createPages({ graphql, actions }) {
   // generate pages
   markdownFiles
     .filter(item => item.node.frontmatter.type === 'page')
-    .sort(item => item.node.frontmatter.priority)
     .forEach(page => {
       createPage({
         path: page.node.frontmatter.slug,
