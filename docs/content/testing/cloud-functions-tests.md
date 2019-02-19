@@ -8,7 +8,8 @@ tags:
   - testing
 ---
 
-Tests for Cloud functions are written using Mocha/Chai. They live in the Horchata Repo.
+Tests for Cloud functions are written using Mocha/Chai. They [live within the `functions/test` folder](https://github.com/prescottprue/fireadmin/tree/master/functions/test).
+
 
 ## Running Locally
 
@@ -27,8 +28,9 @@ Unit tests are run through mocha when calling:
 ## Writing
 How you write your tests for cloud functions depends on the scope you would like to cover in your test.
 [the vanilla js testing section](/images/FiradminLogo.png)
+
 ### Logic
-As mentioned in [the vanilla js testing section](/testing/vanilla-js), we can tests simple logic directly with mocha/chai. There are [already functions with unit tests in Horchata](https://github.com/fireadmin/horchata/blob/master/functions/test/unit/sheetsSync.spec.js).
+As mentioned in [the vanilla js testing section](/testing/vanilla-js), we can tests simple logic directly with mocha/chai.
 
 ### Full Cloud Function
 Testing is slightly different between [HTTP functions](https://firebase.google.com/docs/functions/unit-testing#testing_http_functions) and [other function types](https://firebase.google.com/docs/functions/unit-testing#testing_background_non-http_functions)
