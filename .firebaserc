@@ -62,10 +62,10 @@
       "hosting": {
         "docs": [
           "fireadmin-docs",
-          "fireadmin-stage-docs",
+          "fireadmin-stage-docs"
         ],
         "app": [
-          "fireadmin-33d82"
+          "fireadmin-33d82",
           "fireadmin-stage"
         ]
       }

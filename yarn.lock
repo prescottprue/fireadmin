@@ -5057,10 +5057,10 @@ firebase-admin@^7.0.0:
     "@google-cloud/firestore" "^1.0.1"
     "@google-cloud/storage" "^2.3.0"
 
-firebase-ci@^0.5.5:
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/firebase-ci/-/firebase-ci-0.5.5.tgz#c32248584f918b58dbf3d45798d6a8434619174a"
-  integrity sha512-JVUEvowXLjCkgXZmSzifQcag/4gsvqD8hsFCq0y0XMwbfPjOxhAy0goGk7CASJ7HR+NjqDHaRPjFMKlnf2opWA==
+firebase-ci@^0.5.6:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/firebase-ci/-/firebase-ci-0.5.6.tgz#53e4b8a4aaa6e6086c6576e516aa1ba980ca50cd"
+  integrity sha512-y+f3lZQPALceDbAdfu4aWpA6/BFkriCqUL89An9RIRoiBaSx5/OM8t9KptFBpgh04MBQCnXx3REeeckkgrxXZw==
   dependencies:
     chalk "^2.4.1"
     command-exists "^1.2.8"
