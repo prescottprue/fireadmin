@@ -52,6 +52,53 @@
         "src",
         "test"
       ]
+    },
+    {
+      "target": "stageApp",
+      "public": "dist",
+      "ignore": [
+        "**/node_modules/**",
+        "firebase.json",
+        "*.json",
+        "*.md",
+        "*.log",
+        "**/.*",
+        "Dockerfile",
+        "LICENSE",
+        "build",
+        "docs",
+        "src",
+        "test"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/docs/:page*",
+          "destination": "https://fireadmin-stage-docs.firebaseapp.com/:page",
+          "type": 301
+        }
+      ]
+    },
+    {
+      "target": "stageDocs",
+      "public": "docs/public",
+      "ignore": [
+        "**/node_modules/**",
+        "firebase.json",
+        "*.json",
+        "*.md",
+        "*.log",
+        "**/.*",
+        "Dockerfile",
+        "LICENSE",
+        "build",
+        "dist",
+        "src",
+        "test"
+      ]
     }
   ],
   "functions": {

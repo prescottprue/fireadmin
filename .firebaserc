@@ -60,13 +60,17 @@
   "targets": {
     "fireadmin-stage": {
       "hosting": {
-        "docs": [
-          "fireadmin-docs",
+        "stageDocs": [
           "fireadmin-stage-docs"
         ],
-        "app": [
-          "fireadmin-33d82",
+        "docs": [
+          "fireadmin-docs"
+        ],
+        "stageApp": [
           "fireadmin-stage"
+        ],
+        "app": [
+          "fireadmin-33d82"
         ]
       }
     }

@@ -119,7 +119,7 @@ Deploy Docs Staging:
   dependencies:
     - Build Docs # Require artifacts from build stage
   script:
-    - yarn deploy:docs  # Deploy docs React App (Firebase Hosting)
+    - yarn deploy --only hosting:stageDocs  # Deploy docs React App (Firebase Hosting)
 
 Deploy Docs Production:
   stage: deploy_production
@@ -145,7 +145,7 @@ Deploy Docs Production:
   dependencies:
     - Build Docs # Require artifacts from build stage
   script:
-    - yarn deploy:docs  # Deploy docs React App (Firebase Hosting)
+    - yarn deploy --only hosting:docs # Deploy docs React App (Firebase Hosting)
 
 # Lint + Unit Test Cloud Functions - Staging
 # Run unit tests for Cloud Functions
@@ -242,7 +242,7 @@ Deploy Staging:
   dependencies:
     - Build Staging # Require artifacts from build stage
   script:
-    - yarn deploy:app  # Deploy docs React App (Firebase Hosting)
+    - yarn deploy --only hosting:stageApp  # Deploy docs React App (Firebase Hosting)
 
 # End To End Tests
 # Install Cypress binary and run end to end tests using Cypress
@@ -356,4 +356,4 @@ Deploy Production:
     paths:
       - firebase-debug.log
   script:
-    - yarn deploy:app # Deploy Cloud Functions and React App (Firebase Hosting)
+    - yarn deploy --only hosting:app # Deploy Cloud Functions and React App (Firebase Hosting)
