@@ -25,3 +25,11 @@ cypress/screenshots
 cypress/config.json
 cypress.env.json
 serviceAccount.json
+
+
+# Docs
+docs/public
+docs/.gatsby-context.js
+docs/.cache/
+.intermediate-representation/
+

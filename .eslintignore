@@ -11,3 +11,6 @@ functions/mochawesome-report/**
 test/e2e/fixtures/**
 docs/.cache/**
 docs/public/**
+docs/content/**
+cypress/screenshots/**
+cypress/videos/**

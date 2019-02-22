@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import AccountMenu from './AccountMenu'
 import LoginMenu from './LoginMenu'
-import { LIST_PATH } from 'constants'
+import { LIST_PATH, DOCS_URL } from 'constants'
 
 function Navbar({
   avatarUrl,
@@ -30,6 +30,15 @@ function Navbar({
           className={classes.brand}
           data-test="brand">
           Fireadmin
+        </Typography>
+        <Typography
+          type="title"
+          color="inherit"
+          className={classes.otherLink}
+          component={Link}
+          href={DOCS_URL}
+          data-test="docs">
+          Docs
         </Typography>
         <div className={classes.flex} />
         {authExists ? (

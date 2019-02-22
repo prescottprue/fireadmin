@@ -3,7 +3,9 @@
     "master": "fireadmin-stage",
     "prod": "fireadmin-33d82",
     "stage": "fireadmin-stage",
-    "default": "fireadmin-stage"
+    "default": "fireadmin-stage",
+    "docs": "fireadmin-docs",
+    "stage-docs": "fireadmin-stage-docs"
   },
   "ci": {
     "createConfig": {
@@ -59,7 +61,12 @@
     "fireadmin-stage": {
       "hosting": {
         "docs": [
-          "fireadmin-docs"
+          "fireadmin-docs",
+          "fireadmin-stage-docs",
+        ],
+        "app": [
+          "fireadmin-33d82"
+          "fireadmin-stage"
         ]
       }
     }

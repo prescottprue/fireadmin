@@ -1,7 +1,7 @@
 import firebase from 'firebase/app'
 
 /**
- * Create selector for data-test-id attribute value
+ * Create selector for data-test attribute value
  * @param {String} selectorValue - Value of selector
  * @return {String} String containing selector and value
  */

@@ -15,12 +15,18 @@
     "start": "cross-env NODE_ENV=development webpack-dashboard -p 1334 -c cyan -m -t fireadmin -- node build/scripts/start",
     "start:simple": "cross-env NODE_ENV=development node build/scripts/start",
     "start:dist": "yarn build && firebase serve --only hosting -p 3000",
+    "docs:start": "yarn --cwd docs start",
+    "docs:build": "yarn --cwd docs build",
     "functions:start": "yarn --cwd functions start",
     "functions:build": "yarn --cwd functions build",
     "functions:watch": "yarn --cwd functions watch",
     "functions:test": "yarn --cwd functions test",
-    "lint": "eslint src cypress build server project.config.js",
-    "lint:functions": "yarn --cwd functions lint",
+    "functions:test:cov": "yarn --cwd functions test:cov",
+    "lint": "yarn lint:app && yarn lint:functions && yarn lint:tests && yarn lint:docs",
+    "lint:functions": "eslint functions",
+    "lint:app": "eslint src build server project.config.js",
+    "lint:tests": "eslint cypress",
+    "lint:docs": "eslint docs",
     "lint:fix": "yarn lint --fix",
     "test:ui": "yarn build:testConfig && cypress run",
     "test:ui:open": "yarn build:testConfig && cypress open",
@@ -133,5 +139,10 @@
     "webpack-dev-middleware": "^1.11.0",
     "webpack-hot-middleware": "^2.13.2",
     "yargs": "^12.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn lint"
+    }
   }
 }

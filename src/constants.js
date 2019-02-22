@@ -13,6 +13,12 @@ export const SIGNUP_FORM_NAME = 'signup'
 export const NEW_PROJECT_FORM_NAME = 'newProject'
 export const PROJECT_BUCKET_CONFIG_PATH = 'bucketConfig'
 export const PERMISSIONS_PATH = 'permissions'
+export const DOCS_URL =
+  process.env.NODE_ENV === 'production'
+    ? window.location.hostname.includes('fireadmin-stage')
+      ? 'https://fireadmin-stage-docs.firebaseapp.com'
+      : 'https://fireadmin-docs.firebaseapp.com'
+    : 'http://localhost:8000'
 
 export const ANALYTICS_EVENT_NAMES = {
   login: 'Login',
