@@ -6,7 +6,7 @@
   "author": "prescottprue",
   "scripts": {
     "clean": "rimraf public .cache",
-    "start": "gatsby develop",
+    "start": "yarn clean && gatsby develop",
     "lint": "$(npm bin)/eslint . --ext .js,.jsx",
     "lint:fix": "npm run format && npm run lint -- --fix",
     "format": "prettier --trailing-comma none --no-semi --single-quote --write 'src/**/*.js' 'data/siteConfig.js'",
