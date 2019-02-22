@@ -52,7 +52,7 @@ describe('Project - Environments Page', () => {
           )
         }
       )
-      // Confirm user is notified of successful deletion
+      // Confirm user is notified of successful environment creation
       cy.get(createSelector('notification-message')).should(
         'contain',
         'Environment added successfully'
@@ -74,14 +74,14 @@ describe('Project - Environments Page', () => {
       cy.get(createSelector('delete-environment-button')).click()
       // Hit submit in confirm modal
       cy.get(createSelector('environment-delete-submit')).click()
-      // Confirm that new environment is not available in UI
+      // Confirm that deleted environment is no longer available in UI
       cy.get(createSelector('project-tile-name')).should('not.exist')
       // Confirm user is notified of successful deletion
       cy.get(createSelector('notification-message')).should(
         'contain',
         'Environment deleted successfully'
       )
-      // Confirm that new environment is not within Firestore
+      // Confirm that deleted environment is no longer within Firestore
       cy.callFirestore('get', 'projects/test-project/environments').then(
         environments => {
           expect(environments).to.be.an('array')
