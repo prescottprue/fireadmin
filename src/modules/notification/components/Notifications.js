@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { size } from 'lodash'
 import { connect } from 'react-redux'
-import { pure, compose, renderNothing, branch } from 'recompose'
+import { compose, renderNothing, branch } from 'recompose'
 import Snackbar from '@material-ui/core/Snackbar'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
@@ -49,7 +49,10 @@ function Notifications({
               )}
               aria-describedby="client-snackbar"
               message={
-                <span id="client-snackbar" className={classes.message}>
+                <span
+                  id="client-snackbar"
+                  data-test="notification-message"
+                  className={classes.message}>
                   <Icon
                     className={classNames(classes.icon, classes.iconVariant)}
                   />
@@ -110,7 +113,6 @@ const styles = theme => ({
 })
 
 const enhance = compose(
-  pure,
   withStyles(styles),
   connect(
     ({ notifications: { allIds, byId } }) => ({ allIds, byId }),

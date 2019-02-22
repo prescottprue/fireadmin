@@ -26,7 +26,6 @@ export const FilesUploader = ({
         disableClick={disabled}
         accept={acceptedFormats.join(', ')}
         inputProps={{ 'data-test': 'file-uploader' }}>
-        {/* data-test="file-uploader"> */}
         <UploadIcon className={classes[`icon${isCompact ? 'Compact' : ''}`]} />
         <div className={classes[`dropzone${isCompact ? 'Text' : 'Title'}`]}>
           Drag & Drop
