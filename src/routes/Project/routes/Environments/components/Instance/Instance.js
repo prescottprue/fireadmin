@@ -39,7 +39,7 @@ const Instance = ({
       subheader={projectId}
       action={
         <div>
-          <IconButton onClick={menuClick}>
+          <IconButton onClick={menuClick} data-test="environment-tile-more">
             <MoreVertIcon />
           </IconButton>
           <Popper
@@ -58,13 +58,17 @@ const Instance = ({
                 <Paper>
                   <ClickAwayListener onClickAway={closeMenu}>
                     <MenuList>
-                      <MenuItem onClick={editAndClose}>
+                      <MenuItem
+                        onClick={editAndClose}
+                        data-test="edit-environment-button">
                         <ListItemIcon className={classes.icon}>
                           <EditIcon />
                         </ListItemIcon>
                         <ListItemText inset primary="Edit" />
                       </MenuItem>
-                      <MenuItem onClick={removeAndClose}>
+                      <MenuItem
+                        onClick={removeAndClose}
+                        data-test="delete-environment-button">
                         <ListItemIcon className={classes.icon}>
                           <DeleteIcon />
                         </ListItemIcon>
