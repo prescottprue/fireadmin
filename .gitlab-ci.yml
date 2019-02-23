@@ -18,11 +18,10 @@ cache:
 
 # Script run before all stages unless otherwise overriden
 before_script:
-  - yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
+  - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
 
 variables:
   CYPRESS_CACHE_FOLDER: $CI_PROJECT_DIR/cache/Cypress
-  CYPRESS_INSTALL_BINARY: 0
 
 # Unit Testing Stage
 # Run unit tests for Cloud Functions
@@ -53,7 +52,7 @@ Functions Unit Tests:
       - node_modules
       - functions/node_modules
   before_script:
-    - yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
+    - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
     - yarn --cwd functions install --frozen-lockfile --cache-folder .yarn # Install functions dependencies
   script:
     - yarn lint:functions
@@ -277,7 +276,7 @@ UI Tests:
       - cypress.env.json
   before_script:
      # Install deps including Cypress binary (skipped in default before_script)
-    - CYPRESS_INSTALL_BINARY=1 yarn install --check-files --frozen-lockfile --cache-folder .yarn
+    - yarn install --check-files --frozen-lockfile --cache-folder .yarn
     # Confirm Cypress is ready to use
     - $(npm bin)/cypress verify
   script:

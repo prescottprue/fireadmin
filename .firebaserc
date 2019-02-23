@@ -61,11 +61,15 @@
         "stageDocs": [
           "fireadmin-stage-docs"
         ],
-        "docs": [
-          "fireadmin-docs"
-        ],
         "stageApp": [
           "fireadmin-stage"
+        ]
+      }
+    },
+    "fireadmin-33d82": {
+      "hosting": {
+        "docs": [
+          "fireadmin-docs"
         ],
         "app": [
           "fireadmin-33d82"
