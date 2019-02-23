@@ -105,8 +105,6 @@ Deploy Docs Staging:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
       - $CI_COMMIT_MESSAGE =~ /skip-docs-deploy/
-  variables:
-    FIREBASE_CI_PROJECT: stage-docs # deploy using stage-docs project in .firebaserc
   environment:
     name: docs-staging
     url: https://fireadmin-stage-docs.firebaseapp.com
@@ -132,7 +130,7 @@ Deploy Docs Production:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
       - $CI_COMMIT_MESSAGE =~ /skip-docs-deploy/
   variables:
-    FIREBASE_CI_PROJECT: docs # deploy using stage-docs project in .firebaserc
+    FIREBASE_CI_PROJECT: prod # deploy using stage-docs project in .firebaserc
   environment:
     name: docs-production
     url: https://fireadmin-docs.firebaseapp.com
