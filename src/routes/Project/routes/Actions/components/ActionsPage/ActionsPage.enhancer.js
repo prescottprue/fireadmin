@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withFirebase, withFirestore } from 'react-redux-firebase'
 import { formValueSelector } from 'redux-form'
-import { formNames } from 'constants/paths'
+import { ACTION_RUNNER_FORM_NAME } from 'constants/formNames'
 import {
   withStateHandlers,
   withHandlers,
@@ -62,7 +62,7 @@ export default compose(
       firebase,
       firestore: { data, ordered }
     } = state
-    const formSelector = formValueSelector(formNames.actionRunner)
+    const formSelector = formValueSelector(ACTION_RUNNER_FORM_NAME)
     const environmentValues = formSelector(state, 'environmentValues')
     const environmentsById = get(data, `environments-${params.projectId}`)
     // Populate selected keys from form into list of environment objects

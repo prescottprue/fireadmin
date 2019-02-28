@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { isEmpty } from 'react-redux-firebase'
 import { Route, Switch } from 'react-router-dom'
-import ProjectRoute from 'routes/Projects/routes/Project'
+import ProjectRoute from 'routes/Project'
 import { renderChildren } from 'utils/router'
 import ProjectTile from '../ProjectTile'
 import NewProjectTile from '../NewProjectTile'
@@ -20,6 +20,7 @@ function ProjectsPage({
   match,
   goToProject
 }) {
+  console.log('projects page:', match, ProjectRoute)
   return (
     <Switch>
       {/* Child routes */}
@@ -42,6 +43,7 @@ function ProjectsPage({
                   <ProjectTile
                     key={`Project-${project.id}-${ind}`}
                     name={project.name}
+                    project={project}
                     onSelect={() => goToProject(project.id)}
                     onDelete={() => deleteProject(project.id)}
                   />

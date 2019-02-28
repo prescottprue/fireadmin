@@ -1,7 +1,11 @@
 export const ACTION_TEMPLATES_PATH = 'actionTemplates'
+export const ACTIONS_PATH = 'actions'
+export const ACTION_RUNNER_REQUESTS_PATH = 'responses/actionRunner'
+export const ACTION_RUNNER_RESPONSES_PATH = 'responses/actionRunner'
+
 export const firebasePaths = {
-  actions: 'actions',
+  actions: ACTIONS_PATH,
   actionTemplates: ACTION_TEMPLATES_PATH,
-  actionRunnerRequests: 'requests/actionRunner',
+  actionRunnerRequests: 'responses/actionRunner',
   actionRunnerResponses: 'responses/actionRunner'
 }

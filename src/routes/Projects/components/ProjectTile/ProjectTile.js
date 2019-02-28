@@ -14,9 +14,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import EditIcon from '@material-ui/icons/Edit'
 import { formatDate } from 'utils/formatters'
 import SharingDialog from '../SharingDialog'
-import classesFromStyles from './ProjectTile.scss'
 
-export const ProjectTile = ({
+function ProjectTile({
   open,
   project,
   numberOfCollaborators,
@@ -28,61 +27,63 @@ export const ProjectTile = ({
   anchorEl,
   sharingDialogOpen,
   toggleSharingDialog
-}) => (
-  <Paper
-    className={classesFromStyles.container}
-    open={open}
-    data-test="project-tile">
-    <div className={classesFromStyles.top}>
-      <span
-        className={classesFromStyles.name}
-        onClick={handleEditClick}
-        data-test="project-tile-name">
-        {project.name}
-      </span>
-      <div>
-        <IconButton onClick={menuClick} data-test="project-tile-more">
-          <MoreVertIcon />
-        </IconButton>
-        <Menu
-          id="edit-menu"
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={closeMenu}>
-          <MenuItem onClick={handleEditClick} data-test="project-tile-edit">
-            <ListItemIcon className={classesFromStyles.icon}>
-              <EditIcon />
-            </ListItemIcon>
-            <ListItemText inset primary="Edit" />
-          </MenuItem>
-          <MenuItem onClick={onDelete} data-test="project-tile-delete">
-            <ListItemIcon className={classesFromStyles.icon}>
-              <DeleteIcon />
-            </ListItemIcon>
-            <ListItemText inset primary="Delete" />
-          </MenuItem>
-        </Menu>
+}) {
+  return (
+    <Paper
+      className={classes.container}
+      open={open}
+      data-test="project-tile">
+      <div className={classes.top}>
+        <span
+          className={classes.name}
+          onClick={handleEditClick}
+          data-test="project-tile-name">
+          {project.name}
+        </span>
+        <div>
+          <IconButton onClick={menuClick} data-test="project-tile-more">
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            id="edit-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={closeMenu}>
+            <MenuItem onClick={handleEditClick} data-test="project-tile-edit">
+              <ListItemIcon className={classes.icon}>
+                <EditIcon />
+              </ListItemIcon>
+              <ListItemText inset primary="Edit" />
+            </MenuItem>
+            <MenuItem onClick={onDelete} data-test="project-tile-delete">
+              <ListItemIcon className={classes.icon}>
+                <DeleteIcon />
+              </ListItemIcon>
+              <ListItemText inset primary="Delete" />
+            </MenuItem>
+          </Menu>
+        </div>
       </div>
-    </div>
-    {project.createdAt ? (
-      <span className={classesFromStyles.createdAt}>
-        {formatDate(invoke(project.createdAt, 'toDate'))}
-      </span>
-    ) : null}
-    <div className="flex-column">
-      <Tooltip title="Collaborators" placement="bottom">
-        <IconButton onClick={toggleSharingDialog}>
-          <PeopleIcon />
-        </IconButton>
-      </Tooltip>
-    </div>
-    <SharingDialog
-      open={sharingDialogOpen}
-      project={project}
-      onRequestClose={toggleSharingDialog}
-    />
-  </Paper>
-)
+      {project.createdAt ? (
+        <span className={classes.createdAt}>
+          {formatDate(invoke(project.createdAt, 'toDate'))}
+        </span>
+      ) : null}
+      <div className="flex-column">
+        <Tooltip title="Collaborators" placement="bottom">
+          <IconButton onClick={toggleSharingDialog}>
+            <PeopleIcon />
+          </IconButton>
+        </Tooltip>
+      </div>
+      <SharingDialog
+        open={sharingDialogOpen}
+        project={project}
+        onRequestClose={toggleSharingDialog}
+      />
+    </Paper>
+  )
+}
 
 ProjectTile.propTypes = {
   project: PropTypes.object.isRequired,

@@ -2,7 +2,7 @@ import { get } from 'lodash'
 import { compose } from 'redux'
 import { reduxForm } from 'redux-form'
 import { withStateHandlers } from 'recompose'
-import { formNames } from 'constants/paths'
+import { ACTION_RUNNER_FORM_NAME } from 'constants/formNames'
 import { connect } from 'react-redux'
 
 export default compose(
@@ -21,7 +21,7 @@ export default compose(
     }
   ),
   reduxForm({
-    form: formNames.actionRunner,
+    form: ACTION_RUNNER_FORM_NAME,
     enableReinitialize: true
   })
 )

@@ -1,5 +1,6 @@
 import { get, omit } from 'lodash'
-import { firebasePaths, formNames } from 'constants/paths'
+import { ACTION_RUNNER_REQUESTS_PATH } from 'constants/firebasePaths'
+import { ACTION_RUNNER_FORM_NAME } from 'constants/formNames'
 import { submit, initialize } from 'redux-form'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 
@@ -9,7 +10,7 @@ import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
  */
 export function submitActionRunner({ dispatch }) {
   return () => {
-    dispatch(submit(formNames.actionRunner))
+    dispatch(submit(ACTION_RUNNER_FORM_NAME))
   }
 }
 
@@ -30,7 +31,7 @@ export function rerunAction(props) {
     }
     props.selectActionTemplate(templateWithValues)
     props.dispatch(
-      initialize(formNames.actionRunner, templateWithValues, false, {
+      initialize(ACTION_RUNNER_FORM_NAME, templateWithValues, false, {
         keepValues: false
       })
     )
@@ -81,7 +82,7 @@ export function runAction(props) {
     })
     return Promise.all([
       props.firebase.pushWithMeta(
-        firebasePaths.actionRunnerRequests,
+        ACTION_RUNNER_REQUESTS_PATH,
         actionRequest
       ),
       createProjectEvent(

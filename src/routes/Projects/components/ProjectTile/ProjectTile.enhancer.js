@@ -1,4 +1,4 @@
-import { size } from 'lodash'
+import { get, size } from 'lodash'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import {
@@ -42,7 +42,7 @@ export default compose(
   // Handlers as props
   withHandlers(handlers),
   withProps(({ project }) => ({
-    numberOfCollaborators: size(project.collaborators)
+    numberOfCollaborators: size(get(project, 'collaborators'))
   })),
   // Add styles as props.classes
   withStyles(styles)

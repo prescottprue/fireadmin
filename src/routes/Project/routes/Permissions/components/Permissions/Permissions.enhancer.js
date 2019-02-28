@@ -2,7 +2,7 @@ import { compose } from 'redux'
 import { withProps, withStateHandlers } from 'recompose'
 import { connect } from 'react-redux'
 import { isSubmitting } from 'redux-form'
-import { formNames } from 'constants/paths'
+import { PROJECT_PERMISSIONS_FORM_NAME } from 'constants/formNames'
 import { createPermissionChecker } from 'utils'
 import { getCurrentUserCreatedProject } from 'selectors'
 
@@ -11,7 +11,7 @@ export default compose(
     projectId
   })),
   connect((state, props) => {
-    const permissionsSubmitting = isSubmitting(formNames.projectPermissions)(
+    const permissionsSubmitting = isSubmitting(PROJECT_PERMISSIONS_FORM_NAME)(
       state
     )
     const userHasPermission = createPermissionChecker(state, props)

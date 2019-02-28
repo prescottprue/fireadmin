@@ -6,7 +6,6 @@ import { TextField, Switch } from 'redux-form-material-ui'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import Tooltip from '@material-ui/core/Tooltip'
 // import LoadIntoProjectButton from '../LoadIntoProjectButton'
@@ -15,6 +14,7 @@ import PublishIcon from '@material-ui/icons/Publish'
 import BackIcon from '@material-ui/icons/ArrowBack'
 import UndoIcon from '@material-ui/icons/Undo'
 import IconButton from '@material-ui/core/IconButton'
+import Fab from '@material-ui/core/Fab'
 import { ACTION_TEMPLATES_PATH } from 'constants/firebasePaths'
 import ActionTemplateStep from '../ActionTemplateStep'
 import ActionTemplateInputs from '../ActionTemplateInputs'
@@ -49,39 +49,24 @@ export const ActionTemplateForm = ({
       </div>
       <Tooltip placement="bottom" title={cancelTooltip}>
         <div>
-          <Button
-            disabled={pristine || submitting}
-            onClick={reset}
-            variant="fab"
-            color="secondary"
-            className={classes.button}>
+          <Fab disabled={pristine || submitting} onClick={reset} color="secondary" className={classes.button}>
             <UndoIcon />
-          </Button>
+          </Fab>
         </div>
       </Tooltip>
       <Tooltip placement="bottom" title={submitTooltip}>
         <div>
-          <Button
-            type="submit"
-            variant="fab"
-            disabled={!editable || submitting || pristine}
-            color="primary"
-            className={classes.button}>
+          <Fab disabled={!editable || submitting || pristine} type="submit" color="primary" className={classes.button}>
             <PublishIcon />
-          </Button>
+          </Fab>
         </div>
       </Tooltip>
       {/* <LoadIntoProjectButton templateId={templateId} /> */}
       <Tooltip placement="bottom" title={deleteTooltip}>
         <div>
-          <Button
-            onClick={startTemplateDelete}
-            disabled={!editable}
-            variant="fab"
-            color="secondary"
-            className={classes.button}>
+          <Fab disabled={!editable} onClick={startTemplateDelete} color="secondary" className={classes.button}>
             <DeleteIcon />
-          </Button>
+          </Fab>
         </div>
       </Tooltip>
     </div>

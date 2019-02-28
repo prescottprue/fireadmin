@@ -3,9 +3,9 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withStateHandlers, withHandlers, setPropTypes } from 'recompose'
 import { reduxForm, formValueSelector } from 'redux-form'
-import { formNames } from 'constants/paths'
+import { NEW_ENVIRONMENT_FORM_NAME } from 'constants/formNames'
 
-const selector = formValueSelector(formNames.newEnvironment)
+const selector = formValueSelector(NEW_ENVIRONMENT_FORM_NAME)
 
 export default compose(
   withStateHandlers(
@@ -33,7 +33,7 @@ export default compose(
     }
   ),
   reduxForm({
-    form: formNames.newEnvironment
+    form: NEW_ENVIRONMENT_FORM_NAME
   }),
   connect(state => {
     return {

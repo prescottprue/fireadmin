@@ -2,12 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
 import Paper from '@material-ui/core/Paper'
+import { PROJECT_PERMISSIONS_FORM_NAME } from 'constants/formNames'
 import PermissionsTableRow from '../PermissionsTableRow'
 import DeleteMemberModal from '../DeleteMemberModal'
 import classesFromStyles from './PermissionsTable.scss'
-import { formNames } from 'constants/paths'
 
-export const PermissionsTable = ({
+function PermissionsTable({
   permissions,
   updatePermissions,
   projectId,
@@ -17,33 +17,35 @@ export const PermissionsTable = ({
   deleteDialogOpen,
   classes,
   removeMember
-}) => (
-  <div className={classesFromStyles.table}>
-    <Paper square className={classes.headingPaper}>
-      <span className={classes.headerLeft}>Member</span>
-      <span>Role</span>
-    </Paper>
-    <DeleteMemberModal
-      open={deleteDialogOpen}
-      name={selectedMemberName}
-      onRequestClose={handleDeleteClose}
-      onDeleteClick={removeMember}
-    />
-    {map(permissions, ({ role, uid, displayName }, index) => (
-      <PermissionsTableRow
-        key={`${uid}-${role}`}
-        uid={uid}
-        role={role}
-        displayName={displayName}
-        onSubmit={updatePermissions}
-        projectId={projectId}
-        form={`${formNames.projectPermissions}.${uid}`}
-        initialValues={{ [uid]: { role } }}
-        onDeleteClick={startDelete}
+}) {
+  return (
+    <div className={classesFromStyles.table}>
+      <Paper square className={classes.headingPaper}>
+        <span className={classes.headerLeft}>Member</span>
+        <span>Role</span>
+      </Paper>
+      <DeleteMemberModal
+        open={deleteDialogOpen}
+        name={selectedMemberName}
+        onRequestClose={handleDeleteClose}
+        onDeleteClick={removeMember}
       />
-    ))}
-  </div>
-)
+      {map(permissions, ({ role, uid, displayName }, index) => (
+        <PermissionsTableRow
+          key={`${uid}-${role}`}
+          uid={uid}
+          role={role}
+          displayName={displayName}
+          onSubmit={updatePermissions}
+          projectId={projectId}
+          form={`${PROJECT_PERMISSIONS_FORM_NAME}.${uid}`}
+          initialValues={{ [uid]: { role } }}
+          onDeleteClick={startDelete}
+        />
+      ))}
+    </div>
+  )
+}
 
 PermissionsTable.propTypes = {
   permissions: PropTypes.array.isRequired,

@@ -28,6 +28,14 @@ export default {
     flexDirection: 'column',
     alignItems: 'center'
   },
+  flexRow: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  flexColumn: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
   flexRowCenter: {
     display: 'flex',
     flexDirection: 'row',

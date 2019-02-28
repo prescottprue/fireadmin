@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Collapse from '@material-ui/core/Collapse'
 import Typography from '@material-ui/core/Typography'
+import DownArrow from '@material-ui/icons/ArrowDownward'
+import { PROJECT_ROLES_FORM_NAME } from 'constants/formNames'
 import RolesTableRow from '../RolesTableRow'
 import NewRoleCard from '../NewRoleCard'
 import NoRolesFound from './NoRolesFound'
-import { formNames } from 'constants/paths'
 import classesFromStyles from './RolesTable.scss'
-import DownArrow from '@material-ui/icons/ArrowDownward'
 
 function RolesTable({
   orderedRoles,
@@ -47,7 +47,7 @@ function RolesTable({
           orderedRoles.map(({ name, permissions, key }) => (
             <RolesTableRow
               key={key}
-              form={`${formNames.projectRoles}.${key}`}
+              form={`${PROJECT_ROLES_FORM_NAME}.${key}`}
               roleKey={key}
               name={name}
               onSubmit={updateRole}
