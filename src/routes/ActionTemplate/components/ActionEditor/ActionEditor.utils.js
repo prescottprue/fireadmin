@@ -16,10 +16,10 @@ import 'codemirror/addon/fold/foldcode'
 import 'codemirror/addon/fold/foldgutter'
 import 'codemirror/addon/fold/brace-fold'
 
-// Needed for Firepad to load CodeMirror
-require('expose-loader?CodeMirror!codemirror') // eslint-disable-line
-
 export const getCodeMirror = (el, doc) => {
+  // Needed for Firepad to load CodeMirror
+  require('expose-loader?CodeMirror!codemirror') // eslint-disable-line
+
   const cm = new CodeMirror(el, {
     value: doc,
     theme: 'oceanic',

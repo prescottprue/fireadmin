@@ -1,7 +1,6 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
-import { firebasePaths } from 'constants/paths'
 import { withHandlers, withStateHandlers, withProps } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'
@@ -11,6 +10,7 @@ import {
   renderWhile,
   renderIfError
 } from 'utils/components'
+import { ACTION_TEMPLATES_PATH } from 'constants/firebasePaths'
 import TemplateLoadingError from './TemplateLoadingError'
 import TemplateNotFound from './TemplateNotFound'
 import * as handlers from './ActionTemplatePage.handlers'
@@ -21,7 +21,7 @@ export default compose(
   // Set listeners for Firestore
   firestoreConnect(props => [
     {
-      collection: `${firebasePaths.actionTemplates}`,
+      collection: ACTION_TEMPLATES_PATH,
       doc: props.params.templateId
     }
   ]),
@@ -34,7 +34,7 @@ export default compose(
   // Render Error page if there is an error loading the action template
   renderIfError(
     (state, { params: { templateId } }) => [
-      `${firebasePaths.actionTemplates}.${templateId}`
+      `${ACTION_TEMPLATES_PATH}.${templateId}`
     ],
     TemplateLoadingError
   ),

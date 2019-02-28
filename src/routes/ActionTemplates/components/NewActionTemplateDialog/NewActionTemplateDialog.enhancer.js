@@ -1,5 +1,4 @@
-import { compose } from 'redux'
 import { reduxForm } from 'redux-form'
-import { formNames } from 'constants/paths'
+import { NEW_ACTION_TEMPLATE_FORM_NAME } from 'constants/formNames'
 
-export default compose(reduxForm({ form: formNames.newActionTemplate }))
+export default reduxForm({ form: NEW_ACTION_TEMPLATE_FORM_NAME })

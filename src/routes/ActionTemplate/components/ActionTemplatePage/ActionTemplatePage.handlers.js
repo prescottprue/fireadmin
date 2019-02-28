@@ -1,4 +1,5 @@
-import { firebasePaths, paths } from 'constants/paths'
+import { ACTION_TEMPLATES_PATH as ACTION_TEMPLATES_ROUTE_PATH } from 'constants/paths'
+import { ACTION_TEMPLATES_PATH } from 'constants/firebasePaths'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 
 /**
@@ -15,7 +16,7 @@ export function updateTemplate(props) {
     const {
       params: { templateId }
     } = props
-    const updatePath = `${firebasePaths.actionTemplates}/${templateId}`
+    const updatePath = `${ACTION_TEMPLATES_PATH}/${templateId}`
     const updatesWithMeta = {
       ...updateVals,
       templateId,
@@ -31,7 +32,7 @@ export function updateTemplate(props) {
     } catch (err) {
       const errMsg = 'Error updating template'
       console.error(errMsg, err.message || err) // eslint-disable-line no-console
-      Raven.captureException(err)
+      window.Raven.captureException(err)
       props.showError(errMsg)
       throw err
     }
@@ -52,19 +53,19 @@ export function deleteTemplate(props) {
     const {
       params: { templateId }
     } = props
-    const updatePath = `${firebasePaths.actionTemplates}/${templateId}`
+    const updatePath = `${ACTION_TEMPLATES_PATH}/${templateId}`
     try {
       const res = await props.firestore.delete(updatePath)
       triggerAnalyticsEvent('deleteActionTemplate', {
         templateId
       })
       props.showSuccess('Template Deleted Successfully')
-      props.router.push(paths.actionTemplates)
+      props.router.push(ACTION_TEMPLATES_ROUTE_PATH)
       return res
     } catch (err) {
       const errMsg = 'Error Deleting Template'
       console.error(errMsg, err.message || err) // eslint-disable-line no-console
-      Raven.captureException(err)
+      window.Raven.captureException(err)
       props.showError(errMsg)
       throw err
     }

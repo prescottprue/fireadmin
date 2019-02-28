@@ -1,12 +1,15 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import CoreLayout from '../layouts/CoreLayout'
+import AccountRoute from './Account'
+import ActionTemplateRoute from './ActionTemplate'
+import ActionTemplatesRoute from './ActionTemplates'
 import Home from './Home'
 import LoginRoute from './Login'
-import SignupRoute from './Signup'
-import ProjectsRoute from './Projects'
-import AccountRoute from './Account'
 import NotFoundRoute from './NotFound'
+import ProjectsRoute from './Projects'
+import ProjectRoute from './Project'
+import SignupRoute from './Signup'
 
 export default function createRoutes(store) {
   return (
@@ -15,8 +18,11 @@ export default function createRoutes(store) {
         <Route exact path={Home.path} component={Home.component} />
         {/* Build Route components from routeSettings */
         [
+          ActionTemplateRoute,
+          ActionTemplatesRoute,
           AccountRoute,
           ProjectsRoute,
+          ProjectRoute,
           SignupRoute,
           LoginRoute
           /* Add More Routes Here */

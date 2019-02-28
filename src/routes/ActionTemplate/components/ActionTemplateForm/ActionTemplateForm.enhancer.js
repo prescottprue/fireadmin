@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 import { withProps, withHandlers } from 'recompose'
 import { withStyles } from '@material-ui/core/styles'
 import { withRouter } from 'utils/components'
-import { formNames, paths } from 'constants/paths'
+import { ACTION_TEMPLATES_PATH } from 'constants/paths'
+import { ACTION_TEMPLATE_FORM_NAME } from 'constants/formNames'
 
 const styles = theme => ({
   button: {
@@ -31,7 +32,7 @@ export default compose(
   }),
   // Create form (submitted by submit button)
   reduxForm({
-    form: formNames.actionTemplate,
+    form: ACTION_TEMPLATE_FORM_NAME,
     enableReinitialize: true
   }),
   // Add props
@@ -45,7 +46,7 @@ export default compose(
     deleteTooltip: editable ? 'Delete Template' : 'Must be owner'
   })),
   withHandlers({
-    goBack: ({ router }) => () => router.push(paths.actionTemplates)
+    goBack: ({ router }) => () => router.push(ACTION_TEMPLATES_PATH)
   }),
   withStyles(styles)
 )

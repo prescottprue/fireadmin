@@ -1,4 +1,5 @@
-import { firebasePaths, paths } from 'constants/paths'
+import { ACTION_TEMPLATES_PATH } from 'constants/firebasePaths'
+import { ACTION_TEMPLATES_PATH as ACTION_TEMPLATES_ROUTE } from 'constants/paths'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 
 /**
@@ -19,7 +20,7 @@ export function createNewActionTemplate(props) {
         createdAt: props.firestore.FieldValue.serverTimestamp()
       }
       const addResponse = await props.firestore.add(
-        firebasePaths.actionTemplates,
+        ACTION_TEMPLATES_PATH,
         newTemplateWithMeta
       )
       props.toggleNewDialog()
@@ -32,7 +33,7 @@ export function createNewActionTemplate(props) {
     } catch (err) {
       const errMsg = 'Error creating new template'
       console.error(errMsg, err.message || err) // eslint-disable-line no-console
-      Raven.captureException(err)
+      window.Raven.captureException(err)
       props.showError(errMsg)
       throw err
     }
@@ -47,7 +48,7 @@ export function deleteTemplate(props) {
   return async templateId => {
     try {
       // TODO: Add delete confirmation
-      await props.firestore.delete(firebasePaths.actionTemplates)
+      await props.firestore.delete(ACTION_TEMPLATES_PATH)
       triggerAnalyticsEvent('deleteActionTemplate', {
         uid: props.uid,
         templateId
@@ -56,7 +57,7 @@ export function deleteTemplate(props) {
     } catch (err) {
       const errMsg = 'Error deleting action template'
       console.error(errMsg, err.message || err) // eslint-disable-line no-console
-      Raven.captureException(err)
+      window.Raven.captureException(err)
       props.showError(errMsg)
       throw err
     }
@@ -68,5 +69,5 @@ export function deleteTemplate(props) {
  * @param {Object} props - Component props
  */
 export function goToTemplate(props) {
-  return id => props.router.push(`${paths.actionTemplates}/${id}`)
+  return id => props.router.push(`${ACTION_TEMPLATES_ROUTE}/${id}`)
 }
