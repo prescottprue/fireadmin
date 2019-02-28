@@ -2,7 +2,7 @@ import { get } from 'lodash'
 import { compose } from 'redux'
 import { reduxForm } from 'redux-form'
 import { withStateHandlers } from 'recompose'
-import { formNames } from 'constants'
+import { formNames } from 'constants/paths'
 import { connect } from 'react-redux'
 
 export default compose(

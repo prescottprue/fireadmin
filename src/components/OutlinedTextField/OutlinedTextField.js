@@ -11,7 +11,7 @@ function OutlinedTextField({ input, label, classes, ...other }) {
       margin="normal"
       variant="outlined"
       InputProps={input}
-      inputProps={other}
+      inputProps={other} // eslint-disable-line react/jsx-no-duplicate-props
     />
   )
 }

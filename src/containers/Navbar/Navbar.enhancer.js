@@ -4,14 +4,17 @@ import {
   compose,
   withProps,
   flattenProp,
-  withStateHandlers
+  withStateHandlers,
+  setDisplayName
 } from 'recompose'
+import { withStyles } from '@material-ui/core/styles'
+import { withRouter } from 'react-router-dom'
 import { withFirebase, isEmpty, isLoaded } from 'react-redux-firebase'
-import { ACCOUNT_PATH } from 'constants'
-import { withRouter, spinnerWhileLoading } from 'utils/components'
+import { ACCOUNT_PATH } from 'constants/paths'
 import styles from './Navbar.styles'
 
 export default compose(
+  // Set component display name (more clear in dev/error tools)
   setDisplayName('EnhancedNavbar'),
   // Map redux state to props
   connect(({ firebase: { auth, profile } }) => ({
@@ -26,8 +29,7 @@ export default compose(
     }),
     {
       closeAccountMenu: ({ accountMenuOpen }) => () => ({
-        anchorEl: null,
-        accountMenuOpen: false
+        anchorEl: null
       }),
       handleMenu: () => event => ({
         anchorEl: event.target

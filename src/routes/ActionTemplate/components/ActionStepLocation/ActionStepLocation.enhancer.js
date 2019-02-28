@@ -1,7 +1,7 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { formValueSelector } from 'redux-form'
-import { formNames } from 'constants'
+import { formNames } from 'constants/paths'
 
 const selector = formValueSelector(formNames.actionTemplate)
 

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { reduxForm } from 'redux-form'
-import { formNames } from 'constants'
+import { formNames } from 'constants/paths'
 import { compose } from 'redux'
 import { setPropTypes, withHandlers } from 'recompose'
 import { withStyles } from '@material-ui/core/styles'

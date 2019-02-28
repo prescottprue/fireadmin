@@ -1,22 +1,10 @@
-import { paths } from 'constants'
+import { Loadable } from 'utils/components'
+import { PROJECT_ACTION_PATH as path } from 'constants/paths'
 
-export default store => ({
-  path: paths.projectActions,
-  /*  Async getComponent is only invoked when route matches   */
-  getComponent(nextState, cb) {
-    /*  Webpack - use 'require.ensure' to create a split point
-        and embed an async module loader (jsonp) when bundling   */
-    require.ensure(
-      [],
-      require => {
-        const Actions = require('./components/ActionsPage').default
-
-        /*  Return getComponent   */
-        cb(null, Actions)
-
-        /* Webpack named bundle   */
-      },
-      'Actions'
-    )
-  }
-})
+export default {
+  path,
+  component: Loadable({
+    loader: () =>
+      import(/* webpackChunkName: 'Actions' */ './components/ActionsPage')
+  })
+}

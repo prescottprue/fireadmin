@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { reduxForm } from 'redux-form'
 import { setPropTypes, compose } from 'recompose'
 import { withStyles } from '@material-ui/core/styles'
-import { SIGNUP_FORM_NAME } from 'constants'
+import { SIGNUP_FORM_NAME } from 'constants/paths'
 import styles from './SignupForm.styles'
 
 export default compose(

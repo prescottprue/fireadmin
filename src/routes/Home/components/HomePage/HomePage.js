@@ -1,8 +1,8 @@
 import React from 'react'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
-import { Link } from 'react-router'
-import { ACTION_TEMPLATES_PATH, LOGIN_PATH } from 'constants'
+import { Link } from 'react-router-dom'
+import { ACTION_TEMPLATES_PATH, LOGIN_PATH } from 'constants/paths'
 import classes from './HomePage.scss'
 
 const srcUrl = 'https://github.com/prescottprue/fireadmin'

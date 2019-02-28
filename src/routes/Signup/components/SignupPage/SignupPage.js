@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import GoogleButton from 'react-google-button'
-import { LOGIN_PATH } from 'constants'
+import { LOGIN_PATH } from 'constants/paths'
 
 const SignupPage = ({ classes, emailSignup, googleLogin, onSubmitFail }) => (
   <div className={classes.root}>

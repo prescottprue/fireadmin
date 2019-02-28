@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { size } from 'lodash'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -14,7 +14,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
-import { paths } from 'constants'
+import { paths } from 'constants/paths'
 
 export const ActionTemplateListCard = ({
   name,

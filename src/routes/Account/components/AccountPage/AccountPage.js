@@ -17,6 +17,7 @@ export const AccountPage = ({ avatarUrl, updateAccount, cleanProfile }) => (
           <img
             className={classes.avatarCurrent}
             src={avatarUrl || defaultUserImageUrl}
+            alt=""
           />
         </div>
         <div className={classes.meta}>

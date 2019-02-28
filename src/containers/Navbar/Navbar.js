@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
-import { LIST_PATH } from 'constants'
 import AccountMenu from './AccountMenu'
 import LoginMenu from './LoginMenu'
-import { LIST_PATH, DOCS_URL } from 'constants'
+import { LIST_PATH } from 'constants/paths'
+import { DOCS_URL } from 'constants/docs'
 
 function Navbar({
   avatarUrl,
@@ -21,10 +21,11 @@ function Navbar({
   handleMenu
 }) {
   return (
-    <AppBar position="static" className={classes.appBar} elevation={24}>
+    <AppBar position="static" className={classes.appBar}>
       <Toolbar>
         <Typography
           type="title"
+          variant="h6"
           color="inherit"
           component={Link}
           to={authExists ? LIST_PATH : '/'}
@@ -36,7 +37,7 @@ function Navbar({
           type="title"
           color="inherit"
           className={classes.otherLink}
-          component={Link}
+          component="a"
           href={DOCS_URL}
           data-test="docs">
           Docs

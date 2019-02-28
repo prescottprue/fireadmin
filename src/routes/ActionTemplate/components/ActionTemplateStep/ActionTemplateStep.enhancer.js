@@ -3,7 +3,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { formValueSelector } from 'redux-form'
 import { withHandlers, setPropTypes } from 'recompose'
-import { formNames } from 'constants'
+import { formNames } from 'constants/paths'
 import * as handlers from './ActionTemplateStep.handlers'
 
 const selector = formValueSelector(formNames.actionTemplate)

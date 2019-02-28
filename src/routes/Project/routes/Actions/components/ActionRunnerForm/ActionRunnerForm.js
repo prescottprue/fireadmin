@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { get, map } from 'lodash'
 import Button from '@material-ui/core/Button'
 import { Field } from 'redux-form'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Grid from '@material-ui/core/Grid'
 import AppBar from '@material-ui/core/AppBar'
@@ -18,7 +18,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import CollectionSearch from 'components/CollectionSearch'
 import TabContainer from 'components/TabContainer'
 import { databaseURLToProjectName } from 'utils'
-import { paths } from 'constants'
+import { ACTION_TEMPLATES_PATH } from 'constants/paths'
 import OutlinedSelect from 'components/OutlinedSelect'
 import ActionInput from '../ActionInput'
 import StepsViewer from '../StepsViewer'
@@ -58,7 +58,7 @@ export const ActionRunnerForm = ({
           configuation options, then clicking <strong>run action</strong>.
         </Typography>
         <div className={classes.tabs}>
-          <Link to={paths.actionTemplates}>
+          <Link to={ACTION_TEMPLATES_PATH}>
             <Button color="primary" className={classes.button}>
               Create New Action Template
             </Button>

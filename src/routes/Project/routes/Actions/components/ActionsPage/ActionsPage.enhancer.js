@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withFirebase, withFirestore } from 'react-redux-firebase'
 import { formValueSelector } from 'redux-form'
-import { formNames } from 'constants'
+import { formNames } from 'constants/paths'
 import {
   withStateHandlers,
   withHandlers,

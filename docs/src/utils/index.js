@@ -20,7 +20,7 @@ export function getChildChapters(pages) {
  */
 export function slugIsInCurrentPath(slug) {
   return (
-    typeof location !== 'undefined' &&
-    location.pathname.includes(withPrefix(slug))
+    typeof window.location !== 'undefined' &&
+    window.location.pathname.includes(withPrefix(slug))
   )
 }

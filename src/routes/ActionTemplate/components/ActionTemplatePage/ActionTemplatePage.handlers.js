@@ -1,4 +1,4 @@
-import { firebasePaths, paths } from 'constants'
+import { firebasePaths, paths } from 'constants/paths'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 
 /**

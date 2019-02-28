@@ -3,7 +3,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withStateHandlers, withHandlers, setPropTypes } from 'recompose'
 import { reduxForm, formValueSelector } from 'redux-form'
-import { formNames } from 'constants'
+import { formNames } from 'constants/paths'
 
 const selector = formValueSelector(formNames.newEnvironment)
 

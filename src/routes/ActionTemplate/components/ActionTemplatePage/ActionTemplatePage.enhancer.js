@@ -1,7 +1,7 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
-import { firebasePaths } from 'constants'
+import { firebasePaths } from 'constants/paths'
 import { withHandlers, withStateHandlers, withProps } from 'recompose'
 import { firestoreConnect } from 'react-redux-firebase'
 import { withNotifications } from 'modules/notification'

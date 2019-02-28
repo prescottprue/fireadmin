@@ -2,7 +2,7 @@ import { compose } from 'redux'
 import { withProps, withStateHandlers } from 'recompose'
 import { connect } from 'react-redux'
 import { isSubmitting } from 'redux-form'
-import { formNames } from 'constants'
+import { formNames } from 'constants/paths'
 import { createPermissionChecker } from 'utils'
 import { getCurrentUserCreatedProject } from 'selectors'
 

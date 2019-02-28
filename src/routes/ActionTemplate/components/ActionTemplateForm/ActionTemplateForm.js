@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Field, FieldArray } from 'redux-form'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import { TextField, Switch } from 'redux-form-material-ui'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Paper from '@material-ui/core/Paper'
@@ -15,11 +15,11 @@ import PublishIcon from '@material-ui/icons/Publish'
 import BackIcon from '@material-ui/icons/ArrowBack'
 import UndoIcon from '@material-ui/icons/Undo'
 import IconButton from '@material-ui/core/IconButton'
+import { ACTION_TEMPLATES_PATH } from 'constants/firebasePaths'
 import ActionTemplateStep from '../ActionTemplateStep'
 import ActionTemplateInputs from '../ActionTemplateInputs'
 import ActionTemplateEnvs from '../ActionTemplateEnvs'
 import ActionTemplateBackups from '../ActionTemplateBackups'
-import { firebasePaths, paths } from 'constants'
 import styleClasses from './ActionTemplateForm.scss'
 
 export const ActionTemplateForm = ({
@@ -39,7 +39,7 @@ export const ActionTemplateForm = ({
   <form className={styleClasses.container} onSubmit={handleSubmit}>
     <div className={styleClasses.buttons}>
       <div style={{ marginRight: '4rem' }}>
-        <Link to={paths.dataAction}>
+        <Link to={ACTION_TEMPLATES_PATH}>
           <Tooltip placement="bottom" title="Back To Templates">
             <IconButton className={classes.submit} onClick={goBack}>
               <BackIcon />
@@ -127,7 +127,7 @@ export const ActionTemplateForm = ({
       <Typography className={styleClasses.header}>Steps</Typography>
       <FieldArray
         name="steps"
-        mainEditorPath={`${firebasePaths.actionTemplates}/${templateId}`}
+        mainEditorPath={`${ACTION_TEMPLATES_PATH}/${templateId}`}
         component={ActionTemplateStep}
       />
     </div>

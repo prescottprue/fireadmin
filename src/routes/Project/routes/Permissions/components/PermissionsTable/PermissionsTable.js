@@ -5,7 +5,7 @@ import Paper from '@material-ui/core/Paper'
 import PermissionsTableRow from '../PermissionsTableRow'
 import DeleteMemberModal from '../DeleteMemberModal'
 import classesFromStyles from './PermissionsTable.scss'
-import { formNames } from 'constants'
+import { formNames } from 'constants/paths'
 
 export const PermissionsTable = ({
   permissions,

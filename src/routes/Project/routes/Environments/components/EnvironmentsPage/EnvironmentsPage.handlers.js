@@ -1,6 +1,6 @@
 import { get } from 'lodash'
 import { reset } from 'redux-form'
-import { formNames } from 'constants'
+import { formNames } from 'constants/paths'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 import { to } from 'utils/async'
 

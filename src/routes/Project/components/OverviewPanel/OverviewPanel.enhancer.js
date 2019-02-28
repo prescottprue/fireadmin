@@ -2,7 +2,7 @@ import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withProps } from 'recompose'
-import { paths } from 'constants'
+import { paths } from 'constants/paths'
 
 export default compose(
   // Listeners for redux data in ProjectsPage.enhancer

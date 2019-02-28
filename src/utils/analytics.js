@@ -1,6 +1,6 @@
 import { version } from '../../package.json'
 import { segmentId, env } from 'config' // eslint-disable-line import/no-unresolved
-import { ANALYTICS_EVENT_NAMES } from 'constants'
+import ANALYTICS_EVENT_NAMES from 'constants/analytics'
 
 /**
  * Set User info to analytics context

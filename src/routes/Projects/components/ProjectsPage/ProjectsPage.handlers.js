@@ -1,4 +1,4 @@
-import { LIST_PATH, defaultRoles } from 'constants'
+import { LIST_PATH, defaultRoles } from 'constants/paths'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 
 /**

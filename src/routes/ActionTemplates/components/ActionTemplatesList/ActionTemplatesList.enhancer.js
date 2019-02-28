@@ -1,7 +1,7 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withStateHandlers, withHandlers } from 'recompose'
-import { firebasePaths } from 'constants'
+import { firebasePaths } from 'constants/paths'
 import { firestoreConnect } from 'react-redux-firebase'
 import { spinnerWhileLoading, withRouter } from 'utils/components'
 import { withNotifications } from 'modules/notification'

@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography'
 import RolesTableRow from '../RolesTableRow'
 import NewRoleCard from '../NewRoleCard'
 import NoRolesFound from './NoRolesFound'
-import { formNames } from 'constants'
+import { formNames } from 'constants/paths'
 import classesFromStyles from './RolesTable.scss'
 import DownArrow from '@material-ui/icons/ArrowDownward'
 

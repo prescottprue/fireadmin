@@ -2,7 +2,7 @@ import { compose } from 'redux'
 import { withStyles } from '@material-ui/core/styles'
 import { withHandlers } from 'recompose'
 import { withRouter } from 'utils/components'
-import { LIST_PATH } from 'constants'
+import { LIST_PATH } from 'constants/paths'
 import styles from './SidebarLayout.styles'
 
 export default compose(

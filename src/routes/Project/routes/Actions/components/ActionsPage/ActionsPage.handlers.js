@@ -1,5 +1,5 @@
 import { get, omit } from 'lodash'
-import { firebasePaths, formNames } from 'constants'
+import { firebasePaths, formNames } from 'constants/paths'
 import { submit, initialize } from 'redux-form'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 

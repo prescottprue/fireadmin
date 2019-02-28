@@ -1,6 +1,6 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { LIST_PATH } from 'constants'
+import { LIST_PATH } from 'constants/paths'
 import { withHandlers, withStateHandlers } from 'recompose'
 import { withRouter } from 'react-router-dom'
 import { firestoreConnect } from 'react-redux-firebase'

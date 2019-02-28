@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { withProps, withHandlers } from 'recompose'
 import { withStyles } from '@material-ui/core/styles'
 import { withRouter } from 'utils/components'
-import { formNames, paths } from 'constants'
+import { formNames, paths } from 'constants/paths'
 
 const styles = theme => ({
   button: {
