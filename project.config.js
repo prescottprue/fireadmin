@@ -34,6 +34,14 @@ module.exports = {
     'react-redux',
     'redux-thunk',
     'react-router',
-    'react-redux-firebase'
+    // '@material-ui',
+    // 'react-instantsearch',
+    // 'algoliasearch',
+    // 'algoliasearch-helper',
+    'react-redux-firebase/lib/helpers',
+    'react-redux-firebase/lib/firebaseConnect',
+    'react-redux-firebase/lib/firestoreConnect',
+    'react-redux-firebase/lib/withFirestore',
+    'react-redux-firebase/lib/withFirebase'
   ]
 }
