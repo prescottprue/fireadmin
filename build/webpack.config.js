@@ -3,6 +3,8 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin
 const project = require('../project.config')
 
 const inProject = path.resolve.bind(path, project.basePath)
@@ -280,6 +282,10 @@ if (__PROD__) {
       }
     })
   )
+}
+
+if (process.env.SIZE) {
+  config.plugins.push(new BundleAnalyzerPlugin())
 }
 
 module.exports = config

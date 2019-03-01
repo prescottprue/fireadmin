@@ -1,6 +1,6 @@
 import { get } from 'lodash'
 import { compose } from 'redux'
-import { firebaseConnect } from 'react-redux-firebase'
+import firebaseConnect from 'react-redux-firebase/lib/firebaseConnect'
 import {
   withHandlers,
   pure,

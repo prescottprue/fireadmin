@@ -2,7 +2,7 @@ import { omit } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withHandlers, withProps } from 'recompose'
-import { withFirebase } from 'react-redux-firebase'
+import withFirebase from 'react-redux-firebase/lib/withFirebase'
 import { UserIsAuthenticated } from 'utils/router'
 import { spinnerWhileLoading } from 'utils/components'
 

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { get, map, findIndex } from 'lodash'
-import { withFirestore } from 'react-redux-firebase'
+import withFirestore from 'react-redux-firebase/lib/withFirestore'
 import { compose } from 'redux'
 import { withHandlers, setPropTypes, withStateHandlers } from 'recompose'
 import { withNotifications } from 'modules/notification'

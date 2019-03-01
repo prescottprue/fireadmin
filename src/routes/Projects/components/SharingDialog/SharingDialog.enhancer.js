@@ -2,7 +2,8 @@ import { get, findIndex, map } from 'lodash'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withFirestore, firebaseConnect } from 'react-redux-firebase'
+import withFirestore from 'react-redux-firebase/lib/withFirestore'
+import firebaseConnect from 'react-redux-firebase/lib/firebaseConnect'
 import {
   withHandlers,
   withStateHandlers,

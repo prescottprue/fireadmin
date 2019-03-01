@@ -2,7 +2,8 @@ import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withFirebase, withFirestore } from 'react-redux-firebase'
+import withFirestore from 'react-redux-firebase/lib/withFirestore'
+import withFirebase from 'react-redux-firebase/lib/withFirebase'
 import {
   withHandlers,
   withStateHandlers,
