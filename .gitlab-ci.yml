@@ -211,8 +211,9 @@ Build Staging:
       - dist
   script:
     - yarn build:config # create env specific src/config.js
-    - yarn lint:app
-    - yarn build
+    - yarn lint:app # confirm there is no lint in app code
+    - yarn build # build app bundles
+    - yarn size # confirm that bundles have not grown too much
 
 # Deploy Staging
 # Deploy React App and Cloud Functions
