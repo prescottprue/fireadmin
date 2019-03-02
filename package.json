@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf dist",
-    "size": "size-limit",
+    "size": "yarn build && size-limit",
+    "size:why": "cross-env SIZE=true yarn size",
     "compile": "node build/scripts/compile",
-    "build": "yarn clean && cross-env NODE_ENV=production SIZE=true yarn compile",
+    "build": "yarn clean && cross-env NODE_ENV=production yarn compile",
     "build:config": "firebase-ci createConfig",
     "build:testConfig": "cypress-firebase createTestEnvFile",
     "deploy": "firebase-ci deploy",
