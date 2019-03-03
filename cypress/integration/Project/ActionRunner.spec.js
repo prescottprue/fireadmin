@@ -32,9 +32,10 @@ describe('Project - Actions Page', () => {
   })
 
   describe('Environment Locking', () => {
+    const lockedEnvId = 'locked-env'
+    const lockedEnv = { name: 'locked env', locked: true }
     before(() => {
-      const lockedEnv = { name: 'locked env', locked: true }
-      cy.addProjectEnvironment('test-project', 'locked-env', lockedEnv)
+      cy.addProjectEnvironment('test-project', lockedEnvId, lockedEnv)
     })
 
     it('is disabled as both a source and destination', () => {
@@ -59,7 +60,7 @@ describe('Project - Actions Page', () => {
         .last()
         .click()
       // Pick first option for the destination environment
-      // Config that locked-env is disabled
+      // Confirm that locked-env is disabled is disabled
       cy.get(createIdSelector('locked-env'))
         .invoke('attr', 'class')
         .should('contain', 'disabled')
@@ -144,6 +145,7 @@ describe('Project - Actions Page', () => {
       // Open destination select field
       cy.get(createSelector('environment-select'))
         .last()
+        .scrollIntoView()
         .click()
       // Pick the src env
       cy.get(createSelector('environment-option'))

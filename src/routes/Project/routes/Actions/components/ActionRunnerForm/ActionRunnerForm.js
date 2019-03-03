@@ -119,6 +119,7 @@ export const ActionRunnerForm = ({
                   <MenuItem
                     key={`Environment-Option-${environment.id}-${envIndex}`}
                     value={environment.id}
+                    button
                     disabled={
                       environment.locked ||
                       (environment.readOnly && index === 1) ||

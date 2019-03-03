@@ -8,11 +8,8 @@ import {
   withStateHandlers,
   setDisplayName
 } from 'recompose'
-import {
-  withFirebase,
-  isEmpty,
-  isLoaded
-} from 'react-redux-firebase/lib/helpers'
+import withFirebase from 'react-redux-firebase/lib/withFirebase'
+import { isEmpty, isLoaded } from 'react-redux-firebase/lib/helpers'
 import { ACCOUNT_PATH } from 'constants'
 import { withRouter, spinnerWhileLoading } from 'utils/components'
 import styles from './Navbar.styles'
