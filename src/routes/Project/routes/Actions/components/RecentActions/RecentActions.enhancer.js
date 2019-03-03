@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { get, map } from 'lodash'
 import { compose, withProps, setPropTypes } from 'recompose'
-import { firestoreConnect } from 'react-redux-firebase'
+import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import { connect } from 'react-redux'
 import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
 import NoRecentActions from './NoRecentActions'

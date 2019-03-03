@@ -1,6 +1,6 @@
 import React, { cloneElement } from 'react'
 import PropTypes from 'prop-types'
-import { isEmpty } from 'react-redux-firebase'
+import { isEmpty } from 'react-redux-firebase/lib/helpers'
 import ProjectTile from '../ProjectTile'
 import NewProjectTile from '../NewProjectTile'
 import NewProjectDialog from '../NewProjectDialog'

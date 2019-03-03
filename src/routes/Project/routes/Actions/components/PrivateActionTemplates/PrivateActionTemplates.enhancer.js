@@ -1,7 +1,7 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { renderNothing, branch, withHandlers } from 'recompose'
-import { firestoreConnect } from 'react-redux-firebase'
+import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
 import NoTemplatesFound from './NoTemplatesFound'
 

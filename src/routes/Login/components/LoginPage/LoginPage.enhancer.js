@@ -1,5 +1,5 @@
 import { withHandlers, pure, compose } from 'recompose'
-import { withFirebase } from 'react-redux-firebase'
+import withFirebase from 'react-redux-firebase/lib/withFirebase'
 import { withNotifications } from 'modules/notification'
 import { UserIsNotAuthenticated } from 'utils/router'
 import { triggerAnalyticsEvent } from 'utils/analytics'

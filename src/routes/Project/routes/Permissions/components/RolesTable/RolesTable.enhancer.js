@@ -1,7 +1,7 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withHandlers, withStateHandlers, withProps } from 'recompose'
-import { withFirestore } from 'react-redux-firebase'
+import withFirestore from 'react-redux-firebase/lib/withFirestore'
 import { withNotifications } from 'modules/notification'
 import { spinnerWhileLoading } from 'utils/components'
 import { withStyles } from '@material-ui/core/styles'

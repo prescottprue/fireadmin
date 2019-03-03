@@ -13,7 +13,7 @@ import {
 } from 'lodash'
 import { connect } from 'react-redux'
 import LoadingSpinner from 'components/LoadingSpinner'
-import { isLoaded, isEmpty } from 'react-redux-firebase'
+import { isLoaded, isEmpty } from 'react-redux-firebase/lib/helpers'
 import {
   compose,
   mapProps,
@@ -41,7 +41,7 @@ export function spinnerWhile(condition) {
  * @example Spinner While Data Loading
  * import { compose } from 'redux'
  * import { connect } from 'react-redux'
- * import { firebaseConnect } from 'react-redux-firebase'
+ * import firebaseConnect from 'react-redux-firebase/lib/firebaseConnect'
  *
  * const enhance = compose(
  *   firebaseConnect(['projects']),
@@ -148,7 +148,7 @@ export function renderIfError(listenerPaths, component) {
  * @example Log Single Prop
  * import { compose } from 'redux'
  * import { connect } from 'react-redux'
- * import { firebaseConnect } from 'react-redux-firebase'
+ * import firebaseConnect from 'react-redux-firebase/lib/firebaseConnect'
  *
  * const enhance = compose(
  *   withProps(() => ({ projectName: 'test' })),

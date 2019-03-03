@@ -1,7 +1,7 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withHandlers, renderNothing, branch } from 'recompose'
-import { firestoreConnect } from 'react-redux-firebase'
+import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import { withRouter } from 'utils/components'
 
 export default compose(
