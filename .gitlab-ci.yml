@@ -99,7 +99,12 @@ Deploy Docs Staging:
   image: node:8
   when: on_success
   only:
-    - master
+    refs:
+      - master
+    changes:
+      - docs/**/* # Run only when docs are changed
+      - firebase.json
+      - .gitlab-ci.yml
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
@@ -123,7 +128,12 @@ Deploy Docs Production:
   image: node:8
   when: manual # Only allow run through button on Gitlab site
   only:
-    - master
+    refs:
+      - master
+    changes:
+      - docs/**/* # Run only when docs are changed
+      - firebase.json
+      - .gitlab-ci.yml
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
