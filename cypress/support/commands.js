@@ -81,8 +81,13 @@ Cypress.Commands.add(
  * @function
  */
 Cypress.Commands.add('addProjectEvent', (project, eventId, extraData = {}) => {
-  cy.callFirestore('add', `projects/${project}/events/${eventId}`, {
-    ...fakeEvent,
-    ...extraData
-  })
+  cy.callFirestore(
+    'set',
+    `projects/${project}/events/${eventId}`,
+    {
+      ...fakeEvent,
+      ...extraData
+    },
+    { withMeta: true }
+  )
 })

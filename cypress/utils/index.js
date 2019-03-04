@@ -1,4 +1,5 @@
 import firebase from 'firebase/app'
+import 'firebase/firestore'
 
 /**
  * Create selector for data-test attribute value
