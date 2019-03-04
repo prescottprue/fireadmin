@@ -50,9 +50,11 @@ describe('Project - Actions Page', () => {
         .first()
         .click()
       // Config that locked-env is disabled
-      cy.get(createIdSelector('locked-env'))
-        .invoke('attr', 'class')
-        .should('contain', 'disabled')
+      cy.get(createIdSelector('locked-env')).should(
+        'have.css',
+        'pointer-events',
+        'none'
+      )
       // Click away
       cy.get('body').click()
       // Open destination select field
@@ -61,9 +63,11 @@ describe('Project - Actions Page', () => {
         .click()
       // Pick first option for the destination environment
       // Confirm that locked-env is disabled is disabled
-      cy.get(createIdSelector('locked-env'))
-        .invoke('attr', 'class')
-        .should('contain', 'disabled')
+      cy.get(createIdSelector('locked-env')).should(
+        'have.css',
+        'pointer-events',
+        'none'
+      )
     })
   })
 
@@ -86,9 +90,11 @@ describe('Project - Actions Page', () => {
         .scrollIntoView()
         .click()
       // Confirm that Source Only environment can not be selected as destination
-      cy.get(createIdSelector('src-only'))
-        .invoke('attr', 'class')
-        .should('contain', 'disabled')
+      cy.get(createIdSelector('src-only')).should(
+        'have.css',
+        'pointer-events',
+        'none'
+      )
     })
   })
 
@@ -111,9 +117,11 @@ describe('Project - Actions Page', () => {
         .scrollIntoView()
         .click()
       // Confirm that Destination Only environment can not be selected as source
-      cy.get(createIdSelector('dest-only'))
-        .invoke('attr', 'class')
-        .should('contain', 'disabled')
+      cy.get(createIdSelector('dest-only')).should(
+        'have.css',
+        'pointer-events',
+        'none'
+      )
     })
   })
 

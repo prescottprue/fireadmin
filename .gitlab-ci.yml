@@ -83,8 +83,6 @@ Build Docs:
     key: $CI_COMMIT_REF_SLUG
     paths:
       - .yarn
-      - node_modules
-      - docs/node_modules
   before_script:
     - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
     - yarn --cwd docs install --frozen-lockfile --cache-folder .yarn # Install docs dependencies
