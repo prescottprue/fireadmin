@@ -67,8 +67,8 @@ describe('Project - Environments Page', () => {
 
     it('allows environment to be deleted by project owner', () => {
       // click on the more button
-      cy.get(createSelector('environment-tile-more'))
-        .first()
+      cy.get(createSelector('environment-test-env'))
+        .find(createSelector('environment-tile-more'))
         .click()
       // click delete option
       cy.get(createSelector('delete-environment-button')).click()

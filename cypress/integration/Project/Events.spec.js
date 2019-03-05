@@ -1,4 +1,4 @@
-import { createSelector, firestoreTimestampFromDate } from '../../utils'
+import { createSelector } from '../../utils'
 import fakeProject from '../../fixtures/fakeProject.json'
 
 describe('Project - Events Page', () => {
@@ -35,13 +35,13 @@ describe('Project - Events Page', () => {
       before(() => {
         // Add fake events
         const event1 = {
-          createdAt: firestoreTimestampFromDate(new Date('1/1/2018'))
+          createdAt: new Date('1/1/2018')
         }
         const event2 = {
-          createdAt: firestoreTimestampFromDate(new Date('4/4/2018'))
+          createdAt: new Date('4/4/2018')
         }
         const event3 = {
-          createdAt: firestoreTimestampFromDate(new Date(mostRecentDate))
+          createdAt: new Date(mostRecentDate)
         }
         cy.addProjectEvent('test-project', 'event1', event1)
         cy.addProjectEvent('test-project', 'event2', event2)

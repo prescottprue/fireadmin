@@ -11,10 +11,9 @@ stages:
 cache:
   policy: pull # only pull cache, skip uploading
   key: $CI_COMMIT_REF_SLUG
-  # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
   paths:
     - .yarn
-    - node_modules
+    - $CYPRESS_CACHE_FOLDER
 
 # Script run before all stages unless otherwise overriden
 before_script:
@@ -49,8 +48,6 @@ Functions Unit Tests:
     key: $CI_COMMIT_REF_SLUG
     paths:
       - .yarn
-      - node_modules
-      - functions/node_modules
   before_script:
     - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
     - yarn --cwd functions install --frozen-lockfile --cache-folder .yarn # Install functions dependencies
@@ -73,6 +70,7 @@ Build Docs:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-build/
       - $CI_COMMIT_MESSAGE =~ /skip-docs-build/
+      - $CI_COMMIT_MESSAGE =~ /skip-docs-deploy/
   artifacts:
     name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
     expire_in: 2 weeks
@@ -105,7 +103,7 @@ Deploy Docs Staging:
       - .gitlab-ci.yml
   except:
     variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-deploy/
+      - $CI_COMMIT_MESSAGE =~ /skip-docs-build/
       - $CI_COMMIT_MESSAGE =~ /skip-docs-deploy/
   environment:
     name: docs-staging
@@ -134,7 +132,8 @@ Deploy Docs Production:
       - .gitlab-ci.yml
   except:
     variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-deploy/
+      - $CI_COMMIT_MESSAGE =~ /skip-docs/
+      - $CI_COMMIT_MESSAGE =~ /skip-docs-build/
       - $CI_COMMIT_MESSAGE =~ /skip-docs-deploy/
   variables:
     FIREBASE_CI_PROJECT: prod # deploy using stage-docs project in .firebaserc
@@ -237,6 +236,7 @@ Deploy Staging:
     - web
   except:
     variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-build/ # no build to deploy if it was skipped
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
       - $CI_COMMIT_MESSAGE =~ /skip-stage-deploy/
   artifacts:
@@ -321,8 +321,8 @@ Build Prod App:
     FIREBASE_CI_PROJECT: "prod" # deploy using prod project in .firebaserc
   except:
     variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-deploy/
-      - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/
+      - $CI_COMMIT_MESSAGE =~ /skip-build/
+      - $CI_COMMIT_MESSAGE =~ /skip-prod-build/
   artifacts:
     name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
     expire_in: 1 week
@@ -355,6 +355,8 @@ Deploy Production:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
       - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/
+      - $CI_COMMIT_MESSAGE =~ /skip-build/ # no build to deploy if it was skipped
+      - $CI_COMMIT_MESSAGE =~ /skip-prod-build/
   artifacts:
     name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
     expire_in: 1 week
