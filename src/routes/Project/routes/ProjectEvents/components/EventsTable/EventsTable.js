@@ -27,7 +27,7 @@ function EventsTable({ groupedEvents, classes }) {
               className={classes.tableRowDivider}
               data-test="event-date-divider">
               <TableCell data-test="event-date-divider-value">
-                <span>{groupName}</span>
+                {groupName}
               </TableCell>
               <TableCell />
               <TableCell />
