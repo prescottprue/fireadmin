@@ -2,57 +2,12 @@ import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 import { get, uniqueId } from 'lodash'
 import request from 'request-promise'
-import google from 'googleapis'
-import { serviceAccountFromFirestorePath } from '../utils/serviceAccounts'
-import { eventPathName, SCOPES } from './constants'
+import { eventPathName } from './constants'
 import { to } from '../utils/async'
-import { hasAll } from '../utils'
-
-let jwtClient = null
-
-const serviceAccountParams = [
-  'type',
-  'project_id',
-  'private_key_id',
-  'private_key',
-  'client_email',
-  'client_id',
-  'auth_uri',
-  'token_uri'
-]
-
-/**
- * Get Google APIs auth client. Auth comes from serviceAccount.
- * @return {Promise} Resolves with JWT Auth Client (for attaching to request)
- */
-async function authClientFromServiceAccount(serviceAccount) {
-  if (!hasAll(serviceAccount, serviceAccountParams)) {
-    throw new Error('Invalid service account')
-  }
-  if (jwtClient) {
-    return jwtClient
-  }
-  jwtClient = new google.auth.JWT(
-    serviceAccount.client_email,
-    null,
-    serviceAccount.private_key,
-    SCOPES
-  )
-  return new Promise((resolve, reject) => {
-    jwtClient.authorize(err => {
-      if (!err) {
-        google.options({ auth: jwtClient })
-        resolve(jwtClient)
-      } else {
-        console.error(
-          'Error authorizing with Service Account',
-          err.message || err
-        )
-        reject(err)
-      }
-    })
-  })
-}
+import {
+  authClientFromServiceAccount,
+  serviceAccountFromFirestorePath
+} from '../utils/serviceAccounts'
 
 /**
  * Add authentication to a google request using serviceAccount

@@ -387,7 +387,13 @@ export async function runStep({
       if (dest.resource === 'firestore') {
         return copyFromRTDBToFirestore(app1, app2, step, convertedInputValues)
       } else if (dest.resource === 'rtdb') {
-        return copyBetweenRTDBInstances(app1, app2, step, convertedInputValues)
+        return copyBetweenRTDBInstances(
+          app1,
+          app2,
+          step,
+          convertedInputValues,
+          eventData
+        )
       } else if (dest.resource === 'storage') {
         return copyFromRTDBToStorage(app1, app2, step, convertedInputValues)
       } else {
