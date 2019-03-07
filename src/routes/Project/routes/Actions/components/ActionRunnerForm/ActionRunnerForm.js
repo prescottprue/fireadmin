@@ -125,8 +125,7 @@ export const ActionRunnerForm = ({
                       (environment.readOnly && index === 1) ||
                       (environment.writeOnly && index === 0)
                     }
-                    data-test="environment-option"
-                    data-test-id={environment.id}>
+                    data-test={`environment-option-${environment.id}`}>
                     <ListItemText
                       primary={environment.name || environment.id}
                       secondary={`${databaseURLToProjectName(

@@ -1,6 +1,5 @@
-import { createSelector, createIdSelector } from '../../utils'
+import { createSelector } from '../../utils'
 import fakeProject from '../../fixtures/fakeProject.json'
-const destEnvName = 'dest env'
 
 describe('Project - Actions Page', () => {
   // Setup before tests including creating a fake project
@@ -25,6 +24,13 @@ describe('Project - Actions Page', () => {
     cy.callFirestore('delete', 'projects/test-project', { recursive: true })
   })
 
+  afterEach(() => {
+    // Remove environments after every test (so that previous state does not impact next test)
+    cy.callFirestore('delete', 'projects/test-project/environments', {
+      recursive: true
+    })
+  })
+
   describe('Initial Load', () => {
     it('Run Action Button is disabled', () => {
       cy.get(createSelector('run-action-button')).should('be.disabled')
@@ -38,7 +44,7 @@ describe('Project - Actions Page', () => {
       cy.addProjectEnvironment('test-project', lockedEnvId, lockedEnv)
     })
 
-    it('is disabled as both a source and destination', () => {
+    it('is disabled as a source', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
@@ -50,7 +56,7 @@ describe('Project - Actions Page', () => {
         .first()
         .click()
       // Config that locked-env is disabled
-      cy.get(createIdSelector('locked-env')).should(
+      cy.get(createSelector(`environment-option-${lockedEnvId}`)).should(
         'have.css',
         'pointer-events',
         'none'
@@ -63,7 +69,39 @@ describe('Project - Actions Page', () => {
         .click()
       // Pick first option for the destination environment
       // Confirm that locked-env is disabled is disabled
-      cy.get(createIdSelector('locked-env')).should(
+      cy.get(createSelector(`environment-option-${lockedEnvId}`)).should(
+        'have.css',
+        'pointer-events',
+        'none'
+      )
+    })
+
+    it('is disabled as destination', () => {
+      // Search for an action template
+      cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
+      // Select the first action template
+      cy.get(createSelector('search-result'))
+        .first()
+        .click()
+      // Open source select field
+      cy.get(createSelector('environment-select'))
+        .first()
+        .click()
+      // Config that locked-env is disabled
+      cy.get(createSelector(`environment-option-${lockedEnvId}`)).should(
+        'have.css',
+        'pointer-events',
+        'none'
+      )
+      // Click away
+      cy.get('body').click()
+      // Open destination select field
+      cy.get(createSelector('environment-select'))
+        .last()
+        .click()
+      // Pick first option for the destination environment
+      // Confirm that locked-env is disabled is disabled
+      cy.get(createSelector(`environment-option-${lockedEnvId}`)).should(
         'have.css',
         'pointer-events',
         'none'
@@ -72,9 +110,10 @@ describe('Project - Actions Page', () => {
   })
 
   describe('Environment with "Read Only" option', () => {
+    const srcId = 'src-only'
     before(() => {
       const lockedEnv = { name: 'only src env', readOnly: true }
-      cy.addProjectEnvironment('test-project', 'src-only', lockedEnv)
+      cy.addProjectEnvironment('test-project', srcId, lockedEnv)
     })
 
     it('disables run action button if "Read Only" environment is selected as a destination', () => {
@@ -90,7 +129,7 @@ describe('Project - Actions Page', () => {
         .scrollIntoView()
         .click()
       // Confirm that Source Only environment can not be selected as destination
-      cy.get(createIdSelector('src-only')).should(
+      cy.get(createSelector(`environment-option-${srcId}`)).should(
         'have.css',
         'pointer-events',
         'none'
@@ -99,9 +138,10 @@ describe('Project - Actions Page', () => {
   })
 
   describe('Environment with "Write Only" option', () => {
+    const destId = 'dest-only'
     before(() => {
       const lockedEnv = { name: 'only dest env', writeOnly: true }
-      cy.addProjectEnvironment('test-project', 'dest-only', lockedEnv)
+      cy.addProjectEnvironment('test-project', destId, lockedEnv)
     })
 
     it('disables run action button if "Write Only" environment is selected as a source', () => {
@@ -117,7 +157,7 @@ describe('Project - Actions Page', () => {
         .scrollIntoView()
         .click()
       // Confirm that Destination Only environment can not be selected as source
-      cy.get(createIdSelector('dest-only')).should(
+      cy.get(createSelector(`environment-option-${destId}`)).should(
         'have.css',
         'pointer-events',
         'none'
@@ -126,10 +166,16 @@ describe('Project - Actions Page', () => {
   })
 
   describe('Running Action', () => {
+    const srcId = 'src-env'
+    const destId = 'dest-env'
+
     before(() => {
-      cy.addProjectEnvironment('test-project', 'src-env', { name: '' })
-      cy.addProjectEnvironment('test-project', 'dest-env', {
-        name: destEnvName
+      cy.callFirestore('delete', 'projects/test-project/environments', {
+        recursive: true
+      })
+      cy.addProjectEnvironment('test-project', srcId, { name: 'source env' })
+      cy.addProjectEnvironment('test-project', destId, {
+        name: 'dest env'
       })
     })
 
@@ -145,9 +191,7 @@ describe('Project - Actions Page', () => {
         .first()
         .click()
       // Pick the src env
-      cy.get(createSelector('environment-option'))
-        .first()
-        .click()
+      cy.get(createSelector(`environment-option-${srcId}`)).click()
       // Click away
       cy.get('body').click()
       // Open destination select field
@@ -155,10 +199,8 @@ describe('Project - Actions Page', () => {
         .last()
         .scrollIntoView()
         .click()
-      // Pick the src env
-      cy.get(createSelector('environment-option'))
-        .last()
-        .click()
+      // Pick the dest env
+      cy.get(createSelector(`environment-option-${destId}`)).click()
       // Fill out the input (which collection to copy)
       cy.get(createSelector('action-input'))
         .first()
