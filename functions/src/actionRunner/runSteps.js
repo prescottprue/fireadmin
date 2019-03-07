@@ -8,7 +8,8 @@ import {
   copyBetweenFirestoreInstances,
   copyFromStorageToRTDB,
   copyBetweenRTDBInstances,
-  copyFromRTDBToStorage
+  copyFromRTDBToStorage,
+  batchCopyBetweenRTDBInstances
 } from './actions'
 import { to, promiseWaterfall } from '../utils/async'
 import { hasAll } from '../utils/index'
@@ -387,13 +388,18 @@ export async function runStep({
       if (dest.resource === 'firestore') {
         return copyFromRTDBToFirestore(app1, app2, step, convertedInputValues)
       } else if (dest.resource === 'rtdb') {
-        return copyBetweenRTDBInstances(
-          app1,
-          app2,
-          step,
-          convertedInputValues,
-          eventData
-        )
+        // TODO: Support enabling batch copying from the front end
+        // TODO: Switch this to an actual flag from the request instead of a non existing param
+        if (!step.notBatch) {
+          batchCopyBetweenRTDBInstances(
+            app1,
+            app2,
+            step,
+            convertedInputValues,
+            eventData
+          )
+        }
+        return copyBetweenRTDBInstances(app1, app2, step, convertedInputValues)
       } else if (dest.resource === 'storage') {
         return copyFromRTDBToStorage(app1, app2, step, convertedInputValues)
       } else {

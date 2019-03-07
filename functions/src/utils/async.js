@@ -30,3 +30,15 @@ export function promiseWaterfall(callbacks) {
     Promise.resolve()
   )
 }
+
+/**
+ * Wait for a certain number of milliseconds (uses setTimeout)
+ * @param {Number} timeToWait - How long to wait
+ * @return {Promise} Resolves when wait has completed
+ */
+export function wait(timeToWait = 10) {
+  // Wait 10ms before next stage
+  return new Promise(resolve => {
+    setTimeout(resolve, timeToWait)
+  })
+}

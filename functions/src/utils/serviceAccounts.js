@@ -1,8 +1,6 @@
-/* eslint-disable no-console */
 import * as admin from 'firebase-admin'
 import os from 'os'
 import fs from 'fs-extra'
-import request from 'request-promise'
 import path from 'path'
 import rimraf from 'rimraf'
 import google from 'googleapis'
@@ -11,36 +9,25 @@ import mkdirp from 'mkdirp-promise'
 import { decrypt } from './encryption'
 import { to } from './async'
 import { hasAll } from './index'
-
-export const SCOPES = [
-  'https://www.googleapis.com/auth/devstorage.full_control',
-  'https://www.googleapis.com/auth/cloud-platform'
-]
-
-const serviceAccountParams = [
-  'type',
-  'project_id',
-  'private_key_id',
-  'private_key',
-  'client_email',
-  'client_id',
-  'auth_uri',
-  'token_uri'
-]
+import {
+  STORAGE_AND_PLATFORM_SCOPES,
+  SERVICE_ACCOUNT_PARAMS,
+  MISSING_CRED_ERROR_MSG
+} from '../constants/serviceAccount'
 
 /**
  * Get Google APIs auth client. Auth comes from serviceAccount.
  * @return {Promise} Resolves with JWT Auth Client (for attaching to request)
  */
-async function authClientFromServiceAccount(serviceAccount) {
-  if (!hasAll(serviceAccount, serviceAccountParams)) {
+export async function authClientFromServiceAccount(serviceAccount) {
+  if (!hasAll(serviceAccount, SERVICE_ACCOUNT_PARAMS)) {
     throw new Error('Invalid service account')
   }
   const jwtClient = new google.auth.JWT(
     serviceAccount.client_email,
     null,
     serviceAccount.private_key,
-    SCOPES
+    STORAGE_AND_PLATFORM_SCOPES
   )
   return new Promise((resolve, reject) => {
     jwtClient.authorize(err => {
@@ -57,9 +44,6 @@ async function authClientFromServiceAccount(serviceAccount) {
     })
   })
 }
-
-const missingCredMsg =
-  'Credential parameter is required to load service account from Firestore'
 
 /**
  * Get Firebase app from request evvent containing path information for
@@ -142,8 +126,8 @@ export async function serviceAccountFromFirestorePath(
 
   // Handle credential parameter not existing on doc
   if (!credential) {
-    console.error(missingCredMsg)
-    throw new Error(missingCredMsg)
+    console.error(MISSING_CRED_ERROR_MSG)
+    throw new Error(MISSING_CRED_ERROR_MSG)
   }
 
   // Decrypt service account string
@@ -188,60 +172,6 @@ export async function serviceAccountFromFirestorePath(
       err
     )
     throw err
-  }
-}
-
-/**
- * Request google APIs with auth attached
- * @param  {Object}  opts - Google APIs method to call
- * @param  {String}  opts.projectId - Id of fireadmin project
- * @param  {String}  opts.environmentId - Id of fireadmin environment
- * @param  {String}  opts.databaseName - Name of database on which to run (defaults to project base DB)
- * @param  {String}  rtdbPath - Path of RTDB data to get
- * @return {Promise} Resolves with results of RTDB shallow get
- */
-export async function shallowRtdbGet(opts, rtdbPath = '') {
-  const { projectId, environmentId, databaseName } = opts
-  if (!environmentId) {
-    throw new Error(
-      'environmentId is required for action to authenticate through serviceAccount'
-    )
-  }
-  console.log(`Getting service account from Firestore...`)
-
-  // Make unique app name (prevents issue of multiple apps initialized with same name)
-  const appName = `app-${uniqueId()}`
-  // Get Service account data from resource (i.e Storage, Firestore, etc)
-  const [err, serviceAccount] = await to(
-    serviceAccountFromFirestorePath(
-      `projects/${projectId}/environments/${environmentId}`,
-      appName,
-      { returnData: true }
-    )
-  )
-
-  if (err) {
-    console.error(`Error getting service account: ${err.message || ''}`, err)
-    throw err
-  }
-  const client = await authClientFromServiceAccount(serviceAccount)
-
-  const apiUrl = `https://${databaseName ||
-    serviceAccount.project_id}.firebaseio.com/${rtdbPath}.json?access_token=${
-    client.credentials.access_token
-  }`
-
-  try {
-    const response = await request(apiUrl)
-    console.log(`Firebase REST API Request completed successfully`, response)
-    return response.body || response
-  } catch (err) {
-    console.error(
-      `Firebase REST API Responded with an error code: ${err.statusCode} \n ${
-        err.error ? err.error.message : ''
-      }`
-    )
-    throw err.error || err
   }
 }
 
