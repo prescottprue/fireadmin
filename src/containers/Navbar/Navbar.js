@@ -4,9 +4,14 @@ import { Link } from 'react-router'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
+import DocsIcon from '@material-ui/icons/LibraryBooks'
+import Hidden from '@material-ui/core/Hidden'
 import AccountMenu from './AccountMenu'
 import LoginMenu from './LoginMenu'
 import { LIST_PATH, DOCS_URL } from 'constants'
+import Tooltip from '@material-ui/core/Tooltip'
 
 function Navbar({
   avatarUrl,
@@ -23,24 +28,36 @@ function Navbar({
     <AppBar position="static" className={classes.appBar} elevation={24}>
       <Toolbar>
         <Typography
-          type="title"
           color="inherit"
+          variant="h6"
           component={Link}
           to={authExists ? LIST_PATH : '/'}
           className={classes.brand}
           data-test="brand">
           Fireadmin
         </Typography>
-        <Typography
-          type="title"
-          color="inherit"
-          className={classes.otherLink}
-          component={Link}
-          href={DOCS_URL}
-          data-test="docs">
-          Docs
-        </Typography>
+        <Hidden xsDown>
+          <Button
+            component="a"
+            className={classes.otherLink}
+            href={DOCS_URL}
+            color="inherit"
+            data-test="docs-button">
+            Docs
+          </Button>
+        </Hidden>
         <div className={classes.flex} />
+        <Hidden smUp>
+          <Tooltip title="Docs">
+            <IconButton
+              component="a"
+              href={DOCS_URL}
+              color="inherit"
+              data-test="docs-button">
+              <DocsIcon />
+            </IconButton>
+          </Tooltip>
+        </Hidden>
         {authExists ? (
           <AccountMenu
             avatarUrl={avatarUrl}

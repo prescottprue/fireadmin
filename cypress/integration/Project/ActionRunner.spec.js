@@ -24,13 +24,6 @@ describe('Project - Actions Page', () => {
     cy.callFirestore('delete', 'projects/test-project', { recursive: true })
   })
 
-  afterEach(() => {
-    // Remove environments after every test (so that previous state does not impact next test)
-    cy.callFirestore('delete', 'projects/test-project/environments', {
-      recursive: true
-    })
-  })
-
   describe('Initial Load', () => {
     it('Run Action Button is disabled', () => {
       cy.get(createSelector('run-action-button')).should('be.disabled')
@@ -44,7 +37,12 @@ describe('Project - Actions Page', () => {
       cy.addProjectEnvironment('test-project', lockedEnvId, lockedEnv)
     })
 
-    it('is disabled as a source', () => {
+    after(() => {
+      // Remove environment after
+      cy.callFirestore('delete', `projects/test-project/${lockedEnvId}`)
+    })
+
+    it('locked env is disabled as a source', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
@@ -76,7 +74,7 @@ describe('Project - Actions Page', () => {
       )
     })
 
-    it('is disabled as destination', () => {
+    it('locked env is disabled as destination', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
@@ -116,6 +114,11 @@ describe('Project - Actions Page', () => {
       cy.addProjectEnvironment('test-project', srcId, lockedEnv)
     })
 
+    after(() => {
+      // Remove environments (made in before)
+      cy.callFirestore('delete', 'projects/test-project/environments')
+    })
+
     it('disables run action button if "Read Only" environment is selected as a destination', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
@@ -144,6 +147,11 @@ describe('Project - Actions Page', () => {
       cy.addProjectEnvironment('test-project', destId, lockedEnv)
     })
 
+    after(() => {
+      // Remove environments (made in before)
+      cy.callFirestore('delete', 'projects/test-project/environments')
+    })
+
     it('disables run action button if "Write Only" environment is selected as a source', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
@@ -170,13 +178,15 @@ describe('Project - Actions Page', () => {
     const destId = 'dest-env'
 
     before(() => {
-      cy.callFirestore('delete', 'projects/test-project/environments', {
-        recursive: true
-      })
       cy.addProjectEnvironment('test-project', srcId, { name: 'source env' })
       cy.addProjectEnvironment('test-project', destId, {
         name: 'dest env'
       })
+    })
+
+    after(() => {
+      // Remove environments (made in before)
+      cy.callFirestore('delete', 'projects/test-project/environments')
     })
 
     it('requests valid action run provided valid inputs', () => {

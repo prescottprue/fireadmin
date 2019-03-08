@@ -4,13 +4,17 @@
   "description": "Fireadmin documentation",
   "main": "n/a",
   "author": "prescottprue",
+  "config": {
+    "port": "8085"
+  },
   "scripts": {
     "clean": "rimraf public .cache",
-    "start": "yarn clean && gatsby develop",
+    "start": "yarn clean && yarn develop",
     "lint": "$(npm bin)/eslint . --ext .js,.jsx",
     "lint:fix": "npm run format && npm run lint -- --fix",
     "format": "prettier --trailing-comma none --no-semi --single-quote --write 'src/**/*.js' 'data/siteConfig.js'",
-    "develop": "gatsby develop",
+    "develop": "gatsby develop -p $npm_package_config_port",
+    "serve": "firebase serve --only hosting:docs -p $npm_package_config_port",
     "build": "gatsby build",
     "build:config": "firebase-ci createConfig",
     "deploy": "firebase-ci deploy --only",

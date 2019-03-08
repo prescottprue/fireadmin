@@ -6,11 +6,11 @@ export default theme => ({
     backgroundColor: theme.palette.primary1Color
   },
   brand: {
-    fontSize: '1.4rem'
+    fontSize: '1.5rem',
+    fontWeight: '300'
   },
   otherLink: {
-    marginLeft: '5rem',
-    fontSize: '1.1rem'
+    marginLeft: '4rem'
   },
   color: theme.palette.primary1Color
 })
