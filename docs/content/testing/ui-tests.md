@@ -23,7 +23,7 @@ UI testing is done with [Cypress](https://cypress.io). The tests confirm that th
 │   ├── integration        # Tests folder
 │   │   └── Some.spec.js   # Test files ending in .spec.js
 │   ├── config.json        # Config for generating test environment (contains UID of)
-│   └── Dockerfile         # Docker image used by Barista to run tests
+│   └── Dockerfile         # Docker image for running UI tests
 ├── cypress.json               # Cypress configuration (including defaults)
 └── serviceAccount.json        # Service Account From Firebase/Google Project
 ```

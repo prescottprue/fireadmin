@@ -1,7 +1,4 @@
-import * as admin from 'firebase-admin'
 import { get, isArray, size, map, isObject } from 'lodash'
-import { CUSTOM_STEPS_PATH } from './constants'
-import { invokeFirepadContent } from './firepad'
 import {
   copyFromRTDBToFirestore,
   copyFromFirestoreToRTDB,
@@ -346,17 +343,8 @@ export async function runStep({
 
   // Run custom action type (i.e. Code written within Firepad)
   if (type === 'custom') {
-    const { templateId } = eventData
-    console.log(
-      'Step type is "Custom", gathering custom step code from location:',
-      `${CUSTOM_STEPS_PATH}/${templateId}/steps/${stepIdx}`
-    )
-    const rootRef = admin
-      .database()
-      .ref(`${CUSTOM_STEPS_PATH}/${templateId}/steps/${stepIdx}`)
-    const firepadContext = { step, inputs, previous: previousStepResult }
-    const res = await invokeFirepadContent(rootRef, { context: firepadContext })
-    return res
+    console.error('Step type is "Custom", returning error')
+    throw new Error('Custom action type not currently supported')
   }
 
   // Service accounts come from converted version of what is selected for inputs

@@ -18,7 +18,7 @@ export const DOCS_URL =
     ? window.location.hostname.includes('fireadmin-stage')
       ? 'https://fireadmin-stage-docs.firebaseapp.com'
       : 'https://fireadmin-docs.firebaseapp.com'
-    : 'http://localhost:8000'
+    : 'http://localhost:8085'
 
 export const ANALYTICS_EVENT_NAMES = {
   login: 'Login',

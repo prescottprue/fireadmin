@@ -3,6 +3,7 @@ title: Initial Setup
 slug: guides/initial-setup
 type: page
 language: en
+order: 1
 tags:
   - guides
   - getting-started
@@ -10,10 +11,6 @@ tags:
   - projects
   - actions
 ---
-
-Managing data and generating reports on your Firebase data is easy enough to do with simple scripts that are run locally, but this can easily cause problems especially within a larger team. Each engineer with access to service accounts (so that they can move data between environments) adds to the possibility of mistakes happening while moving data.
-
-As your application grows, it is common to run multiple “Environments” allowing for testing of features within a full deployed version of the application before releasing to users.
 
 A project created on Fireadmin can contain multiples environments which represent multiple versions of your project. The environment names usually correspond with the state of the application within that environment (i.e. prod for a production environment and stage for a staging environment). In this case each environment is associated with a separate Firebase project.
 
@@ -52,15 +49,4 @@ Now that we have environments setup, they are ready to be used in Actions (commo
 
 ![Running An Action](https://cdn-images-1.medium.com/max/1000/1*N62nuM6LJP-7xTV2oP0F_Q.gif)
 
-## Creating An Action Template
-1. Click **Create Action Template** from project actions page
-1. Now fill in information about the template — if you would like others to be able to use the template you are creating you can mark it as public.
-1. Add an environment — Name it Source
-1. Add another environment — Name it Dest
-1. Add an input — mark it as type
-1. Give the input a name — collectionName
-1. Add a step — set its type to Copy, the path type to User Input (uses user provided input as value) and select collectionName
-1. Finish up by clicking Save
-
-![Adding Environments and Inputs](https://cdn-images-1.medium.com/max/1000/1*Gwa4HcgUWaMxR83BiVPbvw.gif)
-
+For information on how to creat your own action template, checkout the [custom action template guide](/guides/custom-action-templates)
