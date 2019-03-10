@@ -12,5 +12,7 @@ test/e2e/fixtures/**
 docs/.cache/**
 docs/public/**
 docs/content/**
+docs/static/**
 cypress/screenshots/**
 cypress/videos/**
+.nyc_output/**

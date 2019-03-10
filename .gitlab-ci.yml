@@ -52,8 +52,9 @@ Functions Unit Tests:
     - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
     - yarn --cwd functions install --frozen-lockfile --cache-folder .yarn # Install functions dependencies
   script:
-    - yarn lint:functions
-    - yarn --cwd functions test:cov
+    - yarn lint:functions # Check for lint within functions
+    - yarn --cwd functions test:cov # Run unit tests with coverage
+    - yarn --cwd functions build # Build to confirm no build errors
 
 # ---------------------------- Docs -------------------------- #
 # Build Docs
@@ -151,43 +152,6 @@ Deploy Docs Production:
   script:
     - yarn deploy --only hosting:docs # Deploy docs React App (Firebase Hosting)
 
-# Lint + Unit Test Cloud Functions - Staging
-# Run unit tests for Cloud Functions
-Build Functions:
-  stage: build
-  image: node:8
-  only:
-    changes:
-      - functions/**/* # Run only when functions are changed
-      - firebase.json
-      - .gitlab-ci.yml
-  allow_failure: true
-  except:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-tests/
-      - $CI_COMMIT_MESSAGE =~ /skip-unit-tests/
-  artifacts:
-    name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
-    expire_in: 2 weeks
-    paths:
-      - functions/coverage # Test coverage report
-      - functions/dist
-  # Override cache behavior set above since we want to both pull from and push to
-  # the cache (no "policy" provided since pull-push is default)
-  cache:
-    untracked: true
-    key: $CI_COMMIT_REF_SLUG
-    # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
-    paths:
-      - .yarn
-      - node_modules
-      - functions/node_modules
-  before_script:
-    - yarn --cwd functions install --frozen-lockfile --cache-folder functions/.yarn
-  script:
-    - yarn --cwd functions test:cov
-    - yarn --cwd functions build
-
 # ---------------------------- React App -------------------------- #
 # Build Staging App
 # Installs dependencies, builds app, and saves results for later (artifacts).
@@ -248,7 +212,7 @@ Deploy Staging:
   dependencies:
     - Build Staging # Require artifacts from build stage
   script:
-    - yarn deploy --only hosting:stageApp  # Deploy docs React App (Firebase Hosting)
+    - yarn deploy --only hosting:stageApp,functions,storage,database,firestore  # Deploy docs React App (Firebase Hosting), Cloud Functions, and All Rules
 
 # End To End Tests
 # Install Cypress binary and run end to end tests using Cypress
@@ -364,4 +328,4 @@ Deploy Production:
     paths:
       - firebase-debug.log
   script:
-    - yarn deploy --only hosting:app # Deploy Cloud Functions and React App (Firebase Hosting)
+    - yarn deploy --only hosting:app,functions,storage,database,firestore # Deploy Cloud Functions and React App (Firebase Hosting)

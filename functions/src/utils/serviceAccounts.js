@@ -1,9 +1,8 @@
-/* eslint-disable no-console */
 import * as admin from 'firebase-admin'
 import os from 'os'
-import fs from 'fs-extra'
+import fsExtra from 'fs-extra'
+import fs from 'fs'
 import path from 'path'
-import rimraf from 'rimraf'
 import { get, uniqueId } from 'lodash'
 import mkdirp from 'mkdirp-promise'
 import { decrypt } from './encryption'
@@ -129,7 +128,7 @@ export async function serviceAccountFromFirestorePath(
     // Create local folder for decrypted serice account file
     await mkdirp(tempLocalDir)
     // Write decrypted string as a local file
-    await fs.writeJson(tempLocalPath, serviceAccountData)
+    await fsExtra.writeJson(tempLocalPath, serviceAccountData)
     // Return localPath of service account
     return tempLocalPath
   } catch (err) {
@@ -174,12 +173,10 @@ export async function serviceAccountFromStoragePath(docPath, name) {
  */
 export async function serviceAccountFileFromStorage(docPath, name) {
   const accountLocalPath = await serviceAccountFromStoragePath(docPath, name)
-  return fs.readJson(accountLocalPath)
+  return fsExtra.readJson(accountLocalPath)
 }
 
-export function cleanupServiceAccounts(appName) {
+export async function cleanupServiceAccounts(appName) {
   const tempLocalPath = path.join(os.tmpdir(), 'serviceAccounts')
-  return new Promise((resolve, reject) =>
-    rimraf(tempLocalPath, err => (err ? reject(err) : resolve()))
-  )
+  fs.unlinkSync(tempLocalPath)
 }
