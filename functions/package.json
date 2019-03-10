@@ -4,12 +4,12 @@
   "scripts": {
     "test": "mocha ./test/unit/**",
     "test:watch": "mocha ./test/unit/** --watch",
-    "test:cov": "nyc mocha ./test/unit/** && nyc coverage --reporter=lcov",
+    "test:cov": "nyc --reporter=lcov npm test",
     "test:cov:watch": "npm run test:cov -- --watch",
     "lint": "eslint -c .eslintrc.js src test",
     "lint:fix": "npm run lint -- --fix",
     "clean": "rimraf dist etc",
-    "build": "npm run clean && babel src -d --out-dir dist --retainLines",
+    "build": "npm run clean && babel src -d --out-dir dist",
     "watch": "npm run build -- --watch",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
@@ -28,8 +28,7 @@
     "mkdirp": "^0.5.1",
     "mkdirp-promise": "^5.0.1",
     "request": "^2.83.0",
-    "request-promise": "^4.2.2",
-    "rimraf": "^2.6.2"
+    "request-promise": "^4.2.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -45,6 +44,7 @@
     "firebase-mock": "^2.2.4",
     "mocha": "^6.0.2",
     "nyc": "^13.3.0",
+    "rimraf": "^2.6.2",
     "sinon": "^7.2.7",
     "sinon-chai": "^3.3.0"
   },
