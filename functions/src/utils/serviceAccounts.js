@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import * as admin from 'firebase-admin'
 import os from 'os'
 import fs from 'fs-extra'

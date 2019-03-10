@@ -27,11 +27,9 @@
     "lodash": "^4.17.11",
     "mkdirp": "^0.5.1",
     "mkdirp-promise": "^5.0.1",
-    "nodemailer": "^4.4.2",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
-    "rimraf": "^2.6.2",
-    "safe-eval": "^0.3.0"
+    "rimraf": "^2.6.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
