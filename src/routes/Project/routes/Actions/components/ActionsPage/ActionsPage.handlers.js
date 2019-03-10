@@ -59,7 +59,7 @@ export function runAction(props) {
       serviceAccountType: 'firestore',
       templateId,
       template: omit(props.selectedTemplate, ['_highlightResult']),
-      ...formValues
+      ...omit(formValues, ['_highlightResult', 'updatedAt'])
     }
     // Convert selected environment keys into their associated environment objects
     if (environmentValues) {

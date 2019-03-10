@@ -1,4 +1,4 @@
-import { isArray } from 'lodash'
+import { isArray, omit } from 'lodash'
 import * as admin from 'firebase-admin'
 import { ACTION_RUNNER_RESPONSES_PATH } from './constants'
 import { to } from '../utils/async'
@@ -172,19 +172,22 @@ export async function writeProjectEvent(projectId, extraEventAttributes = {}) {
   const eventObject = {
     createdByType: 'system',
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    ...extraEventAttributes
+    ...omit(extraEventAttributes, ['updatedAt', '_highlightResult'])
   }
   const eventsRef = admin
     .firestore()
     .collection('projects')
     .doc(projectId)
     .collection('events')
+
   const [addErr, addRes] = await to(eventsRef.add(eventObject))
+
   if (addErr) {
     const errMsg = `Error adding event data to Project events for project: ${projectId}`
-    console.error(errMsg, addErr.message || addErr)
+    console.error(errMsg, addErr)
     throw new Error(errMsg)
   }
+
   return addRes
 }
 

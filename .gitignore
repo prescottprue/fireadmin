@@ -20,6 +20,7 @@ functions/coverage
 functions/mochawesome-report
 
 # Tests
+.nyc_output
 cypress/videos
 cypress/screenshots
 cypress/config.json
