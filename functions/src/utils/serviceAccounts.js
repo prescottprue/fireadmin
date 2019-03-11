@@ -212,5 +212,10 @@ export async function serviceAccountFileFromStorage(docPath, name) {
 
 export async function cleanupServiceAccounts(appName) {
   const tempLocalPath = path.join(os.tmpdir(), 'serviceAccounts')
-  fs.unlinkSync(tempLocalPath)
+  if (fs.existsSync(tempLocalPath)) {
+    try {
+      fs.unlinkSync(tempLocalPath)
+    } catch(err) {} // eslint-disable-line
+
+  }
 }

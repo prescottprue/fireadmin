@@ -379,7 +379,7 @@ export async function runStep({
         // TODO: Support enabling batch copying from the front end
         // TODO: Switch this to an actual flag from the request instead of a non existing param
         if (!step.notBatch) {
-          batchCopyBetweenRTDBInstances(
+          return batchCopyBetweenRTDBInstances(
             app1,
             app2,
             step,

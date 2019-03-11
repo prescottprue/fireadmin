@@ -1,7 +1,7 @@
-import { invoke, get, chunk } from 'lodash'
+import { invoke, get, chunk, isObject } from 'lodash'
 import { batchCopyBetweenFirestoreRefs } from './utils'
 import { downloadFromStorage, uploadToStorage } from '../utils/cloudStorage'
-import { to, promiseWaterfall, wait } from '../utils/async'
+import { to, promiseWaterfall } from '../utils/async'
 import { slashPathToFirestoreRef, dataByIdSnapshot } from '../utils/firestore'
 import { shallowRtdbGet } from '../utils/rtdb'
 
@@ -191,9 +191,10 @@ export async function copyBetweenRTDBInstances(
       console.error(errorMessage)
       throw new Error(errorMessage)
     }
+    const writeMethod = isObject(dataFromFirst) ? 'update' : 'set'
 
     // Update second database with data from first datbase
-    await secondRTDB.ref(destPath).update(dataFromFirst)
+    await secondRTDB.ref(destPath)[writeMethod](dataFromFirst)
 
     console.log('Copy between RTDB instances successful')
 
@@ -211,7 +212,12 @@ export async function copyBetweenRTDBInstances(
  * @param  {Object} eventData - Data from event (contains settings)
  * @return {Promise} Resolves with result of update call
  */
-export async function copyPathBetweenRTDBInstances(app1, app2, rtdbPath) {
+export async function copyPathBetweenRTDBInstances(
+  app1,
+  app2,
+  srcPath,
+  destPath
+) {
   if (!get(app1, 'database') || !get(app2, 'database')) {
     console.error('Database not found on app instance')
     throw new Error('Invalid service account, does not have access to database')
@@ -221,14 +227,14 @@ export async function copyPathBetweenRTDBInstances(app1, app2, rtdbPath) {
     const secondRTDB = app2.database()
 
     // Handle source path not being provided
-    if (!rtdbPath) {
+    if (!srcPath) {
       const noSrcPathErr =
         'Copying whole database is not currently supported, please provide a source path.'
       console.warn('Attempted to copy whole database, throwing an error')
       throw new Error(noSrcPathErr)
     }
     // Load data from first database
-    const dataSnapFromFirst = await firstRTDB.ref(rtdbPath).once('value')
+    const dataSnapFromFirst = await firstRTDB.ref(srcPath).once('value')
     const dataFromFirst = invoke(dataSnapFromFirst, 'val')
 
     // Handle data not existing in source database
@@ -238,11 +244,10 @@ export async function copyPathBetweenRTDBInstances(app1, app2, rtdbPath) {
       console.error(errorMessage)
       throw new Error(errorMessage)
     }
+    const writeMethod = isObject(dataFromFirst) ? 'update' : 'set'
 
     // Update second database with data from first datbase
-    await secondRTDB.ref(rtdbPath).update(dataFromFirst)
-
-    console.log('Copy between RTDB instances successful')
+    await secondRTDB.ref(destPath || srcPath)[writeMethod](dataFromFirst)
 
     return null
   } catch (err) {
@@ -250,6 +255,8 @@ export async function copyPathBetweenRTDBInstances(app1, app2, rtdbPath) {
     throw err
   }
 }
+
+const DEFAULT_RTDB_BATCH_SIZE = 50
 
 /**
  * Copy data between Firebase Realtime Database Instances in batches (suited for large data sets)
@@ -261,15 +268,19 @@ export async function copyPathBetweenRTDBInstances(app1, app2, rtdbPath) {
 export async function batchCopyBetweenRTDBInstances(
   app1,
   app2,
-  eventData,
-  inputValues
+  step,
+  inputValues,
+  eventData
 ) {
-  const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
+  // TODO: Support passing in chunk size (it will have to be validated)
+  const chunkSize = DEFAULT_RTDB_BATCH_SIZE
+
+  const srcPath = inputValueOrTemplatePath(step, inputValues, 'src')
+  const destPath = inputValueOrTemplatePath(step, inputValues, 'dest')
   const { projectId, environmentValues = [] } = eventData
 
   // TODO: Look into a smarter way to get environmentId since first may not always be source
   const shallowConfig = { projectId, environmentId: environmentValues[0] }
-
   // Call Firebase REST API using shallow: true to get a list of keys to chunk into groups
   const shallowResults = await shallowRtdbGet(shallowConfig, srcPath)
 
@@ -281,18 +292,19 @@ export async function batchCopyBetweenRTDBInstances(
     throw new Error(noSrcPathErr)
   }
 
-  const keysChunks = chunk(shallowResults, 100)
+  const keysChunks = chunk(Object.keys(shallowResults), chunkSize)
 
   await promiseWaterfall(
     keysChunks.map((keyChunk, i) => {
-      console.log(`Copying key chunk: "${i}"`)
+      console.log(`Copying key chunk: "${i}" from path: "${srcPath}"`)
       return Promise.all(
         keyChunk.map(rtdbKey =>
           copyPathBetweenRTDBInstances(
             app1,
             app2,
-            `${srcPath}/${rtdbKey}`
-          ).then(wait)
+            `${srcPath}/${rtdbKey}`,
+            `${destPath}/${rtdbKey}`
+          )
         )
       )
     })

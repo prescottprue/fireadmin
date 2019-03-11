@@ -1,5 +1,7 @@
 export const STORAGE_AND_PLATFORM_SCOPES = [
   'https://www.googleapis.com/auth/devstorage.full_control',
+  'https://www.googleapis.com/auth/firebase.database',
+  'https://www.googleapis.com/auth/userinfo.email',
   'https://www.googleapis.com/auth/cloud-platform'
 ]
 

@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin'
 import request from 'request-promise'
-import { uniqueId } from 'lodash'
+import { isString, uniqueId } from 'lodash'
 import { to } from './async'
 import {
   authClientFromServiceAccount,
@@ -68,7 +68,7 @@ export async function shallowRtdbGet(opts, rtdbPath = '') {
   console.log(`Getting service account from Firestore...`)
 
   // Make unique app name (prevents issue of multiple apps initialized with same name)
-  const appName = `app-${uniqueId()}`
+  const appName = `${environmentId}-${uniqueId()}`
   // Get Service account data from resource (i.e Storage, Firestore, etc)
   const [saErr, serviceAccount] = await to(
     serviceAccountFromFirestorePath(
@@ -91,7 +91,7 @@ export async function shallowRtdbGet(opts, rtdbPath = '') {
   const apiUrl = `https://${databaseName ||
     serviceAccount.project_id}.firebaseio.com/${rtdbPath}.json?access_token=${
     client.credentials.access_token
-  }`
+  }&shallow=true`
 
   const [getErr, response] = await to(request(apiUrl))
 
@@ -103,6 +103,8 @@ export async function shallowRtdbGet(opts, rtdbPath = '') {
     )
     throw getErr.error || getErr
   }
-
-  return response.body || response
+  if (isString(response)) {
+    return JSON.parse(response)
+  }
+  return response
 }
