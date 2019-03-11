@@ -45,8 +45,8 @@ function EventsTable({ groupedEvents, classes }) {
                 </TableCell>
                 <TableCell>
                   <span>
-                    {projectEvent.createdBy ||
-                      startCase(projectEvent.createdByType)}
+                    {get(projectEvent, 'createdBy') ||
+                      startCase(get(projectEvent, 'createdByType'))}
                   </span>
                 </TableCell>
               </TableRow>
