@@ -377,7 +377,7 @@ export async function runStep({
         return copyFromRTDBToFirestore(app1, app2, step, convertedInputValues)
       } else if (dest.resource === 'rtdb') {
         // Run normal copy if batching is disabled
-        if (step.batchingDisabled) {
+        if (step.disableBatching) {
           return copyBetweenRTDBInstances(
             app1,
             app2,

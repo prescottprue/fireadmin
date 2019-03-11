@@ -106,7 +106,7 @@ function ActionTemplateStep({
                     <FormControlLabel
                       control={
                         <Field
-                          name="subcollections"
+                          name={`steps.${index}.disableBatching`}
                           disabled={
                             get(steps, `${index}.src.resource`) !== 'rtdb'
                           }
