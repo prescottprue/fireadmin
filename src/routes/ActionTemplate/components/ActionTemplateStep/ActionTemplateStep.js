@@ -26,7 +26,7 @@ const typeOptions = [
   { value: 'copy' },
   { value: 'map', disabled: true },
   { value: 'delete', disabled: true },
-  { value: 'custom' }
+  { value: 'custom', disabled: true }
 ]
 
 function ActionTemplateStep({
