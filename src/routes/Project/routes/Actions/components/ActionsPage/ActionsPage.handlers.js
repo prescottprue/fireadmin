@@ -53,6 +53,16 @@ export function runAction(props) {
     }
     const { environmentValues } = formValues
     const templateId = get(props, 'selectedTemplate.templateId')
+    if (!templateId) {
+      const errMsg =
+        'A valid template must be selected in order to run an action'
+      props.showError(errMsg)
+      Raven.captureException('An invalid template was selected', {
+        formValues,
+        selectedTemplate: get(props, 'selectedTemplate')
+      })
+      throw new Error(errMsg)
+    }
     // Build request object for action run
     const actionRequest = {
       projectId: props.params.projectId,
@@ -79,6 +89,7 @@ export function runAction(props) {
       templateId,
       environmentValues
     })
+
     return Promise.all([
       props.firebase.pushWithMeta(
         firebasePaths.actionRunnerRequests,

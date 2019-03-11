@@ -5,7 +5,8 @@ import {
   copyBetweenFirestoreInstances,
   copyFromStorageToRTDB,
   copyBetweenRTDBInstances,
-  copyFromRTDBToStorage
+  copyFromRTDBToStorage,
+  batchCopyBetweenRTDBInstances
 } from './actions'
 import { to, promiseWaterfall } from '../utils/async'
 import { hasAll } from '../utils/index'
@@ -375,7 +376,34 @@ export async function runStep({
       if (dest.resource === 'firestore') {
         return copyFromRTDBToFirestore(app1, app2, step, convertedInputValues)
       } else if (dest.resource === 'rtdb') {
-        return copyBetweenRTDBInstances(app1, app2, step, convertedInputValues)
+        // Run normal copy if batching is disabled
+        if (step.disableBatching) {
+          return copyBetweenRTDBInstances(
+            app1,
+            app2,
+            step,
+            convertedInputValues
+          )
+        }
+        // Batch copy by default
+        return batchCopyBetweenRTDBInstances(
+          app1,
+          app2,
+          step,
+          convertedInputValues,
+          eventData
+        ).catch(batchErr => {
+          // Fallback to copying without batching
+          console.error('Batch copy error:', batchErr)
+          console.error('Batch copy error info', { inputs, step, eventData })
+          console.log('Falling back to normal copy....')
+          return copyBetweenRTDBInstances(
+            app1,
+            app2,
+            step,
+            convertedInputValues
+          )
+        })
       } else if (dest.resource === 'storage') {
         return copyFromRTDBToStorage(app1, app2, step, convertedInputValues)
       } else {
