@@ -376,18 +376,34 @@ export async function runStep({
       if (dest.resource === 'firestore') {
         return copyFromRTDBToFirestore(app1, app2, step, convertedInputValues)
       } else if (dest.resource === 'rtdb') {
-        // TODO: Support enabling batch copying from the front end
-        // TODO: Switch this to an actual flag from the request instead of a non existing param
-        if (!step.notBatch) {
-          return batchCopyBetweenRTDBInstances(
+        // Run normal copy if batching is disabled
+        if (step.batchingDisabled) {
+          return copyBetweenRTDBInstances(
             app1,
             app2,
             step,
-            convertedInputValues,
-            eventData
+            convertedInputValues
           )
         }
-        return copyBetweenRTDBInstances(app1, app2, step, convertedInputValues)
+        // Batch copy by default
+        return batchCopyBetweenRTDBInstances(
+          app1,
+          app2,
+          step,
+          convertedInputValues,
+          eventData
+        ).catch(batchErr => {
+          // Fallback to copying without batching
+          console.error('Batch copy error:', batchErr)
+          console.error('Batch copy error info', { inputs, step, eventData })
+          console.log('Falling back to normal copy....')
+          return copyBetweenRTDBInstances(
+            app1,
+            app2,
+            step,
+            convertedInputValues
+          )
+        })
       } else if (dest.resource === 'storage') {
         return copyFromRTDBToStorage(app1, app2, step, convertedInputValues)
       } else {
