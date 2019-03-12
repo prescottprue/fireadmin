@@ -1,6 +1,5 @@
 import * as firebase from 'firebase/app';
 import 'firebase/firestore';
-import 'firebase/database';
 import { PROJECTS_PATH } from './constants/firebasePaths';
 
 class ProjectPermissionValue {

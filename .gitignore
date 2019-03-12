@@ -6,6 +6,7 @@
 
 packages/**/lib
 packages/**/lib-*
+packages/**/docs
 
 # Main dependencies
 **/node_modules

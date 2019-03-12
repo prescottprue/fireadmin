@@ -13,10 +13,7 @@ import styles from './ProjectPage.styles'
 import ProjectNotFoundPage from './ProjectNotFoundPage'
 import ProjectErrorPage from './ProjectErrorPage'
 import { withNotifications } from 'modules/notification'
-import Project from '@fireadmin/core/lib/Project'
-
-console.log('project', Project, new Project('asdf').get())
-
+// import Project from '@fireadmin/core/Project'
 export default compose(
   // Map auth uid from state to props
   connect(({ firebase: { auth: { uid } } }) => ({ uid })),
