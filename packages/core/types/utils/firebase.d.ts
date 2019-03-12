@@ -1,0 +1,10 @@
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+import 'firebase/database';
+import 'firebase/auth';
+export declare function init(fbConfig: object): firebase.app.App;
+export declare function storage(): firebase.storage.Storage;
+export declare function rtdbRef(refPath: string): firebase.database.Reference;
+export declare function rtdbSnap(ref: firebase.database.Reference | firebase.database.Query | string): Promise<firebase.database.DataSnapshot>;
+export declare function rtdbVal(ref: firebase.database.Reference | string): Promise<any>;
+export declare function snapToArray(snap: firebase.database.DataSnapshot, filterFunc?: (docSnap: firebase.database.DataSnapshot) => boolean): Array<firebase.database.DataSnapshot>;
