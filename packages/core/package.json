@@ -1,16 +1,12 @@
 {
   "name": "@fireadmin/core",
   "version": "0.0.1",
-  "main": "./bundles/index.umd.js",
-  "browser": "./dist/index.cjs.js",
-  "module": "./dist/index.cjs.js",
-  "es2015": "./lib/index.js",
+  "main": "dist/index.node.cjs.js",
+  "browser": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
   "typings": "./types/index.d.ts",
   "files": [
-    "lib-esm",
-    "dist",
-    "lib",
-    "types"
+    "dist"
   ],
   "scripts": {
     "clean": "rimraf lib coverage",

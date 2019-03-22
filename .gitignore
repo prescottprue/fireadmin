@@ -7,6 +7,7 @@
 packages/**/lib
 packages/**/lib-*
 packages/**/docs
+packages/**/.rpt2_cache
 
 # Main dependencies
 **/node_modules

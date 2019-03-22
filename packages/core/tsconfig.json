@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "importHelpers": true,
     "moduleResolution": "node",
     "target": "es5",
     "module": "es2015",
@@ -13,8 +14,8 @@
     "sourceMap": true,
     "declaration": true,
     "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
     "declarationDir": "dist/types",
-    "outDir": "dist/lib",
     "typeRoots": [
       "node_modules/@types"
     ]

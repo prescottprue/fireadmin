@@ -7,6 +7,8 @@ export type EnvironmentName = 'stage' | 'prod'
  * Initialize Fireadmin library
  * @param envName - Name of the Fireadmin environment
  */
-export default function initialize(envName: EnvironmentName) {
+export function initialize(envName: EnvironmentName) {
   init(FB_CONFIG_BY_ENV_NAMES[envName])
 }
+
+export default initialize
