@@ -31,7 +31,7 @@ cypress/screenshots
 cypress/config.json
 cypress.env.json
 serviceAccount.json
-
+**/coverage
 
 # Docs
 docs/public
