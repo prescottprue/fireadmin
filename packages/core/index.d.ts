@@ -3,9 +3,7 @@ declare module "constants/firebasePaths" {
     export const PROJECTS_PATH = "projects";
     export const REQUESTS_PATH = "requests";
 }
-declare module "Project" {
-    import * as firebase from 'firebase/app';
-    import 'firebase/firestore';
+declare module "ProjectValue" {
     class ProjectPermissionValue {
         constructor(permissionValue: object);
         role?: string;
@@ -32,6 +30,11 @@ declare module "Project" {
         permissions?: Record<string, ProjectPermissionValue>;
         roles?: Record<ProjectRoleName, ProjectRoleValue>;
     }
+}
+declare module "Project" {
+    import * as firebase from 'firebase/app';
+    import 'firebase/firestore';
+    import { ProjectValue } from "ProjectValue";
     /**
      * Fireadmin Project
      */

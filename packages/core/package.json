@@ -23,7 +23,7 @@
     "test:cov": "istanbul cover  $(npm bin)/_mocha ./test/unit/**",
     "build:lib": "babel src --out-dir lib",
     "watch:lib": "npm run build:lib -- --watch",
-"watch:es": "npm run build:es -- --watch",
+    "watch:es": "npm run build:es -- --watch",
     "watch": "npm run watch:lib",
     "prepublish": "npm run clean && npm run build",
     "pre-push": "npm run lint"
@@ -46,6 +46,7 @@
   },
   "homepage": "https://github.com/prescottprue/fireadmin",
   "dependencies": {
+    "ajv": "^6.10.0",
     "firebase": "^5.8.6",
     "lodash": "^4.17.11"
   },
