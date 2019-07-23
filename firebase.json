@@ -29,6 +29,11 @@
           "destination": "/index.html"
         },
         {
+          "source": "/docs",
+          "destination": "https://fireadmin-docs.firebaseapp.com",
+          "type": 301
+        },
+        {
           "source": "/docs/:page*",
           "destination": "https://fireadmin-docs.firebaseapp.com/:page",
           "type": 301
@@ -75,6 +80,11 @@
         {
           "source": "**",
           "destination": "/index.html"
+        },
+        {
+          "source": "/docs",
+          "destination": "https://fireadmin-docs.firebaseapp.com",
+          "type": 301
         },
         {
           "source": "/docs/:page*",
