@@ -38,7 +38,7 @@ describe('api HTTPS Cloud Function', () => {
     // A fake response object, with a stubbed end function which asserts that
     // it is called with a hello message
     const res = {
-      end: (msg) => {
+      end: msg => {
         expect(msg).to.equal('Hello from api!')
         done()
       }

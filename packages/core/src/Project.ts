@@ -1,7 +1,7 @@
 import * as firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/database';
-import { PROJECTS_PATH } from './constants/firebasePaths';
+import { PROJECTS_COLLECTION } from './constants/firestorePaths'
 
 class ProjectPermissionValue {
   constructor(permissionValue: object) {
@@ -50,7 +50,7 @@ export class ProjectValue {
 export default class Project {
   constructor(projectId: string) {
     this.id = projectId
-    this.path = `${PROJECTS_PATH}/${projectId}`
+    this.path = `${PROJECTS_COLLECTION}/${projectId}`
     this.ref = firebase.firestore().doc(this.path)
     this.listen = this.ref.onSnapshot
   }

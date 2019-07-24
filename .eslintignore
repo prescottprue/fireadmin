@@ -15,4 +15,6 @@ docs/content/**
 docs/static/**
 cypress/screenshots/**
 cypress/videos/**
+packages/**/lib/**
+packages/**/lib-esm/**
 .nyc_output/**
