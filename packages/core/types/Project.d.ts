@@ -1,41 +1,37 @@
 import * as firebase from 'firebase/app';
-import 'firebase/firestore';
 import 'firebase/database';
-declare class ProjectPermissionValue {
-    constructor(permissionValue: object);
+import 'firebase/firestore';
+interface ProjectPermissionValue {
     role?: string;
     updatedAt?: firebase.firestore.FieldValue;
 }
-declare class ProjectRolePermissionsValue {
-    constructor(rolePermissionValue: object);
+interface ProjectRolePermissionsValue {
     name?: string;
     updatedAt?: Record<string, object[]>;
 }
-declare class ProjectRoleValue {
-    constructor(permissionValue: object);
+interface ProjectRoleValue {
     name?: string;
     permissions?: Record<string, ProjectRolePermissionsValue>;
 }
 declare type ProjectRoleName = 'editor' | 'owner' | 'viewer' | string;
 export declare class ProjectValue {
-    constructor(projectSnap: firebase.firestore.DocumentSnapshot);
     snap: firebase.firestore.DocumentSnapshot;
-    exists: Boolean;
+    exists: boolean;
     name?: string;
     createdAt?: firebase.firestore.FieldValue;
     updatedAt?: firebase.firestore.FieldValue;
     permissions?: Record<string, ProjectPermissionValue>;
     roles?: Record<ProjectRoleName, ProjectRoleValue>;
+    constructor(projectSnap: firebase.firestore.DocumentSnapshot);
 }
 export default class Project {
-    constructor(projectId: string);
     path: string;
     id: string;
     ref: firebase.firestore.DocumentReference;
     listen: any;
+    constructor(projectId: string);
     get(): Promise<ProjectValue>;
-    update(values: Object): Promise<any>;
+    update(values: object): Promise<any>;
     delete(): Promise<void>;
-    validate(): void;
 }
 export {};

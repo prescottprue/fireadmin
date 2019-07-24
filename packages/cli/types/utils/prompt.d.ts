@@ -1,4 +1,4 @@
-import * as inquirer from "inquirer";
+import * as inquirer from 'inquirer';
 export declare type Question = inquirer.Question;
 export declare function prompt(options: {
     [key: string]: any;

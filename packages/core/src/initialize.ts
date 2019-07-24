@@ -1,4 +1,4 @@
-import { FB_CONFIG_BY_ENV_NAMES } from './constants/fbConfigs';
+import { FB_CONFIG_BY_ENV_NAMES } from './constants/fbConfigs'
 import { init } from './utils/firebase'
 
 export type EnvironmentName = 'stage' | 'prod'

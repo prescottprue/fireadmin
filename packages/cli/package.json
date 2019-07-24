@@ -22,7 +22,7 @@
     "build": "npm run build:lib && npm run build:esm",
     "build:lib": "tsc",
     "build:esm": "tsc -m es6 --outDir lib-esm",
-    "lint": "eslint src/**",
+    "lint": "eslint src/** --ext .ts",
     "lint:fix": "npm run lint -- --fix",
     "watch": "npm run build:lib -- -w",
     "prepublish": "npm run clean && npm run build",
@@ -53,6 +53,8 @@
   },
   "devDependencies": {
     "@types/inquirer": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
     "eslint": "^5.15.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^4.1.0",

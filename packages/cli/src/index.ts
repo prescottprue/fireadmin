@@ -12,8 +12,15 @@ export async function getProjects() {
 
 export async function runCustomAction() {
   // TODO: Load action from current repo and run it by passing in environments (selected by user based on migration settings)
-  const answers = await prompt({ }, [{ type: 'list', name: 'selectAction', message: 'select action', choices: [{ name: 'option1' }] }])
-  console.log('answers', answers)
+  const answers = await prompt({}, [
+    {
+      type: 'list',
+      name: 'selectAction',
+      message: 'select action',
+      choices: [{ name: 'option1' }]
+    }
+  ])
+  console.log('answers', answers) // eslint-disable-line no-console
 }
 
 export async function uploadAction() {

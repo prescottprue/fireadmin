@@ -18,5 +18,5 @@ export const PROD_FB_CONFIG = {
 
 export const FB_CONFIG_BY_ENV_NAMES = {
   stage: STAGE_FB_CONFIG,
-  prod: PROD_FB_CONFIG,
+  prod: PROD_FB_CONFIG
 }

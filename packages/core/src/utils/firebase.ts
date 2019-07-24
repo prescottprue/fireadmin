@@ -1,7 +1,7 @@
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import 'firebase/database';
-import 'firebase/auth';
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/database'
+import 'firebase/firestore'
 
 let firebaseApp: firebase.app.App
 
@@ -14,7 +14,12 @@ export function init(fbConfig: object): firebase.app.App {
       firebaseApp = firebase.initializeApp(fbConfig)
     }
   } catch (err) {
-    console.warn('You only need to initialize Firebase once', JSON.stringify(err))
+    /* eslint-disable no-console */
+    console.warn(
+      'You only need to initialize Firebase once',
+      JSON.stringify(err)
+    )
+    /* eslint-enable no-console */
   }
 
   return firebaseApp
@@ -32,10 +37,12 @@ export function storage(): firebase.storage.Storage {
  */
 export function rtdbRef(refPath: string): firebase.database.Reference {
   try {
-    return firebase.database().ref(refPath);
+    return firebase.database().ref(refPath)
   } catch (e) {
-    console.error('Problem reading from ref', refPath);
-    throw e;
+    /* eslint-disable no-console */
+    console.error('Problem reading from ref', refPath)
+    /* eslint-enable no-console */
+    throw e
   }
 }
 
@@ -45,12 +52,14 @@ export function rtdbRef(refPath: string): firebase.database.Reference {
  * or reference itself.
  * @return Resolves with database shapshot of data at provided path
  */
-export function rtdbSnap(ref: firebase.database.Reference | firebase.database.Query | string): Promise<firebase.database.DataSnapshot> {
+export function rtdbSnap(
+  ref: firebase.database.Reference | firebase.database.Query | string
+): Promise<firebase.database.DataSnapshot> {
   if (typeof ref === 'string') {
     // this is actually a path
-    return rtdbSnap(rtdbRef(ref));
+    return rtdbSnap(rtdbRef(ref))
   }
-  return ref.once('value');
+  return ref.once('value')
 }
 
 /**
@@ -59,8 +68,10 @@ export function rtdbSnap(ref: firebase.database.Reference | firebase.database.Qu
  * or reference itself.
  * @return Promise which resolves with value at database location
  */
-export function rtdbVal(ref: firebase.database.Reference | string): Promise<any> {
-  return rtdbSnap(ref).then(refSnap => refSnap.val());
+export function rtdbVal(
+  ref: firebase.database.Reference | string
+): Promise<any> {
+  return rtdbSnap(ref).then(refSnap => refSnap.val())
 }
 
 /**
@@ -73,17 +84,17 @@ export function rtdbVal(ref: firebase.database.Reference | string): Promise<any>
 export function snapToArray(
   snap: firebase.database.DataSnapshot,
   filterFunc?: (docSnap: firebase.database.DataSnapshot) => boolean
-): Array<firebase.database.DataSnapshot> {
-  const snapResults: Array<firebase.database.DataSnapshot> = [];
-  snap.forEach((doc) => {
+): firebase.database.DataSnapshot[] {
+  const snapResults: firebase.database.DataSnapshot[] = []
+  snap.forEach(doc => {
     if (!filterFunc) {
-      snapResults.push(doc);
+      snapResults.push(doc)
     } else {
       const passesFilter = filterFunc(doc)
       if (passesFilter) {
-        snapResults.push(doc);
+        snapResults.push(doc)
       }
     }
-  });
-  return snapResults;
+  })
+  return snapResults
 }

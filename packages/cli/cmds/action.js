@@ -11,7 +11,7 @@ const runAction = require('../lib').runAction
 module.exports = function(program) {
   program
     .command('action')
-    .description('Get ')
+    .description('Run an action template')
     .action(directory => {
       return runAction(directory)
         .then(() => process.exit(0))

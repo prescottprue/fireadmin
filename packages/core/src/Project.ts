@@ -1,82 +1,73 @@
-import * as firebase from 'firebase/app';
-import 'firebase/firestore';
-import 'firebase/database';
+import * as firebase from 'firebase/app'
+import 'firebase/database'
+import 'firebase/firestore'
 import { PROJECTS_COLLECTION } from './constants/firestorePaths'
 
-class ProjectPermissionValue {
-  constructor(permissionValue: object) {
-    Object.assign(this, permissionValue)
-  }
+interface ProjectPermissionValue {
   role?: string
   updatedAt?: firebase.firestore.FieldValue
 }
 
-class ProjectRolePermissionsValue {
-  constructor(rolePermissionValue: object) {
-    Object.assign(this, rolePermissionValue)
-  }
+// tslint:disable-next-line
+interface ProjectRolePermissionsValue {
   name?: string
   updatedAt?: Record<string, object[]>
 }
 
-class ProjectRoleValue {
-  constructor(permissionValue: object) {
-    Object.assign(this, permissionValue)
-  }
+// tslint:disable-next-line
+interface ProjectRoleValue {
   name?: string
   permissions?: Record<string, ProjectRolePermissionsValue>
 }
 
 type ProjectRoleName = 'editor' | 'owner' | 'viewer' | string
 
+// tslint:disable-next-line
 export class ProjectValue {
+  public snap: firebase.firestore.DocumentSnapshot
+  public exists: boolean
+  public name?: string
+  public createdAt?: firebase.firestore.FieldValue
+  public updatedAt?: firebase.firestore.FieldValue
+  public permissions?: Record<string, ProjectPermissionValue>
+  public roles?: Record<ProjectRoleName, ProjectRoleValue>
   constructor(projectSnap: firebase.firestore.DocumentSnapshot) {
     this.snap = projectSnap
     this.exists = projectSnap.exists
     Object.assign(this, projectSnap.data())
   }
-  snap: firebase.firestore.DocumentSnapshot
-  exists: Boolean
-  name?: string
-  createdAt?: firebase.firestore.FieldValue
-  updatedAt?: firebase.firestore.FieldValue
-  permissions?: Record<string, ProjectPermissionValue>
-  roles?: Record<ProjectRoleName, ProjectRoleValue>
 }
 
 /**
  * Fireadmin Project
  */
+// tslint:disable-next-line
 export default class Project {
+  public path: string
+  public id: string
+  public ref: firebase.firestore.DocumentReference
+  public listen: any
   constructor(projectId: string) {
     this.id = projectId
     this.path = `${PROJECTS_COLLECTION}/${projectId}`
     this.ref = firebase.firestore().doc(this.path)
     this.listen = this.ref.onSnapshot
   }
-  path: string
-  id: string
-  ref: firebase.firestore.DocumentReference
-  listen: any
 
   /**
    * Get Fireadmin project value
    */
-  get(): Promise<ProjectValue> {
-    return this.ref.get().then((docSnap) => {
+  public get(): Promise<ProjectValue> {
+    return this.ref.get().then(docSnap => {
       return new ProjectValue(docSnap)
     })
   }
 
-  update(values: Object): Promise<any> {
+  public update(values: object): Promise<any> {
     return this.ref.update(values)
   }
 
-  delete() {
+  public delete() {
     return this.ref.delete()
-  }
-
-  validate() {
-
   }
 }

@@ -1,11 +1,11 @@
-import * as inquirer from "inquirer";
-import { forEach } from "lodash";
+import * as inquirer from 'inquirer'
+import { forEach } from 'lodash'
 
 /**
  * Question type for inquirer. See
  * https://www.npmjs.com/package/inquirer#question
  */
-export type Question = inquirer.Question;
+export type Question = inquirer.Question
 
 /**
  * prompt is used to prompt the user for values. Specifically, any `name` of a
@@ -19,20 +19,23 @@ export type Question = inquirer.Question;
  * @param questions `Question`s to ask the user.
  * @return The answers, keyed by the `name` of the `Question`.
  */
-export async function prompt(options: { [key: string]: any }, questions: Question[]): Promise<any> {
-  const prompts = [];
+export async function prompt(
+  options: { [key: string]: any },
+  questions: Question[]
+): Promise<any> {
+  const prompts = []
   for (const question of questions) {
     if (question.name && !options[question.name]) {
-      prompts.push(question);
+      prompts.push(question)
     }
   }
 
-  const answers = await inquirer.prompt(prompts);
+  const answers = await inquirer.prompt(prompts)
   // lodash's forEach's call back is (value, key); this is not a typo.
   forEach(answers, (v, k) => {
-    options[k] = v;
-  });
-  return answers;
+    options[k] = v
+  })
+  return answers
 }
 
 /**
@@ -41,7 +44,7 @@ export async function prompt(options: { [key: string]: any }, questions: Questio
  * @return The value as returned by `inquirer` for that quesiton.
  */
 export async function promptOnce(question: Question): Promise<any> {
-  question.name = question.name || "question";
-  const answers = await prompt({}, [question]);
-  return answers[question.name];
+  question.name = question.name || 'question'
+  const answers = await prompt({}, [question])
+  return answers[question.name]
 }
