@@ -1,5 +1,5 @@
 'use strict'
-const runAction = require('../lib').runAction
+const runCustomAction = require('../lib').runCustomAction
 
 /**
  * @name project
@@ -13,7 +13,7 @@ module.exports = function(program) {
     .command('action')
     .description('Run an action template')
     .action(directory => {
-      return runAction(directory)
+      return runCustomAction(directory)
         .then(() => process.exit(0))
         .catch(() => process.exit(1))
     })
