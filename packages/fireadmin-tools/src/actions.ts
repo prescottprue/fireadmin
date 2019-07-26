@@ -1,55 +1,11 @@
-import { readdir, existsSync, readFile } from 'fs'
-import { promisify } from 'util'
+import { existsSync } from 'fs'
 import { get } from 'lodash'
-import path from 'path'
-import { transform } from '@babel/core'
-import { ActionEnvironmentSetting, ActionSettings, ActionStepSetting, ActionInputSetting } from '@fireadmin/core'
+import { ActionEnvironmentSetting, ActionSettings, ActionStepSetting, ActionInputSetting } from '@fireadmin/core/types/Action'
 import { promiseWaterfall } from './utils/async'
 import { prompt } from './utils/prompt'
-
-const babelConfig = {	
-  presets: [	
-    ["@babel/preset-env", {
-      "targets": {
-        "node": "6"
-      }
-    }]
-  ],
-  cwd: path.join(__dirname, '..')
-}	
-
- /**	
- * Run babel transform on a string (settings same as function babelification)	
- * @param  {String} stringToTransform - String code on which to run babel	
- * transform	
- * @return {String} Babelified string	
- */	
-function runBabelTransform(stringToTransform: string) {	
-  try {	
-    const transformed = transform(stringToTransform, babelConfig)
-    if (!transformed || !transformed.code) {
-      return null
-    }
-    return transformed.code	
-  } catch (err) {	
-    console.log('Error running babel transform:', err.message || err)	
-    throw err	
-  }	
-}
-
-const readDirPromise = promisify(readdir)
-const readFilePromise = promisify(readFile)
-
-function getLocalActionsFolder() {
-  const DEFAULT_LOCAL_ACTIONS_FOLDER = `${process.cwd()}/actions`
-  if (existsSync(DEFAULT_LOCAL_ACTIONS_FOLDER)) {
-    return DEFAULT_LOCAL_ACTIONS_FOLDER
-  }
-  const FALLBACK_LOCAL_ACTIONS_FOLDER = `${process.cwd()}/migrations`
-  if (existsSync(FALLBACK_LOCAL_ACTIONS_FOLDER)) {
-    return FALLBACK_LOCAL_ACTIONS_FOLDER
-  }
-}
+import { login } from './utils/firebase'
+import { readDirPromise, readFilePromise, getLocalActionsFolder, requireAsync } from './utils/files'
+import { Project } from '@fireadmin/core'
 
 async function getLocalActions(): Promise<string[]> {
   const localActionsFolder = getLocalActionsFolder()
@@ -74,20 +30,6 @@ async function getActionSettings(actionName: string): Promise<ActionSettings> {
   }
 }
 
-async function requireAsync(modulePath: string) {
-  const data = await readFilePromise(modulePath, { encoding: 'utf8' })
-  const babelifiedString = runBabelTransform(data)
-  const module = {
-    exports: {}
-  };
-  try {
-    return eval(babelifiedString || '');
-  } catch(err) {
-    console.log('Error evaling running code:', err)
-    throw err
-  }
-};
-
 export async function runCustomAction() {
   // Load actions from current folder and run it by passing in environments (selected by user based on migration settings)
   const localActions = await getLocalActions()
@@ -107,6 +49,8 @@ export async function runCustomAction() {
   const actionSettings = await getActionSettings(optionAnswer[SELECTED_ACTION_PROMPT_NAME])
   const actionParentPath = `${localActionsFolder}/${optionAnswer[SELECTED_ACTION_PROMPT_NAME]}`
   const environmentSettings: ActionEnvironmentSetting[] = get(actionSettings, 'environments', [])
+  await login()
+  await new Project('ZRkZflRvYpSmomWYoBUM').getEnvironments()
   // Ask for environment preferences from Fireadmin project based on template settings
   const environmentOptions = [{ name: 'int' }, { name: 'test' }]
   const environmentQuestions: any[] = environmentSettings.map((setting: ActionEnvironmentSetting) => ({

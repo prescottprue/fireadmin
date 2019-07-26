@@ -22,7 +22,8 @@
   },
   "typeRoots": [
     "./types",
-    "./node_modules/@types"
+    "./node_modules/@types",
+    "../fireadmin-tools/types",
   ],
   "include": [
     "src/**/*"

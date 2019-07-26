@@ -14,5 +14,5 @@ export interface FirebaseConfig {
 export interface FireadminConfig {
   auth?: any;
   credential?: any;
-  fireadminApp?: firebase.app.App;
+  fireadminApp?: firebase.app.App | any;
 }

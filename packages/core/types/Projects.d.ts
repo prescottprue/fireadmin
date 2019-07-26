@@ -8,5 +8,5 @@ export default class Projects {
     ref: firebase.firestore.CollectionReference | firebase.firestore.DocumentReference;
     constructor(financialTransactionsData?: object);
     create(newUserData: UserValue): Promise<User>;
-    get(options: GetOptions): Promise<User>;
+    get(options: GetOptions): Promise<firebase.firestore.QuerySnapshot | firebase.firestore.DocumentSnapshot>;
 }

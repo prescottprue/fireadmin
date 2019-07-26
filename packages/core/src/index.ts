@@ -7,8 +7,8 @@ export * from './types/Action'
  * Initialize Typesafe Client library (internally initializes Firebase)
  * @param envConfig - Firebase config
  */
-export default function initialize(fbConfig: FireadminConfig) {
-  initializeFirebase(fbConfig)
+export function initialize(fireadminConfig: FireadminConfig) {
+  initializeFirebase(fireadminConfig)
 }
 
 /**
@@ -19,3 +19,11 @@ export function loginWithToken(customToken: string) {
   // TODO: Support logging into both apps
   return getApp().auth().signInWithCustomToken(customToken);
 }
+
+import Project from './Project';
+import Projects from './Projects';
+import Users from './Users';
+import User from './User';
+export { Projects, Project, Users, User };
+
+export default initialize
