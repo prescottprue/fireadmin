@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ActionTemplateValue",
+  "type": "object",
+  "properties": {
+    "createdAt": {
+      "type": "number"
+    },
+    "createdBy": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "public": {
+      "type": "boolean"
+    },
+    "subcollections": {
+      "type": "boolean"
+    },
+    "environments": {
+      "type": "array"
+    },
+    "steps": {
+      "type": "array"
+    },
+    "inputs": {
+      "type": "array"
+    }
+  }
+}

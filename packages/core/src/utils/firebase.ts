@@ -1,32 +1,41 @@
-import firebase from 'firebase/app'
-import 'firebase/auth'
-import 'firebase/database'
-import 'firebase/firestore'
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+import 'firebase/database';
+import 'firebase/auth';
 
 let firebaseApp: firebase.app.App
 
 /**
  * @description Initialize firebase application
  */
-export function init(fbConfig: object): firebase.app.App {
-  try {
-    if (!firebaseApp) {
+export function initializeFirebase(fbConfig: any): firebase.app.App {
+  if (firebaseApp) {
+    return firebaseApp
+  }
+  if (fbConfig.auth) {
+    firebaseApp = fbConfig
+  } else if (fbConfig.credential) {
+    firebaseApp = firebase.initializeApp(fbConfig)
+  } else {
+    try {
       firebaseApp = firebase.initializeApp(fbConfig)
+    } catch (err) {
+      console.warn('You only need to initialize Firebase once', JSON.stringify(err))
     }
-  } catch (err) {
-    /* eslint-disable no-console */
-    console.warn(
-      'You only need to initialize Firebase once',
-      JSON.stringify(err)
-    )
-    /* eslint-enable no-console */
   }
 
   return firebaseApp
 }
 
+export function getApp() {
+  if (!firebaseApp) {
+    console.warn('App instance does not exist, make sure to call initialize')
+  }
+  return firebaseApp
+}
+
 export function storage(): firebase.storage.Storage {
-  return firebase.storage()
+  return firebaseApp.storage()
 }
 
 /**
@@ -37,13 +46,74 @@ export function storage(): firebase.storage.Storage {
  */
 export function rtdbRef(refPath: string): firebase.database.Reference {
   try {
-    return firebase.database().ref(refPath)
+    return firebaseApp.database().ref(refPath);
   } catch (e) {
-    /* eslint-disable no-console */
-    console.error('Problem reading from ref', refPath)
-    /* eslint-enable no-console */
-    throw e
+    console.error('Problem reading from ref', refPath);
+    throw e;
   }
+}
+
+/**
+ * Get Firestore Reference at provided path (works for collections and docs)
+ * @param {String} refPath - Path of real time database reference
+ * @return Reference at provided path
+ * @memberof utils
+ */
+export function firestoreRef(refPath: string): firebase.firestore.CollectionReference | firebase.firestore.DocumentReference {
+  const isDocPath = refPath.split('/').length % 2
+  return isDocPath
+    ? firebaseApp.firestore().doc(refPath)
+    : firebaseApp.firestore().collection(refPath);
+}
+
+export interface GetOptions {
+  resolveForNotFound?: Boolean
+}
+
+/**
+ * Throw if a snapshot value does not exist, otherwise return the value.
+ * @param snap - Database Snapshot from which to check for value
+ * @param opts - Get options
+ * @param opts.resolveForNotFound - Option to allow for resolving if item is not found
+ * @param errMsg 
+ */
+export function throwIfNotFoundInVal(snap: firebase.database.DataSnapshot | firebase.firestore.DocumentSnapshot, opts?: GetOptions, errMsg?: string): any {
+  const { resolveForNotFound = false }: GetOptions = opts || {}
+  let itemVal
+  if (snap instanceof firebase.firestore.DocumentSnapshot) {
+    itemVal = snap.data()
+  } else if (typeof snap.val === 'function') {
+    itemVal = snap.val()
+  }
+  if (!resolveForNotFound && !itemVal) {
+    throw new Error(errMsg || 'Not Found in Database')
+  }
+  return itemVal
+}
+
+function valFromSnap(snap: firebase.firestore.DocumentSnapshot | firebase.firestore.QuerySnapshot) {
+  if (snap instanceof firebase.firestore.DocumentSnapshot) {
+    return snap.data()
+  }
+  if (snap instanceof firebase.firestore.QuerySnapshot) {
+    return snapToArray(snap)
+  }
+}
+
+/**
+ * Throw if a snapshot value does not exist, otherwise return the value.
+ * @param snap - Database Snapshot from which to check for value
+ * @param opts - Get options
+ * @param opts.resolveForNotFound - Option to allow for resolving if item is not found
+ * @param errMsg 
+ */
+export function throwIfNotFoundInData(snap: firebase.firestore.DocumentSnapshot | firebase.firestore.QuerySnapshot, opts?: GetOptions, errMsg?: string): any {
+  const { resolveForNotFound = false }: GetOptions = opts || {}
+  const itemVal = valFromSnap(snap)
+  if (!resolveForNotFound && !itemVal) {
+    throw new Error(errMsg || 'Not Found in Firestore')
+  }
+  return itemVal
 }
 
 /**
@@ -52,14 +122,12 @@ export function rtdbRef(refPath: string): firebase.database.Reference {
  * or reference itself.
  * @return Resolves with database shapshot of data at provided path
  */
-export function rtdbSnap(
-  ref: firebase.database.Reference | firebase.database.Query | string
-): Promise<firebase.database.DataSnapshot> {
+export function rtdbSnap(ref: firebase.database.Reference | firebase.database.Query | string): Promise<firebase.database.DataSnapshot> {
   if (typeof ref === 'string') {
     // this is actually a path
-    return rtdbSnap(rtdbRef(ref))
+    return rtdbSnap(rtdbRef(ref));
   }
-  return ref.once('value')
+  return ref.once('value');
 }
 
 /**
@@ -68,33 +136,51 @@ export function rtdbSnap(
  * or reference itself.
  * @return Promise which resolves with value at database location
  */
-export function rtdbVal(
-  ref: firebase.database.Reference | string
-): Promise<any> {
-  return rtdbSnap(ref).then(refSnap => refSnap.val())
+export function rtdbVal(ref: firebase.database.Reference | string): Promise<any> {
+  return rtdbSnap(ref).then(refSnap => refSnap.val());
 }
 
 /**
  * Convert snapshot object into an array of document snapshots
  * ordered based on query order (lexographically by key is default from Firebase).
- * @param {Firebase.Database.Snapshot|Firebase.Firestore.CollectionSnapshot} snap - Snapshot object to run forEach on
- * @return {Array} - Array of child snapshots
+ * @param snap - Snapshot object to run forEach on
+ * @return Array of child snapshots
  * @memberof utils
  */
 export function snapToArray(
-  snap: firebase.database.DataSnapshot,
+  snap: firebase.database.DataSnapshot | firebase.firestore.QuerySnapshot,
   filterFunc?: (docSnap: firebase.database.DataSnapshot) => boolean
-): firebase.database.DataSnapshot[] {
-  const snapResults: firebase.database.DataSnapshot[] = []
-  snap.forEach(doc => {
+): Array<firebase.database.DataSnapshot> {
+  const snapResults: Array<firebase.database.DataSnapshot> = [];
+  snap.forEach((doc: any) => {
     if (!filterFunc) {
-      snapResults.push(doc)
+      snapResults.push(doc);
     } else {
       const passesFilter = filterFunc(doc)
       if (passesFilter) {
-        snapResults.push(doc)
+        snapResults.push(doc);
       }
     }
-  })
-  return snapResults
+  });
+  return snapResults;
+}
+
+export function snapToItemsArray<T>(
+  snap: firebase.database.DataSnapshot,
+  classFactory: (docSnap: firebase.database.DataSnapshot) => T
+): Array<T> {
+  const snapResults: Array<T> = [];
+  snap.forEach((doc) => {
+    const result = classFactory(doc)
+    snapResults.push(result);
+  });
+  return snapResults;
+}
+
+/**
+ * Login to Firebase with a custom token
+ * @param customToken - Token to use to login to Core App
+ */
+export function loginWithToken(customToken: string) {
+  return getApp().auth().signInWithCustomToken(customToken)
 }

@@ -3,13 +3,13 @@ import 'firebase/firestore'
 import { runValidationForClass } from './utils/validation';
 import { PROJECTS_COLLECTION } from './constants/firestorePaths'
 import { GetOptions, throwIfNotFoundInVal } from './utils/firebase';
-import { ProjectValue } from './types/Project';
+import { UserValue } from './types/User';
 
 /**
- * Fireadmin Project
+ * Fireadmin User
  */
 // tslint:disable-next-line
-export default class Project implements ProjectValue {
+export default class User implements UserValue {
   public path: string
   public id: string
   public ref: firebase.firestore.DocumentReference
@@ -26,24 +26,24 @@ export default class Project implements ProjectValue {
     }
   }
   /**
-   * Validate a Project using JSON schema
+   * Validate a User using JSON schema
    */
-  public validate(projectData: ProjectValue) {
-    runValidationForClass(Project, projectData);
+  public validate(projectData: UserValue) {
+    runValidationForClass(User, projectData);
   }
   /**
-   * Get a Project and throw if is not found
+   * Get a User and throw if is not found
    */
-  public async get(options?: GetOptions): Promise<Project> {
+  public async get(options?: GetOptions): Promise<User> {
     const snap = await this.ref.get();
-    const projectVal = throwIfNotFoundInVal(snap, options, `Project not found at path: ${this.path}`)
-    return new Project(this.id, projectVal);
+    const projectVal = throwIfNotFoundInVal(snap, options, `User not found at path: ${this.path}`)
+    return new User(this.id, projectVal);
   }
 
   /**
-   * Update a Project (uses JSON schema for validation)
+   * Update a User (uses JSON schema for validation)
    */
-  public update(projectData: ProjectValue): Promise<any> {
+  public update(projectData: UserValue): Promise<any> {
     this.validate(projectData);
     return this.ref.update(projectData)
   }
