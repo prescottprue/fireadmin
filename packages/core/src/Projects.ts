@@ -32,13 +32,7 @@ export default class Projects {
   /**
    * Get a list of Projects
    */
-  public async get(options: GetOptions): Promise<User> {
-    const snap = await this.ref.get();
-    const financialTransactionsData = throwIfNotFoundInData(
-      snap,
-      options,
-      `Projects not found at path: ${this.path}`,
-    );
-    return new User(financialTransactionsData);
+  public async get(options: GetOptions): Promise<firebase.firestore.QuerySnapshot | firebase.firestore.DocumentSnapshot> {
+    return this.ref.get();
   }
 }

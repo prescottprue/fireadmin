@@ -1,9 +1,10 @@
 import * as firebase from 'firebase/app'
 import 'firebase/firestore'
 import { runValidationForClass } from './utils/validation';
-import { PROJECTS_COLLECTION } from './constants/firestorePaths'
-import { GetOptions, throwIfNotFoundInVal } from './utils/firebase';
+import { PROJECTS_COLLECTION, PROJECTS_ENVIRONMENTS_COLLECTION } from './constants/firestorePaths'
+import { GetOptions, throwIfNotFoundInVal, snapToItemsArray } from './utils/firebase';
 import { ProjectValue } from './types/Project';
+import ProjectEnvironment from './ProjectEnvironment'
 
 /**
  * Fireadmin Project
@@ -38,6 +39,18 @@ export default class Project implements ProjectValue {
     const snap = await this.ref.get();
     const projectVal = throwIfNotFoundInVal(snap, options, `Project not found at path: ${this.path}`)
     return new Project(this.id, projectVal);
+  }
+
+  /**
+   * Get a Project environments
+   */
+  public async getEnvironments(options?: GetOptions): Promise<ProjectEnvironment[]> {
+    const snap = await this.ref.collection(PROJECTS_ENVIRONMENTS_COLLECTION).get();
+    return snapToItemsArray(snap, (environmentsSnap: firebase.firestore.DocumentData | undefined) => {
+      if (environmentsSnap) {
+        return !environmentsSnap.id ? environmentsSnap.data() : new ProjectEnvironment(this.id, environmentsSnap.id, environmentsSnap.data())
+      }
+    });
   }
 
   /**

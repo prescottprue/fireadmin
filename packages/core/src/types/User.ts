@@ -1,4 +1,3 @@
-/* tslint:disable */
 /**
  * Value representing a User.
  */

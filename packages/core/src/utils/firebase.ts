@@ -166,11 +166,11 @@ export function snapToArray(
 }
 
 export function snapToItemsArray<T>(
-  snap: firebase.database.DataSnapshot,
+  snap: firebase.database.DataSnapshot | firebase.firestore.QuerySnapshot,
   classFactory: (docSnap: firebase.database.DataSnapshot) => T
 ): Array<T> {
   const snapResults: Array<T> = [];
-  snap.forEach((doc) => {
+  snap.forEach((doc: any) => {
     const result = classFactory(doc)
     snapResults.push(result);
   });

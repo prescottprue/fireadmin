@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ProjectEnvironmentValue",
+  "type": "object",
+  "properties": {
+    "createdAt": {
+      "type": "integer"
+    },
+    "createdBy": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "databaseURL": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "projectId": {
+      "type": "string"
+    },
+    "serviceAccount": {
+      "type": "object",
+      "properties": {
+        "credential": {
+          "type": "string"
+        },
+        "fullPath": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
