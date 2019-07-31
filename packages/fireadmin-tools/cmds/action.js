@@ -2,16 +2,16 @@
 const runCustomAction = require('../lib').runCustomAction
 
 /**
- * @name project
+ * @name action
  * @description Get name of the firebase project associated with the current CI environment.
  * @example <caption>Basic</caption>
- * echo "Project to deploy to $(firebase-ci project)"
+ * fireadmin action
  * // => "Project to deploy to my-project"
  */
 module.exports = function(program) {
   program
     .command('action')
-    .description('Run an action template')
+    .description('Run an action template (locally or remotley)')
     .action(directory => {
       return runCustomAction(directory)
         .then(() => process.exit(0))

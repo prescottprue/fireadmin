@@ -7,5 +7,5 @@ export default class Users {
     ref: firebase.firestore.CollectionReference | firebase.firestore.DocumentReference;
     constructor(financialTransactionsData?: object);
     create(newUserData: UserValue): Promise<User>;
-    get(options: GetOptions): Promise<User>;
+    get(options?: GetOptions): Promise<User>;
 }

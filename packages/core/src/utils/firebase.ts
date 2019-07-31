@@ -12,7 +12,7 @@ export function initializeFirebase(fbConfig: any): firebase.app.App {
   if (firebaseApp) {
     return firebaseApp
   }
-  if (fbConfig.auth) {
+  if (fbConfig.INTERNAL) {
     firebaseApp = fbConfig
   } else if (fbConfig.credential) {
     firebaseApp = firebase.initializeApp(fbConfig)
@@ -91,12 +91,15 @@ export function throwIfNotFoundInVal(snap: firebase.database.DataSnapshot | fire
   return itemVal
 }
 
-function valFromSnap(snap: firebase.firestore.DocumentSnapshot | firebase.firestore.QuerySnapshot) {
+export function valFromSnap<T>(
+  snap: firebase.firestore.DocumentSnapshot | firebase.firestore.QuerySnapshot |  firebase.firestore.DocumentSnapshot,
+  classFactory?: (docSnap: firebase.database.DataSnapshot | firebase.firestore.QuerySnapshot) => T
+) {
   if (snap instanceof firebase.firestore.DocumentSnapshot) {
     return snap.data()
   }
   if (snap instanceof firebase.firestore.QuerySnapshot) {
-    return snapToArray(snap)
+    return classFactory ? snapToItemsArray(snap, classFactory) : snapToArray(snap)
   }
 }
 
@@ -166,9 +169,13 @@ export function snapToArray(
 }
 
 export function snapToItemsArray<T>(
-  snap: firebase.database.DataSnapshot | firebase.firestore.QuerySnapshot,
-  classFactory: (docSnap: firebase.database.DataSnapshot) => T
+  snap: firebase.database.DataSnapshot | firebase.firestore.QuerySnapshot | firebase.firestore.DocumentSnapshot,
+  classFactory: (docSnap: firebase.database.DataSnapshot | firebase.firestore.QuerySnapshot) => T
 ): Array<T> {
+  if (snap instanceof firebase.firestore.DocumentSnapshot) {
+    console.log('Snap items not found on query snapshot:', snap)
+    return []
+  }
   const snapResults: Array<T> = [];
   snap.forEach((doc: any) => {
     const result = classFactory(doc)

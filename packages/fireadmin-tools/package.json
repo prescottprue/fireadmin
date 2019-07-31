@@ -51,11 +51,13 @@
     "@fireadmin/core": "^0.0.1",
     "@types/babel__core": "^7.1.2",
     "chalk": "^2.4.2",
+    "configstore": "^5.0.0",
     "firebase": "^6.3.1",
     "inquirer": "^6.5.0",
     "lodash": "^4.17.11"
   },
   "devDependencies": {
+    "@types/configstore": "^4.0.0",
     "@types/inquirer": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",

@@ -1,8 +1,7 @@
 import * as firebase from 'firebase/app'
-import 'firebase/firestore'
 import { runValidationForClass } from './utils/validation';
 import { PROJECTS_COLLECTION, PROJECTS_ENVIRONMENTS_COLLECTION } from './constants/firestorePaths'
-import { GetOptions, throwIfNotFoundInVal, snapToItemsArray } from './utils/firebase';
+import { GetOptions, throwIfNotFoundInVal, snapToItemsArray, getApp } from './utils/firebase';
 import { ProjectValue } from './types/Project';
 import ProjectEnvironment from './ProjectEnvironment'
 
@@ -15,12 +14,13 @@ export default class Project implements ProjectValue {
   public id: string
   public ref: firebase.firestore.DocumentReference
   public listen: any
+  public name?: string
   public updatedAt?: firebase.firestore.FieldValue
   public createdAt?: firebase.firestore.FieldValue
-  constructor(projectId: string, projectData?: object) {
+  constructor(projectId: string, projectData?: ProjectValue) {
     this.id = projectId
     this.path = `${PROJECTS_COLLECTION}/${projectId}`
-    this.ref = firebase.firestore().doc(this.path)
+    this.ref = getApp().firestore().doc(this.path)
     this.listen = this.ref.onSnapshot
     if (projectData) {
       Object.assign(this, projectData);

@@ -1,8 +1,6 @@
 import { FireadminConfig } from './types/index';
 import { initializeFirebase, getApp } from './utils/firebase'
 
-export * from './types/Action'
-
 /**
  * Initialize Typesafe Client library (internally initializes Firebase)
  * @param envConfig - Firebase config

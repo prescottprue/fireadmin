@@ -123,7 +123,5 @@ export async function login() {
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://fireadmin-stage.firebaseio.com'
   })
-  initialize({
-    fireadminApp
-  })
+  initialize(fireadminApp)
 }

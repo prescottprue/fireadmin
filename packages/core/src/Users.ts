@@ -3,14 +3,14 @@ import { USERS_COLLECTION } from './constants/firestorePaths';
 import { runValidationForClass } from './utils/validation';
 import User from './User'
 import { UserValue } from './types/User'
-import { throwIfNotFoundInData, GetOptions } from './utils/firebase'
+import { throwIfNotFoundInData, GetOptions, getApp } from './utils/firebase'
 
 export default class Users {
   public path?: string;
   public ref: firebase.firestore.CollectionReference | firebase.firestore.DocumentReference;
   constructor(financialTransactionsData?: object) {
     this.path = USERS_COLLECTION;
-    this.ref = firebase.firestore().collection(this.path);
+    this.ref = getApp().firestore().collection(this.path);
     if (financialTransactionsData) {
       Object.assign(this, financialTransactionsData);
     }
@@ -31,7 +31,7 @@ export default class Users {
   /**
    * Get a list of Users
    */
-  public async get(options: GetOptions): Promise<User> {
+  public async get(options?: GetOptions): Promise<User> {
     const snap = await this.ref.get();
     const financialTransactionsData = throwIfNotFoundInData(
       snap,

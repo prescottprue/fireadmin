@@ -2,7 +2,7 @@ import * as firebase from 'firebase/app'
 import 'firebase/firestore'
 import { runValidationForClass } from './utils/validation';
 import { PROJECTS_COLLECTION, PROJECTS_ENVIRONMENTS_COLLECTION } from './constants/firestorePaths'
-import { GetOptions, throwIfNotFoundInVal, snapToItemsArray } from './utils/firebase';
+import { GetOptions, throwIfNotFoundInVal, getApp } from './utils/firebase';
 import { ProjectEnvironmentValue } from './types/ProjectEnvironment';
 
 /**
@@ -19,7 +19,7 @@ export default class ProjectEnvironment {
   constructor(projectId: string, environmentId: string, environmentData?: object) {
     this.id = projectId
     this.path = `${PROJECTS_COLLECTION}/${projectId}/${PROJECTS_ENVIRONMENTS_COLLECTION}/${environmentId}`
-    this.ref = firebase.firestore().doc(this.path)
+    this.ref = getApp().firestore().doc(this.path)
     this.listen = this.ref.onSnapshot
     if (environmentData) {
       Object.assign(this, environmentData);

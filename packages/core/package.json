@@ -1,7 +1,7 @@
 {
   "name": "@fireadmin/core",
   "version": "0.0.1",
-  "main": "./bundles/index.umd.js",
+  "main": "./lib/index.js",
   "module": "./lib/index.js",
   "es2015": "./lib/index.js",
   "typings": "./types/index.d.ts",

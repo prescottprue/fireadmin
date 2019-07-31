@@ -1,11 +1,11 @@
 import { existsSync } from 'fs'
-import { get } from 'lodash'
+import { get, find } from 'lodash'
 import { ActionEnvironmentSetting, ActionSettings, ActionStepSetting, ActionInputSetting } from '@fireadmin/core/types/Action'
-import { promiseWaterfall } from './utils/async'
+import { Projects, Project } from '@fireadmin/core'
+import { promiseWaterfall, to } from './utils/async'
 import { prompt } from './utils/prompt'
 import { login } from './utils/firebase'
 import { readDirPromise, readFilePromise, getLocalActionsFolder, requireAsync } from './utils/files'
-import { Project } from '@fireadmin/core'
 
 async function getLocalActions(): Promise<string[]> {
   const localActionsFolder = getLocalActionsFolder()
@@ -13,7 +13,6 @@ async function getLocalActions(): Promise<string[]> {
     throw new Error('Local actions folder not found')
   }
   const actionFiles = await readDirPromise(localActionsFolder)
-  console.log('action files:', actionFiles)
   return actionFiles
 }
 
@@ -36,6 +35,7 @@ export async function runCustomAction() {
   const actionChoices = localActions.map((actionName) => ({
     name: actionName
   }))
+  // Propmpt user for choice of actions
   const SELECTED_ACTION_PROMPT_NAME = 'actionName'
   const optionAnswer = await prompt({}, [
     {
@@ -50,14 +50,41 @@ export async function runCustomAction() {
   const actionParentPath = `${localActionsFolder}/${optionAnswer[SELECTED_ACTION_PROMPT_NAME]}`
   const environmentSettings: ActionEnvironmentSetting[] = get(actionSettings, 'environments', [])
   await login()
-  await new Project('ZRkZflRvYpSmomWYoBUM').getEnvironments()
+  // Get List of projects (to provide options to use)
+  const [getErr, projectsList] = await to(new Projects().get())
+  if (getErr) {
+    console.log('Error getting projects', getErr)
+    throw getErr
+  }
+  const SELECTED_PROJECT_PROMPT_NAME = 'projectName'
+  // Prompt use to select project
+  const projectAnswers = await prompt({}, [
+    {
+      type: 'list',
+      name: SELECTED_PROJECT_PROMPT_NAME,
+      message: 'Which project?',
+      choices: projectsList
+    }
+  ])
+  const selectedProjectName = projectAnswers[SELECTED_PROJECT_PROMPT_NAME]
+  const project = find(projectsList, { name: selectedProjectName })
+  if (!(project instanceof Project)) {
+    throw new Error('Project with matching name not found')
+  }
+
+  // Get environments of selected project
+  const [getEnvsErr, environments] = await to(project.getEnvironments())
+  if (getEnvsErr) {
+    console.log('Get envs error:', getEnvsErr)
+    throw getEnvsErr
+  }
+
   // Ask for environment preferences from Fireadmin project based on template settings
-  const environmentOptions = [{ name: 'int' }, { name: 'test' }]
   const environmentQuestions: any[] = environmentSettings.map((setting: ActionEnvironmentSetting) => ({
     ...setting,
     message: `${setting.name} environment`,
     type: 'list',
-    choices: environmentOptions
+    choices: environments
   }))
   const environmentsAnswers = await prompt({}, environmentQuestions)
 

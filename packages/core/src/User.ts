@@ -1,8 +1,6 @@
-import * as firebase from 'firebase/app'
-import 'firebase/firestore'
 import { runValidationForClass } from './utils/validation';
 import { PROJECTS_COLLECTION } from './constants/firestorePaths'
-import { GetOptions, throwIfNotFoundInVal } from './utils/firebase';
+import { GetOptions, throwIfNotFoundInVal, getApp } from './utils/firebase';
 import { UserValue } from './types/User';
 
 /**
@@ -19,7 +17,7 @@ export default class User implements UserValue {
   constructor(projectId: string, projectData?: object) {
     this.id = projectId
     this.path = `${PROJECTS_COLLECTION}/${projectId}`
-    this.ref = firebase.firestore().doc(this.path)
+    this.ref = getApp().firestore().doc(this.path)
     this.listen = this.ref.onSnapshot
     if (projectData) {
       Object.assign(this, projectData);
