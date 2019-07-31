@@ -14,14 +14,15 @@ export function initialize(fireadminConfig: FireadminConfig) {
  * @param customToken - Token to use to login to Core App
  */
 export function loginWithToken(customToken: string) {
-  // TODO: Support logging into both apps
   return getApp().auth().signInWithCustomToken(customToken);
 }
 
 import Project from './Project';
 import Projects from './Projects';
+import ActionTemplates from './ActionTemplates';
+import ActionTemplate from './ActionTemplate';
 import Users from './Users';
 import User from './User';
-export { Projects, Project, Users, User };
+export { Projects, Project, Users, User, ActionTemplates, ActionTemplate };
 
 export default initialize

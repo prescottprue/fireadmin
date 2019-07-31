@@ -1,11 +1,8 @@
-export interface ActionTemplateValue {
-    createdAt?: number;
+import { ActionSettings } from './Action';
+export interface ActionTemplateValue extends ActionSettings {
+    createdAt?: firebase.firestore.FieldValue;
     createdBy?: string;
     name?: string;
     public?: boolean;
     subcollections?: boolean;
-    environments?: any[];
-    steps?: any[];
-    inputs?: any[];
-    [k: string]: any;
 }

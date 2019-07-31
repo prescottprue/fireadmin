@@ -29,15 +29,3 @@ export interface ActionSettings {
   when?: WhenSetting
   idempotent?: boolean
 }
-
-/**
- * Value representing an Action (used by actionRunner cloud function).
- */
-export interface ActionValue {
-  exists?: boolean
-  snap?: firebase.firestore.DocumentSnapshot
-  name?: string
-  createdBy?: string;
-  createdAt?: firebase.firestore.FieldValue
-  updatedAt?: firebase.firestore.FieldValue
-}

@@ -46,7 +46,7 @@ export function storage(): firebase.storage.Storage {
  */
 export function rtdbRef(refPath: string): firebase.database.Reference {
   try {
-    return firebaseApp.database().ref(refPath);
+    return getApp().database().ref(refPath);
   } catch (e) {
     console.error('Problem reading from ref', refPath);
     throw e;
@@ -66,8 +66,9 @@ export function firestoreRef(refPath: string): firebase.firestore.CollectionRefe
     : firebaseApp.firestore().collection(refPath);
 }
 
-export interface GetOptions {
+export interface GetOptions extends firebase.firestore.GetOptions {
   resolveForNotFound?: Boolean
+  json?: Boolean
 }
 
 /**
@@ -178,7 +179,7 @@ export function snapToItemsArray<T>(
   }
   const snapResults: Array<T> = [];
   snap.forEach((doc: any) => {
-    const result = classFactory(doc)
+    const result = typeof classFactory === 'function' ? classFactory(doc) : doc
     snapResults.push(result);
   });
   return snapResults;

@@ -1,5 +1,5 @@
 stages:
-  - unit_tests
+  - verify
   - build
   - deploy_staging
   - e2e_tests
@@ -24,8 +24,8 @@ variables:
 
 # Unit Testing Stage
 # Run unit tests for Cloud Functions
-Functions Unit Tests:
-  stage: unit_tests
+Verify Functions:
+  stage: verify
   image: node:8
   only:
     changes:
@@ -55,6 +55,66 @@ Functions Unit Tests:
     - yarn lint:functions # Check for lint within functions
     - yarn --cwd functions test:cov # Run unit tests with coverage
     - yarn --cwd functions build # Build to confirm no build errors
+
+# ---------------------------- Packages -------------------------- #
+# Build Docs
+## Installs dependencies, builds app, and saves results for later (artifacts)
+Build Packages:
+  stage: build
+  image: node:8
+  only:
+    changes:
+      - docs/**/* # Run only when docs are changed
+      - firebase.json
+      - .gitlab-ci.yml
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-build/
+      - $CI_COMMIT_MESSAGE =~ /skip-packages-build/
+  artifacts:
+    name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
+    expire_in: 2 weeks
+    when: always
+    paths:
+      - packages/**/lib
+      - packages/**/lib-esm
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - .yarn
+  script:
+    - yarn lint:packages
+    - yarn build:packages
+
+Deploy Packages:
+  stage: deploy_prod
+  image: node:8
+  when: on_success
+  only:
+    refs:
+      - master
+    changes:
+      - packages/**/* # Run only when packages are changed
+      - lerna.json
+      - .gitlab-ci.yml
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-docs-build/
+      - $CI_COMMIT_MESSAGE =~ /skip-docs-deploy/
+  artifacts:
+    name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
+    expire_in: 2 weeks
+    when: always
+    paths:
+      - packages/**/lib
+      - packages/**/lib-esm
+  dependencies:
+    - Build Packages # Require artifacts from build stage
+  before_script:
+    - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
+    - lerna bootstrap # install package dependencies
+  script:
+    - yarn deploy --only hosting:stageDocs  # Deploy docs React App (Firebase Hosting)
 
 # ---------------------------- Docs -------------------------- #
 # Build Docs

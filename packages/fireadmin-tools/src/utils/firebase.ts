@@ -6,7 +6,6 @@ import path from 'path'
 import { readJsonFile } from './files'
 import { DEFAULT_BASE_PATH } from '../constants/filePaths'
 
-
 function getServiceAccountPath(envName = '') {
   const withPrefix = path.join(
     DEFAULT_BASE_PATH,
@@ -60,6 +59,18 @@ function getParsedEnvVar(varNameRoot: string) {
     return val;
   }
 }
+interface ServiceAccount {
+  type: string
+  project_id: string
+  private_key_id: string
+  private_key: string
+  client_email: string
+  client_id: string
+  auth_uri: string
+  token_uri: string
+  auth_provider_x509_cert_url: string
+  client_x509_cert_url: string
+}
 
 /**
  * Get service account from either local file or environment variables
@@ -67,6 +78,7 @@ function getParsedEnvVar(varNameRoot: string) {
  */
 export async function getServiceAccount(envSlug?: string): Promise<object> {
   const serviceAccountPath = getServiceAccountPath(envSlug);
+
   // Check for local service account file (Local dev)
   if (fs.existsSync(serviceAccountPath)) {
     return readJsonFile(serviceAccountPath); // eslint-disable-line global-require, import/no-dynamic-require
@@ -76,7 +88,8 @@ export async function getServiceAccount(envSlug?: string): Promise<object> {
       serviceAccountPath.replace(`${DEFAULT_BASE_PATH}/`, ''),
     )}" falling back to environment variables...`,
   );
-  // Use environment variables (CI)
+
+  // Use SERVICE_ACCOUNT environment variable
   const serviceAccountEnvVar = envVar('SERVICE_ACCOUNT');
   if (serviceAccountEnvVar) {
     if (typeof serviceAccountEnvVar === 'string') {
@@ -90,6 +103,8 @@ export async function getServiceAccount(envSlug?: string): Promise<object> {
     }
     return serviceAccountEnvVar;
   }
+
+  // Fallback to loading from seperate environment variables
   const clientId = envVar('FIREBASE_CLIENT_ID');
   if (clientId) {
     console.log(
@@ -121,7 +136,7 @@ export async function login() {
   const serviceAccount = await getServiceAccount()
   const fireadminApp = admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://fireadmin-stage.firebaseio.com'
+    databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
   })
   initialize(fireadminApp)
 }

@@ -1,19 +1,17 @@
 import express from 'express'
-import * as admin from 'firebase-admin'
+import { ActionTemplates } from '@fireadmin/core'
+import { to } from 'utils/async'
 
 const router = express.Router()
 
 // Action templates page
 router.get('/', async (req, res) => {
-  const templatesSnap = await admin
-    .firestore()
-    .collection('actionTemplates')
-    .get()
-  const templates = []
-  templatesSnap.forEach(snap => {
-    templates.push(snap.data())
-  })
-  res.json(templates)
+  const [getErr, actionTemplates] = await to(new ActionTemplates().get())
+  if (getErr) {
+    console.error('Error getting actionTemplates', getErr)
+    return res.status(500).send('Error getting actionTemplates')
+  }
+  res.json(actionTemplates)
 })
 
 export default router

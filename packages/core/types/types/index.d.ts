@@ -1,4 +1,4 @@
-export * from './Action';
+export * from './ActionRequest';
 export * from './Project';
 export * from './User';
 export interface FirebaseConfig {

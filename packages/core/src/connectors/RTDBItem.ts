@@ -9,8 +9,10 @@ import { rtdbRef } from '../utils/firebase'
  */
 export default class RTDBItem {
   public path: string | undefined
+  public listen: Function
   constructor(path: string | undefined) {
     this.path = path;
+    this.listen = this.ref.on
   }
 
   get ref(): firebase.database.Reference {
@@ -28,13 +30,6 @@ export default class RTDBItem {
     return this.ref.once('value')
   }
 
-  public listen(
-    eventType: firebase.database.EventType = 'value',
-    callback: (a: firebase.database.DataSnapshot | null, b: string | null | undefined) => any
-  ): (a: firebase.database.DataSnapshot | null, b: string | null | undefined) => any {
-    return this.ref.on(eventType, callback)
-  }
-
   set(values: Object, onComplete?: (a: Error | null) => any): Promise<any> {
     return this.ref.update(values, onComplete)
   }
@@ -43,7 +38,7 @@ export default class RTDBItem {
     return this.ref.update(values, onComplete)
   }
 
-  public remove() {
+  public delete() {
     return this.ref.remove()
   }
 }

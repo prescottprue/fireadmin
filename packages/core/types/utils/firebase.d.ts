@@ -7,8 +7,9 @@ export declare function getApp(): firebase.app.App;
 export declare function storage(): firebase.storage.Storage;
 export declare function rtdbRef(refPath: string): firebase.database.Reference;
 export declare function firestoreRef(refPath: string): firebase.firestore.CollectionReference | firebase.firestore.DocumentReference;
-export interface GetOptions {
+export interface GetOptions extends firebase.firestore.GetOptions {
     resolveForNotFound?: Boolean;
+    json?: Boolean;
 }
 export declare function throwIfNotFoundInVal(snap: firebase.database.DataSnapshot | firebase.firestore.DocumentSnapshot, opts?: GetOptions, errMsg?: string): any;
 export declare function valFromSnap<T>(snap: firebase.firestore.DocumentSnapshot | firebase.firestore.QuerySnapshot | firebase.firestore.DocumentSnapshot, classFactory?: (docSnap: firebase.database.DataSnapshot | firebase.firestore.QuerySnapshot) => T): firebase.firestore.DocumentData | undefined;

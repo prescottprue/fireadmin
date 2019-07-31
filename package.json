@@ -15,6 +15,7 @@
     "build:testConfig": "cypress-firebase createTestEnvFile",
     "deploy": "firebase-ci deploy",
     "deploy:functions": "firebase deploy --only functions",
+    "deploy:packages": "lerna publish from-package",
     "start": "cross-env NODE_ENV=development webpack-dashboard -p 1334 -c cyan -m -t fireadmin -- node build/scripts/start",
     "start:simple": "cross-env NODE_ENV=development node build/scripts/start",
     "start:dist": "yarn build && yarn serve:app",

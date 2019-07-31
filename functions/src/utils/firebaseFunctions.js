@@ -1,4 +1,31 @@
 import * as functions from 'firebase-functions'
+import { get, isUndefined } from 'lodash'
+
+/**
+ * Get config variable from environment. Throws clear message for non existant variables.
+ * @param {String} getPath - Path of config var to get from environment
+ * @param {String} defaultVal - Default value to fallback to if environment config is not defined
+ * @example <caption>Basic</caption>
+ * const asanaConfig = getEnvConfig('asana') // functions.config().asana
+ * @example <caption>Deep Value</caption>
+ * const asanaConfig = getEnvConfig('asana') // functions.config().asana.token
+ * @memberof utils
+ */
+export function getEnvConfig(getPath, defaultVal) {
+  if (!getPath) {
+    console.warn(
+      'Getting top level config can cause things to break, pass a get path to getEnvConfig'
+    )
+    return functions.config()
+  }
+  const varValue = get(functions.config(), getPath) || defaultVal
+  if (isUndefined(varValue)) {
+    throw new Error(
+      `${getPath} functions config variable not set, check functions/.runtimeconfig.json`
+    )
+  }
+  return varValue
+}
 
 /**
  * Convert function context to the currently logged in user's uid falling back
