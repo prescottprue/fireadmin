@@ -35,5 +35,10 @@ export default [
     value: paths.projectPermissions,
     label: 'Users/Permissions',
     iconElement: <PeopleIcon />
+  },
+  {
+    value: paths.projectTokens,
+    label: 'Tokens',
+    iconElement: <PeopleIcon />
   }
 ]

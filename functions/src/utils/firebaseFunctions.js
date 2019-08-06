@@ -92,3 +92,25 @@ export function getFirebaseConfig(getPath, defaultVal) {
     throw err
   }
 }
+
+/**
+ * Validate user request
+ * @param {Array} requiredProperties - List of required properties
+ * @param {Object} data - Http request from client
+ */
+export function validateRequest(requiredProperties, data) {
+  const missingRequired = requiredProperties.filter(
+    propName => !get(data, propName)
+  )
+
+  // Handle parameter not being within request
+  if (missingRequired && missingRequired.length) {
+    const missingParamsStr = missingRequired.join(', ')
+    const missingParamsMsg = `Request missing parameter(s): ${missingParamsStr}`
+    console.error(missingParamsMsg)
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      `Request missing required parameters: ${missingParamsStr}`
+    )
+  }
+}

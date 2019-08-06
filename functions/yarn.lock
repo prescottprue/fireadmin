@@ -629,12 +629,14 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@fireadmin/core@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@fireadmin/core/-/core-0.0.1.tgz#bcbc60496b966d4caa510dfea1c6a8099358f2fe"
-  integrity sha512-c+vk+KRirEChSowESiQjOlnq0bTwK49XIswg5O9OOb4IyGZ0/C7W1gGOpgH2IfdnHy20ub/lEs31aHLczOsjYA==
+"@fireadmin/core@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@fireadmin/core/-/core-0.0.2.tgz#e0d9c104e47b548f2987ffe126fba4d49d23502d"
+  integrity sha512-JVMfBALCnwed2AJLdiR3YWBAgslNgLiPeGp384hEbLCppWogekOGY2vEk2XfOhpS/ujknvnyx6vMMm/9NKfsiA==
   dependencies:
+    ajv "^6.10.2"
     firebase "^6.3.1"
+    firebase-admin "^8.3.0"
     lodash "^4.17.11"
 
 "@firebase/app-types@0.4.2":
@@ -1115,6 +1117,16 @@ agentkeepalive@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/agentkeepalive/-/agentkeepalive-2.2.0.tgz#c5d1bd4b129008f1163f236f86e5faea2026e2ef"
   integrity sha1-xdG9SxKQCPEWPyNvhuX66iAm4u8=
+
+ajv@^6.10.2:
+  version "6.10.2"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.10.2.tgz#d3cea04d6b017b2894ad69040fec8b623eb4bd52"
+  integrity sha512-TXtUUEYHuaTEbLZWIKUr5pmBuhDLy+8KYtPYdcV8qC+pOZL+NKqYwvWSRrVXHn+ZmRRAu8vJTAznH7Oag6RVRw==
+  dependencies:
+    fast-deep-equal "^2.0.1"
+    fast-json-stable-stringify "^2.0.0"
+    json-schema-traverse "^0.4.1"
+    uri-js "^4.2.2"
 
 ajv@^6.5.5:
   version "6.9.1"
@@ -2311,7 +2323,7 @@ findup-sync@2.0.0:
     micromatch "^3.0.4"
     resolve-dir "^1.0.1"
 
-firebase-admin@^8.0.0:
+firebase-admin@^8.0.0, firebase-admin@^8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/firebase-admin/-/firebase-admin-8.3.0.tgz#8ab935a4f11f0f8983e6ae5d14704d199c00f712"
   integrity sha512-ydjTudnWa6T1wZPdb+s4mQJ6NhHxvXkhMMHNV7inI3ZRFUfhovv77M4SDUbMND2SFMYvttyDuj66/EpcPzyXNg==

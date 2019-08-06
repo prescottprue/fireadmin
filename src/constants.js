@@ -13,6 +13,7 @@ export const SIGNUP_FORM_NAME = 'signup'
 export const NEW_PROJECT_FORM_NAME = 'newProject'
 export const PROJECT_BUCKET_CONFIG_PATH = 'bucketConfig'
 export const PERMISSIONS_PATH = 'permissions'
+export const TOKENS_PATH = 'tokens'
 export const DOCS_URL =
   process.env.NODE_ENV === 'production'
     ? window.location.hostname.includes('fireadmin-stage')
@@ -65,7 +66,8 @@ export const paths = {
   projectEnvironments: PROJECT_ENVIRONMENTS_PATH,
   projectEvents: PROJECT_EVENTS_PATH,
   projectBucketConfig: PROJECT_BUCKET_CONFIG_PATH,
-  projectPermissions: PERMISSIONS_PATH
+  projectPermissions: PERMISSIONS_PATH,
+  projectTokens: TOKENS_PATH
 }
 
 export const firebasePaths = {
