@@ -29,7 +29,9 @@ export default class Projects {
    * Get a list of Projects
    */
   public async get(options?: GetOptions): Promise<Project[] | object[]> {
-    const snap = await this.ref.get(options);
+    const { currentUser } = getApp().auth()
+    const ref = currentUser ? this.ref.where('createdBy', '==', currentUser.uid) : this.ref
+    const snap = await ref.get(options);
     if (options && options.json) {
       return snapToArray(snap)
     }

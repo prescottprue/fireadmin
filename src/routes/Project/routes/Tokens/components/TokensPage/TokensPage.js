@@ -3,9 +3,11 @@ import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
-import { map } from 'lodash'
+import IconButton from '@material-ui/core/IconButton'
+import CopyIcon from '@material-ui/icons/FileCopy'
+import { Grid } from '@material-ui/core'
 
-function TokensPage({ generateToken, classes, tokens }) {
+function TokensPage({ generateToken, classes, copyToken, token }) {
   return (
     <div>
       <Typography className={classes.pageHeader}>Tokens</Typography>
@@ -15,17 +17,26 @@ function TokensPage({ generateToken, classes, tokens }) {
           variant="contained"
           aria-label="Add Member"
           onClick={generateToken}>
-          Add Token
+          Generate Token
         </Button>
       </div>
-      {map(tokens, (tokenObj, tokenId) => (
+      {token ? (
         <Paper>
-          <Typography variant="h6">{tokenObj.createdAt}</Typography>
-          <Typography className={classes.pageHeader}>
-            {tokenObj.token}
-          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={7}>
+              <Typography component="p">{token}</Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <IconButton
+                aria-label="Copy Token"
+                color="inherit"
+                onClick={copyToken}>
+                <CopyIcon className={classes.icon} />
+              </IconButton>
+            </Grid>
+          </Grid>
         </Paper>
-      ))}
+      ) : null}
     </div>
   )
 }
@@ -35,7 +46,8 @@ TokensPage.propTypes = {
     projectId: PropTypes.string.isRequired
   }),
   generateToken: PropTypes.func.isRequired,
-  tokens: PropTypes.object, // from enhancer (firestoreConnect + connect)
+  copyToken: PropTypes.func.isRequired,
+  token: PropTypes.string, // from enhancer (withStateHandlers)
   classes: PropTypes.object.isRequired // from enhancer (withStyles)
 }
 

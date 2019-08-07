@@ -13,7 +13,17 @@ export function initialize(fireadminConfig: FireadminConfig) {
  * Login with a custom token
  * @param customToken - Token to use to login to Core App
  */
-export function loginWithToken(customToken: string) {
+export async function loginWithToken(customToken: string) {
+  try {
+    initializeFirebase()
+  } catch(err) {
+    console.log('Error initializing firebase', err)
+    throw err
+  }
+  const currentUser = getApp().auth().currentUser
+  if (currentUser) {
+    return currentUser
+  }
   return getApp().auth().signInWithCustomToken(customToken);
 }
 

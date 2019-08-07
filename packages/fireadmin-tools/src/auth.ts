@@ -1,7 +1,10 @@
-import * as admin from 'firebase-admin';
-import { initialize, loginWithToken } from '@fireadmin/core'
+import { loginWithToken } from '@fireadmin/core'
+import { get, isEmpty } from 'lodash'
 import { prompt } from './utils/prompt'
 import { to } from './utils/async';
+import configstore from './utils/configstore'
+
+const TOKEN_CONFIGSTORE_KEY = 'token'
 
 async function askForToken(): Promise<string> {
   const TOKEN_PROMPT_NAME = 'tokenPrompt'
@@ -18,18 +21,29 @@ async function askForToken(): Promise<string> {
     console.log('Error prompting for token', err)
     throw err
   }
-  return optionAnswer[TOKEN_PROMPT_NAME]
+  const token = optionAnswer[TOKEN_PROMPT_NAME]
+
+  // Save token within file specific to fireadmin-tools
+  configstore.set(TOKEN_CONFIGSTORE_KEY, token)
+
+  return token
+}
+
+async function getAccessToken() {
+  const token = configstore.get(TOKEN_CONFIGSTORE_KEY)
+  if (token) {
+    console.log('Token loaded', typeof token)
+    return token
+  }
+  return askForToken()
 }
 
 export async function login() {
-  // TODO: Instruct user to generate token within UI of Fireadmin and enter it
-  // TODO: Save token within file specific to
   // TODO: In the future look into calling endpoint to auth with google - check firebase-tools for reference
-  // const fireadminApp = firebase.initializeApp({
-  //   credential: admin.credential.refreshToken(refreshToken),
-  //   databaseURL: 'https://<DATABASE_NAME>.firebaseio.com'
-  // })
-  // initialize(fireadminApp)
-  const token = await askForToken()
-  await loginWithToken(token)
+  const token = await getAccessToken()
+  const [loginErr] = await to(loginWithToken(token))
+  if (loginErr) {
+    console.log('Error logging in:', loginErr.message)
+    throw loginErr
+  }
 }

@@ -2,7 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/database';
 import 'firebase/auth';
-export declare function initializeFirebase(fbConfig: any): firebase.app.App;
+export declare function initializeFirebase(fbConfig?: any): firebase.app.App;
 export declare function getApp(): firebase.app.App;
 export declare function storage(): firebase.storage.Storage;
 export declare function rtdbRef(refPath: string): firebase.database.Reference;

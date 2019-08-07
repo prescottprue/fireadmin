@@ -2,23 +2,24 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/database';
 import 'firebase/auth';
+import { STAGE_FB_CONFIG } from './../constants/fbConfigs'
 
 let firebaseApp: firebase.app.App
 
 /**
  * @description Initialize firebase application
  */
-export function initializeFirebase(fbConfig: any): firebase.app.App {
+export function initializeFirebase(fbConfig?: any): firebase.app.App {
   if (firebaseApp) {
     return firebaseApp
   }
-  if (fbConfig.INTERNAL) {
+  if (fbConfig && fbConfig.INTERNAL) {
     firebaseApp = fbConfig
-  } else if (fbConfig.credential) {
+  } else if (fbConfig && fbConfig.credential) {
     firebaseApp = firebase.initializeApp(fbConfig)
   } else {
     try {
-      firebaseApp = firebase.initializeApp(fbConfig)
+      firebaseApp = firebase.initializeApp(STAGE_FB_CONFIG)
     } catch (err) {
       console.warn('You only need to initialize Firebase once', JSON.stringify(err))
     }
