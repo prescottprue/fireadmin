@@ -1,5 +1,3 @@
-import * as admin from 'firebase-admin';
-import { initialize } from '@fireadmin/core'
 import chalk from 'chalk'
 import fs from 'fs'
 import path from 'path'
@@ -29,7 +27,6 @@ export function envVar(varNameRoot: string): any {
   // CI Environment (environment variables loaded directly)
   return process.env[varNameRoot];
 }
-
 
 /**
  * Get parsed value of environment variable. Useful for environment variables
@@ -76,7 +73,7 @@ interface ServiceAccount {
  * Get service account from either local file or environment variables
  * @return {Object} Service account object
  */
-export async function getServiceAccount(envSlug?: string): Promise<object> {
+export async function getServiceAccount(envSlug?: string): Promise<ServiceAccount | any> {
   const serviceAccountPath = getServiceAccountPath(envSlug);
 
   // Check for local service account file (Local dev)
@@ -123,20 +120,4 @@ export async function getServiceAccount(envSlug?: string): Promise<object> {
     auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
     client_x509_cert_url: envVar('FIREBASE_CERT_URL'),
   };
-}
-
-export async function login() {
-  // TODO: Instruct user to generate token within UI of Fireadmin and enter it
-  // TODO: Save token within file specific to
-  // TODO: In the future look into calling endpoint to auth with google - check firebase-tools for reference
-  // const fireadminApp = firebase.initializeApp({
-  //   credential: admin.credential.refreshToken(refreshToken),
-  //   databaseURL: 'https://<DATABASE_NAME>.firebaseio.com'
-  // })
-  const serviceAccount = await getServiceAccount()
-  const fireadminApp = admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
-  })
-  initialize(fireadminApp)
 }

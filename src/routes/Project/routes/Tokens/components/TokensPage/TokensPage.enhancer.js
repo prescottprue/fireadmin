@@ -8,15 +8,21 @@ import { PROJECTS_COLLECTION } from '@fireadmin/core/lib/constants/firestorePath
 import styles from './TokensPage.styles'
 
 export default compose(
+  // map redux state to props
+  // Map auth uid from state to props
+  connect(({ firebase: { auth: { uid } } }) => ({ uid })),
   // create listener for tokens, results go into redux
-  firestoreConnect(({ params: { projectId } }) => [
-    {
-      collection: PROJECTS_COLLECTION,
-      doc: projectId,
-      subcollections: [{ collection: 'tokens' }],
-      storeAs: `${projectId}-tokens`
-    }
-  ]),
+  firestoreConnect(({ params: { projectId }, uid }) => {
+    return [
+      {
+        collection: PROJECTS_COLLECTION,
+        doc: projectId,
+        subcollections: [{ collection: 'tokens' }],
+        where: ['createdBy', '==', uid],
+        storeAs: `${projectId}-tokens`
+      }
+    ]
+  }),
   // map redux state to props
   connect(({ firestore: { data } }, { params: { projectId } }) => ({
     tokens: data[`${projectId}-tokens`]

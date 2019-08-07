@@ -4,9 +4,10 @@
       "es5",
       "es6",
       "es2015",
+      "es2015.promise",
       "dom"
     ],
-    "target": "es2015",
+    "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
     "declaration": true,

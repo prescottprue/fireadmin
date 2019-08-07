@@ -7,7 +7,8 @@ module.exports = function(client) {
   }
 
   client.project = loadCommand('projects')
-  client.project = loadCommand('action')
+  client.login = loadCommand('login')
+  client.action = loadCommand('action')
 
   return client
 }

@@ -1,7 +1,7 @@
 import * as firebase from 'firebase/app'
 import { runValidationForClass } from './utils/validation';
 import { ACTION_RUNNER_REQUESTS_PATH } from './constants/firebasePaths'
-import { GetOptions, throwIfNotFoundInVal, getApp } from './utils/firebase';
+import { GetOptions, throwIfNotFoundInVal } from './utils/firebase';
 import { ActionRequestValue } from './types/ActionRequest';
 import RTDBItem from './connectors/RTDBItem'
 

@@ -37,10 +37,7 @@ export function contextToAuthUid(functionContext = {}) {
   if (functionContext.authType === 'ADMIN') {
     return 'admin'
   }
-  if (functionContext.authType === 'USER') {
-    return functionContext.auth.uid
-  }
-  return 'Unknown'
+  return (functionContext.auth && functionContext.auth.uid) || 'Unknown'
 }
 
 /**

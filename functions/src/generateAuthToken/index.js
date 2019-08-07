@@ -34,7 +34,7 @@ export async function generateAuthTokenRequest(data, context) {
   const [writeErr] = await to(
     admin
       .firestore()
-      .doc(`${PROJECTS_COLLECTION}/${projectId}/tokens`)
+      .collection(`${PROJECTS_COLLECTION}/${projectId}/tokens`)
       .add({
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         createdBy: uid,
@@ -48,7 +48,10 @@ export async function generateAuthTokenRequest(data, context) {
       `Error writing custom token to Firestore for project "${projectId}"`,
       err
     )
-    throw err
+    throw new functions.https.HttpsError(
+      'internal',
+      'Please contact Fireadmin support'
+    )
   }
 
   return token

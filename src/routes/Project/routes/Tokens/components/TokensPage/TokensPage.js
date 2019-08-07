@@ -5,7 +5,7 @@ import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import { map } from 'lodash'
 
-function TokensPage({ projectId, generateToken, classes, tokens }) {
+function TokensPage({ generateToken, classes, tokens }) {
   return (
     <div>
       <Typography className={classes.pageHeader}>Tokens</Typography>
@@ -20,6 +20,7 @@ function TokensPage({ projectId, generateToken, classes, tokens }) {
       </div>
       {map(tokens, (tokenObj, tokenId) => (
         <Paper>
+          <Typography variant="h6">{tokenObj.createdAt}</Typography>
           <Typography className={classes.pageHeader}>
             {tokenObj.token}
           </Typography>
@@ -30,7 +31,9 @@ function TokensPage({ projectId, generateToken, classes, tokens }) {
 }
 
 TokensPage.propTypes = {
-  projectId: PropTypes.string.isRequired,
+  params: PropTypes.shape({
+    projectId: PropTypes.string.isRequired
+  }),
   generateToken: PropTypes.func.isRequired,
   tokens: PropTypes.object, // from enhancer (firestoreConnect + connect)
   classes: PropTypes.object.isRequired // from enhancer (withStyles)

@@ -1,12 +1,16 @@
 import { existsSync } from 'fs'
 import { get, find } from 'lodash'
-import { ActionEnvironmentSetting, ActionSettings, ActionStepSetting, ActionInputSetting } from '@fireadmin/core/types/Action'
+import { ActionEnvironmentSetting, ActionSettings, ActionStepSetting, ActionInputSetting } from '@fireadmin/core/types/types/Action'
 import { Projects, Project } from '@fireadmin/core'
 import { promiseWaterfall, to } from './utils/async'
 import { prompt } from './utils/prompt'
-import { login } from './utils/firebase'
+import { login } from './auth'
 import { readDirPromise, readFilePromise, getLocalActionsFolder, requireAsync } from './utils/files'
 
+/**
+ * Get a list of actions from the "actions" or "migrations" folder
+ * in the current local file system
+ */
 async function getLocalActions(): Promise<string[]> {
   const localActionsFolder = getLocalActionsFolder()
   if (!localActionsFolder) {
