@@ -27,12 +27,15 @@ export async function generateApiTokenRequest(data, context) {
   const [writeErr] = await to(
     admin
       .firestore()
-      .collection(`${PROJECTS_COLLECTION}/${projectId}/tokens`)
-      .add({
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        createdBy: uid,
-        token
-      })
+      .doc(`${PROJECTS_COLLECTION}/${projectId}/tokens/${token}`)
+      .set(
+        {
+          ...data,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          createdBy: uid
+        },
+        { merge: true }
+      )
   )
 
   // Handle errors writing to Firestore

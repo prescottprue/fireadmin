@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import CopyIcon from '@material-ui/icons/FileCopy'
 import Grid from '@material-ui/core/Grid'
+import { formatDateTime } from 'utils/formatters'
 
 function TokensPage({ generateToken, classes, copyToken, tokens }) {
   return (
@@ -21,23 +22,37 @@ function TokensPage({ generateToken, classes, copyToken, tokens }) {
           Generate Token
         </Button>
       </div>
-      {map(tokens, (tokenObj, tokenId) => (
-        <Paper key={tokenId} className={classes.tokenCard}>
-          <Grid container spacing={12}>
-            <Grid item xs={3}>
-              <Typography component="p">{tokenObj.token}</Typography>
+      <Grid container spacing={16}>
+        {map(tokens, (tokenObj, tokenId) => {
+          if (!tokenObj) {
+            return null
+          }
+          return (
+            <Grid key={tokenId} item xs={12}>
+              <Paper key={tokenId} className={classes.tokenCard}>
+                <Grid container spacing={16}>
+                  <Grid item xs={5}>
+                    <Typography component="p">{tokenObj.token}</Typography>
+                  </Grid>
+                  <Grid item xs={5}>
+                    <Typography component="p">
+                      {formatDateTime(tokenObj.createdAt)}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <IconButton
+                      aria-label="Copy Token"
+                      color="inherit"
+                      onClick={copyToken}>
+                      <CopyIcon className={classes.icon} />
+                    </IconButton>
+                  </Grid>
+                </Grid>
+              </Paper>
             </Grid>
-            <Grid item xs={3}>
-              <IconButton
-                aria-label="Copy Token"
-                color="inherit"
-                onClick={copyToken}>
-                <CopyIcon className={classes.icon} />
-              </IconButton>
-            </Grid>
-          </Grid>
-        </Paper>
-      ))}
+          )
+        })}
+      </Grid>
     </div>
   )
 }
