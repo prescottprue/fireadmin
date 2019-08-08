@@ -1,13 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { map } from 'lodash'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import CopyIcon from '@material-ui/icons/FileCopy'
-import { Grid } from '@material-ui/core'
+import Grid from '@material-ui/core/Grid'
 
-function TokensPage({ generateToken, classes, copyToken, token }) {
+function TokensPage({ generateToken, classes, copyToken, tokens }) {
   return (
     <div>
       <Typography className={classes.pageHeader}>Tokens</Typography>
@@ -20,13 +21,13 @@ function TokensPage({ generateToken, classes, copyToken, token }) {
           Generate Token
         </Button>
       </div>
-      {token ? (
-        <Paper>
-          <Grid container spacing={2}>
-            <Grid item xs={7}>
-              <Typography component="p">{token}</Typography>
+      {map(tokens, (tokenObj, tokenId) => (
+        <Paper key={tokenId} className={classes.tokenCard}>
+          <Grid container spacing={12}>
+            <Grid item xs={3}>
+              <Typography component="p">{tokenObj.token}</Typography>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <IconButton
                 aria-label="Copy Token"
                 color="inherit"
@@ -36,7 +37,7 @@ function TokensPage({ generateToken, classes, copyToken, token }) {
             </Grid>
           </Grid>
         </Paper>
-      ) : null}
+      ))}
     </div>
   )
 }
@@ -47,7 +48,7 @@ TokensPage.propTypes = {
   }),
   generateToken: PropTypes.func.isRequired,
   copyToken: PropTypes.func.isRequired,
-  token: PropTypes.string, // from enhancer (withStateHandlers)
+  tokens: PropTypes.object, // from enhancer (withStateHandlers)
   classes: PropTypes.object.isRequired // from enhancer (withStyles)
 }
 

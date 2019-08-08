@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
+import { v4 } from 'uuid'
 import { to } from 'utils/async'
 import { contextToAuthUid, validateRequest } from 'utils/firebaseFunctions'
 import { PROJECTS_COLLECTION } from '@fireadmin/core/lib/constants/firestorePaths'
@@ -11,24 +12,16 @@ import { PROJECTS_COLLECTION } from '@fireadmin/core/lib/constants/firestorePath
  * @param {Object} context.auth.uid - UID of user that made the request
  * @param {Object} context.auth.name - Name of user that made the request
  */
-export async function generateAuthTokenRequest(data, context) {
+export async function generateApiTokenRequest(data, context) {
   const uid = contextToAuthUid(context)
   console.log('Custom token request:', uid, { data })
   const { projectId } = data
 
   // Verify projectId exists
-  validateRequest(['projectId'], data)
+  const requiredParams = ['projectId']
+  validateRequest(requiredParams, data)
 
-  // Generate token
-  const [err, token] = await to(
-    admin.auth().createCustomToken(uid, { isApi: true })
-  )
-
-  // Handle errors generating token
-  if (err) {
-    console.error('Error generating custom token', err)
-    throw err
-  }
+  const token = v4()
 
   // Write token to tokens collection
   const [writeErr] = await to(
@@ -46,7 +39,7 @@ export async function generateAuthTokenRequest(data, context) {
   if (writeErr) {
     console.error(
       `Error writing custom token to Firestore for project "${projectId}"`,
-      err
+      writeErr
     )
     throw new functions.https.HttpsError(
       'internal',
@@ -62,4 +55,4 @@ export async function generateAuthTokenRequest(data, context) {
  * Cloud Function triggered by HTTP request
  * @type {functions.CloudFunction}
  */
-export default functions.https.onCall(generateAuthTokenRequest)
+export default functions.https.onCall(generateApiTokenRequest)

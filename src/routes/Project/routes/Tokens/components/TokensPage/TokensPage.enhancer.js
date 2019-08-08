@@ -1,11 +1,32 @@
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import firebase from 'firebase/app'
+import { PROJECTS_COLLECTION } from '@fireadmin/core/lib/constants/firestorePaths'
+import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import { withStyles } from '@material-ui/core/styles'
 import { withHandlers, withStateHandlers } from 'recompose'
 import { setStringToClipboard } from 'utils/browser'
 import styles from './TokensPage.styles'
 
 export default compose(
+  // Map auth uid from state to props
+  connect(({ firebase: { auth: { uid } } }) => ({ uid })),
+  // create listener for tokens, results go into redux
+  firestoreConnect(({ params: { projectId }, uid }) => {
+    return [
+      {
+        collection: PROJECTS_COLLECTION,
+        doc: projectId,
+        subcollections: [{ collection: 'tokens' }],
+        where: ['createdBy', '==', uid],
+        storeAs: `${projectId}-tokens`
+      }
+    ]
+  }),
+  // map redux state to props
+  connect(({ firestore: { data } }, { params: { projectId } }) => ({
+    tokens: data[`${projectId}-tokens`]
+  })),
   withStateHandlers(
     {
       token: null
@@ -23,7 +44,7 @@ export default compose(
     generateToken: ({ setToken, params: { projectId } }) => () => {
       return firebase
         .functions()
-        .httpsCallable('generateAuthToken')({ projectId })
+        .httpsCallable('generateApiToken')({ projectId })
         .then(res => {
           setToken(res.data)
         })
