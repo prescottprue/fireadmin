@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/database';
+import 'firebase/functions';
 import 'firebase/auth';
 export declare function initializeFirebase(fbConfig?: any): firebase.app.App;
 export declare function getApp(): firebase.app.App;

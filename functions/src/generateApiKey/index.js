@@ -2,8 +2,8 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import { v4 } from 'uuid'
 import { to } from 'utils/async'
-import { contextToAuthUid, validateRequest } from 'utils/firebaseFunctions'
-import { PROJECTS_COLLECTION } from '@fireadmin/core/lib/constants/firestorePaths'
+import { contextToAuthUid } from 'utils/firebaseFunctions'
+import { USERS_COLLECTION } from '@fireadmin/core/lib/constants/firestorePaths'
 
 /**
  * @param {Object} data - Data passed into httpsCallable by client
@@ -14,12 +14,7 @@ import { PROJECTS_COLLECTION } from '@fireadmin/core/lib/constants/firestorePath
  */
 export async function generateApiTokenRequest(data, context) {
   const uid = contextToAuthUid(context)
-  console.log('Custom token request:', uid, { data })
-  const { projectId } = data
-
-  // Verify projectId exists
-  const requiredParams = ['projectId']
-  validateRequest(requiredParams, data)
+  console.log('Generate API key request:', uid, data)
 
   const token = v4()
 
@@ -27,12 +22,11 @@ export async function generateApiTokenRequest(data, context) {
   const [writeErr] = await to(
     admin
       .firestore()
-      .doc(`${PROJECTS_COLLECTION}/${projectId}/tokens/${token}`)
+      .doc(`${USERS_COLLECTION}/${uid}/api_keys/${token}`)
       .set(
         {
           ...data,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          createdBy: uid
+          createdAt: admin.firestore.FieldValue.serverTimestamp()
         },
         { merge: true }
       )
@@ -41,7 +35,7 @@ export async function generateApiTokenRequest(data, context) {
   // Handle errors writing to Firestore
   if (writeErr) {
     console.error(
-      `Error writing custom token to Firestore for project "${projectId}"`,
+      `Error writing custom token to Firestore for user "${uid}"`,
       writeErr
     )
     throw new functions.https.HttpsError(

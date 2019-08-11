@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/database';
+import 'firebase/functions';
 import 'firebase/auth';
 import { STAGE_FB_CONFIG } from './../constants/fbConfigs'
 

@@ -1,11 +1,11 @@
 import { FireadminConfig } from './types/index';
-export declare function initialize(fireadminConfig: FireadminConfig): void;
-export declare function loginWithToken(customToken: string): Promise<import("firebase").User | import("firebase").auth.UserCredential>;
+import { loginWithApiKey } from './auth';
 import Project from './Project';
 import Projects from './Projects';
 import ActionTemplates from './ActionTemplates';
 import ActionTemplate from './ActionTemplate';
 import Users from './Users';
 import User from './User';
-export { Projects, Project, Users, User, ActionTemplates, ActionTemplate };
+export declare function initialize(fireadminConfig: FireadminConfig): void;
+export { Projects, Project, Users, User, ActionTemplates, ActionTemplate, loginWithApiKey };
 export default initialize;

@@ -9,62 +9,61 @@ import CopyIcon from '@material-ui/icons/FileCopy'
 import Grid from '@material-ui/core/Grid'
 import { formatDateTime } from 'utils/formatters'
 
-function TokensPage({ generateToken, classes, copyToken, tokens }) {
+function ApiKeysSection({ generateApiKey, classes, copyApiKey, tokens }) {
   return (
-    <div>
+    <Paper className={classes.root}>
       <Typography className={classes.pageHeader}>Tokens</Typography>
-      <div className={classes.buttons}>
-        <Button
-          color="primary"
-          variant="contained"
-          aria-label="Add Member"
-          onClick={generateToken}>
-          Generate Token
-        </Button>
-      </div>
       <Grid container spacing={16}>
-        {map(tokens, (tokenObj, tokenId) => {
-          if (!tokenObj) {
+        {map(tokens, (apiKeyMetaObj, apiKey) => {
+          if (!apiKeyMetaObj) {
             return null
           }
           return (
-            <Grid key={tokenId} item xs={12}>
-              <Paper key={tokenId} className={classes.tokenCard}>
+            <Grid key={apiKey} item xs={12}>
+              <div key={apiKey} className={classes.tokenCard}>
                 <Grid container spacing={16}>
                   <Grid item xs={5}>
-                    <Typography component="p">{tokenObj.token}</Typography>
+                    <Typography component="p">{apiKey}</Typography>
                   </Grid>
                   <Grid item xs={5}>
                     <Typography component="p">
-                      {formatDateTime(tokenObj.createdAt)}
+                      {formatDateTime(apiKeyMetaObj.createdAt)}
                     </Typography>
                   </Grid>
                   <Grid item xs={2}>
                     <IconButton
                       aria-label="Copy Token"
                       color="inherit"
-                      onClick={copyToken}>
+                      onClick={() => copyApiKey(apiKey)}>
                       <CopyIcon className={classes.icon} />
                     </IconButton>
                   </Grid>
                 </Grid>
-              </Paper>
+              </div>
             </Grid>
           )
         })}
       </Grid>
-    </div>
+      <Grid container spacing={16} className={classes.buttons} justify="center">
+        <Grid item xs={2}>
+          <Button
+            color="primary"
+            variant="contained"
+            aria-label="Add Member"
+            onClick={generateApiKey}>
+            Generate Token
+          </Button>
+        </Grid>
+      </Grid>
+    </Paper>
   )
 }
 
-TokensPage.propTypes = {
-  params: PropTypes.shape({
-    projectId: PropTypes.string.isRequired
-  }),
-  generateToken: PropTypes.func.isRequired,
-  copyToken: PropTypes.func.isRequired,
+ApiKeysSection.propTypes = {
+  generateApiKey: PropTypes.func.isRequired,
+  copyApiKey: PropTypes.func.isRequired,
   tokens: PropTypes.object, // from enhancer (withStateHandlers)
   classes: PropTypes.object.isRequired // from enhancer (withStyles)
 }
 
-export default TokensPage
+export default ApiKeysSection

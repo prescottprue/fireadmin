@@ -1,14 +1,10 @@
 @import 'base';
 
 .container {
-  @extend .flex-row-center;
-  align-items: center;
-  padding-top: 4rem;
+  padding: 4rem;
 }
 .pane {
   @extend .flex-column-center;
-  justify-content: space-around;
-  flex-basis: 60%;
 }
 .title {
   margin-top: 2.5rem !important;

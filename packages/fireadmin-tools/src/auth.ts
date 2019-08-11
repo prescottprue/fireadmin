@@ -1,19 +1,18 @@
-import { loginWithToken } from '@fireadmin/core'
-import { get, isEmpty } from 'lodash'
+import { loginWithApiKey } from '@fireadmin/core'
 import { prompt } from './utils/prompt'
 import { to } from './utils/async';
 import configstore from './utils/configstore'
 
-const TOKEN_CONFIGSTORE_KEY = 'token'
+const API_KEY_CONFIGSTORE_KEY = 'apiKey'
 
-async function askForToken(): Promise<string> {
+async function askForApiKey(): Promise<string> {
   const TOKEN_PROMPT_NAME = 'tokenPrompt'
   const [err, optionAnswer] = await to(
     prompt({}, [
       {
         type: 'input',
         name: TOKEN_PROMPT_NAME,
-        message: 'Please enter custom token generated on fireadmin.io'
+        message: 'Paste API Key generated on fireadmin.io'
       }
     ])
   )
@@ -23,25 +22,25 @@ async function askForToken(): Promise<string> {
   }
   const token = optionAnswer[TOKEN_PROMPT_NAME]
 
-  // Save token within file specific to fireadmin-tools
-  configstore.set(TOKEN_CONFIGSTORE_KEY, token)
+  // Save API Key within file specific to fireadmin-tools
+  configstore.set(API_KEY_CONFIGSTORE_KEY, token)
 
   return token
 }
 
-async function getAccessToken() {
-  const token = configstore.get(TOKEN_CONFIGSTORE_KEY)
-  if (token) {
-    console.log('Token loaded', typeof token)
-    return token
-  }
-  return askForToken()
+async function getApiKey() {
+  // const token = configstore.get(API_KEY_CONFIGSTORE_KEY)
+  // if (token) {
+  //   console.log('API Key loaded', typeof token)
+  //   return token
+  // }
+  return askForApiKey()
 }
 
 export async function login() {
   // TODO: In the future look into calling endpoint to auth with google - check firebase-tools for reference
-  const token = await getAccessToken()
-  const [loginErr] = await to(loginWithToken(token))
+  const apiKey = await getApiKey()
+  const [loginErr] = await to(loginWithApiKey(apiKey))
   if (loginErr) {
     console.log('Error logging in:', loginErr.message)
     throw loginErr

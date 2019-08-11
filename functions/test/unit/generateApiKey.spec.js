@@ -23,7 +23,7 @@ describe('generateApiToken HTTPS Callable Cloud Function', () => {
       }
       // Stub any other config values needed by your functions here
     })
-    generateApiToken = require(`../../src/generateApiToken/index`)
+    generateApiToken = require(`../../src/generateApiKey/index`)
       .generateApiTokenRequest
     /* eslint-enable global-require */
   })

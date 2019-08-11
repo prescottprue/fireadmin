@@ -10,7 +10,7 @@ export const validator = new Ajv({ allErrors: true });
  */
 export async function runValidationForClass<ClassType extends any>(_class: ClassType, dataToValidate: object) {
   const className = _class.constructor.name
-  const schema = require(`./schemas/${className}.json`)
+  const schema = require(`../schemas/${className}.json`)
   const test = validator.compile(schema);
   const isValid = test(dataToValidate);
   if (!isValid) {

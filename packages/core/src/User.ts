@@ -1,12 +1,11 @@
 import { runValidationForClass } from './utils/validation';
-import { PROJECTS_COLLECTION } from './constants/firestorePaths'
+import { USERS_COLLECTION } from './constants/firestorePaths'
 import { GetOptions, throwIfNotFoundInVal, getApp } from './utils/firebase';
 import { UserValue } from './types/User';
 
 /**
  * Fireadmin User
  */
-// tslint:disable-next-line
 export default class User implements UserValue {
   public path: string
   public id: string
@@ -14,13 +13,13 @@ export default class User implements UserValue {
   public listen: any
   public updatedAt?: firebase.firestore.FieldValue
   public createdAt?: firebase.firestore.FieldValue
-  constructor(projectId: string, projectData?: object) {
-    this.id = projectId
-    this.path = `${PROJECTS_COLLECTION}/${projectId}`
+  constructor(uid: string, userData?: object) {
+    this.id = uid
+    this.path = `${USERS_COLLECTION}/${uid}`
     this.ref = getApp().firestore().doc(this.path)
     this.listen = this.ref.onSnapshot
-    if (projectData) {
-      Object.assign(this, projectData);
+    if (userData) {
+      Object.assign(this, userData);
     }
   }
   /**
@@ -34,8 +33,8 @@ export default class User implements UserValue {
    */
   public async get(options?: GetOptions): Promise<User> {
     const snap = await this.ref.get();
-    const projectVal = throwIfNotFoundInVal(snap, options, `User not found at path: ${this.path}`)
-    return new User(this.id, projectVal);
+    const userVal = throwIfNotFoundInVal(snap, options, `User not found at path: ${this.path}`)
+    return new User(this.id, userVal);
   }
 
   /**
@@ -48,5 +47,15 @@ export default class User implements UserValue {
 
   public delete() {
     return this.ref.delete()
+  }
+
+  public async generateApiKey() {
+    await getApp()
+      .functions()
+      .httpsCallable('generateApiKey')({ uid: this.id })
+      .catch(err => {
+        console.error('Error generating token:', err.message || err) // eslint-disable-line no-console
+        return Promise.reject(err)
+      })
   }
 }

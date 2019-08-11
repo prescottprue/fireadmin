@@ -7,9 +7,10 @@ export default class User implements UserValue {
     listen: any;
     updatedAt?: firebase.firestore.FieldValue;
     createdAt?: firebase.firestore.FieldValue;
-    constructor(projectId: string, projectData?: object);
+    constructor(uid: string, userData?: object);
     validate(projectData: UserValue): void;
     get(options?: GetOptions): Promise<User>;
     update(projectData: UserValue): Promise<any>;
     delete(): Promise<void>;
+    generateApiKey(): Promise<void>;
 }
