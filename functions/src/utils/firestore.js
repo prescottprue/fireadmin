@@ -48,10 +48,10 @@ export function slashPathToFirestoreRef(firestoreInstance, slashPath) {
 export function dataArrayFromSnap(snap) {
   const data = []
   if (snap.data && snap.exists) {
-    data.push({ id: snap.id, data: snap.data() })
+    data.push({ id: snap.id, data: snap.data(), ref: snap.ref })
   } else if (snap.forEach) {
     snap.forEach(doc => {
-      data.push({ id: doc.id, data: doc.data() || doc })
+      data.push({ id: doc.id, data: doc.data() || doc, ref: doc.ref })
     })
   }
   return data

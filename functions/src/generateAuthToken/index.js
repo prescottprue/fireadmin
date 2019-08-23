@@ -1,10 +1,14 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import { PROJECTS_COLLECTION } from '@fireadmin/core/lib/constants/firestorePaths'
+import {
+  USERS_COLLECTION,
+  USER_API_KEYS_SUBCOLLECTION
+} from '@fireadmin/core/lib/constants/firestorePaths'
 import { to } from 'utils/async'
 import { validateRequest } from 'utils/firebaseFunctions'
 
 /**
+ * Generate auth token from API key
  * @param req - Express HTTP Request
  * @param res - Express HTTP Response
  */
@@ -13,23 +17,25 @@ export async function generateAuthTokenRequest(req, res) {
   console.log('Custom token request:', requestData)
 
   // Verify projectId exists
-  const requiredParams = ['projectId', 'uid']
+  const requiredParams = ['uid']
   validateRequest(requiredParams, requestData, res)
 
-  const { projectId, token, uid } = requestData
+  const { projectId, token: apiKey, uid } = requestData
 
-  // Write token to tokens collection
+  // Get token from users collection
   const [tokenQueryErr, tokenSnap] = await to(
     admin
       .firestore()
-      .doc(`${PROJECTS_COLLECTION}/${projectId}/tokens/${token}`)
+      .doc(
+        `${USERS_COLLECTION}/${uid}/${USER_API_KEYS_SUBCOLLECTION}/${apiKey}`
+      )
       .get()
   )
 
   // Handle errors querying Firestore
   if (tokenQueryErr) {
     console.error(
-      `Error querying Firestore for project "${projectId}" uid: "${uid}" token: "${token}"`,
+      `Error querying Firestore for project "${projectId}" uid: "${uid}" apiKey: "${apiKey}"`,
       tokenQueryErr
     )
     return res.status(500).send('Internal error')
@@ -37,9 +43,9 @@ export async function generateAuthTokenRequest(req, res) {
 
   const tokenData = tokenSnap.data()
 
-  if (!tokenData || tokenData.createdBy !== uid) {
+  if (!tokenData) {
     console.error(
-      `Invalid token, responding with error for "${projectId}" uid: "${uid}" token: "${token}"`
+      `Invalid token, responding with error for "${projectId}" uid: "${uid}" apiKey: "${apiKey}"`
     )
     return res.status(401).send('Invalid API token')
   }
@@ -52,7 +58,7 @@ export async function generateAuthTokenRequest(req, res) {
   // Handle errors generating custom token
   if (generateTokenErr) {
     console.error(
-      `Error generating custom token for project: "${projectId}" uid: "${uid}" token: "${token}"`,
+      `Error generating custom token for project: "${projectId}" uid: "${uid}" token: "${apiKey}"`,
       generateTokenErr
     )
     return res.status(500).send('Internal error')

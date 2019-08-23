@@ -28,19 +28,42 @@ async function askForApiKey(): Promise<string> {
   return token
 }
 
+async function askForUid(): Promise<string> {
+  const TOKEN_PROMPT_NAME = 'uid'
+  const [err, optionAnswer] = await to(
+    prompt({}, [
+      {
+        type: 'input',
+        name: TOKEN_PROMPT_NAME,
+        message: 'Paste Your UID from fireadmin.io'
+      }
+    ])
+  )
+  if (err) {
+    console.log('Error prompting for token', err)
+    throw err
+  }
+  const token = optionAnswer[TOKEN_PROMPT_NAME]
+
+  // Save API Key within file specific to fireadmin-tools
+  configstore.set(API_KEY_CONFIGSTORE_KEY, token)
+
+  return token
+}
+
 async function getApiKey() {
-  // const token = configstore.get(API_KEY_CONFIGSTORE_KEY)
-  // if (token) {
-  //   console.log('API Key loaded', typeof token)
-  //   return token
-  // }
+  const token = configstore.get(API_KEY_CONFIGSTORE_KEY)
+  if (token) {
+    return token
+  }
   return askForApiKey()
 }
 
 export async function login() {
   // TODO: In the future look into calling endpoint to auth with google - check firebase-tools for reference
   const apiKey = await getApiKey()
-  const [loginErr] = await to(loginWithApiKey(apiKey))
+  const uid = await askForUid()
+  const [loginErr] = await to(loginWithApiKey(apiKey, uid))
   if (loginErr) {
     console.log('Error logging in:', loginErr.message)
     throw loginErr

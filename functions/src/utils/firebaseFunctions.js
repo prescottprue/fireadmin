@@ -1,4 +1,5 @@
 import * as functions from 'firebase-functions'
+import * as admin from 'firebase-admin'
 import { get, isUndefined } from 'lodash'
 
 /**
@@ -115,4 +116,80 @@ export function validateRequest(requiredProperties, data, res) {
     // Throw https error (onCall HTTP function)
     throw new functions.https.HttpsError('invalid-argument', errMsg)
   }
+}
+
+function failAndRedirectIfPossible({ code, res, redirect }) {
+  let message = ''
+  switch (code) {
+    case 400:
+      message = 'Bad Request'
+      break
+    case 401:
+      message = 'Unauthorized'
+      break
+    case 403:
+      message = 'Forbidden'
+      break
+    case 500:
+      message = 'Server error'
+      break
+    default:
+      message = 'Unknown error'
+      break
+  }
+  if (redirect) {
+    console.log('Redirecting to:', redirect)
+    res.redirect(code, redirect).end()
+  } else {
+    res.status(code).send(message)
+  }
+}
+
+// Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
+// The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
+// `Authorization: Bearer <Firebase ID Token>`.
+// when decoded successfully, the ID Token content will be added as `req.user`.
+export async function validateFirebaseIdToken(req, res, next) {
+  const { redirect } = req.query
+  const authorizationHeadersExist = !!req.headers.authorization
+  const hasBearerIdentifier =
+    authorizationHeadersExist && req.headers.authorization.startsWith('Bearer ')
+  const { idToken: queryIdToken } = req.query || {}
+  console.log('Check if request is authorized with Firebase ID token')
+  if (!hasBearerIdentifier && !req.cookies.__session && !queryIdToken) {
+    console.error(
+      'No Firebase ID token was passed as a Bearer token in the Authorization header.',
+      'Make sure you authorize your request by providing the following HTTP header:',
+      'Authorization: Bearer <Firebase ID Token>',
+      'or by passing a "__session" cookie',
+      'or by passing an idToken query param.'
+    )
+    return failAndRedirectIfPossible({ res, redirect, code: 401 })
+  }
+
+  let idToken
+  if (hasBearerIdentifier) {
+    console.log('Found "Authorization" header')
+    // Read the ID Token from the Authorization header.
+    idToken = req.headers.authorization.split('Bearer ')[1]
+  } else if (queryIdToken) {
+    console.log('Found idToken query param')
+    idToken = queryIdToken
+  } else {
+    console.log('Found "__session" cookie')
+    // Read the ID Token from cookie.
+    idToken = req.cookies.__session
+  }
+  return admin
+    .auth()
+    .verifyIdToken(idToken)
+    .then(decodedIdToken => {
+      console.log('ID Token correctly decoded', decodedIdToken)
+      req.user = decodedIdToken
+      next()
+    })
+    .catch(error => {
+      console.error('Error while verifying Firebase ID token:', error)
+      return failAndRedirectIfPossible({ res, redirect, code: 401 })
+    })
 }

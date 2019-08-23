@@ -1,6 +1,6 @@
 {
   "name": "@fireadmin/core",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "es2015": "./lib/index.js",
@@ -43,7 +43,6 @@
   "dependencies": {
     "ajv": "^6.10.2",
     "firebase": "^6.3.1",
-    "firebase-admin": "^8.3.0",
     "lodash": "^4.17.11"
   },
   "devDependencies": {

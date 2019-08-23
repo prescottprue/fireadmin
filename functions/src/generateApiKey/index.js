@@ -3,7 +3,10 @@ import * as admin from 'firebase-admin'
 import { v4 } from 'uuid'
 import { to } from 'utils/async'
 import { contextToAuthUid } from 'utils/firebaseFunctions'
-import { USERS_COLLECTION } from '@fireadmin/core/lib/constants/firestorePaths'
+import {
+  USERS_COLLECTION,
+  USER_API_KEYS_SUBCOLLECTION
+} from '@fireadmin/core/lib/constants/firestorePaths'
 
 /**
  * @param {Object} data - Data passed into httpsCallable by client
@@ -22,7 +25,7 @@ export async function generateApiTokenRequest(data, context) {
   const [writeErr] = await to(
     admin
       .firestore()
-      .doc(`${USERS_COLLECTION}/${uid}/api_keys/${token}`)
+      .doc(`${USERS_COLLECTION}/${uid}/${USER_API_KEYS_SUBCOLLECTION}/${token}`)
       .set(
         {
           ...data,

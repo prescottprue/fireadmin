@@ -20,7 +20,7 @@ export function initializeFirebase(fbConfig?: any): firebase.app.App {
     firebaseApp = firebase.initializeApp(fbConfig)
   } else {
     try {
-      firebaseApp = firebase.initializeApp(STAGE_FB_CONFIG)
+      firebaseApp = firebase.initializeApp(fbConfig || STAGE_FB_CONFIG)
     } catch (err) {
       console.warn('You only need to initialize Firebase once', JSON.stringify(err))
     }

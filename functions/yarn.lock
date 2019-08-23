@@ -629,14 +629,13 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@fireadmin/core@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@fireadmin/core/-/core-0.0.2.tgz#e0d9c104e47b548f2987ffe126fba4d49d23502d"
-  integrity sha512-JVMfBALCnwed2AJLdiR3YWBAgslNgLiPeGp384hEbLCppWogekOGY2vEk2XfOhpS/ujknvnyx6vMMm/9NKfsiA==
+"@fireadmin/core@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@fireadmin/core/-/core-0.0.4.tgz#9de42ab433bb37d9b6855a739120f63084dc4b90"
+  integrity sha512-KcMNnzQb6ANlhfdu4u24wu62pwWt7LuyHNh0xorMhJARYLJdDEDaZm1HTbjQXxYH2r4EPh1ixEgsze+7FO9ROA==
   dependencies:
     ajv "^6.10.2"
     firebase "^6.3.1"
-    firebase-admin "^8.3.0"
     lodash "^4.17.11"
 
 "@firebase/app-types@0.4.2":
@@ -2323,7 +2322,7 @@ findup-sync@2.0.0:
     micromatch "^3.0.4"
     resolve-dir "^1.0.1"
 
-firebase-admin@^8.0.0, firebase-admin@^8.3.0:
+firebase-admin@^8.0.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/firebase-admin/-/firebase-admin-8.3.0.tgz#8ab935a4f11f0f8983e6ae5d14704d199c00f712"
   integrity sha512-ydjTudnWa6T1wZPdb+s4mQJ6NhHxvXkhMMHNV7inI3ZRFUfhovv77M4SDUbMND2SFMYvttyDuj66/EpcPzyXNg==
