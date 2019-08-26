@@ -197,7 +197,6 @@ Deploy Staging:
   when: on_success
   only:
     - master
-    - web
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-build/ # no build to deploy if it was skipped
@@ -233,11 +232,10 @@ UI Tests:
   # Cache dependencies across jobs only pulling not uploading (upload to cache
   # happens in build stage)
   cache:
-    key: $CI_COMMIT_REF_SLUG
+    key: $CI_COMMIT_REF_SLUG-$CI_JOB_STAGE
     # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
     paths:
       - .yarn
-      - node_modules
       - cache/Cypress
   artifacts:
     name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
@@ -280,7 +278,6 @@ Build Prod App:
   only:
     - master
     - prod
-    - web
   variables:
     FIREBASE_CI_PROJECT: "prod" # deploy using prod project in .firebaserc
   except:
@@ -312,7 +309,6 @@ Deploy Production:
   only:
     - master
     - prod
-    - web
   variables:
     FIREBASE_CI_PROJECT: "prod" # deploy using prod project in .firebaserc
   except:
