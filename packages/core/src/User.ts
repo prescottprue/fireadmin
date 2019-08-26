@@ -1,3 +1,4 @@
+import * as firebase from 'firebase/app'
 import { runValidationForClass } from './utils/validation'
 import { USERS_COLLECTION } from './constants/firestorePaths'
 import { GetOptions, throwIfNotFoundInVal, getApp } from './utils/firebase'

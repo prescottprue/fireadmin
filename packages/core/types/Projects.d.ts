@@ -1,4 +1,3 @@
-import * as firebase from 'firebase/app';
 import { ProjectValue } from './types/Project';
 import { GetOptions } from './utils/firebase';
 import Project from './Project';

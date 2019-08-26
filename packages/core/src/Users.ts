@@ -1,3 +1,4 @@
+import * as firebase from 'firebase/app'
 import { USERS_COLLECTION } from './constants/firestorePaths'
 import { runValidationForClass } from './utils/validation'
 import User from './User'

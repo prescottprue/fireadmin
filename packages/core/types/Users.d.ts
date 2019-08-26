@@ -1,4 +1,4 @@
-import firebase from 'firebase/app';
+import * as firebase from 'firebase/app';
 import User from './User';
 import { UserValue } from './types/User';
 import { GetOptions } from './utils/firebase';

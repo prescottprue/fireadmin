@@ -1,4 +1,3 @@
-import * as firebase from 'firebase/app';
 import { GetOptions } from './utils/firebase';
 import { ActionRequestValue } from './types/ActionRequest';
 import RTDBItem from './connectors/RTDBItem';

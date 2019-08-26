@@ -1,3 +1,4 @@
+import * as firebase from 'firebase/app';
 import { GetOptions } from './utils/firebase';
 import { UserValue } from './types/User';
 export default class User implements UserValue {
