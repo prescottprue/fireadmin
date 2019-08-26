@@ -25,7 +25,7 @@ export default functions.firestore
  * would require more code due to being triggered for all storage files.
  * @param  {functions.Event} event - Function event triggered when adding a new
  * service account to a project
- * @return {Promise} Resolves with filePath
+ * @returns {Promise} Resolves with filePath
  */
 export async function handleServiceAccountCreate(snap) {
   const eventData = snap.data()

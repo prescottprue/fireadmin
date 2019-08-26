@@ -9,8 +9,8 @@ import { to } from './async'
 
 /**
  * Get config variable from environment. Throws clear message for non existant variables.
- * @param {String} getPath - Path of config var to get from environment
- * @param {String} defaultVal - Default value to fallback to if environment config is not defined
+ * @param {string} getPath - Path of config var to get from environment
+ * @param {string} defaultVal - Default value to fallback to if environment config is not defined
  * @example <caption>Basic</caption>
  * const asanaConfig = getEnvConfig('asana') // functions.config().asana
  * @example <caption>Deep Value</caption>
@@ -36,8 +36,8 @@ export function getEnvConfig(getPath, defaultVal) {
 /**
  * Convert function context to the currently logged in user's uid falling back
  * to "Unknown". If admin user is logged in uid will be 'admin'.
- * @param  {Object} functionContext - function's context
- * @return {String} Function request's
+ * @param  {object} functionContext - function's context
+ * @returns {string} Function request's
  */
 export function contextToAuthUid(functionContext = {}) {
   if (functionContext.authType === 'ADMIN') {
@@ -49,7 +49,7 @@ export function contextToAuthUid(functionContext = {}) {
 /**
  * Get service account from functions config. Throws if service account
  * functions variable does not exist
- * @return {Object} Service account
+ * @returns {object} Service account
  * @example Basic
  * const serviceAccount = getLocalServiceAccount()
  * Object.keys(serviceAccount)
@@ -70,7 +70,7 @@ export function getLocalServiceAccount() {
 
 /**
  * Get the firebase config of the current functions environment
- * @return {Object} Service account
+ * @returns {object} Service account
  * @example Basic
  * getFirebaseConfig()
  * // => {
@@ -99,7 +99,7 @@ export function getFirebaseConfig(getPath, defaultVal) {
 /**
  * Validate user request
  * @param {Array} requiredProperties - List of required properties
- * @param {Object} data - Http request from client
+ * @param {object} data - Http request from client
  */
 export function validateRequest(requiredProperties, data, opts) {
   const { nonFunctionError } = opts || {}
@@ -123,7 +123,11 @@ export function validateRequest(requiredProperties, data, opts) {
   }
 }
 
-function userByUid(uid) {
+/**
+ * Get user based on their UID
+ * @param {string} uid - Fireadmin User id
+ */
+async function userByUid(uid) {
   if (!uid) {
     throw new Error(`User not found for uid ${uid}`)
   }
@@ -133,6 +137,14 @@ function userByUid(uid) {
     .get()
 }
 
+/**
+ * Get data associated with Fireadm API key and uid
+ * @param {object} settings - Api key settings
+ * @param {string} settings.uid - Fireadmin uid associated with api key
+ * @param {string} settings.apiKey - Fireadmin api key
+ * @param {object} res - Express HTTP Response
+ * @returns {Promise} Resolves with data associated with token
+ */
 async function getApiKeyData({ uid, apiKey }, res) {
   // Get token from users collection
   const [tokenQueryErr, tokenSnap] = await to(
@@ -165,10 +177,16 @@ async function getApiKeyData({ uid, apiKey }, res) {
   return tokenData
 }
 
+/**
+ * Validate Fireadmin API request by checking for x-fireadmin-uid
+ * and x-fireadmin-key headers
+ * @param {object} req - Express HTTP Request
+ * @param {object} res - Express HTTP Response
+ * @param {function} next - Express HTTP Response
+ * @returns {Promise} Resolves with undefined
+ */
 export async function validateApiRequest(req, res, next) {
   const { 'x-fireadmin-key': apiKey, 'x-fireadmin-uid': uid } = req.headers
-  console.log('request headers:', req.headers)
-  console.log('request body:', req.body)
 
   await getApiKeyData({ apiKey, uid }, res)
 
@@ -183,6 +201,9 @@ export async function validateApiRequest(req, res, next) {
   next()
 }
 
+/**
+ *
+ */
 function failAndRedirectIfPossible({ code, res, redirect }) {
   let message = ''
   switch (code) {
@@ -214,6 +235,13 @@ function failAndRedirectIfPossible({ code, res, redirect }) {
 // The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
 // `Authorization: Bearer <Firebase ID Token>`.
 // when decoded successfully, the ID Token content will be added as `req.user`.
+/**
+ * Validate firebaseIdToken
+ * @param {object} req - Express HTTP Request
+ * @param {object} res - Express HTTP Response
+ * @param {function} next - Express HTTP Response
+ * @returns {Promise} Resolves with undefined
+ */
 export async function validateFirebaseIdToken(req, res, next) {
   const { redirect } = req.query
   const authorizationHeadersExist = !!req.headers.authorization

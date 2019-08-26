@@ -6,9 +6,9 @@ import { to } from 'utils/async'
 const requestPath = 'sendFcm'
 
 /**
- * @param  {functions.Event} event - Function event
+ * @param {functions.Event} event - Function event
  * @param {functions.Context} context - Functions context
- * @return {Promise}
+ * @returns {Promise}
  */
 async function sendFcmEvent(snap, context) {
   const {

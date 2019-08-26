@@ -5,10 +5,10 @@ import * as functions from 'firebase-functions'
 /**
  * Encrypt a string using a password. encryption.password from
  * functions config is used by default if not passed.
- * @param {String} text - Text string to encrypt
- * @param {Object} [options={}]
- * @param {Object} [options.algorithm='aes-256-ctr']
- * @param {Object} options.password - Password to use while
+ * @param {string} text - Text string to encrypt
+ * @param {object} [options={}]
+ * @param {object} [options.algorithm='aes-256-ctr']
+ * @param {object} options.password - Password to use while
  * encrypting. encryption.password from functions config is used
  * by default if not passed.
  */
@@ -33,10 +33,10 @@ export function encrypt(text, options = {}) {
 /**
  * Decrypt a string using a password. encryption.password from
  * functions config is used by default if not passed.
- * @param {String} text - Text string to decrypt
- * @param {Object} [options={}]
- * @param {Object} [options.algorithm='aes-256-ctr']
- * @param {Object} options.password - Password to use while
+ * @param {string} text - Text string to decrypt
+ * @param {object} [options={}]
+ * @param {object} [options.algorithm='aes-256-ctr']
+ * @param {object} options.password - Password to use while
  * decrypting. encryption.password from functions config is used
  * by default if not passed.
  */

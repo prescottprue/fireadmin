@@ -7,8 +7,11 @@ import {
 } from '@fireadmin/core/lib/constants/firestorePaths'
 import { dataArrayFromSnap } from 'utils/firestore'
 
+/**
+ * Get project by the name of the project
+ * @param {string} projectName - Name of project to get
+ */
 export async function getProjectByName(projectName) {
-  console.log('get project with name:', projectName)
   const [getProjectErr, projectsSnap] = await to(
     admin
       .firestore()
@@ -31,6 +34,10 @@ export async function getProjectByName(projectName) {
   return firstProject
 }
 
+/**
+ * Get environments for a specified project reference
+ * @param {admin.firestore.DocumentReference} projectRef - Reference of project to get
+ */
 export async function getEnvironmentsFromProjectRef(projectRef) {
   // Get environments of found project
   const [getEnvironmentsErr, environmentsSnap] = await to(

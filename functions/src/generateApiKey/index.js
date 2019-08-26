@@ -9,11 +9,11 @@ import {
 } from '@fireadmin/core/lib/constants/firestorePaths'
 
 /**
- * @param {Object} data - Data passed into httpsCallable by client
- * @param {Object} context - Cloud function context
- * @param {Object} context.auth - Cloud function context
- * @param {Object} context.auth.uid - UID of user that made the request
- * @param {Object} context.auth.name - Name of user that made the request
+ * @param {object} data - Data passed into httpsCallable by client
+ * @param {object} context - Cloud function context
+ * @param {object} context.auth - Cloud function context
+ * @param {object} context.auth.uid - UID of user that made the request
+ * @param {object} context.auth.name - Name of user that made the request
  */
 export async function generateApiTokenRequest(data, context) {
   const uid = contextToAuthUid(context)

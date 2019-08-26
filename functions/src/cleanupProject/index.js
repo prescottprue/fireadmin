@@ -3,8 +3,8 @@ import { to } from '../utils/async'
 
 /**
  * Remove collection provided the snap (handles removing subcollections)
- * @param  {Object} collectionSnap - Snapshot of collection to remove
- * @return {Promise}
+ * @param {admin.firestore.DocumentReference} collectionSnap - Snapshot of collection to remove
+ * @returns {Promise} Resolves after collections are removed
  */
 async function removeCollection(collectionSnap) {
   const [getErr, collectionQueryResult] = await to(collectionSnap.get())
@@ -60,9 +60,9 @@ async function removeCollection(collectionSnap) {
 
 /**
  * Remove all collections from a Firestore document
- * @param  {Object} docRef - Reference of document for which all collections
+ * @param {object} docRef - Reference of document for which all collections
  * will be deleted
- * @return {Promise}
+ * @returns {Promise} Resolves after all collections are removed
  */
 async function removeAllCollections(docRef) {
   if (!docRef.getCollections) {
@@ -93,7 +93,7 @@ async function removeAllCollections(docRef) {
 
 /**
  * @param  {functions.Event} event - Function event
- * @return {Promise}
+ * @returns {Promise}
  */
 async function cleanupProjectEvent(snap, context) {
   const [removeErr] = await to(removeAllCollections(snap.ref))
