@@ -10,8 +10,12 @@ const depsToInstall =
 
 const newPkg = {
   ...pkg,
-  devDependencies: depsToInstall.reduce((acc, depName, ind) => {
-    return { ...acc, [depName]: pkg.devDependencies[depName] }
+  devDependencies: {},
+  dependencies: depsToInstall.reduce((acc, depName, ind) => {
+    return {
+      ...acc,
+      [depName]: pkg.devDependencies[depName] || pkg.dependencies[depName]
+    }
   }, {})
 }
 
