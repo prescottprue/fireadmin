@@ -312,14 +312,20 @@ UI Tests:
   before_script:
     # Update dev dependencies to only be cypress and cypress-firebase (for quicker install time)
     - build/install-only.js cypress cypress-firebase lodash
+    # Set TEST_ENV to CI_COMMIT_REF_SLUG (i.e. branch) only if it is not set
+    - if [ -z "$TEST_ENV" ]; then export TEST_ENV=$CI_COMMIT_REF_SLUG; fi
+    # Set TEST_SPEC_ARG if TEST_SPECS env variable is set (allowing to run only a subset of tests)
+    - if [ -z "$TEST_SPECS" ]; then export TEST_SPEC_ARG="--spec \"$TEST_SPECS\""; fi
     # Install only dev deps including Cypress binary (skipped in default before_script)
     - yarn install --production=true
     # Confirm Cypress is ready to use
     - $(npm bin)/cypress verify
+    # Create Environment specific src/config.js file
+    - $(npm bin)/cypress-firebase createTestEnvFile $TEST_ENV
   script:
     # Create environment specific test config including auth token
     # (saved to cypress.env.json) then run E2E Tests through Cypress in load balancing mode
-    - yarn test:ui:stage -- --record --key $CYPRESS_KEY
+    - cypress run --env envName=$TEST_ENV --record --key $CYPRESS_KEY
     # To run in parallel, uncomment the following line, the job definitions (below), and the job template name (above)
     # - yarn test:ui:stage -- --record --key $CYPRESS_KEY --parallel --ci-build-id $CI_PIPELINE_ID --group uitests
 
