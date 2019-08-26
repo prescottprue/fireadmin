@@ -26,7 +26,7 @@ variables:
 # Run unit tests for Cloud Functions
 Functions Unit Tests:
   stage: unit_tests
-  image: node:8
+  image: node:10
   only:
     changes:
       - functions/**/* # Run only when functions are changed
@@ -61,7 +61,7 @@ Functions Unit Tests:
 ## Installs dependencies, builds app, and saves results for later (artifacts)
 Build Docs:
   stage: build
-  image: node:8
+  image: node:10
   only:
     changes:
       - docs/**/* # Run only when docs are changed
@@ -93,7 +93,7 @@ Build Docs:
 ## Deploy Docs to Firebase Hosting
 Deploy Docs Staging:
   stage: deploy_staging
-  image: node:8
+  image: node:10
   when: on_success
   only:
     refs:
@@ -122,7 +122,7 @@ Deploy Docs Staging:
 
 Deploy Docs Production:
   stage: deploy_production
-  image: node:8
+  image: node:10
   when: manual # Only allow run through button on Gitlab site
   only:
     refs:
@@ -163,7 +163,7 @@ Deploy Docs Production:
 # 5. Preserve build results and dependencies for future jobs in the pipeline
 Build Staging:
   stage: build
-  image: node:8
+  image: node:10
   only:
     changes:
       - src/**/* # Run only when app is changed
@@ -190,7 +190,7 @@ Build Staging:
 # Deploy React App and Cloud Functions
 Deploy Staging:
   stage: deploy_staging
-  image: node:8
+  image: node:10
   environment:
     name: staging
     url: https://fireadmin-stage.firebaseapp.com
@@ -219,7 +219,7 @@ Deploy Staging:
 UI Tests:
 # .uitest_template: &job
   stage: e2e_tests
-  image: cypress/base:8
+  image: cypress/base:10
   when: on_success
   allow_failure: true
   only:
@@ -275,7 +275,7 @@ UI Tests:
 # Build Production version of bundle (has different config)
 Build Prod App:
   stage: build_production
-  image: node:8
+  image: node:10
   when: on_success
   only:
     - master
@@ -304,7 +304,7 @@ Build Prod App:
 # Deploy React App and Cloud Functions to production environment
 Deploy Production:
   stage: deploy_production
-  image: node:8
+  image: node:10
   environment:
     name: production
     url: https://fireadmin.io
