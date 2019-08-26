@@ -20,7 +20,7 @@ export async function generateAuthTokenRequest(req, res) {
   const requiredParams = ['uid']
   validateRequest(requiredParams, requestData, res)
 
-  const { projectId, token: apiKey, uid } = requestData
+  const { apiKey, uid } = requestData
 
   // Get token from users collection
   const [tokenQueryErr, tokenSnap] = await to(
@@ -35,7 +35,7 @@ export async function generateAuthTokenRequest(req, res) {
   // Handle errors querying Firestore
   if (tokenQueryErr) {
     console.error(
-      `Error querying Firestore for project "${projectId}" uid: "${uid}" apiKey: "${apiKey}"`,
+      `Error querying Firestore for uid: "${uid}" apiKey: "${apiKey}"`,
       tokenQueryErr
     )
     return res.status(500).send('Internal error')
@@ -45,7 +45,7 @@ export async function generateAuthTokenRequest(req, res) {
 
   if (!tokenData) {
     console.error(
-      `Invalid token, responding with error for "${projectId}" uid: "${uid}" apiKey: "${apiKey}"`
+      `Invalid token, responding with error for uid: "${uid}" apiKey: "${apiKey}"`
     )
     return res.status(401).send('Invalid API token')
   }
@@ -58,7 +58,7 @@ export async function generateAuthTokenRequest(req, res) {
   // Handle errors generating custom token
   if (generateTokenErr) {
     console.error(
-      `Error generating custom token for project: "${projectId}" uid: "${uid}" token: "${apiKey}"`,
+      `Error generating custom token for uid: "${uid}" token: "${apiKey}"`,
       generateTokenErr
     )
     return res.status(500).send('Internal error')

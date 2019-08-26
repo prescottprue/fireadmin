@@ -1,6 +1,11 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import { get, isUndefined } from 'lodash'
+import {
+  USERS_COLLECTION,
+  USER_API_KEYS_SUBCOLLECTION
+} from '@fireadmin/core/lib/constants/firestorePaths'
+import { to } from './async'
 
 /**
  * Get config variable from environment. Throws clear message for non existant variables.
@@ -96,7 +101,8 @@ export function getFirebaseConfig(getPath, defaultVal) {
  * @param {Array} requiredProperties - List of required properties
  * @param {Object} data - Http request from client
  */
-export function validateRequest(requiredProperties, data, res) {
+export function validateRequest(requiredProperties, data, opts) {
+  const { nonFunctionError } = opts || {}
   const missingRequired = requiredProperties.filter(
     propName => !get(data, propName)
   )
@@ -109,13 +115,72 @@ export function validateRequest(requiredProperties, data, res) {
 
     // Write http response if response object exists (normal HTTP function, not onCall)
     const errMsg = `Request missing required parameters: ${missingParamsStr}`
-    if (res) {
-      res.status(400).send(errMsg)
+    if (nonFunctionError) {
       throw new Error(errMsg)
     }
     // Throw https error (onCall HTTP function)
     throw new functions.https.HttpsError('invalid-argument', errMsg)
   }
+}
+
+function userByUid(uid) {
+  if (!uid) {
+    throw new Error(`User not found for uid ${uid}`)
+  }
+  return admin
+    .firestore()
+    .doc(`${USERS_COLLECTION}/${uid}`)
+    .get()
+}
+
+async function getApiKeyData({ uid, apiKey }, res) {
+  // Get token from users collection
+  const [tokenQueryErr, tokenSnap] = await to(
+    admin
+      .firestore()
+      .doc(
+        `${USERS_COLLECTION}/${uid}/${USER_API_KEYS_SUBCOLLECTION}/${apiKey}`
+      )
+      .get()
+  )
+
+  // Handle errors querying Firestore
+  if (tokenQueryErr) {
+    console.error(
+      `Error querying Firestore for uid: "${uid}" apiKey: "${apiKey}"`,
+      tokenQueryErr
+    )
+    return res.status(500).send('Internal error')
+  }
+
+  const tokenData = tokenSnap.data()
+
+  if (!tokenData) {
+    console.error(
+      `Invalid token, responding with error for uid: "${uid}" apiKey: "${apiKey}"`
+    )
+    return res.status(401).send('Invalid API Key')
+  }
+
+  return tokenData
+}
+
+export async function validateApiRequest(req, res, next) {
+  const { 'x-fireadmin-key': apiKey, 'x-fireadmin-uid': uid } = req.headers
+  console.log('request headers:', req.headers)
+  console.log('request body:', req.body)
+
+  await getApiKeyData({ apiKey, uid }, res)
+
+  const [getUserErr, userSnap] = await to(userByUid(uid))
+
+  if (getUserErr || !userSnap.data()) {
+    return failAndRedirectIfPossible({ res, code: 401 })
+  }
+
+  req.user = userSnap.data()
+
+  next()
 }
 
 function failAndRedirectIfPossible({ code, res, redirect }) {

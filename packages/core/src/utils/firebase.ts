@@ -17,10 +17,10 @@ export function initializeFirebase(fbConfig?: any): firebase.app.App {
   if (fbConfig && fbConfig.INTERNAL) {
     firebaseApp = fbConfig
   } else if (fbConfig && fbConfig.credential) {
-    firebaseApp = firebase.initializeApp(fbConfig)
+    firebaseApp = firebase.initializeApp(fbConfig, 'fireadmin')
   } else {
     try {
-      firebaseApp = firebase.initializeApp(fbConfig || STAGE_FB_CONFIG)
+      firebaseApp = firebase.initializeApp(fbConfig || STAGE_FB_CONFIG, 'fireadmin')
     } catch (err) {
       console.warn('You only need to initialize Firebase once', JSON.stringify(err))
     }
