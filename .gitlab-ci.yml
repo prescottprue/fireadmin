@@ -87,7 +87,7 @@ Build Packages:
     - yarn build:packages
 
 Deploy Packages:
-  stage: deploy_prod
+  stage: deploy_production
   image: node:8
   when: on_success
   only:
@@ -114,7 +114,7 @@ Deploy Packages:
     - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
     - lerna bootstrap # install package dependencies
   script:
-    - yarn deploy --only hosting:stageDocs  # Deploy docs React App (Firebase Hosting)
+    - lerna publish  # Publish packages
 
 # ---------------------------- Docs -------------------------- #
 # Build Docs
