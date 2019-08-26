@@ -1,11 +1,21 @@
 import { existsSync } from 'fs'
 import { get, find } from 'lodash'
-import { ActionEnvironmentSetting, ActionSettings, ActionStepSetting, ActionInputSetting } from '@fireadmin/core/types/types/Action'
+import {
+  ActionEnvironmentSetting,
+  ActionSettings,
+  ActionStepSetting,
+  ActionInputSetting
+} from '@fireadmin/core/types/types/Action'
 import { Projects, Project } from '@fireadmin/core'
 import { promiseWaterfall, to } from './utils/async'
 import { prompt } from './utils/prompt'
 import { login } from './auth'
-import { readDirPromise, readFilePromise, getLocalActionsFolder, requireAsync } from './utils/files'
+import {
+  readDirPromise,
+  readFilePromise,
+  getLocalActionsFolder,
+  requireAsync
+} from './utils/files'
 
 /**
  * Get a list of actions from the "actions" or "migrations" folder
@@ -27,8 +37,8 @@ async function getActionSettings(actionName: string): Promise<ActionSettings> {
   const actionSettingsString: Buffer = await readFilePromise(actionSettingsPath)
   try {
     return JSON.parse(actionSettingsString.toString())
-  } catch(err) {
-    console.log(`Error parsing action settings for action "${actionName}"`)
+  } catch (err) {
+    console.log(`Error parsing action settings for action "${actionName}"`) // eslint-disable-line no-console
     return {}
   }
 }
@@ -36,7 +46,7 @@ async function getActionSettings(actionName: string): Promise<ActionSettings> {
 export async function runCustomAction() {
   // Load actions from current folder and run it by passing in environments (selected by user based on migration settings)
   const localActions = await getLocalActions()
-  const actionChoices = localActions.map((actionName) => ({
+  const actionChoices = localActions.map(actionName => ({
     name: actionName
   }))
   // Propmpt user for choice of actions
@@ -50,14 +60,20 @@ export async function runCustomAction() {
     }
   ])
   const localActionsFolder = getLocalActionsFolder()
-  const actionSettings = await getActionSettings(optionAnswer[SELECTED_ACTION_PROMPT_NAME])
+  const actionSettings = await getActionSettings(
+    optionAnswer[SELECTED_ACTION_PROMPT_NAME]
+  )
   const actionParentPath = `${localActionsFolder}/${optionAnswer[SELECTED_ACTION_PROMPT_NAME]}`
-  const environmentSettings: ActionEnvironmentSetting[] = get(actionSettings, 'environments', [])
+  const environmentSettings: ActionEnvironmentSetting[] = get(
+    actionSettings,
+    'environments',
+    []
+  )
   await login()
   // Get List of projects (to provide options to use)
   const [getErr, projectsList] = await to(new Projects().get())
   if (getErr) {
-    console.log('Error getting projects', getErr)
+    console.log('Error getting projects', getErr) // eslint-disable-line no-console
     throw getErr
   }
   const SELECTED_PROJECT_PROMPT_NAME = 'projectName'
@@ -79,17 +95,19 @@ export async function runCustomAction() {
   // Get environments of selected project
   const [getEnvsErr, environments] = await to(project.getEnvironments())
   if (getEnvsErr) {
-    console.log('Get envs error:', getEnvsErr)
+    console.log('Get envs error:', getEnvsErr) // eslint-disable-line no-console
     throw getEnvsErr
   }
 
   // Ask for environment preferences from Fireadmin project based on template settings
-  const environmentQuestions: any[] = environmentSettings.map((setting: ActionEnvironmentSetting) => ({
-    ...setting,
-    message: `${setting.name} environment`,
-    type: 'list',
-    choices: environments
-  }))
+  const environmentQuestions: any[] = environmentSettings.map(
+    (setting: ActionEnvironmentSetting) => ({
+      ...setting,
+      message: `${setting.name} environment`,
+      type: 'list',
+      choices: environments
+    })
+  )
   const environmentsAnswers = await prompt({}, environmentQuestions)
 
   // Ask for input preferences from Fireadmin project based on template settings
@@ -105,23 +123,18 @@ export async function runCustomAction() {
   const actionSteps: any[] = get(actionSettings, 'steps', [])
   const actionFunctions = actionSteps.map((actionStep: ActionStepSetting) => {
     if (actionStep.type !== 'custom') {
-      console.log('Only custom actions are currently suppported')
+      console.log('Only custom actions are currently suppported') // eslint-disable-line no-console
       return null
     }
     const filePath = `${actionParentPath}/${actionStep.filePath || 'index.js'}`
     if (!existsSync(filePath)) {
-      console.log('File does not exist at provided path')
+      console.log('File does not exist at provided path') // eslint-disable-line no-console
       return null
     }
-    try {
-      // Call action passing environments, inputs, and previous step results
-      return async (previousStep: any) => {
-        const actionContents: any = await requireAsync(filePath)
-        return actionContents(environmentsAnswers, inputsAnswers, previousStep)
-      }
-    } catch(err) {
-      console.log('Error trying to load action:', err)
-      return (previousResults: any) => err
+    // Call action passing environments, inputs, and previous step results
+    return async (previousStep: any) => {
+      const actionContents: any = await requireAsync(filePath)
+      return actionContents(environmentsAnswers, inputsAnswers, previousStep)
     }
   })
   const results = await promiseWaterfall(actionFunctions)

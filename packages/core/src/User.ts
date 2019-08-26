@@ -1,7 +1,7 @@
-import { runValidationForClass } from './utils/validation';
+import { runValidationForClass } from './utils/validation'
 import { USERS_COLLECTION } from './constants/firestorePaths'
-import { GetOptions, throwIfNotFoundInVal, getApp } from './utils/firebase';
-import { UserValue } from './types/User';
+import { GetOptions, throwIfNotFoundInVal, getApp } from './utils/firebase'
+import { UserValue } from './types/User'
 
 /**
  * Fireadmin User
@@ -16,32 +16,38 @@ export default class User implements UserValue {
   constructor(uid: string, userData?: object) {
     this.id = uid
     this.path = `${USERS_COLLECTION}/${uid}`
-    this.ref = getApp().firestore().doc(this.path)
+    this.ref = getApp()
+      .firestore()
+      .doc(this.path)
     this.listen = this.ref.onSnapshot
     if (userData) {
-      Object.assign(this, userData);
+      Object.assign(this, userData)
     }
   }
   /**
    * Validate a User using JSON schema
    */
   public validate(projectData: UserValue) {
-    runValidationForClass(User, projectData);
+    runValidationForClass(User, projectData)
   }
   /**
    * Get a User and throw if is not found
    */
   public async get(options?: GetOptions): Promise<User> {
-    const snap = await this.ref.get();
-    const userVal = throwIfNotFoundInVal(snap, options, `User not found at path: ${this.path}`)
-    return new User(this.id, userVal);
+    const snap = await this.ref.get()
+    const userVal = throwIfNotFoundInVal(
+      snap,
+      options,
+      `User not found at path: ${this.path}`
+    )
+    return new User(this.id, userVal)
   }
 
   /**
    * Update a User (uses JSON schema for validation)
    */
   public update(projectData: UserValue): Promise<any> {
-    this.validate(projectData);
+    this.validate(projectData)
     return this.ref.update(projectData)
   }
 

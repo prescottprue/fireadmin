@@ -1,1 +1,1 @@
-export const DEFAULT_BASE_PATH = process.cwd();
+export const DEFAULT_BASE_PATH = process.cwd()

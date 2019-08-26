@@ -20,17 +20,17 @@
  */
 export function to<T, U = Error>(
   promise: Promise<T>,
-  errorExt?: object,
+  errorExt?: object
 ): Promise<[U | null, T | undefined]> {
   return promise
     .then<[null, T]>((data: T) => [null, data])
     .catch<[U, undefined]>((err: U) => {
       if (errorExt) {
-        Object.assign(err, errorExt);
+        Object.assign(err, errorExt)
       }
 
-      return [err, undefined];
-    });
+      return [err, undefined]
+    })
 }
 
 /**
@@ -42,11 +42,10 @@ export function to<T, U = Error>(
  * @return Resolves when all promises have completed in order
  */
 export function promiseWaterfall(callbacks: any[]): Promise<any[]> {
-  return callbacks.reduce(
-    (accumulator: Promise<any>, callback) => {
-      // Add promise to chain (handling both functions and promises)
-      return accumulator.then(typeof callback === 'function' ? callback : () => callback);
-    },
-    Promise.resolve(),
-  );
+  return callbacks.reduce((accumulator: Promise<any>, callback) => {
+    // Add promise to chain (handling both functions and promises)
+    return accumulator.then(
+      typeof callback === 'function' ? callback : () => callback
+    )
+  }, Promise.resolve())
 }

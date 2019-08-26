@@ -1,8 +1,16 @@
 import * as firebase from 'firebase/app'
-import { runValidationForClass } from './utils/validation';
-import { PROJECTS_COLLECTION, PROJECTS_ENVIRONMENTS_COLLECTION } from './constants/firestorePaths'
-import { GetOptions, throwIfNotFoundInVal, snapToItemsArray, getApp } from './utils/firebase';
-import { ProjectValue } from './types/Project';
+import { runValidationForClass } from './utils/validation'
+import {
+  PROJECTS_COLLECTION,
+  PROJECTS_ENVIRONMENTS_COLLECTION
+} from './constants/firestorePaths'
+import {
+  GetOptions,
+  throwIfNotFoundInVal,
+  snapToItemsArray,
+  getApp
+} from './utils/firebase'
+import { ProjectValue } from './types/Project'
 import ProjectEnvironment from './ProjectEnvironment'
 
 /**
@@ -20,44 +28,63 @@ export default class Project implements ProjectValue {
   constructor(projectId: string, projectData?: ProjectValue) {
     this.id = projectId
     this.path = `${PROJECTS_COLLECTION}/${projectId}`
-    this.ref = getApp().firestore().doc(this.path)
+    this.ref = getApp()
+      .firestore()
+      .doc(this.path)
     this.listen = this.ref.onSnapshot
     if (projectData) {
-      Object.assign(this, projectData);
+      Object.assign(this, projectData)
     }
   }
   /**
    * Validate a Project using JSON schema
    */
   public validate(projectData: ProjectValue) {
-    runValidationForClass(Project, projectData);
+    runValidationForClass(Project, projectData)
   }
   /**
    * Get a Project and throw if is not found
    */
   public async get(options?: GetOptions): Promise<Project> {
-    const snap = await this.ref.get();
-    const projectVal = throwIfNotFoundInVal(snap, options, `Project not found at path: ${this.path}`)
-    return new Project(this.id, projectVal);
+    const snap = await this.ref.get()
+    const projectVal = throwIfNotFoundInVal(
+      snap,
+      options,
+      `Project not found at path: ${this.path}`
+    )
+    return new Project(this.id, projectVal)
   }
 
   /**
    * Get a Project environments
    */
-  public async getEnvironments(options?: GetOptions): Promise<ProjectEnvironment[]> {
-    const snap = await this.ref.collection(PROJECTS_ENVIRONMENTS_COLLECTION).get();
-    return snapToItemsArray(snap, (environmentsSnap: firebase.firestore.DocumentData | undefined) => {
-      if (environmentsSnap) {
-        return !environmentsSnap.id ? environmentsSnap.data() : new ProjectEnvironment(this.id, environmentsSnap.id, environmentsSnap.data())
+  public async getEnvironments(
+    options?: GetOptions
+  ): Promise<ProjectEnvironment[]> {
+    const snap = await this.ref
+      .collection(PROJECTS_ENVIRONMENTS_COLLECTION)
+      .get()
+    return snapToItemsArray(
+      snap,
+      (environmentsSnap: firebase.firestore.DocumentData | undefined) => {
+        if (environmentsSnap) {
+          return !environmentsSnap.id
+            ? environmentsSnap.data()
+            : new ProjectEnvironment(
+                this.id,
+                environmentsSnap.id,
+                environmentsSnap.data()
+              )
+        }
       }
-    });
+    )
   }
 
   /**
    * Update a Project (uses JSON schema for validation)
    */
   public update(projectData: ProjectValue): Promise<any> {
-    this.validate(projectData);
+    this.validate(projectData)
     return this.ref.update(projectData)
   }
 

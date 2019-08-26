@@ -27,6 +27,8 @@ module.exports = {
     ],
     'no-return-await': 2,
     'node/no-deprecated-api': 0,
+    // TODO: Re-enable once issue in typescript-eslint is merged: https://github.com/typescript-eslint/typescript-eslint/pull/688
+    'no-unused-vars': 0,
     'prettier/prettier': [
       'error',
       {

@@ -1,6 +1,6 @@
 import { loginWithApiKey } from '@fireadmin/core'
 import { prompt } from './utils/prompt'
-import { to } from './utils/async';
+import { to } from './utils/async'
 import configstore from './utils/configstore'
 
 const API_KEY_CONFIGSTORE_KEY = 'apiKey'
@@ -17,7 +17,7 @@ async function askForApiKey(): Promise<string> {
     ])
   )
   if (err) {
-    console.log('Error prompting for token', err)
+    console.log('Error prompting for token', err) // eslint-disable-line no-console
     throw err
   }
   const token = optionAnswer[TOKEN_PROMPT_NAME]
@@ -40,7 +40,7 @@ async function askForUid(): Promise<string> {
     ])
   )
   if (err) {
-    console.log('Error prompting for token', err)
+    console.log('Error prompting for token', err) // eslint-disable-line no-console
     throw err
   }
   const token = optionAnswer[TOKEN_PROMPT_NAME]
@@ -65,7 +65,7 @@ export async function login() {
   const uid = await askForUid()
   const [loginErr] = await to(loginWithApiKey(apiKey, uid))
   if (loginErr) {
-    console.log('Error logging in:', loginErr.message)
+    console.log('Error logging in:', loginErr.message) // eslint-disable-line no-console
     throw loginErr
   }
 }

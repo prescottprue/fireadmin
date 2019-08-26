@@ -7,12 +7,12 @@ import { DEFAULT_BASE_PATH } from '../constants/filePaths'
 function getServiceAccountPath(envName = '') {
   const withPrefix = path.join(
     DEFAULT_BASE_PATH,
-    `serviceAccount-${envName}.json`,
-  );
+    `serviceAccount-${envName}.json`
+  )
   if (fs.existsSync(withPrefix)) {
-    return withPrefix;
+    return withPrefix
   }
-  return path.join(DEFAULT_BASE_PATH, 'serviceAccount.json');
+  return path.join(DEFAULT_BASE_PATH, 'serviceAccount.json')
 }
 
 /**
@@ -25,7 +25,7 @@ function getServiceAccountPath(envName = '') {
  */
 export function envVar(varNameRoot: string): any {
   // CI Environment (environment variables loaded directly)
-  return process.env[varNameRoot];
+  return process.env[varNameRoot]
 }
 
 /**
@@ -38,24 +38,28 @@ export function envVar(varNameRoot: string): any {
  * // => 'fireadmin-stage' (parsed value of 'STAGE_FIREBASE_PRIVATE_KEY_ID' environment var)
  */
 function getParsedEnvVar(varNameRoot: string) {
-  const val = envVar(varNameRoot);
+  const val = envVar(varNameRoot)
   if (!val) {
+    /* eslint-disable no-console */
     console.error(
       `"${chalk.cyan(
-        varNameRoot,
-      )}" not found, make sure it is set within environment variables.`,
-    );
+        varNameRoot
+      )}" not found, make sure it is set within environment variables.`
+    )
+    /* eslint-enable no-console */
   }
   try {
     if (typeof val === 'string') {
-      return JSON.parse(val);
+      return JSON.parse(val)
     }
-    return val;
+    return val
   } catch (err) {
-    console.error(`Error parsing env var "${varNameRoot}"`);
-    return val;
+    console.error(`Error parsing env var "${varNameRoot}"`) // eslint-disable-line no-console
+    return val
   }
 }
+
+/* eslint-disable camelcase */
 interface ServiceAccount {
   type: string
   project_id: string
@@ -68,46 +72,56 @@ interface ServiceAccount {
   auth_provider_x509_cert_url: string
   client_x509_cert_url: string
 }
+/* eslint-enable camelcase */
 
 /**
  * Get service account from either local file or environment variables
  * @return {Object} Service account object
  */
-export async function getServiceAccount(envSlug?: string): Promise<ServiceAccount | any> {
-  const serviceAccountPath = getServiceAccountPath(envSlug);
+export async function getServiceAccount(
+  envSlug?: string
+): Promise<ServiceAccount | any> {
+  const serviceAccountPath = getServiceAccountPath(envSlug)
 
   // Check for local service account file (Local dev)
   if (fs.existsSync(serviceAccountPath)) {
-    return readJsonFile(serviceAccountPath); // eslint-disable-line global-require, import/no-dynamic-require
+    return readJsonFile(serviceAccountPath) // eslint-disable-line global-require, import/no-dynamic-require
   }
+  /* eslint-disable no-console */
   console.log(
     `Service account does not exist at path: "${chalk.cyan(
-      serviceAccountPath.replace(`${DEFAULT_BASE_PATH}/`, ''),
-    )}" falling back to environment variables...`,
-  );
+      serviceAccountPath.replace(`${DEFAULT_BASE_PATH}/`, '')
+    )}" falling back to environment variables...`
+  )
+  /* eslint-enable no-console */
 
   // Use SERVICE_ACCOUNT environment variable
-  const serviceAccountEnvVar = envVar('SERVICE_ACCOUNT');
+  const serviceAccountEnvVar = envVar('SERVICE_ACCOUNT')
   if (serviceAccountEnvVar) {
     if (typeof serviceAccountEnvVar === 'string') {
       try {
-        return JSON.parse(serviceAccountEnvVar);
+        return JSON.parse(serviceAccountEnvVar)
       } catch (err) {
+        /* eslint-disable */
         console.warn(
-          'Issue parsing SERVICE_ACCOUNT environment variable from string to object, returning string',
-        );
+          'Issue parsing SERVICE_ACCOUNT environment variable from string to object, returning string'
+        )
+        /* eslint-enable */
       }
     }
-    return serviceAccountEnvVar;
+    return serviceAccountEnvVar
   }
 
   // Fallback to loading from seperate environment variables
-  const clientId = envVar('FIREBASE_CLIENT_ID');
+  const clientId = envVar('FIREBASE_CLIENT_ID')
   if (clientId) {
+    /* eslint-disable */
     console.log(
-      '"FIREBASE_CLIENT_ID" will override FIREBASE_TOKEN for auth when calling firebase-tools - this may cause unexepected behavior',
-    );
+      '"FIREBASE_CLIENT_ID" will override FIREBASE_TOKEN for auth when calling firebase-tools - this may cause unexepected behavior'
+    )
+    /* eslint-enable */
   }
+  /* eslint-disable camelcase */
   return {
     type: 'service_account',
     project_id: envVar('FIREBASE_PROJECT_ID'),
@@ -118,6 +132,7 @@ export async function getServiceAccount(envSlug?: string): Promise<ServiceAccoun
     auth_uri: 'https://accounts.google.com/o/oauth2/auth',
     token_uri: 'https://accounts.google.com/o/oauth2/token',
     auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
-    client_x509_cert_url: envVar('FIREBASE_CERT_URL'),
-  };
+    client_x509_cert_url: envVar('FIREBASE_CERT_URL')
+  }
+  /* eslint-enable camelcase */
 }

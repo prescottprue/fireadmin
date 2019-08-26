@@ -1,5 +1,5 @@
-import RTDBItem from './connectors/RTDBItem';
-import { DISPLAY_NAMES_PATH } from './constants/firebasePaths';
+import RTDBItem from './connectors/RTDBItem'
+import { DISPLAY_NAMES_PATH } from './constants/firebasePaths'
 
 export default class DisplayNames extends RTDBItem {
   constructor() {
