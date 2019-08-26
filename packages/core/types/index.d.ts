@@ -1,0 +1,11 @@
+import { FireadminConfig } from './types/index';
+import { loginWithApiKey } from './auth';
+import Project from './Project';
+import Projects from './Projects';
+import ActionTemplates from './ActionTemplates';
+import ActionTemplate from './ActionTemplate';
+import Users from './Users';
+import User from './User';
+export declare function initialize(fireadminConfig: FireadminConfig): void;
+export { Projects, Project, Users, User, ActionTemplates, ActionTemplate, loginWithApiKey };
+export default initialize;

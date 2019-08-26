@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ActionValue",
+  "type": "object",
+  "properties": {
+    "createdAt": {
+      "type": "number"
+    },
+    "createdBy": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    }
+  }
+}

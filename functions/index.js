@@ -2,6 +2,8 @@ const glob = require('glob')
 const path = require('path')
 const admin = require('firebase-admin')
 const functions = require('firebase-functions')
+const initializeFireadminLib = require('@fireadmin/core').initialize
+const getEnvConfig = require('./dist/utils/firebaseFunctions').getEnvConfig
 
 // Initialize Firebase so it is available within functions
 try {
@@ -12,6 +14,20 @@ try {
     'Caught error initializing app with functions.config():',
     e.message || e
   )
+}
+try {
+  const serviceAccount = getEnvConfig('service_account')
+  const fireadminApp = admin.initializeApp(
+    {
+      credential: admin.credential.cert(serviceAccount),
+      databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
+    },
+    'withServiceAccount'
+  )
+  initializeFireadminLib(fireadminApp)
+} catch (e) {
+  /* istanbul ignore next: not called in tests */
+  console.error('Caught error initializing fireadmin lib:', e.message || e)
 }
 
 const codeFolder = process.env.NODE_ENV === 'test' ? './src' : './dist'

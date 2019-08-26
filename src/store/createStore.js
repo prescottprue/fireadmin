@@ -8,7 +8,9 @@ import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/database'
 import 'firebase/storage'
+import 'firebase/functions'
 import { persistStore, persistReducer } from 'redux-persist'
+import initialize from '@fireadmin/core/lib'
 // import logger from 'redux-logger'
 import makeRootReducer from './reducers'
 import { updateLocation } from './location'
@@ -76,6 +78,9 @@ export default (initialState = {}) => {
   if (!window.fbInstance) {
     firebase.initializeApp(fbConfig)
   }
+
+  // TODO: Pass in environment
+  initialize()
 
   // ======================================================
   // Store Instantiation and HMR Setup

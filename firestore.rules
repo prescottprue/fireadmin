@@ -11,6 +11,9 @@ service cloud.firestore {
     }
     match /users/{userId} {
       allow read, write: if request.auth.uid == userId;
+      match /{allChildren=**} {
+        allow read, write: if request.auth.uid == userId;
+      }
     }
     match /users_public/{userId} {
       allow read;

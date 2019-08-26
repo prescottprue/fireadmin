@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+'use strict'
+
+const program = require('commander')
+
+const pkg = require('../package.json')
+program.version(pkg.version)
+
+require('../cmds')(program)
+
+program.on('*', function(name) {
+  /* eslint-disable no-console */
+  console.log(
+    "'" + name + "' is not a known command. See 'firebase-ci --help':"
+  )
+  /* eslint-enable no-console */
+  program.outputHelp()
+  process.exit(1)
+})
+
+program.parse(process.argv)
+
+if (program.args.length < 1) {
+  console.log("No command specified. See 'firebase-ci --help':") // eslint-disable-line no-console
+  program.outputHelp()
+  process.exit(1)
+}

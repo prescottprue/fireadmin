@@ -3,8 +3,8 @@ import { to, promiseWaterfall } from '../utils/async'
 
 /**
  * Check if a slash path is a doc path
- * @param  {String} slashPath - Path to convert into firestore refernce
- * @returns {Boolean}
+ * @param  {string} slashPath - Path to convert into firestore refernce
+ * @returns {boolean}
  * @example Basic
  * isDocPath('projects') // => false
  * isDocPath('projects/asdf') // => true
@@ -15,10 +15,10 @@ export function isDocPath(slashPath) {
 
 /**
  * Convert slash path to Firestore reference
- * @param  {firestore.Firestore} firestoreInstance - Instance on which to
+ * @param  {admin.firestore.Firestore} firestoreInstance - Instance on which to
  * create ref
- * @param  {String} slashPath - Path to convert into firestore refernce
- * @return {firestore.CollectionReference|firestore.DocumentReference}
+ * @param  {string} slashPath - Path to convert into firestore refernce
+ * @returns {admin.firestore.CollectionReference|admin.firestore.DocumentReference}
  * @example Subcollection
  * const subCollectRef = slashPathToFirestoreRef(admin.firestore(), 'projects/some/events')
  * subCollectRef.add({}) // add some doc to the subcollection
@@ -41,17 +41,17 @@ export function slashPathToFirestoreRef(firestoreInstance, slashPath) {
 
 /**
  * Create data object with values for each document with keys being doc.id.
- * @param  {firebase.database.DataSnapshot} snapshot - Data for which to create
+ * @param  {firebase.database.DataSnapshot} snap - Data for which to create
  * an ordered array.
- * @return {Object|Null} Object documents from snapshot or null
+ * @returns {object|null} Object documents from snapshot or null
  */
 export function dataArrayFromSnap(snap) {
   const data = []
   if (snap.data && snap.exists) {
-    data.push({ id: snap.id, data: snap.data() })
+    data.push({ id: snap.id, data: snap.data(), ref: snap.ref })
   } else if (snap.forEach) {
     snap.forEach(doc => {
-      data.push({ id: doc.id, data: doc.data() || doc })
+      data.push({ id: doc.id, data: doc.data() || doc, ref: doc.ref })
     })
   }
   return data
@@ -59,9 +59,9 @@ export function dataArrayFromSnap(snap) {
 
 /**
  * Create data object with values for each document with keys being doc.id.
- * @param  {firebase.database.DataSnapshot} snapshot - Data for which to create
+ * @param  {firebase.database.DataSnapshot} snap - Data for which to create
  * an ordered array.
- * @return {Object|Null} Object documents from snapshot or null
+ * @returns {object|null} Object documents from snapshot or null
  */
 export function dataByIdSnapshot(snap) {
   const data = {}
@@ -77,13 +77,13 @@ export function dataByIdSnapshot(snap) {
 
 /**
  * Write document updates in a batch process.
- * @param  {firestore.Firestore} firestoreInstance - Instance on which to
+ * @param {admin.firestore.Firestore} firestoreInstance - Instance on which to
  * create ref
- * @param  {String} destPath - Destination path under which data should be
+ * @param {string} destPath - Destination path under which data should be
  * written
- * @param  {Array} docData - List of docs to be written
- * @param  {Object} opts - Options object (can contain merge)
- * @return {Promise} Resolves with results of batch commit
+ * @param {Array} docData - List of docs to be written
+ * @param {object} opts - Options object (can contain merge)
+ * @returns {Promise} Resolves with results of batch commit
  */
 export async function batchWriteDocs(
   firestoreInstance,
@@ -117,13 +117,13 @@ const MAX_DOCS_PER_BATCH = 500
 /**
  * Write documents to Firestore in batches. If there are more docs than
  * the max docs per batch count, multiple batches will be run in succession.
- * @param  {firestore.Firestore} firestoreInstance - Instance on which to
+ * @param {admin.firestore.Firestore} firestoreInstance - Instance on which to
  * create ref
- * @param  {String} destPath - Destination path under which data should be
+ * @param {string} destPath - Destination path under which data should be
  * written
- * @param  {Array} docData - List of docs to be written
- * @param  {Object} opts - Options object (can contain merge)
- * @return {Promise} Resolves with results of batch commit
+ * @param {Array} docData - List of docs to be written
+ * @param {object} opts - Options object (can contain merge)
+ * @returns {Promise} Resolves with results of batch commit
  */
 export async function writeDocsInBatches(
   firestoreInstance,
@@ -165,14 +165,14 @@ export async function writeDocsInBatches(
 
 /**
  * Map each document in a Firestore collection.
- * @param  {Object} firestoreInstance - Instance of firestore from which to
+ * @param  {object} firestoreInstance - Instance of firestore from which to
  * get data
- * @param  {String} collectionName - Name of collection
+ * @param  {string} collectionName - Name of collection
  * @param  {Function} mapFunc - Function to map each document with
- * @param  {Object} [opts={}] - Options for mapping
- * @param  {Boolean} opts.onlyFirst - Flag to only run mapping function on first
+ * @param  {object} [opts={}] - Options for mapping
+ * @param  {boolean} opts.onlyFirst - Flag to only run mapping function on first
  * item within collection (useful for testing)
- * @return {Promise} Resolves with the number of updates which where done
+ * @returns {Promise} Resolves with the number of updates which where done
  * @example Basic
  * function createAddAuthorMapper({ usersById }) {
  *   return function addAuthor({ id, data }) {

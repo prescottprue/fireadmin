@@ -1,0 +1,12 @@
+export const DISPLAY_NAMES_PATH = 'displayNames'
+export const USERS_PATH = 'users'
+export const SESSIONS_PATH = 'sessions'
+export const PROJECTS_PATH = 'projects'
+export const SEARCH_PATH = 'search'
+export const SERVICE_ACCOUNTS_PATH = 'serviceAccounts'
+export const PRESENCE_PATH = 'presence'
+export const VERSION_INFO_PATH = 'versionInfo'
+export const ACTION_RUNNER_EVENT_PATH = 'actionRunner'
+export const CUSTOM_STEPS_PATH = 'actionTemplates/customSteps'
+export const ACTION_RUNNER_REQUESTS_PATH = `requests/${ACTION_RUNNER_EVENT_PATH}`
+export const ACTION_RUNNER_RESPONSES_PATH = `responses/${ACTION_RUNNER_EVENT_PATH}`

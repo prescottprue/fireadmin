@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "UserValue",
+  "type": "object",
+  "properties": {
+    "avatarUrl": {
+      "type": "string"
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "providerData": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "photoURL": {
+            "type": "string"
+          },
+          "providerId": {
+            "type": "string"
+          },
+          "uid": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

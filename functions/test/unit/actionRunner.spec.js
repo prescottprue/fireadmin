@@ -592,6 +592,9 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function() {
   })
 
   describe('Action template with type "copy"', () => {
+    /**
+     *
+     */
     function createValidActionRunnerStubs(opts) {
       const {
         projectId = 'asdfasdf1',

@@ -14,7 +14,7 @@ import { rtdbRef } from '../utils/rtdb'
  * supported (i.e. stored on Firestore or cloud storage)
  * @param  {functions.database.DataSnapshot} snap - Data snapshot from cloud function
  * @param  {functions.EventContext} context - The context in which an event occurred
- * @param  {Object} context.params - Parameters from event
+ * @param  {object} context.params - Parameters from event
  */
 export default async function runAction(snap, context) {
   const eventData = snap.val() || {}
@@ -117,6 +117,9 @@ export default async function runAction(snap, context) {
   return null
 }
 
+/**
+ *
+ */
 function sendFcmMessageToUser({ message, userId }) {
   return rtdbRef('requests/sendFcm').push({
     userId,

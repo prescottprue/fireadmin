@@ -15,4 +15,5 @@ docs/content/**
 docs/static/**
 cypress/screenshots/**
 cypress/videos/**
+packages/**
 .nyc_output/**

@@ -9,7 +9,6 @@ import classes from './AccountForm.scss'
 function AccountForm({ account, handleSubmit, submitting, pristine }) {
   return (
     <form className={classes.container} onSubmit={handleSubmit}>
-      <h4>Account</h4>
       <div className={classes.fields}>
         <Field
           fullWidth
