@@ -8,7 +8,7 @@ import { STAGE_FB_CONFIG } from './../constants/fbConfigs'
 let firebaseApp: firebase.app.App
 
 /**
- * @description Initialize firebase application
+ * Initialize firebase application
  */
 export function initializeFirebase(fbConfig?: any): firebase.app.App {
   if (firebaseApp) {
@@ -17,10 +17,10 @@ export function initializeFirebase(fbConfig?: any): firebase.app.App {
   if (fbConfig && fbConfig.INTERNAL) {
     firebaseApp = fbConfig
   } else if (fbConfig && fbConfig.credential) {
-    firebaseApp = firebase.initializeApp(fbConfig, 'fireadmin')
+    firebaseApp = firebase.initializeApp(fbConfig)
   } else {
     try {
-      firebaseApp = firebase.initializeApp(fbConfig || STAGE_FB_CONFIG, 'fireadmin')
+      firebaseApp = firebase.initializeApp(fbConfig || STAGE_FB_CONFIG)
     } catch (err) {
       console.warn('You only need to initialize Firebase once', JSON.stringify(err))
     }

@@ -1,4 +1,4 @@
-FROM cypress/base:8
+FROM cypress/base:10
 
 ## Build Arguments
 # URL which Cypress will run tests against (with default)
