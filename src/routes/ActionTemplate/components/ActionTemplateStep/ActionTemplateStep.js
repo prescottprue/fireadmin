@@ -26,133 +26,151 @@ const typeOptions = [
   { value: 'copy' },
   { value: 'map', disabled: true },
   { value: 'delete', disabled: true },
-  { value: 'custom' }
+  { value: 'custom', disabled: true }
 ]
 
-export const ActionTemplateStep = ({
+function ActionTemplateStep({
   fields,
   mainEditorPath,
   steps,
   addStepClick,
   inputs
-}) => (
-  <div>
-    <Button
-      onClick={addStepClick}
-      color="primary"
-      variant="contained"
-      className={classes.addAction}>
-      Add Step
-    </Button>
-    {fields.map((member, index, field) => (
-      <ExpansionPanel key={index}>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.title}>
-            {fields.get(index).name || fields.get(index).type}
-          </Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <Grid container spacing={24} style={{ flexGrow: 1 }}>
-            <Grid item xs={12} lg={12}>
-              <Tooltip title="Remove Step">
-                <IconButton
-                  onClick={() => fields.remove(index)}
-                  color="secondary"
-                  className={classes.submit}>
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
-            </Grid>
-            <Grid item xs={12} lg={12}>
-              <Field
-                name={`${member}.name`}
-                component={TextField}
-                label="Name"
-                className={classes.field}
-              />
-              <Field
-                name={`${member}.description`}
-                component={TextField}
-                label="Description"
-                className={classes.field}
-              />
-              <FormControl
-                className={classes.field}
-                style={{ marginTop: '2rem' }}>
-                <InputLabel htmlFor="actionType">Action Type</InputLabel>
-                <Field
-                  name={`${member}.type`}
-                  component={Select}
-                  fullWidth
-                  inputProps={{
-                    name: 'actionType',
-                    id: 'actionType'
-                  }}>
-                  {typeOptions.map((option, idx) => (
-                    <MenuItem
-                      key={`Option-${option.value}-${idx}`}
-                      value={option.value}
-                      disabled={option.disabled}>
-                      <ListItemText
-                        primary={option.label || capitalize(option.value)}
-                      />
-                    </MenuItem>
-                  ))}
-                </Field>
-              </FormControl>
-              {get(steps, `${index}.type`) === 'copy' ? (
-                <div className="flex-column">
-                  <FormControlLabel
-                    control={
-                      <Field
-                        name="subcollections"
-                        disabled={
-                          get(steps, `${index}.src.resource`) !== 'firestore'
-                        }
-                        component={Checkbox}
-                      />
-                    }
-                    label="Include subcollections (only Firestore)"
-                    className={classes.subcollectionOption}
-                  />
-                  <Typography style={{ marginTop: '1rem' }}>
-                    <strong>Note:</strong>
-                    <br />
-                    All collections will by copied by default. Specific
-                    subcollection support coming soon.
-                  </Typography>
-                </div>
-              ) : null}
-            </Grid>
-            {get(steps, `${index}.type`) !== 'custom' ? (
-              <Grid
-                item
-                xs={12}
-                lg={12}
-                container
-                spacing={24}
-                style={{ flexGrow: 1 }}
-                justify="center">
-                <ActionStepLocation
-                  title="Source"
-                  name={`${member}.src`}
-                  indexName={`${index}.src`}
-                />
-                <ActionStepLocation
-                  title="Destination"
-                  name={`${member}.dest`}
-                  indexName={`${index}.dest`}
-                />
+}) {
+  return (
+    <div>
+      <Button
+        onClick={addStepClick}
+        color="primary"
+        variant="contained"
+        className={classes.addAction}>
+        Add Step
+      </Button>
+      {fields.map((member, index, field) => (
+        <ExpansionPanel key={index}>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography className={classes.title}>
+              {fields.get(index).name || fields.get(index).type}
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Grid container spacing={24} style={{ flexGrow: 1 }}>
+              <Grid item xs={12} lg={12}>
+                <Tooltip title="Remove Step">
+                  <IconButton
+                    onClick={() => fields.remove(index)}
+                    color="secondary"
+                    className={classes.submit}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
               </Grid>
-            ) : (
-              <ActionEditor rtdbPath={`${mainEditorPath}/steps/${index}`} />
-            )}
-          </Grid>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    ))}
-  </div>
-)
+              <Grid item xs={12} lg={12}>
+                <Field
+                  name={`${member}.name`}
+                  component={TextField}
+                  label="Name"
+                  className={classes.field}
+                />
+                <Field
+                  name={`${member}.description`}
+                  component={TextField}
+                  label="Description"
+                  className={classes.field}
+                />
+                <FormControl
+                  className={classes.field}
+                  style={{ marginTop: '2rem' }}>
+                  <InputLabel htmlFor="actionType">Action Type</InputLabel>
+                  <Field
+                    name={`${member}.type`}
+                    component={Select}
+                    fullWidth
+                    inputProps={{
+                      name: 'actionType',
+                      id: 'actionType'
+                    }}>
+                    {typeOptions.map((option, idx) => (
+                      <MenuItem
+                        key={`Option-${option.value}-${idx}`}
+                        value={option.value}
+                        disabled={option.disabled}>
+                        <ListItemText
+                          primary={option.label || capitalize(option.value)}
+                        />
+                      </MenuItem>
+                    ))}
+                  </Field>
+                </FormControl>
+                {get(steps, `${index}.type`) === 'copy' ? (
+                  <div className="flex-column">
+                    <FormControlLabel
+                      control={
+                        <Field
+                          name={`steps.${index}.disableBatching`}
+                          disabled={
+                            get(steps, `${index}.src.resource`) !== 'rtdb'
+                          }
+                          component={Checkbox}
+                        />
+                      }
+                      label="Disable Batching (only RTDB)"
+                      className={classes.subcollectionOption}
+                    />
+                  </div>
+                ) : null}
+                {get(steps, `${index}.type`) === 'copy' ? (
+                  <div className="flex-column">
+                    <FormControlLabel
+                      control={
+                        <Field
+                          name="subcollections"
+                          disabled={
+                            get(steps, `${index}.src.resource`) !== 'firestore'
+                          }
+                          component={Checkbox}
+                        />
+                      }
+                      label="Include subcollections (only Firestore)"
+                      className={classes.subcollectionOption}
+                    />
+                    <Typography style={{ marginTop: '1rem' }}>
+                      <strong>Note:</strong>
+                      <br />
+                      All collections will by copied by default. Specific
+                      subcollection support coming soon.
+                    </Typography>
+                  </div>
+                ) : null}
+              </Grid>
+              {get(steps, `${index}.type`) !== 'custom' ? (
+                <Grid item xs={12} lg={12}>
+                  <Grid
+                    container
+                    spacing={24}
+                    style={{ flexGrow: 1 }}
+                    justify="center">
+                    <ActionStepLocation
+                      title="Source"
+                      name={`${member}.src`}
+                      indexName={`${index}.src`}
+                    />
+                    <ActionStepLocation
+                      title="Destination"
+                      name={`${member}.dest`}
+                      indexName={`${index}.dest`}
+                    />
+                  </Grid>
+                </Grid>
+              ) : (
+                <ActionEditor rtdbPath={`${mainEditorPath}/steps/${index}`} />
+              )}
+            </Grid>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      ))}
+    </div>
+  )
+}
 
 ActionTemplateStep.propTypes = {
   fields: PropTypes.object.isRequired,

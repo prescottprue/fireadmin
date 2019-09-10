@@ -1,6 +1,6 @@
 const ip = require('ip')
 const NODE_ENV = process.env.NODE_ENV || 'development'
-const PORT = 3000
+const PORT = process.env.npm_package_config_port
 
 module.exports = {
   /** The environment to use when building the project */
@@ -32,8 +32,17 @@ module.exports = {
     'react-dom',
     'redux',
     'react-redux',
-    'redux-thunk',
-    'react-router',
-    'react-redux-firebase'
+    '@material-ui/core',
+    'redux-form',
+    'redux-form-material-ui',
+    'react-instantsearch/dom',
+    'react-instantsearch/connectors',
+    'algoliasearch',
+    'algoliasearch-helper',
+    'react-redux-firebase/lib/helpers',
+    'react-redux-firebase/lib/firebaseConnect',
+    'react-redux-firebase/lib/firestoreConnect',
+    'react-redux-firebase/lib/withFirestore',
+    'react-redux-firebase/lib/withFirebase'
   ]
 }

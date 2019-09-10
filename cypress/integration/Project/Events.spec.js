@@ -1,4 +1,4 @@
-import { createSelector, firestoreTimestampFromDate } from '../../utils'
+import { createSelector } from '../../utils'
 import fakeProject from '../../fixtures/fakeProject.json'
 
 describe('Project - Events Page', () => {
@@ -31,38 +31,40 @@ describe('Project - Events Page', () => {
 
     describe('when there are events', () => {
       // Setup before tests including creating a server to listen for external requests
-      const mostRecentDate = '1/15/2019'
+      const mostRecentDate = '10/15/19'
       before(() => {
         // Add fake events
         const event1 = {
-          createdAt: firestoreTimestampFromDate(new Date('1/1/2018'))
+          createdAt: new Date('01/01/18').toISOString()
         }
         const event2 = {
-          createdAt: firestoreTimestampFromDate(new Date('4/4/2018'))
+          createdAt: new Date('04/04/18').toISOString()
         }
         const event3 = {
-          createdAt: firestoreTimestampFromDate(new Date(mostRecentDate))
+          createdAt: new Date(mostRecentDate).toISOString()
         }
         cy.addProjectEvent('test-project', 'event1', event1)
         cy.addProjectEvent('test-project', 'event2', event2)
         cy.addProjectEvent('test-project', 'event3', event3)
       })
 
-      it('displays a sorted (most recent first) list of all events', () => {
+      it('displays a list of all events', () => {
         cy.get(createSelector('project-events')).should('exist')
-        cy.get(createSelector('event-row')).first()
       })
 
-      it('seperates events into groups by date', () => {
+      it('seperates events into groups by date (most recent first)', () => {
         cy.get(createSelector('event-date-divider')).should('exist')
-        cy.get(createSelector('event-date-divider-value')).should(
-          'equal',
-          mostRecentDate
-        )
+        cy.get(createSelector('event-date-divider-value'))
+          .first()
+          .invoke('text')
+          .should('equal', mostRecentDate)
       })
 
       it('formats event createdAt time into a human readable time', () => {
-        cy.get(createSelector('event-createdAt')).should('exist')
+        cy.get(createSelector('event-createdAt'))
+          .first()
+          .invoke('text')
+          .should('equal', '12:00:00.000 AM') // Since date is provided to Date object
       })
     })
   })

@@ -1,7 +1,8 @@
 import { applyMiddleware, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
-import { reactReduxFirebase, getFirebase } from 'react-redux-firebase'
-import { reduxFirestore } from 'redux-firestore'
+import { browserHistory } from 'react-router'
+import reactReduxFirebase from 'react-redux-firebase/lib/enhancer'
+import reduxFirestore from 'redux-firestore/lib/enhancer'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
@@ -28,7 +29,7 @@ export default (initialState = {}) => {
   // Middleware Configuration
   // ======================================================
   const middleware = [
-    thunk.withExtraArgument(getFirebase)
+    thunk.withExtraArgument({})
     // This is where you add other middleware like redux-observable
   ]
 

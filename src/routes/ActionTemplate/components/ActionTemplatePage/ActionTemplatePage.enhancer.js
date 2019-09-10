@@ -2,8 +2,8 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
-import { withHandlers, withStateHandlers, withProps, setPropTypes } from 'recompose'
-import { firestoreConnect } from 'react-redux-firebase'
+import { withHandlers, withStateHandlers, withProps } from 'recompose'
+import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import { withNotifications } from 'modules/notification'
 import {
   spinnerWhileLoading,

@@ -27,7 +27,7 @@ function EventsTable({ groupedEvents, classes }) {
               className={classes.tableRowDivider}
               data-test="event-date-divider">
               <TableCell data-test="event-date-divider-value">
-                <span>{groupName}</span>
+                {groupName}
               </TableCell>
               <TableCell />
               <TableCell />
@@ -45,8 +45,8 @@ function EventsTable({ groupedEvents, classes }) {
                 </TableCell>
                 <TableCell>
                   <span>
-                    {projectEvent.createdBy ||
-                      startCase(projectEvent.createdByType)}
+                    {get(projectEvent, 'createdBy') ||
+                      startCase(get(projectEvent, 'createdByType'))}
                   </span>
                 </TableCell>
               </TableRow>

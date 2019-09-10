@@ -26,7 +26,7 @@ export default compose(
     return {
       editable: isOwner || isCollaborator,
       initialValues: template || {
-        environments: [{ type: 'serviceAccount' }]
+        environments: [{ required: false }]
       }
     }
   }),

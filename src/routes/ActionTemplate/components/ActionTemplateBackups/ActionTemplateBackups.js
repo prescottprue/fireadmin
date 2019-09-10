@@ -42,7 +42,7 @@ export const ActionTemplateBackups = ({ fields, steps }) => (
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Grid constainer spacing={24} style={{ flexGrow: 1 }}>
+          <Grid container spacing={24} style={{ flexGrow: 1 }}>
             <Grid item xs={12} lg={6}>
               <Field
                 name={`${member}.name`}

@@ -3,7 +3,10 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin
 const project = require('../project.config')
+// const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 
 const inProject = path.resolve.bind(path, project.basePath)
 const inProjectSrc = file => inProject(project.srcDir, file)
@@ -49,6 +52,16 @@ const config = {
         project.globals
       )
     )
+    // new LodashModuleReplacementPlugin({
+    //   shorthands: true,
+    //   cloning: true,
+    //   caching: true,
+    //   deburring: true,
+    //   coercions: true,
+    //   flattening: true,
+    //   paths: true,
+    //   placeholders: true
+    // }) // eslint-disable-line
   ],
   node: {
     // disable node constants so constants.js file is used instead (see https://webpack.js.org/configuration/node/)
@@ -280,6 +293,10 @@ if (__PROD__) {
       }
     })
   )
+}
+
+if (process.env.SIZE) {
+  config.plugins.push(new BundleAnalyzerPlugin())
 }
 
 module.exports = config

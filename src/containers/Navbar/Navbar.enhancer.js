@@ -7,10 +7,10 @@ import {
   withStateHandlers,
   setDisplayName
 } from 'recompose'
-import { withStyles } from '@material-ui/core/styles'
-import { withRouter } from 'react-router-dom'
-import { withFirebase, isEmpty, isLoaded } from 'react-redux-firebase'
-import { ACCOUNT_PATH } from 'constants/paths'
+import withFirebase from 'react-redux-firebase/lib/withFirebase'
+import { isEmpty, isLoaded } from 'react-redux-firebase/lib/helpers'
+import { ACCOUNT_PATH } from 'constants'
+import { withRouter, spinnerWhileLoading } from 'utils/components'
 import styles from './Navbar.styles'
 
 export default compose(

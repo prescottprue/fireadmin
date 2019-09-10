@@ -11,5 +11,7 @@ functions/mochawesome-report/**
 docs/.cache/**
 docs/public/**
 docs/content/**
+docs/static/**
 cypress/screenshots/**
 cypress/videos/**
+.nyc_output/**

@@ -11,21 +11,23 @@ stages:
 ## happens in build stage)
 cache:
   policy: pull # only pull cache, skip uploading
-  key: ${CI_COMMIT_REF_SLUG}
-  # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
+  key: $CI_COMMIT_REF_SLUG
   paths:
     - .yarn
-    - node_modules
+    - $CYPRESS_CACHE_FOLDER
 
-    # Script run before all stages unless otherwise overriden
+# Script run before all stages unless otherwise overriden
 before_script:
   - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
+
+variables:
+  CYPRESS_CACHE_FOLDER: $CI_PROJECT_DIR/cache/Cypress
 
 # Unit Testing Stage
 # Run unit tests for Cloud Functions
 Functions Unit Tests:
   stage: unit_tests
-  image: node:8
+  image: node:10
   only:
     changes:
       - functions/**/* # Run only when functions are changed
@@ -37,31 +39,30 @@ Functions Unit Tests:
       - $CI_COMMIT_MESSAGE =~ /skip-tests/
       - $CI_COMMIT_MESSAGE =~ /skip-unit-tests/
   artifacts:
-    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
     expire_in: 2 weeks
     paths:
       - functions/coverage # Test coverage report
   # Override cache behavior set above since we want to both pull and push to
   # the cache (no "policy" provided since pull-push is default)
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
+    key: $CI_COMMIT_REF_SLUG
     paths:
       - .yarn
-      - node_modules
-      - functions/node_modules
   before_script:
     - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
     - yarn --cwd functions install --frozen-lockfile --cache-folder .yarn # Install functions dependencies
   script:
-    - yarn lint:functions
-    - yarn --cwd functions test:cov
+    - yarn lint:functions # Check for lint within functions
+    - yarn --cwd functions test:cov # Run unit tests with coverage
+    - yarn --cwd functions build # Build to confirm no build errors
 
 # ---------------------------- Docs -------------------------- #
 # Build Docs
 ## Installs dependencies, builds app, and saves results for later (artifacts)
 Build Docs:
   stage: build
-  image: node:8
+  image: node:10
   only:
     changes:
       - docs/**/* # Run only when docs are changed
@@ -71,6 +72,7 @@ Build Docs:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-build/
       - $CI_COMMIT_MESSAGE =~ /skip-docs-build/
+      - $CI_COMMIT_MESSAGE =~ /skip-docs-deploy/
   artifacts:
     name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
     expire_in: 2 weeks
@@ -78,11 +80,9 @@ Build Docs:
     paths:
       - docs/public
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
+    key: $CI_COMMIT_REF_SLUG
     paths:
       - .yarn
-      - node_modules
-      - docs/node_modules
   before_script:
     - CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --cache-folder .yarn # Install dependencies skipping Cypress
     - yarn --cwd docs install --frozen-lockfile --cache-folder .yarn # Install docs dependencies
@@ -94,16 +94,19 @@ Build Docs:
 ## Deploy Docs to Firebase Hosting
 Deploy Docs Staging:
   stage: deploy_staging
-  image: node:8
+  image: node:10
   when: on_success
   only:
-    - master
+    refs:
+      - master
+    changes:
+      - docs/**/* # Run only when docs are changed
+      - firebase.json
+      - .gitlab-ci.yml
   except:
     variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-deploy/
+      - $CI_COMMIT_MESSAGE =~ /skip-docs-build/
       - $CI_COMMIT_MESSAGE =~ /skip-docs-deploy/
-  variables:
-    FIREBASE_CI_PROJECT: stage-docs # deploy using stage-docs project in .firebaserc
   environment:
     name: docs-staging
     url: https://fireadmin-stage-docs.firebaseapp.com
@@ -116,20 +119,26 @@ Deploy Docs Staging:
   dependencies:
     - Build Docs # Require artifacts from build stage
   script:
-    - yarn deploy:docs  # Deploy docs React App (Firebase Hosting)
+    - yarn deploy --only hosting:stageDocs  # Deploy docs React App (Firebase Hosting)
 
 Deploy Docs Production:
   stage: deploy_production
-  image: node:8
+  image: node:10
   when: manual # Only allow run through button on Gitlab site
   only:
-    - master
+    refs:
+      - master
+    changes:
+      - docs/**/* # Run only when docs are changed
+      - firebase.json
+      - .gitlab-ci.yml
   except:
     variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-deploy/
+      - $CI_COMMIT_MESSAGE =~ /skip-docs/
+      - $CI_COMMIT_MESSAGE =~ /skip-docs-build/
       - $CI_COMMIT_MESSAGE =~ /skip-docs-deploy/
   variables:
-    FIREBASE_CI_PROJECT: docs # deploy using stage-docs project in .firebaserc
+    FIREBASE_CI_PROJECT: prod # deploy using stage-docs project in .firebaserc
   environment:
     name: docs-production
     url: https://fireadmin-docs.firebaseapp.com
@@ -142,46 +151,7 @@ Deploy Docs Production:
   dependencies:
     - Build Docs # Require artifacts from build stage
   script:
-    - yarn deploy:docs  # Deploy docs React App (Firebase Hosting)
-
-# Lint + Unit Test Cloud Functions - Staging
-# Run unit tests for Cloud Functions
-Build Functions:
-  stage: build
-  image: node:8
-  only:
-    changes:
-      - functions/**/* # Run only when functions are changed
-      - firebase.json
-      - .gitlab-ci.yml
-  allow_failure: true
-  except:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-tests/
-      - $CI_COMMIT_MESSAGE =~ /skip-unit-tests/
-      - $CI_COMMIT_MESSAGE =~ /skip-functions-tests/
-  artifacts:
-    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
-    expire_in: 2 weeks
-    when: always
-    paths:
-      - functions/coverage # Test coverage report
-      - functions/dist
-  # Override cache behavior set above since we want to both pull from and push to
-  # the cache (no "policy" provided since pull-push is default)
-  cache:
-    untracked: true
-    key: ${CI_COMMIT_REF_SLUG}
-    # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
-    paths:
-      - .yarn
-      - node_modules
-      - functions/node_modules
-  before_script:
-    - yarn --cwd functions install --frozen-lockfile --cache-folder functions/.yarn
-  script:
-    - yarn --cwd functions test:cov
-    - yarn --cwd functions build
+    - yarn deploy --only hosting:docs # Deploy docs React App (Firebase Hosting)
 
 # ---------------------------- React App -------------------------- #
 # Build Staging App
@@ -194,7 +164,7 @@ Build Functions:
 # 5. Preserve build results and dependencies for future jobs in the pipeline
 Build Staging:
   stage: build
-  image: node:8
+  image: node:10
   only:
     changes:
       - src/**/* # Run only when app is changed
@@ -206,15 +176,16 @@ Build Staging:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-build/
   artifacts:
-    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
     expire_in: 2 weeks
     when: always
     paths:
       - dist
   script:
     - yarn build:config # create env specific src/config.js
-    - yarn lint:app
-    - yarn build
+    - yarn lint:app # confirm there is no lint in app code
+    - yarn build # build app bundles
+    - yarn size # confirm that bundles have not grown too much
 
 ## React Components Unit + Snapshot Tests (Jest)
 Component Tests:
@@ -242,20 +213,20 @@ Component Tests:
 ## Deploy React App and Firebase Functions
 Deploy Staging:
   stage: deploy_staging
-  image: node:8
+  image: node:10
   environment:
     name: staging
     url: https://fireadmin-stage.firebaseapp.com
   when: on_success
   only:
     - master
-    - web
   except:
     variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-build/ # no build to deploy if it was skipped
       - $CI_COMMIT_MESSAGE =~ /skip-deploy/
       - $CI_COMMIT_MESSAGE =~ /skip-stage-deploy/
   artifacts:
-    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
     expire_in: 1 weeks
     when: on_failure
     paths:
@@ -263,14 +234,14 @@ Deploy Staging:
   dependencies:
     - Build Staging # Require artifacts from build stage
   script:
-    - yarn deploy  # Deploy docs React App (Firebase Hosting)
+    - yarn deploy --only hosting:stageApp,functions,storage,database,firestore  # Deploy docs React App (Firebase Hosting), Cloud Functions, and All Rules
 
 # End To End Tests
 # Install Cypress binary and run end to end tests using Cypress
 UI Tests:
 # .uitest_template: &job
   stage: e2e_tests
-  image: cypress/base:8
+  image: cypress/base:10
   when: on_success
   allow_failure: true
   only:
@@ -284,14 +255,13 @@ UI Tests:
   # Cache dependencies across jobs only pulling not uploading (upload to cache
   # happens in build stage)
   cache:
-    untracked: true
-    key: ${CI_COMMIT_REF_SLUG}
+    key: $CI_COMMIT_REF_SLUG-$CI_JOB_STAGE
+    # NOTE: Folders used since npm cache ($HOME/.npm) does not persist
     paths:
       - .yarn
-      - node_modules
-      - .cache/Cypress
+      - cache/Cypress
   artifacts:
-    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
     expire_in: 2 weeks
     when: always
     paths:
@@ -300,7 +270,7 @@ UI Tests:
       - cypress.env.json
   before_script:
      # Install deps including Cypress binary (skipped in default before_script)
-    - yarn install --frozen-lockfile --cache-folder .yarn
+    - yarn install --check-files --frozen-lockfile --cache-folder .yarn
     # Confirm Cypress is ready to use
     - $(npm bin)/cypress verify
   script:
@@ -326,18 +296,19 @@ UI Tests:
 # Build Production version of bundle (has different config)
 Build Prod App:
   stage: build_production
-  image: node:8
+  image: node:10
   when: on_success
   only:
     - master
     - prod
-    - web
+  variables:
+    FIREBASE_CI_PROJECT: "prod" # deploy using prod project in .firebaserc
   except:
     variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-deploy/
-      - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/
+      - $CI_COMMIT_MESSAGE =~ /skip-build/
+      - $CI_COMMIT_MESSAGE =~ /skip-prod-build/
   artifacts:
-    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
     expire_in: 1 week
     when: always
     paths:
@@ -353,7 +324,7 @@ Build Prod App:
 ## Deploy React App and Cloud Functions to production environment
 Deploy Production:
   stage: deploy_production
-  image: node:8
+  image: node:10
   environment:
     name: production
     url: https://fireadmin.firebaseapp.com
@@ -361,14 +332,19 @@ Deploy Production:
   only:
     - master
     - prod
-    - web
   variables:
     FIREBASE_CI_PROJECT: "prod" # deploy using prod project in .firebaserc
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-deploy/
+      - $CI_COMMIT_MESSAGE =~ /skip-prod-deploy/
+      - $CI_COMMIT_MESSAGE =~ /skip-build/ # no build to deploy if it was skipped
+      - $CI_COMMIT_MESSAGE =~ /skip-prod-build/
   artifacts:
-    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    name: $CI_JOB_STAGE-$CI_COMMIT_REF_SLUG
     expire_in: 1 week
     when: on_failure
     paths:
       - firebase-debug.log
   script:
-    - yarn deploy:app # Deploy Cloud Functions and React App (Firebase Hosting)
+    - yarn deploy --only hosting:app,functions,storage,database,firestore # Deploy Cloud Functions and React App (Firebase Hosting)

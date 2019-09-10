@@ -1,6 +1,6 @@
 import { compose } from 'redux'
 import { withHandlers } from 'recompose'
-import { withFirebase } from 'react-redux-firebase'
+import withFirebase from 'react-redux-firebase/lib/withFirebase'
 import { invoke } from 'lodash'
 import CodeMirror from 'codemirror'
 import { getCodeMirror } from './ActionEditor.utils'

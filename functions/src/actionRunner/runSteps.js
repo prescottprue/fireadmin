@@ -1,14 +1,12 @@
-import * as admin from 'firebase-admin'
 import { get, isArray, size, map, isObject } from 'lodash'
-import { CUSTOM_STEPS_PATH } from './constants'
-import { invokeFirepadContent } from './firepad'
 import {
   copyFromRTDBToFirestore,
   copyFromFirestoreToRTDB,
   copyBetweenFirestoreInstances,
   copyFromStorageToRTDB,
   copyBetweenRTDBInstances,
-  copyFromRTDBToStorage
+  copyFromRTDBToStorage,
+  batchCopyBetweenRTDBInstances
 } from './actions'
 import { to, promiseWaterfall } from '../utils/async'
 import { hasAll } from '../utils/index'
@@ -345,17 +343,8 @@ export async function runStep({
 
   // Run custom action type (i.e. Code written within Firepad)
   if (type === 'custom') {
-    const { templateId } = eventData
-    console.log(
-      'Step type is "Custom", gathering custom step code from location:',
-      `${CUSTOM_STEPS_PATH}/${templateId}/steps/${stepIdx}`
-    )
-    const rootRef = admin
-      .database()
-      .ref(`${CUSTOM_STEPS_PATH}/${templateId}/steps/${stepIdx}`)
-    const firepadContext = { step, inputs, previous: previousStepResult }
-    const res = await invokeFirepadContent(rootRef, { context: firepadContext })
-    return res
+    console.error('Step type is "Custom", returning error')
+    throw new Error('Custom action type not currently supported')
   }
 
   // Service accounts come from converted version of what is selected for inputs
@@ -387,7 +376,34 @@ export async function runStep({
       if (dest.resource === 'firestore') {
         return copyFromRTDBToFirestore(app1, app2, step, convertedInputValues)
       } else if (dest.resource === 'rtdb') {
-        return copyBetweenRTDBInstances(app1, app2, step, convertedInputValues)
+        // Run normal copy if batching is disabled
+        if (step.disableBatching) {
+          return copyBetweenRTDBInstances(
+            app1,
+            app2,
+            step,
+            convertedInputValues
+          )
+        }
+        // Batch copy by default
+        return batchCopyBetweenRTDBInstances(
+          app1,
+          app2,
+          step,
+          convertedInputValues,
+          eventData
+        ).catch(batchErr => {
+          // Fallback to copying without batching
+          console.error('Batch copy error:', batchErr)
+          console.error('Batch copy error info', { inputs, step, eventData })
+          console.log('Falling back to normal copy....')
+          return copyBetweenRTDBInstances(
+            app1,
+            app2,
+            step,
+            convertedInputValues
+          )
+        })
       } else if (dest.resource === 'storage') {
         return copyFromRTDBToStorage(app1, app2, step, convertedInputValues)
       } else {

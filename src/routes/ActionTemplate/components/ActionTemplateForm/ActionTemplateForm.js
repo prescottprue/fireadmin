@@ -7,6 +7,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
+import Fab from '@material-ui/core/Fab'
 import Tooltip from '@material-ui/core/Tooltip'
 // import LoadIntoProjectButton from '../LoadIntoProjectButton'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -49,14 +50,22 @@ export const ActionTemplateForm = ({
       </div>
       <Tooltip placement="bottom" title={cancelTooltip}>
         <div>
-          <Fab disabled={pristine || submitting} onClick={reset} color="secondary" className={classes.button}>
+          <Fab
+            disabled={pristine || submitting}
+            onClick={reset}
+            color="secondary"
+            className={classes.button}>
             <UndoIcon />
           </Fab>
         </div>
       </Tooltip>
       <Tooltip placement="bottom" title={submitTooltip}>
         <div>
-          <Fab disabled={!editable || submitting || pristine} type="submit" color="primary" className={classes.button}>
+          <Fab
+            type="submit"
+            disabled={!editable || submitting || pristine}
+            color="primary"
+            className={classes.button}>
             <PublishIcon />
           </Fab>
         </div>
@@ -64,7 +73,11 @@ export const ActionTemplateForm = ({
       {/* <LoadIntoProjectButton templateId={templateId} /> */}
       <Tooltip placement="bottom" title={deleteTooltip}>
         <div>
-          <Fab disabled={!editable} onClick={startTemplateDelete} color="secondary" className={classes.button}>
+          <Fab
+            onClick={startTemplateDelete}
+            disabled={!editable}
+            color="secondary"
+            className={classes.button}>
             <DeleteIcon />
           </Fab>
         </div>

@@ -3,9 +3,7 @@
     "master": "fireadmin-stage",
     "prod": "fireadmin-33d82",
     "stage": "fireadmin-stage",
-    "default": "fireadmin-stage",
-    "docs": "fireadmin-docs",
-    "stage-docs": "fireadmin-stage-docs"
+    "default": "fireadmin-stage"
   },
   "ci": {
     "createConfig": {
@@ -60,13 +58,21 @@
   "targets": {
     "fireadmin-stage": {
       "hosting": {
+        "stageDocs": [
+          "fireadmin-stage-docs"
+        ],
+        "stageApp": [
+          "fireadmin-stage"
+        ]
+      }
+    },
+    "fireadmin-33d82": {
+      "hosting": {
         "docs": [
-          "fireadmin-docs",
-          "fireadmin-stage-docs",
+          "fireadmin-docs"
         ],
         "app": [
           "fireadmin-33d82"
-          "fireadmin-stage"
         ]
       }
     }

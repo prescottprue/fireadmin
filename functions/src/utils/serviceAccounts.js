@@ -1,16 +1,49 @@
-/* eslint-disable no-console */
 import * as admin from 'firebase-admin'
 import os from 'os'
-import fs from 'fs-extra'
+import fsExtra from 'fs-extra'
+import fs from 'fs'
 import path from 'path'
-import rimraf from 'rimraf'
+import google from 'googleapis'
 import { get, uniqueId } from 'lodash'
 import mkdirp from 'mkdirp-promise'
 import { decrypt } from './encryption'
 import { to } from './async'
+import { hasAll } from './index'
+import {
+  STORAGE_AND_PLATFORM_SCOPES,
+  SERVICE_ACCOUNT_PARAMS,
+  MISSING_CRED_ERROR_MSG
+} from '../constants/serviceAccount'
 
-const missingCredMsg =
-  'Credential parameter is required to load service account from Firestore'
+/**
+ * Get Google APIs auth client. Auth comes from serviceAccount.
+ * @return {Promise} Resolves with JWT Auth Client (for attaching to request)
+ */
+export async function authClientFromServiceAccount(serviceAccount) {
+  if (!hasAll(serviceAccount, SERVICE_ACCOUNT_PARAMS)) {
+    throw new Error('Invalid service account')
+  }
+  const jwtClient = new google.auth.JWT(
+    serviceAccount.client_email,
+    null,
+    serviceAccount.private_key,
+    STORAGE_AND_PLATFORM_SCOPES
+  )
+  return new Promise((resolve, reject) => {
+    jwtClient.authorize(err => {
+      if (!err) {
+        google.options({ auth: jwtClient })
+        resolve(jwtClient)
+      } else {
+        console.error(
+          'Error authorizing with Service Account',
+          err.message || err
+        )
+        reject(err)
+      }
+    })
+  })
+}
 
 /**
  * Get Firebase app from request evvent containing path information for
@@ -93,8 +126,8 @@ export async function serviceAccountFromFirestorePath(
 
   // Handle credential parameter not existing on doc
   if (!credential) {
-    console.error(missingCredMsg)
-    throw new Error(missingCredMsg)
+    console.error(MISSING_CRED_ERROR_MSG)
+    throw new Error(MISSING_CRED_ERROR_MSG)
   }
 
   // Decrypt service account string
@@ -129,7 +162,7 @@ export async function serviceAccountFromFirestorePath(
     // Create local folder for decrypted serice account file
     await mkdirp(tempLocalDir)
     // Write decrypted string as a local file
-    await fs.writeJson(tempLocalPath, serviceAccountData)
+    await fsExtra.writeJson(tempLocalPath, serviceAccountData)
     // Return localPath of service account
     return tempLocalPath
   } catch (err) {
@@ -174,12 +207,15 @@ export async function serviceAccountFromStoragePath(docPath, name) {
  */
 export async function serviceAccountFileFromStorage(docPath, name) {
   const accountLocalPath = await serviceAccountFromStoragePath(docPath, name)
-  return fs.readJson(accountLocalPath)
+  return fsExtra.readJson(accountLocalPath)
 }
 
-export function cleanupServiceAccounts(appName) {
+export async function cleanupServiceAccounts(appName) {
   const tempLocalPath = path.join(os.tmpdir(), 'serviceAccounts')
-  return new Promise((resolve, reject) =>
-    rimraf(tempLocalPath, err => (err ? reject(err) : resolve()))
-  )
+  if (fs.existsSync(tempLocalPath)) {
+    try {
+      fs.unlinkSync(tempLocalPath)
+    } catch(err) {} // eslint-disable-line
+
+  }
 }

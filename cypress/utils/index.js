@@ -1,5 +1,3 @@
-import firebase from 'firebase/app'
-
 /**
  * Create selector for data-test attribute value
  * @param {String} selectorValue - Value of selector
@@ -25,12 +23,4 @@ export function createIdSelector(selectorValue) {
  */
 export function createValueSelector(selectorValue) {
   return `[data-test-value=${selectorValue}]`
-}
-
-/**
- * Create firestore timestamp from date object.
- * @param {Date} date - Date to create timestamp from
- */
-export function firestoreTimestampFromDate(date) {
-  return firebase.firestore.Timestamp.fromDate(date)
 }

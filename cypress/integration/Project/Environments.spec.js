@@ -1,6 +1,5 @@
 import { createSelector } from '../../utils'
 import fakeProject from '../../fixtures/fakeProject.json'
-import fakeEnvironment from '../../fixtures/fakeEnvironment.json'
 
 describe('Project - Environments Page', () => {
   let openSpy // eslint-disable-line no-unused-vars
@@ -25,19 +24,24 @@ describe('Project - Environments Page', () => {
   })
 
   describe('Add Environment - ', () => {
-    // TODO: Unskip once file drag-drop uploading is figured out through cypress
-    // Error: Error: Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.
+    after(() => {
+      // Remove created environment
+      cy.callFirestore('delete', 'projects/test-project/environments', {
+        recursive: true
+      })
+    })
+
     it('creates environment when provided a valid name', () => {
       const newProjectName = 'Staging'
       cy.get(createSelector('add-environment-button')).click()
       // Type name of new project into input
       cy.get(createSelector('new-environment-name'))
         .find('input')
-        .type(newProjectName)
+        .type(newProjectName, { delay: 0 })
       // Type in new environment url
       cy.get(createSelector('new-environment-db-url'))
         .find('input')
-        .type(`https://some-project.firebaseio.com`)
+        .type(`https://some-project.firebaseio.com`, { delay: 0 })
       // Upload service account
       cy.uploadFile(createSelector('file-uploader'), 'fakeServiceAccount.json')
       // Click on the new environment button
@@ -46,10 +50,11 @@ describe('Project - Environments Page', () => {
       cy.callFirestore('get', 'projects/test-project/environments').then(
         environments => {
           expect(environments).to.be.an('array')
-          expect(environments[0]).to.have.deep.property(
-            'data.name',
-            newProjectName
+          const matchingEnv = find(
+            environments,
+            ({ data = {} }) => data.name === newProjectName
           )
+          expect(matchingEnv).to.exist
         }
       )
       // Confirm user is notified of successful environment creation
@@ -62,13 +67,17 @@ describe('Project - Environments Page', () => {
 
   describe('Delete Environment -', () => {
     beforeEach(() => {
+      // Remove created environment
+      cy.callFirestore('delete', 'projects/test-project/environments', {
+        recursive: true
+      })
       cy.addProjectEnvironment('test-project', 'test-env')
     })
 
     it('allows environment to be deleted by project owner', () => {
       // click on the more button
-      cy.get(createSelector('environment-tile-more'))
-        .first()
+      cy.get(createSelector('environment-test-env'))
+        .find(createSelector('environment-tile-more'))
         .click()
       // click delete option
       cy.get(createSelector('delete-environment-button')).click()
@@ -85,10 +94,11 @@ describe('Project - Environments Page', () => {
       cy.callFirestore('get', 'projects/test-project/environments').then(
         environments => {
           expect(environments).to.be.an('array')
-          expect(environments[0]).to.have.deep.property(
-            'data.name',
-            fakeEnvironment.name
+          const matchingEnv = find(
+            environments,
+            ({ data = {} }) => data.name === 'test-env'
           )
+          expect(matchingEnv).to.exist
         }
       )
     })

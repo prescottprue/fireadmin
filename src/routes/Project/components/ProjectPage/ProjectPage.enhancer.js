@@ -3,7 +3,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import { withStateHandlers } from 'recompose'
-import { firestoreConnect } from 'react-redux-firebase'
+import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import {
   spinnerWhileLoading,
   renderWhileEmpty,

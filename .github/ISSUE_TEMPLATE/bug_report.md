@@ -3,18 +3,17 @@ name: Bug report
 about: Create a report to help us improve
 ---
 
-**Describe the bug**
+## Bug Description
 <!--- A clear and concise description of what the bug is. -->
 
-
-**To Reproduce**
+## Steps To Reproduce
 <!--- Steps to reproduce the behavior -->
 
-**Expected behavior**
+## Expected Behavior
 <!--- A clear and concise description of what you expected to happen. -->
 
-**Possible Solution**
+## Possible Solution
 <!--- Only if you have suggestions on a fix for the bug -->
 
-**Additional context/Screenshots**
+## Additional Context/Screenshots
 <!-- Add any other context about the problem here. If applicable, add screenshots to help explain. -->
