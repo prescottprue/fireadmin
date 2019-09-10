@@ -200,15 +200,6 @@ export function createWithFromContext(withVar) {
 }
 
 /**
- * HOC that adds router to props
- * @return {HigherOrderComponent}
- * @example Basic
- * // Wrapped is SomeComponent with props.router from context
- * const Wrapped = withRouter(SomeComponent)
- */
-export const withRouter = createWithFromContext('router')
-
-/**
  * HOC that adds store to props
  * @return {HigherOrderComponent}
  * @example Basic

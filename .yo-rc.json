@@ -1,0 +1,23 @@
+{
+  "generator-react-firebase": {
+    "promptValues": {
+      "githubUser": "prescottprue",
+      "firebaseName": "fireadmin-stage",
+      "firebaseKey": "",
+      "includeRedux": true,
+      "includeFirestore": true,
+      "otherFeatures": [
+        "Continuous Integration config",
+        "Firebase Cloud Messaging",
+        "Firebase Functions (with ESNext support)",
+        "Tests for UI (Cypress)",
+        "Google Analytics (react-ga)",
+        "Error Tracking (Sentry.io)",
+        "Client Side Error Reporting (Stackdriver)"
+      ],
+      "messagingSenderId": "",
+      "ciProvider": "gitlab",
+      "deployTo": "firebase"
+    }
+  }
+}

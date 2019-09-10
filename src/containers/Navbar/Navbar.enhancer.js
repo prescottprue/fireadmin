@@ -7,11 +7,11 @@ import {
   withStateHandlers,
   setDisplayName
 } from 'recompose'
+import { withStyles } from '@material-ui/core/styles'
+import { withRouter } from 'react-router-dom'
 import withFirebase from 'react-redux-firebase/lib/withFirebase'
 import { isEmpty, isLoaded } from 'react-redux-firebase/lib/helpers'
-import { ACCOUNT_PATH } from 'constants'
-import { withRouter } from 'utils/components'
-import { withStyles } from '@material-ui/core/styles'
+import { ACCOUNT_PATH } from 'constants/paths'
 import styles from './Navbar.styles'
 
 export default compose(
@@ -29,7 +29,7 @@ export default compose(
       anchorEl: null
     }),
     {
-      closeAccountMenu: ({ accountMenuOpen }) => () => ({
+      closeAccountMenu: () => () => ({
         anchorEl: null
       }),
       handleMenu: () => event => ({
@@ -54,7 +54,7 @@ export default compose(
     }
   }),
   // Add custom props
-  withProps(({ auth, profile }) => ({
+  withProps(({ auth }) => ({
     authExists: isLoaded(auth) && !isEmpty(auth)
   })),
   // Flatten profile so that avatarUrl and displayName are props

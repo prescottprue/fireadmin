@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ef6c00" />
   <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
   <!-- Use minimum-scale=1 to enable GPU rasterization -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0, maximum-scale=1, minimum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0, maximum-scale=1, minimum-scale=1, shrink-to-fit=no">
   <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -16,10 +16,18 @@
   <!-- Global Styling -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
   <link rel="stylesheet" href="https://unpkg.com/react-instantsearch-theme-algolia@4.0.0/style.min.css">
+  <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+  <meta name="description" content="Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.">
   <!-- Tracking/Reporting Bundles -->
-  <script src=https://cdn.ravenjs.com/3.24.0/raven.min.js crossorigin=anonymous></script>
-  <script defer
-    src="https://cdn.rawgit.com/GoogleCloudPlatform/stackdriver-errors-js/v0.4.0/dist/stackdriver-errors-concat.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/gh/GoogleCloudPlatform/stackdriver-errors-js@v0.5.0/dist/stackdriver-errors-concat.min.js"></script>
   <title>Fireadmin</title>
 </head>
 

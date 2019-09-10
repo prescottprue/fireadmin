@@ -309,9 +309,7 @@ export async function batchCopyBetweenFirestoreRefs({
   }
 
   console.log(
-    `Successfully copied docs from Firestore collection "${
-      srcRef.id
-    }" starting subcollections copy...`
+    `Successfully copied docs from Firestore collection "${srcRef.id}" starting subcollections copy...`
   )
 
   // Write subcollections of all documents
@@ -355,9 +353,7 @@ export async function batchCopyBetweenFirestoreRefs({
   }
 
   console.log(
-    `Successfully copied docs from Firestore path: ${
-      srcRef.id
-    } with subcollections: ${copySubcollections}`
+    `Successfully copied docs from Firestore path: ${srcRef.id} with subcollections: ${copySubcollections}`
   )
 
   return null

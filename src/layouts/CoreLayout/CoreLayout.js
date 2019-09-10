@@ -3,9 +3,8 @@ import PropTypes from 'prop-types'
 import Navbar from 'containers/Navbar'
 import { Notifications } from 'modules/notification'
 import VersionChangeReloader from 'components/VersionChangeReloader'
-import classes from './CoreLayout.scss'
 
-function CoreLayout({ children }) {
+function CoreLayout({ children, classes }) {
   return (
     <div className={classes.container}>
       <Navbar />
@@ -17,6 +16,7 @@ function CoreLayout({ children }) {
 }
 
 CoreLayout.propTypes = {
+  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   children: PropTypes.element.isRequired
 }
 

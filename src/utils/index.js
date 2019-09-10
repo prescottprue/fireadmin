@@ -3,6 +3,9 @@ import { initSegment } from './analytics'
 import { init as initErrorHandler } from './errorHandler'
 import { currentUserProjectPermissions } from 'selectors'
 
+/**
+ * Initialize global scripts including analytics and error handling
+ */
 export function initScripts() {
   initErrorHandler()
   initSegment()

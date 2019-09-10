@@ -5,6 +5,8 @@ export default {
   path,
   component: Loadable({
     loader: () =>
-      import(/* webpackChunkName: 'BucketConfig' */ './components/BucketConfigPage')
+      import(
+        /* webpackChunkName: 'BucketConfig' */ './components/BucketConfigPage'
+      )
   })
 }

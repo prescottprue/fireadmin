@@ -5,6 +5,8 @@ export default {
   path,
   component: Loadable({
     loader: () =>
-      import(/* webpackChunkName: 'ProjectEnvironments' */ './components/EnvironmentsPage')
+      import(
+        /* webpackChunkName: 'ProjectEnvironments' */ './components/EnvironmentsPage'
+      )
   })
 }

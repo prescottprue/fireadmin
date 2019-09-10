@@ -1,11 +1,11 @@
 module.exports = {
-  'extends': ['react-app', 'prettier'],
+  'extends': ['react-app', 'prettier', 'prettier/react'],
   root: true,
   parser: 'babel-eslint',
   plugins: ['import', 'babel', 'react', 'prettier'],
   settings: {
     react: {
-      version: '16.6'
+      version: '16.8'
     },
     'import/resolver': {
       node: {
@@ -13,23 +13,16 @@ module.exports = {
       }
     }
   },
-  globals: {
-    '__DEV__': false,
-    '__COVERAGE__': false,
-    '__TEST__': false,
-    StackdriverErrorReporter: false,
-    Raven: false
-  },
   rules: {
-    semi: [2, 'never'],
+    semi: [
+      2, 'never'
+    ],
     'no-console': 'error',
-    'jsx-quotes': ['error', 'prefer-double'],
     'react/forbid-prop-types': 0,
     'react/require-default-props': 0,
     'react/jsx-filename-extension': 0,
     'import/no-named-as-default': 0,
     'no-return-await': 2,
-    'node/no-deprecated-api': 0,
     'prettier/prettier': [
       'error',
       {

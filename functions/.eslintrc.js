@@ -3,6 +3,7 @@ module.exports = {
   rules: {
     'no-console': 0
   },
+  plugins: ['node'],
   settings: {
     'import/resolver': {
       node: {

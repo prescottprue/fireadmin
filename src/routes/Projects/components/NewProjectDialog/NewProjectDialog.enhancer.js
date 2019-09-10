@@ -2,7 +2,7 @@ import { compose } from 'redux'
 import { reduxForm } from 'redux-form'
 import { withHandlers } from 'recompose'
 import { withStyles } from '@material-ui/core/styles'
-import { NEW_PROJECT_FORM_NAME } from 'constants/paths'
+import { NEW_PROJECT_FORM_NAME } from 'constants/formNames'
 import styles from './NewProjectDialog.styles'
 
 export default compose(

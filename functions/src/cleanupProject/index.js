@@ -19,9 +19,7 @@ async function removeCollection(collectionSnap) {
     return null
   }
   console.log(
-    `Removing ${collectionQueryResult.size} docs from the "${
-      collectionSnap.id
-    }" subcollection`
+    `Removing ${collectionQueryResult.size} docs from the "${collectionSnap.id}" subcollection`
   )
   const docRefs = []
   collectionQueryResult.forEach(doc => {

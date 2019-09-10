@@ -5,6 +5,8 @@ export default {
   path,
   component: Loadable({
     loader: () =>
-      import(/* webpackChunkName: 'ProjectPermissions' */ './components/Permissions')
+      import(
+        /* webpackChunkName: 'ProjectPermissions' */ './components/Permissions'
+      )
   })
 }

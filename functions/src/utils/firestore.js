@@ -134,9 +134,7 @@ export async function writeDocsInBatches(
   // Check if doc data is longer than max docs per batch
   if (docData && docData.length < MAX_DOCS_PER_BATCH) {
     console.log(
-      `Updating all in once back since there are ${
-        docData.length
-      } updates and the max batch size is ${MAX_DOCS_PER_BATCH}`
+      `Updating all in once back since there are ${docData.length} updates and the max batch size is ${MAX_DOCS_PER_BATCH}`
     )
 
     // Less than the max number of docs in a batch
@@ -149,9 +147,7 @@ export async function writeDocsInBatches(
     docChunks.map((dataChunk, chunkIdx) => {
       return () => {
         console.log(
-          `Writing chunk #${chunkIdx} of ${
-            docChunks.length
-          } for path: ${destPath}`
+          `Writing chunk #${chunkIdx} of ${docChunks.length} for path: ${destPath}`
         )
         return batchWriteDocs(firestoreInstance, destPath, dataChunk, opts)
       }

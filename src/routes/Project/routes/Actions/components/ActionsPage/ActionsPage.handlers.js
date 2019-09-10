@@ -1,4 +1,5 @@
 import { get, omit } from 'lodash'
+import * as Sentry from '@sentry/browser'
 import { ACTION_RUNNER_REQUESTS_PATH } from 'constants/firebasePaths'
 import { ACTION_RUNNER_FORM_NAME } from 'constants/formNames'
 import { submit, initialize } from 'redux-form'
@@ -58,7 +59,7 @@ export function runAction(props) {
       const errMsg =
         'A valid template must be selected in order to run an action'
       props.showError(errMsg)
-      Raven.captureException('An invalid template was selected', {
+      Sentry.captureException('An invalid template was selected', {
         formValues,
         selectedTemplate: get(props, 'selectedTemplate')
       })

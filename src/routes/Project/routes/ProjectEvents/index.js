@@ -5,6 +5,8 @@ export default {
   path,
   component: Loadable({
     loader: () =>
-      import(/* webpackChunkName: 'ProjectEvents' */ './components/ProjectEventsPage')
+      import(
+        /* webpackChunkName: 'ProjectEvents' */ './components/ProjectEventsPage'
+      )
   })
 }

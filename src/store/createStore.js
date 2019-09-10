@@ -9,6 +9,7 @@ import 'firebase/database'
 import 'firebase/storage'
 // import logger from 'redux-logger'
 import makeRootReducer from './reducers'
+import { setErrorUser } from '../utils/errorHandler'
 import { setAnalyticsUser } from '../utils/analytics'
 import { initializeMessaging } from '../utils/messaging'
 import {
@@ -57,6 +58,9 @@ export default (initialState = {}) => {
     sessions: null,
     onAuthStateChanged: (authState, firebase, dispatch) => {
       if (authState) {
+        // Set auth within error handler
+        setErrorUser(authState)
+        // Set auth within analytics
         setAnalyticsUser(authState)
         // Initalize messaging with dispatch
         initializeMessaging(dispatch)

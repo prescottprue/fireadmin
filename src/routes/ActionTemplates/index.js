@@ -5,6 +5,8 @@ export default {
   path,
   component: Loadable({
     loader: () =>
-      import(/* webpackChunkName: 'ActionTemplates' */ './components/ActionTemplatesPage')
+      import(
+        /* webpackChunkName: 'ActionTemplates' */ './components/ActionTemplatesPage'
+      )
   })
 }

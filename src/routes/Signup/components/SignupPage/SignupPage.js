@@ -4,19 +4,21 @@ import { Link } from 'react-router-dom'
 import GoogleButton from 'react-google-button'
 import { LOGIN_PATH } from 'constants/paths'
 
-const SignupPage = ({ classes, emailSignup, googleLogin, onSubmitFail }) => (
-  <div className={classes.root}>
-    <div className={classes.providers}>
-      <GoogleButton onClick={googleLogin} />
+function SignupPage({ classes, emailSignup, googleLogin, onSubmitFail }) {
+  return (
+    <div className={classes.root}>
+      <div className={classes.providers}>
+        <GoogleButton onClick={googleLogin} data-test="google-auth-button" />
+      </div>
+      <div className={classes.login}>
+        <span className={classes.loginLabel}>Already have an account?</span>
+        <Link className={classes.loginLink} to={LOGIN_PATH}>
+          Login
+        </Link>
+      </div>
     </div>
-    <div className={classes.login}>
-      <span className={classes.loginLabel}>Already have an account?</span>
-      <Link className={classes.loginLink} to={LOGIN_PATH}>
-        Login
-      </Link>
-    </div>
-  </div>
-)
+  )
+}
 
 SignupPage.propTypes = {
   classes: PropTypes.object.isRequired, // from enhancer (withStyles)

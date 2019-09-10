@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser'
 import { ACTION_TEMPLATES_PATH as ACTION_TEMPLATES_ROUTE_PATH } from 'constants/paths'
 import { ACTION_TEMPLATES_PATH } from 'constants/firebasePaths'
 import { triggerAnalyticsEvent } from 'utils/analytics'
@@ -32,7 +33,7 @@ export function updateTemplate(props) {
     } catch (err) {
       const errMsg = 'Error updating template'
       console.error(errMsg, err.message || err) // eslint-disable-line no-console
-      window.Raven.captureException(err)
+      Sentry.captureException(err)
       props.showError(errMsg)
       throw err
     }
@@ -65,7 +66,7 @@ export function deleteTemplate(props) {
     } catch (err) {
       const errMsg = 'Error Deleting Template'
       console.error(errMsg, err.message || err) // eslint-disable-line no-console
-      window.Raven.captureException(err)
+      Sentry.captureException(err)
       props.showError(errMsg)
       throw err
     }
