@@ -77,5 +77,5 @@ export default theme => ({
     ':hover': {
       color: '#03A9F4'
     }
-  },
+  }
 })

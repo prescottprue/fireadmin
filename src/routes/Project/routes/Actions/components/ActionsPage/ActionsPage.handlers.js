@@ -92,10 +92,7 @@ export function runAction(props) {
     })
 
     return Promise.all([
-      props.firebase.pushWithMeta(
-        ACTION_RUNNER_REQUESTS_PATH,
-        actionRequest
-      ),
+      props.firebase.pushWithMeta(ACTION_RUNNER_REQUESTS_PATH, actionRequest),
       createProjectEvent(
         { firestore: props.firestore, projectId: props.projectId },
         {

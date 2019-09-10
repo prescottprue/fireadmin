@@ -1,3 +1,4 @@
+import { find } from 'lodash'
 import { createSelector } from '../../utils'
 import fakeProject from '../../fixtures/fakeProject.json'
 

@@ -59,7 +59,7 @@ function ActionRunnerForm({
             configuation options, then clicking <strong>run action</strong>.
           </Typography>
           <div className={classes.tabs}>
-            <Link to={paths.actionTemplates}>
+            <Link to={ACTION_TEMPLATES_PATH}>
               <Button color="primary" className={classes.button}>
                 Create New Action Template
               </Button>

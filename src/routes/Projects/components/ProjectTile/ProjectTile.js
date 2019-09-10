@@ -29,10 +29,7 @@ function ProjectTile({
   toggleSharingDialog
 }) {
   return (
-    <Paper
-      className={classes.container}
-      open={open}
-      data-test="project-tile">
+    <Paper className={classes.container} open={open} data-test="project-tile">
       <div className={classes.top}>
         <span
           className={classes.name}

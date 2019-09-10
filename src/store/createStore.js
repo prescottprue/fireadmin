@@ -1,6 +1,5 @@
 import { applyMiddleware, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
-import { browserHistory } from 'react-router'
 import reactReduxFirebase from 'react-redux-firebase/lib/enhancer'
 import reduxFirestore from 'redux-firestore/lib/enhancer'
 import firebase from 'firebase/app'

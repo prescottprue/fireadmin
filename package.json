@@ -20,7 +20,7 @@
     "functions:watch": "yarn --cwd functions watch",
     "functions:test": "yarn --cwd functions test",
     "functions:test:cov": "yarn --cwd functions test:cov",
-    "lint": "yarn lint:app && yarn lint:functions && yarn lint:tests && yarn lint:docs",
+    "lint": "eslint src functions cypress docs",
     "lint:functions": "eslint functions",
     "lint:app": "eslint src",
     "lint:tests": "eslint cypress",

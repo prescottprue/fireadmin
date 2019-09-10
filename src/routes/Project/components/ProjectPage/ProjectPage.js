@@ -13,18 +13,21 @@ import OverviewPanel from '../OverviewPanel'
 import classes from './ProjectPage.scss'
 
 function ProjectPage({ project, match, params, children }) {
-  console.log('project render:')
   return (
     <SidebarLayout title={project.name}>
       <Switch>
         {/* Child routes */}
-        {renderChildren([
-          ActionsRoute,
-          BucketConfigRoute,
-          EnvironmentsRoute,
-          PermissionsRoute,
-          ProjectEventsRoute
-          ], match, { project, params })}
+        {renderChildren(
+          [
+            ActionsRoute,
+            BucketConfigRoute,
+            EnvironmentsRoute,
+            PermissionsRoute,
+            ProjectEventsRoute
+          ],
+          match,
+          { project, params }
+        )}
         {/* Main Route */}
         <Route
           path="/projects/:projectId"

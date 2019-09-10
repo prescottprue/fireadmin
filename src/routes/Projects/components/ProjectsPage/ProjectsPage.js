@@ -20,7 +20,6 @@ function ProjectsPage({
   match,
   goToProject
 }) {
-  console.log('projects page:', match, ProjectRoute)
   return (
     <Switch>
       {/* Child routes */}

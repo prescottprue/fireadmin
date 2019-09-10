@@ -2,7 +2,12 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
-import { withHandlers, withStateHandlers, withProps } from 'recompose'
+import {
+  withHandlers,
+  withStateHandlers,
+  withProps,
+  setPropTypes
+} from 'recompose'
 import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import { withNotifications } from 'modules/notification'
 import {
@@ -26,24 +31,25 @@ export default compose(
       }).isRequired
     }).isRequired
   }),
+  withProps(({ match: { params: { templateId } } }) => ({
+    templateId
+  })),
   // Set listeners for Firestore
-  firestoreConnect(({ match: { params: { templateId } } }) => [
+  firestoreConnect(({ templateId }) => [
     {
       collection: ACTION_TEMPLATES_PATH,
       doc: templateId
     }
   ]),
   // map redux state to props
-  connect(({ firestore: { data: { actionTemplates } } }, { match: { params: { templateId } } }) => ({
+  connect(({ firestore: { data: { actionTemplates } } }, { templateId }) => ({
     template: get(actionTemplates, templateId)
   })),
   // Show spinner while template is loading
   spinnerWhileLoading(['template']),
   // Render Error page if there is an error loading the action template
   renderIfError(
-    (state, { match: { params: { templateId } } }) => [
-      `${ACTION_TEMPLATES_PATH}.${templateId}`
-    ],
+    (state, { templateId }) => [`${ACTION_TEMPLATES_PATH}.${templateId}`],
     TemplateLoadingError
   ),
   withProps(({ template }) => ({ templateExists: !!template })),
