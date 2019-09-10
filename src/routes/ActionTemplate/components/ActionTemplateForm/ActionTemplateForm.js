@@ -22,7 +22,7 @@ import ActionTemplateEnvs from '../ActionTemplateEnvs'
 import ActionTemplateBackups from '../ActionTemplateBackups'
 import styleClasses from './ActionTemplateForm.scss'
 
-export const ActionTemplateForm = ({
+function ActionTemplateForm({
   submitting,
   pristine,
   reset,
@@ -35,101 +35,103 @@ export const ActionTemplateForm = ({
   cancelTooltip,
   startTemplateDelete,
   goBack
-}) => (
-  <form className={styleClasses.container} onSubmit={handleSubmit}>
-    <div className={styleClasses.buttons}>
-      <div style={{ marginRight: '4rem' }}>
-        <Link to={ACTION_TEMPLATES_PATH}>
-          <Tooltip placement="bottom" title="Back To Templates">
-            <IconButton className={classes.submit} onClick={goBack}>
-              <BackIcon />
-            </IconButton>
-          </Tooltip>
-        </Link>
-      </div>
-      <Tooltip placement="bottom" title={cancelTooltip}>
-        <div>
-          <Fab
-            disabled={pristine || submitting}
-            onClick={reset}
-            color="secondary"
-            className={classes.button}>
-            <UndoIcon />
-          </Fab>
+}) {
+  return (
+    <form className={styleClasses.container} onSubmit={handleSubmit}>
+      <div className={styleClasses.buttons}>
+        <div style={{ marginRight: '4rem' }}>
+          <Link to={ACTION_TEMPLATES_PATH}>
+            <Tooltip placement="bottom" title="Back To Templates">
+              <IconButton className={classes.submit} onClick={goBack}>
+                <BackIcon />
+              </IconButton>
+            </Tooltip>
+          </Link>
         </div>
-      </Tooltip>
-      <Tooltip placement="bottom" title={submitTooltip}>
-        <div>
-          <Fab
-            type="submit"
-            disabled={!editable || submitting || pristine}
-            color="primary"
-            className={classes.button}>
-            <PublishIcon />
-          </Fab>
-        </div>
-      </Tooltip>
-      {/* <LoadIntoProjectButton templateId={templateId} /> */}
-      <Tooltip placement="bottom" title={deleteTooltip}>
-        <div>
-          <Fab
-            onClick={startTemplateDelete}
-            disabled={!editable}
-            color="secondary"
-            className={classes.button}>
-            <DeleteIcon />
-          </Fab>
-        </div>
-      </Tooltip>
-    </div>
-    <Typography className={styleClasses.header}>Meta Data</Typography>
-    <Paper className={styleClasses.paper}>
-      <Grid container spacing={24}>
-        <Grid item xs>
-          <Field
-            name="name"
-            component={TextField}
-            label="Name"
-            className={styleClasses.field}
-          />
-          <Field
-            name="description"
-            component={TextField}
-            className={styleClasses.field}
-            label="Description"
-            multiline
-          />
-          <div className={styleClasses.publicToggle}>
-            <FormControlLabel
-              control={<Field name="public" component={Switch} />}
-              label="Public"
-            />
+        <Tooltip placement="bottom" title={cancelTooltip}>
+          <div>
+            <Fab
+              disabled={pristine || submitting}
+              onClick={reset}
+              color="secondary"
+              className={classes.button}>
+              <UndoIcon />
+            </Fab>
           </div>
+        </Tooltip>
+        <Tooltip placement="bottom" title={submitTooltip}>
+          <div>
+            <Fab
+              type="submit"
+              disabled={!editable || submitting || pristine}
+              color="primary"
+              className={classes.button}>
+              <PublishIcon />
+            </Fab>
+          </div>
+        </Tooltip>
+        {/* <LoadIntoProjectButton templateId={templateId} /> */}
+        <Tooltip placement="bottom" title={deleteTooltip}>
+          <div>
+            <Fab
+              onClick={startTemplateDelete}
+              disabled={!editable}
+              color="secondary"
+              className={classes.button}>
+              <DeleteIcon />
+            </Fab>
+          </div>
+        </Tooltip>
+      </div>
+      <Typography className={styleClasses.header}>Meta Data</Typography>
+      <Paper className={styleClasses.paper}>
+        <Grid container spacing={24}>
+          <Grid item xs>
+            <Field
+              name="name"
+              component={TextField}
+              label="Name"
+              className={styleClasses.field}
+            />
+            <Field
+              name="description"
+              component={TextField}
+              className={styleClasses.field}
+              label="Description"
+              multiline
+            />
+            <div className={styleClasses.publicToggle}>
+              <FormControlLabel
+                control={<Field name="public" component={Switch} />}
+                label="Public"
+              />
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
-    </Paper>
-    <div className={styleClasses.actions}>
-      <Typography className={styleClasses.header}>Environments</Typography>
-      <FieldArray name="environments" component={ActionTemplateEnvs} />
-    </div>
-    <div className={styleClasses.actions}>
-      <Typography className={styleClasses.header}>Inputs</Typography>
-      <FieldArray name="inputs" component={ActionTemplateInputs} />
-    </div>
-    <div className={styleClasses.actions}>
-      <Typography className={styleClasses.header}>Backups</Typography>
-      <FieldArray name="backups" component={ActionTemplateBackups} />
-    </div>
-    <div className={styleClasses.actions}>
-      <Typography className={styleClasses.header}>Steps</Typography>
-      <FieldArray
-        name="steps"
-        mainEditorPath={`${ACTION_TEMPLATES_PATH}/${templateId}`}
-        component={ActionTemplateStep}
-      />
-    </div>
-  </form>
-)
+      </Paper>
+      <div className={styleClasses.actions}>
+        <Typography className={styleClasses.header}>Environments</Typography>
+        <FieldArray name="environments" component={ActionTemplateEnvs} />
+      </div>
+      <div className={styleClasses.actions}>
+        <Typography className={styleClasses.header}>Inputs</Typography>
+        <FieldArray name="inputs" component={ActionTemplateInputs} />
+      </div>
+      <div className={styleClasses.actions}>
+        <Typography className={styleClasses.header}>Backups</Typography>
+        <FieldArray name="backups" component={ActionTemplateBackups} />
+      </div>
+      <div className={styleClasses.actions}>
+        <Typography className={styleClasses.header}>Steps</Typography>
+        <FieldArray
+          name="steps"
+          mainEditorPath={`${ACTION_TEMPLATES_PATH}/${templateId}`}
+          component={ActionTemplateStep}
+        />
+      </div>
+    </form>
+  )
+}
 
 ActionTemplateForm.propTypes = {
   templateId: PropTypes.string.isRequired,

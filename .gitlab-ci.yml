@@ -187,28 +187,6 @@ Build Staging:
     - yarn build # build app bundles
     - yarn size # confirm that bundles have not grown too much
 
-## React Components Unit + Snapshot Tests (Jest)
-Component Tests:
-  stage: unit_tests
-  image: node:8
-  when: on_success
-  allow_failure: true
-  except:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-tests/
-      - $CI_COMMIT_MESSAGE =~ /skip-unit-tests/
-      - $CI_COMMIT_MESSAGE =~ /skip-component-tests/
-  artifacts:
-    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
-    expire_in: 2 weeks
-    when: always
-    paths:
-      - coverage
-  dependencies:
-    - Build
-  script:
-    - npm run test
-
 # Deploy Staging Stage
 ## Deploy React App and Firebase Functions
 Deploy Staging:

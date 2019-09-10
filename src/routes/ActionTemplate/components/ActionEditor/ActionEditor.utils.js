@@ -18,7 +18,7 @@ import 'codemirror/addon/fold/brace-fold'
 
 export const getCodeMirror = (el, doc) => {
   // Needed for Firepad to load CodeMirror
-  require('expose-loader?CodeMirror!codemirror') // eslint-disable-line
+  // require('expose-loader?CodeMirror!codemirror') // eslint-disable-line
 
   const cm = new CodeMirror(el, {
     value: doc,

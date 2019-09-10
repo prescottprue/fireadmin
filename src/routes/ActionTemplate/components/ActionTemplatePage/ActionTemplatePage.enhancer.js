@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
+import { withRouter } from 'react-router-dom'
 import {
   withHandlers,
   withStateHandlers,
@@ -12,7 +13,6 @@ import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import { withNotifications } from 'modules/notification'
 import {
   spinnerWhileLoading,
-  withRouter,
   renderWhile,
   renderIfError
 } from 'utils/components'
