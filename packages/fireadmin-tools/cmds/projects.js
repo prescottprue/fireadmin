@@ -2,11 +2,10 @@
 const getProjects = require('../lib').getProjects
 
 /**
- * @name project
- * @description Get name of the firebase project associated with the current CI environment.
+ * @name projects
+ * Get name of the firebase project associated with the current CI environment.
  * @example <caption>Basic</caption>
- * echo "Project to deploy to $(firebase-ci project)"
- * // => "Project to deploy to my-project"
+ * fireadmin projects
  */
 module.exports = function(program) {
   program

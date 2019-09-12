@@ -32,6 +32,7 @@ export default class ActionTemplates {
     const { id } = await this.ref.add(newTemplateData)
     return new ActionTemplate(id, newTemplateData)
   }
+
   /**
    * Get a list of ActionTemplates
    */

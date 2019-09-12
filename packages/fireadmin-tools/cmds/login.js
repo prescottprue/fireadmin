@@ -2,11 +2,10 @@
 const login = require('../lib').login
 
 /**
- * @name project
- * @description Get name of the firebase project associated with the current CI environment.
+ * @name login
+ * Login to fireadmin
  * @example <caption>Basic</caption>
- * echo "Project to deploy to $(firebase-ci project)"
- * // => "Project to deploy to my-project"
+ * fireadmin login
  */
 module.exports = function(program) {
   program

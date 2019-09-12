@@ -3,11 +3,11 @@ import { get, find } from 'lodash'
 import {
   ActionEnvironmentSetting,
   ActionSettings,
-  ActionStepSetting,
-  ActionInputSetting
+  ActionInputSetting,
+  CustomActionStepSetting
 } from '@fireadmin/core/types/types/Action'
-import { Projects, Project } from '@fireadmin/core'
-import { promiseWaterfall, to } from './utils/async'
+import { Projects, Project, ActionRequest, ActionTemplates, ActionTemplate } from '@fireadmin/core'
+import { to } from './utils/async'
 import { prompt } from './utils/prompt'
 import { login } from './auth'
 import {
@@ -30,7 +30,11 @@ async function getLocalActions(): Promise<string[]> {
   return actionFiles
 }
 
-async function getActionSettings(actionName: string): Promise<ActionSettings> {
+/**
+ * Load the settings of a local Fireadmin action
+ * @param actionName - Name of the action for which to load settings
+ */
+async function getActionSettings(actionName: string): Promise<ActionSettings | any> {
   const localActionsFolder = getLocalActionsFolder()
   const actionParentPath = `${localActionsFolder}/${actionName}`
   const actionSettingsPath = `${actionParentPath}/settings.json`
@@ -43,12 +47,17 @@ async function getActionSettings(actionName: string): Promise<ActionSettings> {
   }
 }
 
-export async function runCustomAction() {
+/**
+ * Get local action settings by asking the user to select
+ * the action.
+ */
+async function getLocalActionSettings(): Promise<ActionSettings> {
   // Load actions from current folder and run it by passing in environments (selected by user based on migration settings)
   const localActions = await getLocalActions()
   const actionChoices = localActions.map(actionName => ({
     name: actionName
   }))
+
   // Propmpt user for choice of actions
   const SELECTED_ACTION_PROMPT_NAME = 'actionName'
   const optionAnswer = await prompt({}, [
@@ -59,25 +68,30 @@ export async function runCustomAction() {
       choices: actionChoices
     }
   ])
+
+  // Get settings for selected action
+  const selectedLocalAction = optionAnswer[SELECTED_ACTION_PROMPT_NAME]
+  const actionSettings = await getActionSettings(selectedLocalAction)
   const localActionsFolder = getLocalActionsFolder()
-  const actionSettings = await getActionSettings(
-    optionAnswer[SELECTED_ACTION_PROMPT_NAME]
-  )
   const actionParentPath = `${localActionsFolder}/${optionAnswer[SELECTED_ACTION_PROMPT_NAME]}`
   const environmentSettings: ActionEnvironmentSetting[] = get(
     actionSettings,
     'environments',
     []
   )
+
+  // Login to Fireadmin since next steps will require auth
   await login()
+
   // Get List of projects (to provide options to use)
   const [getErr, projectsList] = await to(new Projects().get())
   if (getErr) {
     console.log('Error getting projects', getErr) // eslint-disable-line no-console
     throw getErr
   }
+
+  // Prompt user to select project
   const SELECTED_PROJECT_PROMPT_NAME = 'projectName'
-  // Prompt use to select project
   const projectAnswers = await prompt({}, [
     {
       type: 'list',
@@ -93,7 +107,7 @@ export async function runCustomAction() {
   }
 
   // Get environments of selected project
-  const [getEnvsErr, environments] = await to(project.getEnvironments())
+  const [getEnvsErr, environmentsOptions] = await to(project.getEnvironments())
   if (getEnvsErr) {
     console.log('Get envs error:', getEnvsErr) // eslint-disable-line no-console
     throw getEnvsErr
@@ -105,10 +119,10 @@ export async function runCustomAction() {
       ...setting,
       message: `${setting.name} environment`,
       type: 'list',
-      choices: environments
+      choices: environmentsOptions
     })
   )
-  const environmentsAnswers = await prompt({}, environmentQuestions)
+  const environments = await prompt({}, environmentQuestions)
 
   // Ask for input preferences from Fireadmin project based on template settings
   const inputSettings: ActionInputSetting[] = get(actionSettings, 'inputs', [])
@@ -117,30 +131,51 @@ export async function runCustomAction() {
     message: `${setting.name} input`,
     type: 'input'
   }))
-  const inputsAnswers = await prompt({}, inputQuestions)
+  const inputs = await prompt({}, inputQuestions)
 
   // Run action steps
-  const actionSteps: any[] = get(actionSettings, 'steps', [])
-  const actionFunctions = actionSteps.map((actionStep: ActionStepSetting) => {
+  const stepsSettings: any[] = get(actionSettings, 'steps', [])
+  const transformStepsPromises: (Promise<CustomActionStepSetting>)[] = stepsSettings.reduce(async (acc, actionStep, stepIndex) => {
     if (actionStep.type !== 'custom') {
       console.log('Only custom actions are currently suppported') // eslint-disable-line no-console
-      return null
+      return acc
     }
-    const filePath = `${actionParentPath}/${actionStep.filePath || 'index.js'}`
-    if (!existsSync(filePath)) {
-      console.log('File does not exist at provided path') // eslint-disable-line no-console
-      return null
+
+    // Load migration file contents
+    const migrationFilePath = `${actionParentPath}/${actionStep.filePath || 'index.js'}`
+    if (!existsSync(migrationFilePath)) {
+      console.log(`File does not exist at provided path "${migrationFilePath}" skipping step ${stepIndex}`) // eslint-disable-line no-console
+      return acc
     }
+
+    const actionContents = await requireAsync(migrationFilePath)
+    if (!actionContents) {
+      throw new Error('No action contents')
+    }
+    const newActionRequest: CustomActionStepSetting = {
+      type: 'custom',
+      content: actionContents,
+      filePath: migrationFilePath
+    }
+    return acc.concat([newActionRequest])
     // Call action passing environments, inputs, and previous step results
-    return async (previousStep: any) => {
-      const actionContents: any = await requireAsync(filePath)
-      return actionContents(environmentsAnswers, inputsAnswers, previousStep)
-    }
   })
-  const results = await promiseWaterfall(actionFunctions)
-  console.log('Action completed successfully!', results) // eslint-disable-line no-console
+  
+  const steps: CustomActionStepSetting[] = await Promise.all(transformStepsPromises)
+  
+  return { steps, environments, inputs }
 }
 
-export async function uploadAction() {
+/**
+ * Run custom action based on user input
+ */
+export async function runCustomAction(): Promise<any> {
+  const actionSettings = await getLocalActionSettings()
+  return new ActionRequest().create(actionSettings)
+}
+
+export async function uploadCustomActionTemplateVersion(): Promise<ActionTemplate> {
   // TODO: Upload custom action to fireadmin
+  const actionSettings = await getLocalActionSettings()
+  return new ActionTemplates().create(actionSettings)
 }

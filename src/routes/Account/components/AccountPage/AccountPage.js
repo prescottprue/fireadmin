@@ -4,33 +4,21 @@ import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import AccountForm from '../AccountForm'
-import defaultUserImageUrl from 'static/User.png'
 import ApiKeysSection from '../ApiKeysSection'
-import classes from './AccountPage.scss'
 
-function AccountPage({ avatarUrl, updateAccount, cleanProfile }) {
+function AccountPage({ classes, avatarUrl, cleanProfile, firebase }) {
   return (
-    <Grid container className={classes.container} spacing={16} justify="center">
+    <Grid container className={classes.root} spacing={16} justify="center">
       <Grid item xs={12} sm={8}>
         <Paper className={classes.pane}>
           <Typography variant="h6" className={classes.title}>
             Account
           </Typography>
-          <div className={classes.settings}>
-            <div className={classes.avatar}>
-              <img
-                className={classes.avatarCurrent}
-                src={avatarUrl || defaultUserImageUrl}
-              />
-            </div>
-            <div className={classes.meta}>
-              <AccountForm
-                onSubmit={updateAccount}
-                account={cleanProfile}
-                initialValues={cleanProfile}
-              />
-            </div>
-          </div>
+          <AccountForm
+            onSubmit={firebase.updateProfile}
+            account={cleanProfile}
+            initialValues={cleanProfile}
+          />
         </Paper>
       </Grid>
       <Grid item xs={12} sm={8}>
@@ -41,9 +29,12 @@ function AccountPage({ avatarUrl, updateAccount, cleanProfile }) {
 }
 
 AccountPage.propTypes = {
-  avatarUrl: PropTypes.string,
-  cleanProfile: PropTypes.object,
-  updateAccount: PropTypes.func
+  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
+  firebase: PropTypes.shape({
+    updateProfile: PropTypes.func.isRequired // from enhancer (withFirebase)
+  }).isRequired,
+  avatarUrl: PropTypes.string, // from enhancer (connect)
+  cleanProfile: PropTypes.object // from enhancer (withProps + connect)
 }
 
 export default AccountPage

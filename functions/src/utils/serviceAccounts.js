@@ -4,7 +4,8 @@ import fsExtra from 'fs-extra'
 import fs from 'fs'
 import path from 'path'
 import google from 'googleapis'
-import { get, uniqueId } from 'lodash'
+import { get } from 'lodash'
+import { v4 as uniqueId } from 'uuid'
 import mkdirp from 'mkdirp-promise'
 import { decrypt } from './encryption'
 import { to } from './async'
@@ -91,6 +92,7 @@ export async function getAppFromServiceAccount(opts, eventData) {
     if (storageBucket) {
       appCreds.storageBucket = storageBucket
     }
+    console.log('initializing app', appName)
     return admin.initializeApp(appCreds, appName)
   } catch (err) {
     console.error('Error initializing firebase app:', err.message || err)

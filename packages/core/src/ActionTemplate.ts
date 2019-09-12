@@ -8,14 +8,14 @@ export * from './types/ActionRequest'
 /**
  * Fireadmin Action
  */
-export default class ActionTemplate implements ActionTemplateValue {
+export default class ActionTemplate {
   public path: string
-  public id: string
+  public id?: string
   public ref: firebase.firestore.DocumentReference
   public listen: any
   public updatedAt?: firebase.firestore.FieldValue
   public createdAt?: firebase.firestore.FieldValue
-  constructor(actionId: string, actionData?: object) {
+  constructor(actionId?: string, actionData?: object) {
     this.id = actionId
     this.path = `${ACTION_TEMPLATES_COLLECTION}/${actionId}`
     this.ref = getApp()
@@ -26,12 +26,14 @@ export default class ActionTemplate implements ActionTemplateValue {
       Object.assign(this, actionData)
     }
   }
+
   /**
    * Validate an Action using JSON schema
    */
-  public validate(actionData: ActionTemplateValue) {
-    runValidationForClass(ActionTemplate, actionData)
+  public async validate(actionData: ActionTemplateValue) {
+    await runValidationForClass(ActionTemplate, actionData)
   }
+
   /**
    * Get an ActionTemplate and throw if is not found
    */
@@ -48,9 +50,10 @@ export default class ActionTemplate implements ActionTemplateValue {
   /**
    * Update a ActionTemplate (uses JSON schema for validation)
    */
-  public update(actionData: ActionTemplateValue): Promise<any> {
+  public async update(actionData: ActionTemplateValue): Promise<any> {
     this.validate(actionData)
-    return this.ref.update(actionData)
+    await this.ref.update(actionData)
+    return new ActionTemplate(this.id)
   }
 
   public delete() {

@@ -60,8 +60,8 @@ function ApiKeysSection({ generateApiKey, classes, copyApiKey, tokens }) {
 }
 
 ApiKeysSection.propTypes = {
-  generateApiKey: PropTypes.func.isRequired,
-  copyApiKey: PropTypes.func.isRequired,
+  copyApiKey: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  generateApiKey: PropTypes.func.isRequired, // from enhancer (withHandlers)
   tokens: PropTypes.object, // from enhancer (withStateHandlers)
   classes: PropTypes.object.isRequired // from enhancer (withStyles)
 }

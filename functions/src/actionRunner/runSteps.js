@@ -1,4 +1,4 @@
-import { get, isArray, size, map, isObject } from 'lodash'
+import { get, size, map, isObject } from 'lodash'
 import {
   copyFromRTDBToFirestore,
   copyFromFirestoreToRTDB,
@@ -10,6 +10,7 @@ import {
 } from './actions'
 import { to, promiseWaterfall } from '../utils/async'
 import { hasAll } from '../utils/index'
+import runCustomAction from './runCustomAction'
 import {
   getAppFromServiceAccount,
   cleanupServiceAccounts
@@ -23,9 +24,9 @@ import {
 
 /**
  * Data action using Service account stored on Firestore
- * @param  {functions.database.DataSnapshot} snap - Data snapshot from cloud function
- * @param  {functions.EventContext} context - The context in which an event occurred
- * @param  {object} context.params - Parameters from event
+ * @param {functions.database.DataSnapshot} snap - Data snapshot from cloud function
+ * @param {functions.EventContext} context - The context in which an event occurred
+ * @param {object} context.params - Parameters from event
  * @returns {Promise}
  */
 export async function runStepsFromEvent(snap, context) {
@@ -44,17 +45,17 @@ export async function runStepsFromEvent(snap, context) {
     template: { steps, inputs }
   } = eventData
 
-  if (!isArray(steps)) {
+  if (!Array.isArray(steps)) {
     await updateResponseWithError(snap, context)
     throw new Error('Steps array was not provided to action request')
   }
 
-  if (!isArray(inputs)) {
+  if (!Array.isArray(inputs)) {
     await updateResponseWithError(snap, context)
     throw new Error('Inputs array was not provided to action request')
   }
 
-  if (!isArray(inputValues)) {
+  if (!Array.isArray(inputValues)) {
     await updateResponseWithError(snap, context)
     throw new Error('Input values array was not provided to action request')
   }
@@ -107,9 +108,9 @@ export async function runStepsFromEvent(snap, context) {
 
 /**
  * Data action using Service account stored on Firestore
- * @param  {functions.database.DataSnapshot} snap - Data snapshot from cloud function
- * @param  {functions.EventContext} context - The context in which an event occurred
- * @param  {object} context.params - Parameters from event
+ * @param {functions.database.DataSnapshot} snap - Data snapshot from cloud function
+ * @param {functions.EventContext} context - The context in which an event occurred
+ * @param {object} context.params - Parameters from event
  * @returns {Promise}
  */
 export async function runBackupsFromEvent(snap, context) {
@@ -118,17 +119,17 @@ export async function runBackupsFromEvent(snap, context) {
     inputValues,
     template: { backups, inputs }
   } = eventData
-  if (!isArray(backups)) {
+  if (!Array.isArray(backups)) {
     await updateResponseWithError(snap, context)
     throw new Error('Backups array was not provided to action request')
   }
 
-  if (!isArray(inputs)) {
+  if (!Array.isArray(inputs)) {
     await updateResponseWithError(snap, context)
     throw new Error('Inputs array was not provided to action request')
   }
 
-  if (!isArray(inputValues)) {
+  if (!Array.isArray(inputValues)) {
     await updateResponseWithError(snap, context)
     throw new Error('Input values array was not provided to action request')
   }
@@ -171,7 +172,7 @@ export async function runBackupsFromEvent(snap, context) {
 /**
  * Validate and convert list of inputs to relevant types (i.e. serviceAccount
  * data replaced with app)
- * @param  {Array} inputs - List of inputs to convert
+ * @param {Array} inputs - List of inputs to convert
  * @returns {Promise} Resolves with an array of results of converting inputs
  */
 function validateAndConvertEnvironments(eventData, envsMetas, event) {
@@ -188,7 +189,7 @@ function validateAndConvertEnvironments(eventData, envsMetas, event) {
 /**
  * Validate and convert a single input to relevant type
  * (i.e. serviceAccount data replaced with app)
- * @param  {object} original - Original input value
+ * @param {object} original - Original input value
  * @returns {Promise} Resolves with firebase app if service account type,
  * otherwise an dobject
  */
@@ -224,7 +225,7 @@ function validateAndConvertInputs(eventData, inputsMetas, event) {
 /**
  * Validate and convert a single input to relevant type
  * (i.e. serviceAccount data replaced with app)
- * @param  {object} original - Original input value
+ * @param {object} original - Original input value
  * @returns {Promise} Resolves with firebase app if service account type,
  * otherwise an dobject
  */
@@ -250,11 +251,11 @@ function validateAndConvertInputValues(inputMeta, inputValue) {
  * Builds an action runner function which accepts an action config object
  * and the stepIdx. Action runner function runs action then updates
  * response with progress and/or error.
- * @param  {object} eventData - Data from event (contains settings for
- * @param  {Array} inputs - List of inputs
- * @param  {Array} convertedInputValues - List of inputs converted to relevant types
- * @param  {object} event - Event object from Cloud Trigger
- * @param  {Integer} totalNumSteps - Total number of actions
+ * @param {object} eventData - Data from event (contains settings for
+ * @param {Array} inputs - List of inputs
+ * @param {Array} convertedInputValues - List of inputs converted to relevant types
+ * @param {object} event - Event object from Cloud Trigger
+ * @param {Number} totalNumSteps - Total number of actions
  * @returns {Function} Accepts action and stepIdx (used in Promise.all map)
  */
 function createStepRunner({
@@ -268,14 +269,14 @@ function createStepRunner({
 }) {
   /**
    * Run action based on provided settings and update response with progress
-   * @param  {object} action - Action object containing settings for action
-   * @param  {number} stepIdx - Index of the action (from actions array)
+   * @param {object} action - Action object containing settings for action
+   * @param {number} stepIdx - Index of the action (from actions array)
    * @returns {Promise} Resolves with results of progress update call
    */
   return function runStepAndUpdateProgress(step, stepIdx) {
     /**
      * Recieves results of previous action and calls next action
-     * @param  {Any} previousStepResult - result of previous action
+     * @param {Any} previousStepResult - result of previous action
      * @returns {Function} Accepts action and stepIdx (used in Promise.all map)
      */
     return async function runNextStep(previousStepResult) {
@@ -290,8 +291,10 @@ function createStepRunner({
           previousStepResult
         })
       )
+
       // Handle errors running step
       if (err) {
+        console.log('Updating with error', err)
         // Write error back to response object
         await updateResponseWithActionError(snap, context, {
           totalNumSteps,
@@ -299,7 +302,7 @@ function createStepRunner({
         })
         throw new Error(`Error running step: ${stepIdx} : ${err.message}`)
       }
-
+      console.log('Updating with progress')
       // Update response with step complete progress
       await updateResponseWithProgress(snap, context, {
         totalNumSteps,
@@ -313,12 +316,12 @@ function createStepRunner({
 
 /**
  * Data action using Service account stored on Firestore
- * @param  {object} step - Object containing settings for step
- * @param  {Array} inputs - Inputs provided to the action
- * @param  {Array} convertedInputValues - Inputs provided to the action converted
+ * @param {object} step - Object containing settings for step
+ * @param {Array} inputs - Inputs provided to the action
+ * @param {Array} convertedInputValues - Inputs provided to the action converted
  * to relevant data (i.e. service accounts)
- * @param  {number} stepIdx - Index of the action (from actions array)
- * @param  {object} eventData - Data from event (contains settings for
+ * @param {number} stepIdx - Index of the action (from actions array)
+ * @param {object} eventData - Data from event (contains settings for
  * action request)
  * @returns {Promise} Resolves with results of running the provided action
  */
@@ -341,15 +344,19 @@ export async function runStep({
   }
   const { type, src, dest } = step
 
-  // Run custom action type (i.e. Code written within Firepad)
-  if (type === 'custom') {
-    console.error('Step type is "Custom", returning error')
-    throw new Error('Custom action type not currently supported')
-  }
-
   // Service accounts come from converted version of what is selected for inputs
   const app1 = get(convertedEnvs, '0')
   const app2 = get(convertedEnvs, '1')
+
+  // Run custom action type (i.e. Code written within Firepad)
+  if (type === 'custom') {
+    return runCustomAction({
+      app1,
+      app2,
+      step,
+      convertedInputValues
+    })
+  }
 
   // Require src and dest for all other step types
   if (!src || !dest || !src.resource || !dest.resource) {

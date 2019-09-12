@@ -58,7 +58,6 @@ Verify Functions:
     - yarn --cwd functions build # Build to confirm no build errors
 
 # ---------------------------- Packages -------------------------- #
-# Build Docs
 ## Installs dependencies, builds app, and saves results for later (artifacts)
 Build Packages:
   stage: build
@@ -83,6 +82,8 @@ Build Packages:
     key: $CI_COMMIT_REF_SLUG
     paths:
       - .yarn
+  before_script:
+    - lerna bootstrap # install package dependencies
   script:
     - yarn lint:packages
     - yarn build:packages
@@ -317,7 +318,7 @@ UI Tests:
     # Set TEST_SPEC_ARG if TEST_SPECS env variable is set (allowing to run only a subset of tests)
     - if [ -z "$TEST_SPECS" ]; then export TEST_SPEC_ARG="--spec \"$TEST_SPECS\""; fi
     # Install only dev deps including Cypress binary (skipped in default before_script)
-    - yarn install --production=true
+    - yarn install --production --loglevel error
     # Confirm Cypress is ready to use
     - $(npm bin)/cypress verify
     # Create Environment specific src/config.js file

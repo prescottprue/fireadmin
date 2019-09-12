@@ -7,10 +7,10 @@ import { shallowRtdbGet } from '../utils/rtdb'
 
 /**
  * Copy data between Firestore instances from two different Firebase projects
- * @param  {admin.App} app1 - First app for the action
- * @param  {admin.App} app2 - Second app for the action
- * @param  {object} eventData - Data from event (contains settings)
- * @param  {object} inputValues - Values of inputs
+ * @param {admin.App} app1 - First app for the action
+ * @param {admin.App} app2 - Second app for the action
+ * @param {object} eventData - Data from event (contains settings)
+ * @param {object} inputValues - Values of inputs
  * @returns {Promise} Resolves with result of update call
  */
 export async function copyBetweenFirestoreInstances(
@@ -53,9 +53,9 @@ export async function copyBetweenFirestoreInstances(
 
 /**
  * Copy data from Cloud Firestore to Firebase Real Time Database
- * @param  {admin.App} app1 - First app for the action
- * @param  {admin.App} app2 - Second app for the action
- * @param  {object} eventData - Data from event (contains settings)
+ * @param {admin.App} app1 - First app for the action
+ * @param {admin.App} app2 - Second app for the action
+ * @param {object} eventData - Data from event (contains settings)
  * @returns {Promise} Resolves with result of update call
  */
 export async function copyFromFirestoreToRTDB(
@@ -110,9 +110,9 @@ export async function copyFromFirestoreToRTDB(
 
 /**
  * Copy data from Real Time Database to Cloud Firestore
- * @param  {admin.App} app1 - First app for the action
- * @param  {admin.App} app2 - Second app for the action
- * @param  {object} eventData - Data from event (contains settings)
+ * @param {admin.App} app1 - First app for the action
+ * @param {admin.App} app2 - Second app for the action
+ * @param {object} eventData - Data from event (contains settings)
  * @returns {Promise} Resolves with result of update call
  */
 export async function copyFromRTDBToFirestore(
@@ -208,9 +208,9 @@ export async function copyBetweenRTDBInstances(
 
 /**
  * Copy data between Firebase Realtime Database Instances
- * @param  {admin.App} app1 - First app for the action
- * @param  {admin.App} app2 - Second app for the action
- * @param  {object} eventData - Data from event (contains settings)
+ * @param {admin.App} app1 - First app for the action
+ * @param {admin.App} app2 - Second app for the action
+ * @param {object} eventData - Data from event (contains settings)
  * @returns {Promise} Resolves with result of update call
  */
 export async function copyPathBetweenRTDBInstances(
@@ -261,9 +261,9 @@ const DEFAULT_RTDB_BATCH_SIZE = 50
 
 /**
  * Copy data between Firebase Realtime Database Instances in batches (suited for large data sets)
- * @param  {admin.App} app1 - First app for the action
- * @param  {admin.App} app2 - Second app for the action
- * @param  {object} eventData - Data from event (contains settings)
+ * @param {admin.App} app1 - First app for the action
+ * @param {admin.App} app2 - Second app for the action
+ * @param {object} eventData - Data from event (contains settings)
  * @returns {Promise} Resolves with result of update call
  */
 export async function batchCopyBetweenRTDBInstances(
@@ -316,9 +316,9 @@ export async function batchCopyBetweenRTDBInstances(
 
 /**
  * Copy JSON from Firebase Real Time Database to Google Cloud Storage
- * @param  {admin.App} app1 - First app for the action
- * @param  {admin.App} app2 - Second app for the action
- * @param  {object} eventData - Data from event (contains settings)
+ * @param {admin.App} app1 - First app for the action
+ * @param {admin.App} app2 - Second app for the action
+ * @param {object} eventData - Data from event (contains settings)
  * @returns {Promise} Resolves with result of update call
  */
 export async function copyFromStorageToRTDB(app1, app2, eventData) {
@@ -340,9 +340,9 @@ export async function copyFromStorageToRTDB(app1, app2, eventData) {
 
 /**
  * Copy JSON from Cloud Storage to Firebase Real Time Database
- * @param  {admin.App} app1 - First app for the action
- * @param  {admin.App} app2 - Second app for the action
- * @param  {object} eventData - Data from event (contains settings)
+ * @param {admin.App} app1 - First app for the action
+ * @param {admin.App} app2 - Second app for the action
+ * @param {object} eventData - Data from event (contains settings)
  * @returns {Promise} Resolves with result of update call
  */
 export async function copyFromRTDBToStorage(app1, app2, eventData) {

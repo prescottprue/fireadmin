@@ -52,7 +52,7 @@ export async function generateAuthTokenRequest(req, res) {
 
   // Generate custom token (expires in 1 hour)
   const [generateTokenErr, customToken] = await to(
-    admin.auth().createCustomToken(uid, { isCustom: true })
+    admin.auth().createCustomToken(uid, { isApi: true })
   )
 
   // Handle errors generating custom token

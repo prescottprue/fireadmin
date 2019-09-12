@@ -47,9 +47,9 @@ const babelConfig = {
 
 /**
  * Run babel transform on a string (settings same as function babelification)
- * @param  {String} stringToTransform - String code on which to run babel
+ * @param  stringToTransform - String code on which to run babel
  * transform
- * @return {String} Babelified string
+ * @return Babelified string
  */
 
 function runBabelTransform(stringToTransform: string) {
@@ -72,7 +72,7 @@ export async function requireAsync(modulePath: string) {
     exports: {}
   }
   try {
-    return eval(babelifiedString || '') // eslint-disable-line no-eval
+    return babelifiedString
   } catch (err) {
     console.log('Error evaling running code:', err) // eslint-disable-line no-console
     throw err

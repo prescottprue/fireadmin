@@ -12,16 +12,17 @@
   ],
   "scripts": {
     "clean": "rimraf lib coverage",
-    "build": "npm run build:lib && npm run build:esm",
+    "build": "yarn build:lib && yarn build:esm && yarn build:types",
+    "build:types": "tsc --declaration",
     "build:typefile": "tsc --declaration --outFile index.d.ts --emitDeclarationOnly",
     "build:schema": "$(npm bin)/ts-node ./scripts/schemaToTypescript.ts",
     "build:lib": "tsc && cp -r src/schemas lib/schemas",
     "build:esm": "tsc && tsc -m es6 --outDir lib-esm",
     "lint": "eslint src/**.ts --ext .ts",
-    "lint:fix": "npm run lint -- --fix",
-    "watch": "npm run build:lib -- -w",
-    "prepare": "npm run clean && npm run build && npm run build:esm",
-    "pre-push": "npm run lint"
+    "lint:fix": "yarn lint -- --fix",
+    "watch": "yarn build:lib -- -w",
+    "prepare": "yarn clean && yarn build && yarn build:esm",
+    "pre-push": "yarn lint"
   },
   "repository": {
     "directory": "packages/core",
@@ -42,7 +43,7 @@
   "homepage": "https://github.com/prescottprue/fireadmin",
   "dependencies": {
     "ajv": "^6.10.2",
-    "firebase": "^6.4.2",
+    "firebase": "^6.6.0",
     "lodash": "^4.17.15"
   },
   "devDependencies": {

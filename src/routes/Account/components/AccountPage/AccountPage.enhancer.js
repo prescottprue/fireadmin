@@ -1,10 +1,11 @@
 import { omit } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { withHandlers, withProps } from 'recompose'
 import withFirebase from 'react-redux-firebase/lib/withFirebase'
 import { UserIsAuthenticated } from 'utils/router'
 import { spinnerWhileLoading } from 'utils/components'
+import { withStyles } from '@material-ui/core/styles'
+import styles from './AccountPage.styles'
 
 export default compose(
   UserIsAuthenticated, // redirect to /login if user is not authenticated
@@ -12,14 +13,8 @@ export default compose(
   connect(({ firebase: { profile } }) => ({
     // get profile from redux state
     profile,
-    avatarUrl: profile.avatarUrl
+    cleanProfile: omit(profile, ['isEmpty', 'isLoaded'])
   })),
   spinnerWhileLoading(['profile']), // spinner until profile loads
-  withHandlers({
-    updateAccount: ({ firebase }) => newAccount =>
-      firebase.updateProfile(newAccount)
-  }),
-  withProps(({ profile }) => ({
-    cleanProfile: omit(profile, ['isEmpty', 'isLoaded'])
-  }))
+  withStyles(styles)
 )

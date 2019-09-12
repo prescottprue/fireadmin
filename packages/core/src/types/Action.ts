@@ -8,13 +8,26 @@ export interface ActionInputSetting {
   required?: boolean
 }
 
-export type ActionStepType = 'copy' | 'custom'
+export type CustomActionStepType = 'custom'
+export type ActionStepType = 'copy' | CustomActionStepType
 
-export interface ActionStepSetting {
-  name: string
-  type: ActionStepType
-  filePath?: string
+export interface CustomActionStepSetting {
+  name?: string
+  description?: string
+  type: CustomActionStepType
+  content: string
+  filePath: string
 }
+
+export interface GenericActionStepSetting {
+  name?: string
+  description?: string
+  type: ActionStepType
+  src?: any
+  dest?: any
+}
+
+export type ActionStepSetting = GenericActionStepSetting | CustomActionStepSetting
 
 export interface WhenSetting {
   beforeMerge?: boolean
@@ -22,10 +35,13 @@ export interface WhenSetting {
   notDuringBuisnessHours?: boolean
 }
 
+/**
+ * Settings for a Fireadmin Action Run
+ */
 export interface ActionSettings {
-  environments?: ActionEnvironmentSetting[]
-  inputs?: ActionInputSetting[]
-  steps?: ActionStepSetting[]
+  environments: ActionEnvironmentSetting[]
+  inputs: ActionInputSetting[]
+  steps: ActionStepSetting[]
   when?: WhenSetting
   idempotent?: boolean
 }

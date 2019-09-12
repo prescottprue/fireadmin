@@ -1,4 +1,4 @@
-import admin from 'firebase-admin'
+import * as admin from 'firebase-admin'
 import express from 'express'
 import { Projects } from '@fireadmin/core'
 import { to } from 'utils/async'

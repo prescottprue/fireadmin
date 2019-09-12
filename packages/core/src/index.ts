@@ -1,12 +1,19 @@
 import { FireadminConfig } from './types/index'
-import { initializeFirebase, getApp } from './utils/firebase'
+import { initializeFirebase } from './utils/firebase'
 import { loginWithApiKey } from './auth'
 import Project from './Project'
 import Projects from './Projects'
+import ActionRequest from './ActionRequest'
 import ActionTemplates from './ActionTemplates'
 import ActionTemplate from './ActionTemplate'
 import Users from './Users'
 import User from './User'
+import {
+  ActionEnvironmentSetting,
+  ActionSettings,
+  ActionInputSetting,
+  CustomActionStepSetting
+} from './types/Action'
 
 /**
  * Initialize Typesafe Client library (internally initializes Firebase)
@@ -23,7 +30,12 @@ export {
   User,
   ActionTemplates,
   ActionTemplate,
-  loginWithApiKey
+  ActionRequest,
+  loginWithApiKey,
+  ActionEnvironmentSetting,
+  ActionSettings,
+  ActionInputSetting,
+  CustomActionStepSetting
 }
 
 export default initialize
