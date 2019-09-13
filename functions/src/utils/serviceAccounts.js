@@ -75,7 +75,7 @@ export async function getAppFromServiceAccount(opts, eventData) {
     serviceAccountFromFirestorePath(
       `projects/${projectId}/environments/${id || environmentKey}`,
       appName,
-      { returnData: false }
+      { returnData: true }
     )
   )
 
@@ -150,14 +150,14 @@ export async function serviceAccountFromFirestorePath(
     throw new Error('Service account not a valid object')
   }
 
-  const localPath = `serviceAccounts/${name}.json`
-  const tempLocalPath = path.join(os.tmpdir(), localPath)
-  const tempLocalDir = path.dirname(tempLocalPath)
-
   // Return service account data if specified by options
   if (returnData) {
     return serviceAccountData
   }
+
+  const localPath = `serviceAccounts/${name}.json`
+  const tempLocalPath = path.join(os.tmpdir(), localPath)
+  const tempLocalDir = path.dirname(tempLocalPath)
 
   // Write decrypted string as a local file and return
   try {

@@ -1,5 +1,5 @@
 import { existsSync } from 'fs'
-import { get, find } from 'lodash'
+import { get, find, map } from 'lodash'
 import { ActionRequestValue } from '@fireadmin/core/types/types/ActionRequest'
 import {
   ActionEnvironmentSetting,
@@ -128,6 +128,10 @@ async function getLocalActionSettings(): Promise<ActionRequestValue> {
     })
   )
   const environmentsByName = await prompt({}, environmentQuestions)
+  const environmentValues = map(environmentsByName, (environmentName, environmentSettingName) => {
+    const selectedEnvironment: any = find(environmentsOptions, { name: environmentName })
+    return selectedEnvironment.id
+  })
   
   // Ask for input preferences from Fireadmin project based on template settings
   const inputSettings: ActionInputSetting[] = get(actionSettings, 'inputs', [])
@@ -182,7 +186,9 @@ async function getLocalActionSettings(): Promise<ActionRequestValue> {
 
   const steps: any[] = stepsResults.filter((stepResult: CustomActionStepSetting | null) => !!stepResult)
 
-  return { steps, environments: environmentSettings, inputs: inputSettings, inputValues, projectId: project.id }
+  console.log('Local action settings:', { steps, environments: environmentSettings, environmentValues, inputs: inputSettings, inputValues, projectId: project.id })
+
+  return { steps, environments: environmentSettings, environmentValues, inputs: inputSettings, inputValues, projectId: project.id }
 }
 
 /**

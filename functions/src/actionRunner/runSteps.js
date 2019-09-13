@@ -1,3 +1,4 @@
+import * as admin from 'firebase-admin'
 import { get, size, map } from 'lodash'
 import {
   copyFromRTDBToFirestore,
@@ -21,6 +22,10 @@ import {
   updateResponseWithError,
   updateResponseWithActionError
 } from './utils'
+import {
+  PROJECTS_COLLECTION,
+  PROJECTS_ENVIRONMENTS_COLLECTION
+} from '@fireadmin/core/lib/constants/firestorePaths'
 
 /**
  * Data action using Service account stored on Firestore
@@ -71,7 +76,7 @@ export async function runStepsFromEvent(snap, context) {
   // Convert inputs into their values
   const convertedInputValues = validateAndConvertInputs(eventData, inputs)
 
-  const totalNumSteps = size(steps)
+  const totalNumSteps = steps.length
 
   console.log(`Running ${totalNumSteps} steps(s)`)
 
@@ -196,27 +201,62 @@ function validateAndConvertEnvironments(eventData, envsMetas, event) {
  * @returns {Promise} Resolves with firebase app if service account type,
  * otherwise an dobject
  */
-async function validateAndConvertEnvironment(eventData, inputMeta, inputValue) {
+async function validateAndConvertEnvironment(
+  eventData,
+  environmentMeta,
+  environmentValue
+) {
   // Throw if input is required and is missing serviceAccountPath or databaseURL
   const varsNeededForStorageType = ['fullPath', 'databaseURL']
   const varsNeededForFirstoreType = ['credential', 'databaseURL']
+  let envWithServiceAccount = { ...environmentValue }
+
+  // Check if environment data has already been included, if not load environment
   if (
-    get(inputMeta, 'required') &&
-    !hasAll(inputValue, varsNeededForStorageType) &&
-    !hasAll(inputValue, varsNeededForFirstoreType)
+    get(environmentMeta, 'required') &&
+    !hasAll(environmentValue, varsNeededForStorageType) &&
+    !hasAll(environmentValue, varsNeededForFirstoreType)
   ) {
-    throw new Error(
-      'Environment input is required and does not contain required parameters'
+    console.log(
+      'Environment does not contain params, loading environment:',
+      environmentValue
     )
+
+    console.log('Type of environment value:', typeof environmentValue)
+
+    // Load environment using environment value as a key
+    const [getEnvErr, environmentSnap] = await to(
+      admin
+        .firestore()
+        .doc(
+          `${PROJECTS_COLLECTION}/${
+            eventData.projectId
+          }/${PROJECTS_ENVIRONMENTS_COLLECTION}/${environmentValue}`
+        )
+        .get()
+    )
+
+    // Handle errors loading environment
+    if (getEnvErr) {
+      console.error('Error getting environment', getEnvErr)
+      throw getEnvErr
+    }
+
+    const environmentData = environmentSnap.data()
+    if (environmentData) {
+      envWithServiceAccount = environmentData
+    }
   }
 
-  return getAppFromServiceAccount(inputValue, eventData)
+  console.log('Getting app from service account:', envWithServiceAccount)
+
+  return getAppFromServiceAccount(envWithServiceAccount, eventData)
 }
 
 /**
  * Validate and convert list of inputs to relevant types (i.e. serviceAccount
  * data replaced with app)
- * @param  {Array} inputs - List of inputs to convert
+ * @param {Array} inputs - List of inputs to convert
  * @returns {Promise} Resolves with an array of results of converting inputs
  */
 function validateAndConvertInputs(eventData, inputsMetas, event) {

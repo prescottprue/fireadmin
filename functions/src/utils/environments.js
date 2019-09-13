@@ -1,11 +1,10 @@
 import * as admin from 'firebase-admin'
-import { map } from 'lodash'
+import { map, pick } from 'lodash'
 import { to } from 'utils/async'
 import {
   PROJECTS_COLLECTION,
   PROJECTS_ENVIRONMENTS_COLLECTION
 } from '@fireadmin/core/lib/constants/firestorePaths'
-import { dataArrayFromSnap } from 'utils/firestore'
 
 /**
  * Get project by the name of the project
@@ -19,6 +18,7 @@ export async function getProjectByName(projectName) {
       .where('name', '==', projectName)
       .get()
   )
+
   if (getProjectErr) {
     console.error(
       `Error getting project with name "${projectName}"`,
@@ -26,11 +26,14 @@ export async function getProjectByName(projectName) {
     )
     throw getProjectErr
   }
-  const [firstProject] = dataArrayFromSnap(projectsSnap)
+
+  const [firstProject] = projectsSnap.docs
+
   if (!firstProject) {
     console.error(`Project with name "${projectName}" not found`)
     throw new Error('Project not found')
   }
+
   return firstProject
 }
 
@@ -43,6 +46,7 @@ export async function getEnvironmentsFromProjectRef(projectRef) {
   const [getEnvironmentsErr, environmentsSnap] = await to(
     projectRef.collection(PROJECTS_ENVIRONMENTS_COLLECTION).get()
   )
+
   if (getEnvironmentsErr) {
     console.error(
       `Error getting project environments for project with path "${
@@ -52,14 +56,8 @@ export async function getEnvironmentsFromProjectRef(projectRef) {
     )
     throw getEnvironmentsErr
   }
-  const environmentsWithoutCredentials = map(
-    dataArrayFromSnap(environmentsSnap),
-    environment => {
-      return {
-        id: environment.id,
-        name: environment.data.name
-      }
-    }
+
+  return map(environmentsSnap.docs, environment =>
+    pick(environment, ['id', 'name', 'databaseURL'])
   )
-  return environmentsWithoutCredentials
 }

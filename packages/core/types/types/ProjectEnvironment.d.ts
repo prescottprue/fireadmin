@@ -5,6 +5,7 @@ export interface ProjectEnvironmentValue {
     databaseURL?: string;
     description?: string;
     projectId?: string;
+    id?: string;
     serviceAccount?: {
         credential?: string;
         fullPath?: string;

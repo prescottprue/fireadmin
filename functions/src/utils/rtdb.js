@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin'
 import request from 'request-promise'
-import { isString, uniqueId } from 'lodash'
+import { uniqueId } from 'lodash'
 import { to } from './async'
 import {
   authClientFromServiceAccount,
@@ -10,7 +10,7 @@ import {
 /**
  * Create a reference to Real Time Database at a provided path. Uses credentials
  * of Cloud Functions.
- * @param  {string} refPath - path for database reference
+ * @param {string} refPath - path for database reference
  * @returns {firebase.Database.Reference} Database reference for provided path
  */
 export function rtdbRef(refPath) {
@@ -51,11 +51,11 @@ export function waitForValue(ref) {
 
 /**
  * Request google APIs with auth attached
- * @param  {object}  opts - Google APIs method to call
- * @param  {string}  opts.projectId - Id of fireadmin project
- * @param  {string}  opts.environmentId - Id of fireadmin environment
- * @param  {string}  opts.databaseName - Name of database on which to run (defaults to project base DB)
- * @param  {string}  rtdbPath - Path of RTDB data to get
+ * @param {object}  opts - Google APIs method to call
+ * @param {string}  opts.projectId - Id of fireadmin project
+ * @param {string}  opts.environmentId - Id of fireadmin environment
+ * @param {string}  opts.databaseName - Name of database on which to run (defaults to project base DB)
+ * @param {string}  rtdbPath - Path of RTDB data to get
  * @returns {Promise} Resolves with results of RTDB shallow get
  */
 export async function shallowRtdbGet(opts, rtdbPath = '') {
@@ -103,8 +103,10 @@ export async function shallowRtdbGet(opts, rtdbPath = '') {
     )
     throw getErr.error || getErr
   }
-  if (isString(response)) {
+
+  if (typeof response === 'string') {
     return JSON.parse(response)
   }
+
   return response
 }
