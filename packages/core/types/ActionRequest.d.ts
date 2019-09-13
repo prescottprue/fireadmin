@@ -9,7 +9,6 @@ export default class ActionRequest extends RTDBItem {
     steps?: ActionStepSetting[];
     constructor(actionId?: string, actionData?: Partial<ActionRequestValue>);
     validate(actionData: ActionRequestValue): void;
-    create(newActionData: ActionRequestValue): Promise<ActionRequest>;
     get(options?: GetOptions): Promise<ActionRequest>;
     update(actionData: ActionRequestValue): Promise<ActionRequest>;
 }

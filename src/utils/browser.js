@@ -1,3 +1,8 @@
+/**
+ * Set a string to the clipboard. Useful for click
+ * to copy value
+ * @param {string} str - String to set to clipboard
+ */
 export function setStringToClipboard(str) {
   // Create new element
   var el = document.createElement('textarea')

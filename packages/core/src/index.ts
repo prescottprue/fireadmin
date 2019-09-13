@@ -3,6 +3,7 @@ import { initializeFirebase } from './utils/firebase'
 import { loginWithApiKey } from './auth'
 import Project from './Project'
 import Projects from './Projects'
+import ActionRequests from './ActionRequests'
 import ActionRequest from './ActionRequest'
 import ActionTemplates from './ActionTemplates'
 import ActionTemplate from './ActionTemplate'
@@ -30,6 +31,7 @@ export {
   User,
   ActionTemplates,
   ActionTemplate,
+  ActionRequests,
   ActionRequest,
   loginWithApiKey,
   ActionEnvironmentSetting,

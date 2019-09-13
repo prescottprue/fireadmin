@@ -1,3 +1,4 @@
+import * as firebase from 'firebase/app';
 import { ActionSettings } from './Action';
 import { ActionTemplateValue } from './ActionTemplate';
 export interface ActionRequestValue extends ActionSettings {
@@ -10,6 +11,6 @@ export interface ActionRequestValue extends ActionSettings {
     template?: ActionTemplateValue;
     inputValues?: string[];
     environmentValues?: string[];
-    createdAt?: firebase.firestore.FieldValue;
-    updatedAt?: firebase.firestore.FieldValue;
+    createdAt?: typeof firebase.database.ServerValue.TIMESTAMP;
+    updatedAt?: typeof firebase.database.ServerValue.TIMESTAMP;
 }

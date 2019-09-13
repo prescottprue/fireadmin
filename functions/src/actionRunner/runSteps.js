@@ -1,4 +1,4 @@
-import { get, size, map, isObject } from 'lodash'
+import { get, size, map } from 'lodash'
 import {
   copyFromRTDBToFirestore,
   copyFromFirestoreToRTDB,
@@ -35,15 +35,18 @@ export async function runStepsFromEvent(snap, context) {
     throw new Error('Run action request does not contain a value.')
   }
 
-  if (!isObject(eventData.template)) {
-    throw new Error('Action template is required to run steps')
-  }
-
   const {
     inputValues,
     environments,
-    template: { steps, inputs }
+    steps: actionSteps,
+    inputs: actionInputs,
+    template
   } = eventData
+
+  const { steps: templateSteps, inputs: templateInputs } = template || {}
+
+  const steps = actionSteps || templateSteps
+  const inputs = actionInputs || templateInputs
 
   if (!Array.isArray(steps)) {
     await updateResponseWithError(snap, context)

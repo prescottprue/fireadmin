@@ -22,18 +22,37 @@ export default class ActionRequests {
       Object.assign(this, templateData)
     }
   }
+
   /**
    * Create a new Action Request
    */
   public async create(
     newActionRequest: ActionRequestValue
   ): Promise<ActionRequest> {
-    await runValidationForClass(ActionRequest, newActionRequest)
-    const pushRef = await this.ref.push(newActionRequest)
-    if (!pushRef.key) {
-      throw new Error('Error creating new action request')
+    const actionRequestData = { ...newActionRequest }
+    const currentUser = getApp().auth().currentUser
+
+    // Add createdBy if it doesn't exist
+    if (!newActionRequest.createdBy && !!currentUser) {
+      actionRequestData.createdBy = currentUser.uid
     }
-    return new ActionRequest(pushRef.key, newActionRequest)
+
+    if (!newActionRequest.createdAt) {
+      actionRequestData.createdAt = firebase.database.ServerValue.TIMESTAMP
+    }
+
+    await runValidationForClass('ActionRequest', actionRequestData)
+    console.log('Action request data', actionRequestData)
+    try {
+      const pushRef = await this.ref.push(actionRequestData)
+      if (!pushRef.key) {
+        throw new Error('Error creating new action request')
+      }
+      return new ActionRequest(pushRef.key, actionRequestData)
+    } catch(err) {
+      console.error('Error creating new action request', err.message || err)
+      throw err
+    }
   }
 
   /**

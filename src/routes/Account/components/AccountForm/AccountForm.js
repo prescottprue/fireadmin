@@ -4,10 +4,18 @@ import { Field } from 'redux-form'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import { TextField } from 'redux-form-material-ui'
+import MaterialTextField from '@material-ui/core/TextField'
 import ProviderDataForm from '../ProviderDataForm'
 import defaultUserImageUrl from 'static/User.png'
 
-function AccountForm({ classes, account, handleSubmit, submitting, pristine }) {
+function AccountForm({
+  classes,
+  uid,
+  account,
+  handleSubmit,
+  submitting,
+  pristine
+}) {
   return (
     <form className={classes.root} onSubmit={handleSubmit}>
       <Grid container spacing={16} justify="center">
@@ -19,6 +27,9 @@ function AccountForm({ classes, account, handleSubmit, submitting, pristine }) {
         </Grid>
         <Grid item xs={12} sm={8} md={4} className={classes.meta}>
           <Grid container spacing={16} justify="center">
+            <Grid item xs={10} sm={8} md={12}>
+              <MaterialTextField fullWidth value={uid} disabled label="UID" />
+            </Grid>
             <Grid item xs={10} sm={8} md={12}>
               <Field
                 fullWidth
@@ -72,6 +83,7 @@ AccountForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired, // from enhancer (reduxForm)
   pristine: PropTypes.bool.isRequired, // from enhancer (reduxForm)
   submitting: PropTypes.bool.isRequired, // from enhancer (reduxForm)
+  uid: PropTypes.string, // from enhancer (connect)
   account: PropTypes.object
 }
 

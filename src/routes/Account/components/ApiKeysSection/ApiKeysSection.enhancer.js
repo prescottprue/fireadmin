@@ -8,10 +8,12 @@ import User from '@fireadmin/core/lib/User'
 import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import { withStyles } from '@material-ui/core/styles'
 import { withHandlers } from 'recompose'
-import { setStringToClipboard } from 'utils/browser'
 import styles from './ApiKeysSection.styles'
+import { withNotifications } from 'modules/notification'
+import { spinnerWhileLoading } from 'utils/components'
 
 export default compose(
+  withNotifications,
   // Map auth uid from state to props
   connect(({ firebase: { auth: { uid } } }) => ({ uid })),
   // create listener for tokens, results go into redux
@@ -21,20 +23,27 @@ export default compose(
         collection: USERS_COLLECTION,
         doc: uid,
         subcollections: [{ collection: USER_API_KEYS_SUBCOLLECTION }],
+        orderBy: ['createdAt'],
         storeAs: `${uid}-apikeys`
       }
     ]
   }),
   // map redux state to props
-  connect(({ firestore: { data } }, { uid }) => ({
-    tokens: data[`${uid}-apikeys`]
+  connect(({ firestore: { ordered } }, { uid }) => ({
+    tokens: ordered[`${uid}-apikeys`]
   })),
+  spinnerWhileLoading(['tokens']),
   withHandlers({
-    copyApiKey: () => apiKey => {
-      setStringToClipboard(apiKey)
-    },
-    generateApiKey: ({ uid }) => () => {
-      return new User(uid).generateApiKey()
+    generateApiKey: ({ uid, showSuccess, showError }) => () => {
+      return new User(uid)
+        .generateApiKey()
+        .then(apiKey => {
+          showSuccess('Successfully generated API Key')
+        })
+        .catch(err => {
+          showError('Error generating API Key')
+          return Promise.reject(err)
+        })
     }
   }),
   withStyles(styles)

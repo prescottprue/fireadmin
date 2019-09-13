@@ -39,6 +39,7 @@ export interface WhenSetting {
  * Settings for a Fireadmin Action Run
  */
 export interface ActionSettings {
+  projectId?: string
   environments: ActionEnvironmentSetting[]
   inputs: ActionInputSetting[]
   steps: ActionStepSetting[]

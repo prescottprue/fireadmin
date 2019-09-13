@@ -13,7 +13,7 @@ import { validateRequest } from 'utils/firebaseFunctions'
  * @param res - Express HTTP Response
  */
 export async function generateAuthTokenRequest(req, res) {
-  const requestData = req.body || {}
+  const requestData = (req.body && req.body.data) || {}
   console.log('Custom token request:', requestData)
 
   // Verify projectId exists
@@ -51,7 +51,7 @@ export async function generateAuthTokenRequest(req, res) {
   }
 
   // Generate custom token (expires in 1 hour)
-  const [generateTokenErr, customToken] = await to(
+  const [generateTokenErr, token] = await to(
     admin.auth().createCustomToken(uid, { isApi: true })
   )
 
@@ -64,7 +64,7 @@ export async function generateAuthTokenRequest(req, res) {
     return res.status(500).send('Internal error')
   }
 
-  return res.send(customToken)
+  return res.json({ data: { token } })
 }
 
 /**

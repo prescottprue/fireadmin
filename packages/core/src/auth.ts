@@ -1,5 +1,6 @@
 import { initializeFirebase, getApp } from './utils/firebase'
 import { to } from './utils/async'
+// import request from 'request-promise-native'
 
 export async function loginWithApiKey(apiKey: string, uid: string) {
   try {
@@ -16,19 +17,22 @@ export async function loginWithApiKey(apiKey: string, uid: string) {
   }
 
   if (!uid) {
-    throw new Error('uid is required to Login WIth API Key')
+    throw new Error('uid is required to Login With API Key')
   }
 
   // Call generateAuthToken cloud function to get customToken from API Key
   const [tokenErr, tokenRes] = await to(
     getApp()
-      .functions()
-      .httpsCallable('generateAuthToken')({ token: apiKey, uid })
+    .functions()
+    .httpsCallable('generateAuthToken')({ apiKey, uid })
+    // request(`https://us-central1-fireadmin-stage.cloudfunctions.net/generateAuthToken`)
   )
+
   if (tokenErr) {
     console.error('Error generating auth token for Fireadmin API', tokenErr) // eslint-disable-line no-console
     throw tokenErr
   }
+
   if (!tokenRes || !tokenRes.data) {
     const missingTokenMsg = 'Token does not exist within response'
     console.error(missingTokenMsg) // eslint-disable-line no-console
@@ -39,8 +43,9 @@ export async function loginWithApiKey(apiKey: string, uid: string) {
   const [loginErr, loginRes] = await to(
     getApp()
       .auth()
-      .signInWithCustomToken(tokenRes.data)
+      .signInWithCustomToken(tokenRes.data.token)
   )
+
   if (loginErr) {
     /* eslint-disable */
     console.error(
@@ -51,5 +56,5 @@ export async function loginWithApiKey(apiKey: string, uid: string) {
     throw loginErr
   }
 
-  return { token: tokenRes.data, ...loginRes }
+  return { token: tokenRes.data.token, ...loginRes }
 }

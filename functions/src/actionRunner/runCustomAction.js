@@ -1,3 +1,5 @@
+import safeEval from 'safer-eval'
+
 /**
  * Get code from Firepad, run babel transform on it, and invoke it within
  * function context.
@@ -9,18 +11,21 @@
  * @returns {Promise} Resolves with transformed Firepad content
  */
 export default async function runCustomAction(options) {
-  console.log('Running custom action')
+  console.log('Running custom action', options)
   const { app1, app2, step } = options
   // const { type, src, dest } = step
   // TOOD: Execute javascript that has been included within step
   const evalContext = {
-    console: { log: console.log, warn: console.warn, error: console.error },
+    console,
     output: {}
   }
-  console.log('Before', evalContext)
   try {
-    const promiseString = new Function(`return ${step.content}`)() // eslint-disable-line no-new-func
-    const result = await promiseString(app1, app2, step)
+    const promiseFunc = safeEval(step.content, evalContext) // eslint-disable-line no-new-func
+    console.log(
+      'Type of promise func then',
+      typeof promiseFunc(app1, app2, step).then
+    )
+    const result = await promiseFunc(app1, app2, step)
     console.log('Result', result)
     return result
   } catch (err) {

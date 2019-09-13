@@ -3,11 +3,10 @@ import { runValidationForClass } from './utils/validation'
 import { ProjectValue } from './types/Project'
 import {
   GetOptions,
-  snapToItemsArray,
-  snapToArray,
   getApp
 } from './utils/firebase'
 import Project from './Project'
+import { to } from './utils/async'
 
 export default class Projects {
   public path?: string
@@ -32,24 +31,44 @@ export default class Projects {
   /**
    * Get a list of Projects
    */
-  public async get(options?: GetOptions): Promise<Project[] | object[]> {
+  public async get(options?: GetOptions): Promise<Project[] | any[]> {
     const { currentUser } = getApp().auth()
-    const ref = currentUser
+    const userCollabProjectsRef = currentUser
+    ? this.ref.where(`collaborators.${currentUser.uid}`, '==', true)
+    : this.ref
+    const currentUserProjectsRef = currentUser
       ? this.ref.where('createdBy', '==', currentUser.uid)
       : this.ref
-    const snap = await ref.get(options)
-    if (options && options.json) {
-      return snapToArray(snap)
-    }
-    return snapToItemsArray(
-      snap,
-      (projectsSnap: firebase.firestore.DocumentData | undefined) => {
-        if (projectsSnap) {
-          return !projectsSnap.id
-            ? projectsSnap.data()
-            : new Project(projectsSnap.id, projectsSnap.data())
-        }
-      }
+    
+    const [getDataErr, snaps] = await to(
+      Promise.all([
+        currentUserProjectsRef.get(options),
+        userCollabProjectsRef.get(options)
+      ])
     )
+
+    if (getDataErr) {
+      console.error('Error getting projects', getDataErr)
+      throw new Error('Error getting projects')
+    }
+
+    if (!snaps) {
+      throw new Error('No project snaps found')
+    }
+
+    const [usersProjectsSnap, collabProjectsSnap] = snaps
+    const projects = [ ...(usersProjectsSnap.docs || []), ...(collabProjectsSnap.docs || [])]
+
+    if (options && options.json) {
+      return projects
+    }
+    return projects.reduce((acc: any[], projectSnap: firebase.firestore.QueryDocumentSnapshot) => {
+      if (projectSnap) {
+        return !projectSnap.id
+          ? [ ...acc, projectSnap.data()]
+          : [...acc, new Project(projectSnap.id, projectSnap.data())]
+      }
+      return acc
+    }, [])
   }
 }

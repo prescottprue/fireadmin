@@ -30,18 +30,6 @@ export default class ActionRequest extends RTDBItem {
   }
 
   /**
-   * Create a new action request
-   */
-  public async create(newActionData: ActionRequestValue): Promise<ActionRequest> {
-    this.validate(newActionData)
-    const pushRef = await this.ref.push(newActionData)
-    if (!pushRef.key) {
-      throw new Error('Error creating new action request')
-    }
-    return new ActionRequest(pushRef.key, newActionData)
-  }
-
-  /**
    * Get an ActionRequest and throw if is not found
    */
   public async get(options?: GetOptions): Promise<ActionRequest> {

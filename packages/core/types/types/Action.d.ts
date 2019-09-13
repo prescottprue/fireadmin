@@ -29,6 +29,7 @@ export interface WhenSetting {
     notDuringBuisnessHours?: boolean;
 }
 export interface ActionSettings {
+    projectId?: string;
     environments: ActionEnvironmentSetting[];
     inputs: ActionInputSetting[];
     steps: ActionStepSetting[];

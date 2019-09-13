@@ -1,0 +1,24 @@
+{
+  "title": "ActionRequestValue",
+  "type": "object",
+  "properties": {
+    "createdAt": {
+      "type": ["number", "object"]
+    },
+    "updatedAt": {
+      "type": "number"
+    },
+    "createdBy": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "templateId": {
+      "type": "string"
+    }
+  }
+}

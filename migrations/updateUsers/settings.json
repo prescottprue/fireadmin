@@ -1,0 +1,15 @@
+{
+  "when": {
+    "beforeMerge": true,
+    "notDuringBusinessHours": true
+  },
+  "environments": [
+    { "name": "Main", "required": true }
+  ],
+  "inputs": [
+    { "name": "Path", "required": true }
+  ],
+  "steps": [
+    { "name": "Run User Update", "type": "custom", "filePath": "addNew.js" }
+  ]
+}

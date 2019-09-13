@@ -6,5 +6,5 @@ export default class Projects {
     ref: firebase.firestore.CollectionReference;
     constructor(financialTransactionsData?: object);
     create(newProjectData: ProjectValue): Promise<Project>;
-    get(options?: GetOptions): Promise<Project[] | object[]>;
+    get(options?: GetOptions): Promise<Project[] | any[]>;
 }

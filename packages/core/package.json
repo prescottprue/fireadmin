@@ -16,7 +16,7 @@
     "build:types": "tsc --declaration",
     "build:typefile": "tsc --declaration --outFile index.d.ts --emitDeclarationOnly",
     "build:schema": "$(npm bin)/ts-node ./scripts/schemaToTypescript.ts",
-    "build:lib": "tsc && cp -r src/schemas lib/schemas",
+    "build:lib": "tsc && cp -r src/schemas lib",
     "build:esm": "tsc && tsc -m es6 --outDir lib-esm",
     "lint": "eslint src/**.ts --ext .ts",
     "lint:fix": "yarn lint -- --fix",
@@ -44,10 +44,12 @@
   "dependencies": {
     "ajv": "^6.10.2",
     "firebase": "^6.6.0",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "@types/inquirer": "^6.0.3",
+    "@types/request-promise-native": "^1.0.16",
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^1.13.0",
     "eslint": "^5.15.1",

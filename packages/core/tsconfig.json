@@ -2,7 +2,8 @@
   "compilerOptions": {
     "lib": [
       "es6",
-      "dom"
+      "dom",
+      "dom.iterable"
     ],
     "target": "es6",
     "module": "commonjs",
