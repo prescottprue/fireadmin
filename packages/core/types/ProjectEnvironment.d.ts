@@ -10,7 +10,7 @@ export default class ProjectEnvironment {
     updatedAt?: firebase.firestore.FieldValue;
     createdAt?: firebase.firestore.FieldValue;
     constructor(projectId: string, environmentId: string, environmentData?: object);
-    validate(environmentData: ProjectEnvironmentValue): void;
+    validate(environmentData: ProjectEnvironmentValue): Promise<void>;
     get(options?: GetOptions): Promise<ProjectEnvironment>;
     update(projectData: ProjectEnvironmentValue): Promise<any>;
     delete(): Promise<void>;

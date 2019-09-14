@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin'
-import { map, pick } from 'lodash'
+import { map } from 'lodash'
 import { to } from 'utils/async'
 import {
   PROJECTS_COLLECTION,
@@ -30,8 +30,9 @@ export async function getProjectByName(projectName) {
   const [firstProject] = projectsSnap.docs
 
   if (!firstProject) {
-    console.error(`Project with name "${projectName}" not found`)
-    throw new Error('Project not found')
+    const projectNotFoundErrMsg = `Project with name "${projectName}" not found`
+    console.error(projectNotFoundErrMsg)
+    throw new Error(projectNotFoundErrMsg)
   }
 
   return firstProject
@@ -57,7 +58,18 @@ export async function getEnvironmentsFromProjectRef(projectRef) {
     throw getEnvironmentsErr
   }
 
-  return map(environmentsSnap.docs, environment =>
-    pick(environment, ['id', 'name', 'databaseURL'])
-  )
+  if (environmentsSnap.empty) {
+    console.log(`No environments found for project "${projectRef.path}"`)
+    return []
+  }
+
+  return map(environmentsSnap.docs, environment => {
+    const { name, databaseURL, projectId } = environment.data()
+    return {
+      name,
+      databaseURL,
+      projectId,
+      id: environment.id
+    }
+  })
 }

@@ -128,6 +128,11 @@ async function getLocalActionSettings(): Promise<ActionRequestValue> {
     })
   )
   const environmentsByName = await prompt({}, environmentQuestions)
+  const environmentResults = map(environmentsByName, (environmentName) => {
+    const selectedEnvironment: any = find(environmentsOptions, { name: environmentName })
+    const { ref, listen, ...other } = selectedEnvironment
+    return other
+  })
   const environmentValues = map(environmentsByName, (environmentName, environmentSettingName) => {
     const selectedEnvironment: any = find(environmentsOptions, { name: environmentName })
     return selectedEnvironment.id
@@ -186,9 +191,9 @@ async function getLocalActionSettings(): Promise<ActionRequestValue> {
 
   const steps: any[] = stepsResults.filter((stepResult: CustomActionStepSetting | null) => !!stepResult)
 
-  console.log('Local action settings:', { steps, environments: environmentSettings, environmentValues, inputs: inputSettings, inputValues, projectId: project.id })
+  console.log('Local action settings:', { steps, environments: environmentResults, environmentValues, inputs: inputSettings, inputValues, projectId: project.id })
 
-  return { steps, environments: environmentSettings, environmentValues, inputs: inputSettings, inputValues, projectId: project.id }
+  return { steps, environments: environmentResults, environmentValues, inputs: inputSettings, inputValues, projectId: project.id }
 }
 
 /**

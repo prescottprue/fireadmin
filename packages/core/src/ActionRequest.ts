@@ -25,8 +25,8 @@ export default class ActionRequest extends RTDBItem {
   /**
    * Validate an ActionRequest using JSON schema
    */
-  public validate(actionData: ActionRequestValue) {
-    runValidationForClass(ActionRequest, actionData)
+  public async validate(actionData: ActionRequestValue) {
+    await runValidationForClass(ActionRequest, actionData)
   }
 
   /**
@@ -46,7 +46,7 @@ export default class ActionRequest extends RTDBItem {
    * Update a ActionRequest (uses JSON schema for validation)
    */
   public async update(actionData: ActionRequestValue): Promise<ActionRequest> {
-    this.validate(actionData)
+    await this.validate(actionData)
     await this.ref.update(actionData)
     return new ActionRequest(this.id, actionData)
   }

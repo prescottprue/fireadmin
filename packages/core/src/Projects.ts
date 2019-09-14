@@ -1,13 +1,13 @@
 import { PROJECTS_COLLECTION } from './constants/firestorePaths'
 import { runValidationForClass } from './utils/validation'
 import { ProjectValue } from './types/Project'
-import {
-  GetOptions,
-  getApp
-} from './utils/firebase'
-import Project from './Project'
+import { GetOptions, getApp } from './utils/firebase'
 import { to } from './utils/async'
+import Project from './Project'
 
+/**
+ * Projects
+ */
 export default class Projects {
   public path?: string
   public ref: firebase.firestore.CollectionReference
@@ -21,15 +21,16 @@ export default class Projects {
     }
   }
   /**
-   * Create a new Project
+   * Create a new Project.
    */
   public async create(newProjectData: ProjectValue): Promise<Project> {
     await runValidationForClass(Project, newProjectData)
     const { id } = await this.ref.add(newProjectData)
     return new Project(id, newProjectData)
   }
+
   /**
-   * Get a list of Projects
+   * Get a list of Projects for which the current user has access.
    */
   public async get(options?: GetOptions): Promise<Project[] | any[]> {
     const { currentUser } = getApp().auth()
@@ -62,6 +63,7 @@ export default class Projects {
     if (options && options.json) {
       return projects
     }
+
     return projects.reduce((acc: any[], projectSnap: firebase.firestore.QueryDocumentSnapshot) => {
       if (projectSnap) {
         return !projectSnap.id

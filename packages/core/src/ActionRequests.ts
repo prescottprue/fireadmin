@@ -10,6 +10,9 @@ import {
 } from './utils/firebase'
 import ActionRequest from './ActionRequest'
 
+/**
+ * Requests for action runs within Fireadmin action runner
+ */
 export default class ActionRequests {
   public path?: string
   public ref: firebase.database.Reference

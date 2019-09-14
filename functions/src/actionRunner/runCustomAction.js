@@ -1,4 +1,17 @@
-import safeEval from 'safer-eval'
+const { NodeVM } = require('vm2')
+
+const vm = new NodeVM({
+  console: 'inherit',
+  sandbox: {
+    output: {}
+  },
+  eval: false,
+  wasm: false,
+  require: {
+    external: true,
+    builtin: ['path']
+  }
+})
 
 /**
  * Get code from Firepad, run babel transform on it, and invoke it within
@@ -14,18 +27,22 @@ export default async function runCustomAction(options) {
   console.log('Running custom action', options)
   const { app1, app2, step } = options
   // const { type, src, dest } = step
-  // TOOD: Execute javascript that has been included within step
-  const evalContext = {
-    console,
-    output: {}
-  }
   try {
-    const promiseFunc = safeEval(step.content, evalContext) // eslint-disable-line no-new-func
-    console.log(
-      'Type of promise func then',
-      typeof promiseFunc(app1, app2, step).then
+    const functionWithCallbackInSandbox = vm.run(step.content)
+    if (
+      !functionWithCallbackInSandbox ||
+      typeof functionWithCallbackInSandbox.default !== 'function'
+    ) {
+      const invalidExportErrMsg =
+        'Custom action must export a default function which returns a promise'
+      console.error(invalidExportErrMsg)
+      throw new Error(invalidExportErrMsg)
+    }
+    const result = await functionWithCallbackInSandbox.default(
+      [app1, app2],
+      step.inputValues,
+      step
     )
-    const result = await promiseFunc(app1, app2, step)
     console.log('Result', result)
     return result
   } catch (err) {

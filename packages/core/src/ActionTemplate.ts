@@ -6,7 +6,7 @@ import { ActionTemplateValue } from './types/ActionTemplate'
 export * from './types/ActionRequest'
 
 /**
- * Fireadmin Action
+ * Template for an action request
  */
 export default class ActionTemplate {
   public path: string
@@ -51,7 +51,7 @@ export default class ActionTemplate {
    * Update a ActionTemplate (uses JSON schema for validation)
    */
   public async update(actionData: ActionTemplateValue): Promise<any> {
-    this.validate(actionData)
+    await this.validate(actionData)
     await this.ref.update(actionData)
     return new ActionTemplate(this.id)
   }

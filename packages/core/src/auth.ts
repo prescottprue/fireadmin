@@ -1,6 +1,5 @@
 import { initializeFirebase, getApp } from './utils/firebase'
 import { to } from './utils/async'
-// import request from 'request-promise-native'
 
 export async function loginWithApiKey(apiKey: string, uid: string) {
   try {
@@ -25,7 +24,6 @@ export async function loginWithApiKey(apiKey: string, uid: string) {
     getApp()
     .functions()
     .httpsCallable('generateAuthToken')({ apiKey, uid })
-    // request(`https://us-central1-fireadmin-stage.cloudfunctions.net/generateAuthToken`)
   )
 
   if (tokenErr) {

@@ -223,7 +223,7 @@ async function validateAndConvertEnvironment(
     )
 
     console.log('Type of environment value:', typeof environmentValue)
-
+    console.log('Loading environment from key value')
     // Load environment using environment value as a key
     const [getEnvErr, environmentSnap] = await to(
       admin
@@ -244,7 +244,7 @@ async function validateAndConvertEnvironment(
 
     const environmentData = environmentSnap.data()
     if (environmentData) {
-      envWithServiceAccount = environmentData
+      envWithServiceAccount = { ...environmentData, id: environmentSnap.id }
     }
   }
 

@@ -10,6 +10,9 @@ import {
 } from './utils/firebase'
 import ActionTemplate from './ActionTemplate'
 
+/**
+ * Templates for an action request
+ */
 export default class ActionTemplates {
   public path?: string
   public ref: firebase.firestore.CollectionReference

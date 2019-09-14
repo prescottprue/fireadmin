@@ -11,7 +11,6 @@ import { ProjectEnvironmentValue } from './types/ProjectEnvironment'
 /**
  * Fireadmin Project
  */
-// tslint:disable-next-line
 export default class ProjectEnvironment {
   public path: string
   public id: string
@@ -24,7 +23,7 @@ export default class ProjectEnvironment {
     environmentId: string,
     environmentData?: object
   ) {
-    this.id = projectId
+    this.id = environmentId
     this.path = `${PROJECTS_COLLECTION}/${projectId}/${PROJECTS_ENVIRONMENTS_COLLECTION}/${environmentId}`
     this.ref = getApp()
       .firestore()
@@ -34,14 +33,16 @@ export default class ProjectEnvironment {
       Object.assign(this, environmentData)
     }
   }
+
   /**
    * Validate a Project using JSON schema
    */
-  public validate(environmentData: ProjectEnvironmentValue) {
-    runValidationForClass(ProjectEnvironment, environmentData)
+  public async validate(environmentData: ProjectEnvironmentValue) {
+    await runValidationForClass(ProjectEnvironment, environmentData)
   }
+
   /**
-   * Get a Project and throw if is not found
+   * Get a Project. An error is thrown if the project is not found
    */
   public async get(options?: GetOptions): Promise<ProjectEnvironment> {
     const snap = await this.ref.get()
@@ -56,11 +57,14 @@ export default class ProjectEnvironment {
   /**
    * Update a Project (uses JSON schema for validation)
    */
-  public update(projectData: ProjectEnvironmentValue): Promise<any> {
-    this.validate(projectData)
+  public async update(projectData: ProjectEnvironmentValue): Promise<any> {
+    await this.validate(projectData)
     return this.ref.update(projectData)
   }
 
+  /**
+   * Delete a Project (uses JSON schema for validation)
+   */
   public delete() {
     return this.ref.delete()
   }

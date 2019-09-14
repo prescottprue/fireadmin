@@ -49,8 +49,8 @@ export async function authClientFromServiceAccount(serviceAccount) {
 /**
  * Get Firebase app from request evvent containing path information for
  * service account
- * @param  {object} opts - Options object
- * @param  {object} eventData - Data from event request
+ * @param {object} opts - Options object
+ * @param {object} eventData - Data from event request
  * @returns {Promise} Resolves with Firebase app
  */
 export async function getAppFromServiceAccount(opts, eventData) {
@@ -70,8 +70,9 @@ export async function getAppFromServiceAccount(opts, eventData) {
 
   // Make unique app name (prevents issue of multiple apps initialized with same name)
   const appName = `app-${uniqueId()}`
-  // Get Service account data from resource (i.e Storage, Firestore, etc)
-  const [err, accountFilePath] = await to(
+
+  // Get Service account data from Firestore
+  const [err, serviceAccount] = await to(
     serviceAccountFromFirestorePath(
       `projects/${projectId}/environments/${id || environmentKey}`,
       appName,
@@ -86,13 +87,12 @@ export async function getAppFromServiceAccount(opts, eventData) {
 
   try {
     const appCreds = {
-      credential: admin.credential.cert(accountFilePath),
+      credential: admin.credential.cert(serviceAccount),
       databaseURL
     }
     if (storageBucket) {
       appCreds.storageBucket = storageBucket
     }
-    console.log('initializing app', appName)
     return admin.initializeApp(appCreds, appName)
   } catch (err) {
     console.error('Error initializing firebase app:', err.message || err)
