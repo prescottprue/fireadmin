@@ -7,6 +7,8 @@ export const NEW_ACTION_TEMPLATE_PATH = '/actions'
 export const PROJECT_ACTION_PATH = 'actions'
 export const PROJECT_ENVIRONMENTS_PATH = 'environments'
 export const PROJECT_EVENTS_PATH = 'events'
+export const PROJECT_DATA_VIEWER_PATH = 'data-viewer'
+export const DATA_VIEWER_SETUP_FORM = 'dataViewerSetup'
 export const ACCOUNT_FORM_NAME = 'account'
 export const LOGIN_FORM_NAME = 'login'
 export const SIGNUP_FORM_NAME = 'signup'
@@ -41,6 +43,12 @@ export const ANALYTICS_EVENT_NAMES = {
   removeCollaborator: 'Remove Collaborator',
   deleteRole: 'Delete Role'
 }
+
+export const RESOURCE_OPTIONS = [
+  { value: 'rtdb', label: 'Real Time Database' },
+  { value: 'firestore' },
+  { value: 'storage', label: 'Cloud Storage' }
+]
 
 export const formNames = {
   account: ACCOUNT_FORM_NAME,
