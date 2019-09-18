@@ -1,7 +1,7 @@
 export default theme => ({
   root: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    marginLeft: theme.spacing(),
+    marginRight: theme.spacing(),
     minWidth: 350
   }
 })

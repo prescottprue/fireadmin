@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
-import { TextField } from 'redux-form-material-ui'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import DeleteIcon from '@material-ui/icons/Delete'
+import TextField from 'components/FormTextField'
 
 function CorsOriginList({ classes, fields, meta: { error, submitFailed } }) {
   return (

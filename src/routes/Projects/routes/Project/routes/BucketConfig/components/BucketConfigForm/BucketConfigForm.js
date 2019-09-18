@@ -7,7 +7,7 @@ import { Field, FieldArray } from 'redux-form'
 import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
-import { Select } from 'redux-form-material-ui'
+import Select from 'components/FormSelectField'
 import Paper from '@material-ui/core/Paper'
 import CorsList from '../CorsList'
 
@@ -93,7 +93,7 @@ function BucketConfigForm({
         </FormControl>
       </Paper>
       <Paper className={classes.paper}>
-        <Typography className={classes.subHeader} variant="h5" component="h2">
+        <Typography className={classes.subHeader} variant="h5">
           CORS Configuration
         </Typography>
         <FieldArray name="body.cors" component={CorsList} />

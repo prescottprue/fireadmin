@@ -3,13 +3,14 @@ import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormLabel from '@material-ui/core/FormLabel'
-import { TextField, Checkbox } from 'redux-form-material-ui'
+import { Checkbox } from 'redux-form-material-ui'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
+import TextField from 'components/FormTextField'
 import { required, validateDatabaseUrl } from 'utils/form'
 
 const EditEnvironmentDialog = ({
@@ -52,7 +53,7 @@ const EditEnvironmentDialog = ({
           name="description"
           label="Instance Description"
         />
-        <Grid container className={classes.settings} spacing={16}>
+        <Grid container className={classes.settings} spacing={8}>
           <Grid item xs={12}>
             <FormLabel>Action Settings</FormLabel>
             <Grid container>

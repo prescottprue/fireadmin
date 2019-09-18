@@ -4,18 +4,18 @@ export default theme => ({
     fontWeight: theme.typography.fontWeightRegular
   },
   header: {
-    padding: theme.spacing.unit * 2
+    padding: theme.spacing(2)
   },
   headerLeft: {
-    marginRight: theme.spacing.unit * 24,
+    marginRight: theme.spacing(24),
     fontColor: theme.palette.text.primary,
     fontSize: theme.typography.pxToRem(16),
     fontWeight: theme.typography.fontWeightRegular
   },
   headingPaper: {
     ...theme.mixins.gutters(),
-    paddingTop: theme.spacing.unit * 2,
-    paddingBottom: theme.spacing.unit * 2,
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
     fontColor: theme.palette.text.secondary,
     fontWeight: theme.typography.fontWeightRegular
   }

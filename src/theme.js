@@ -4,12 +4,8 @@ import teal from '@material-ui/core/colors/teal'
 import grey from '@material-ui/core/colors/grey'
 import blue from '@material-ui/core/colors/blue'
 // import { fade } from '@material-ui/core/styles/colorManipulator'
-import spacing from '@material-ui/core/styles/spacing'
-import zIndex from '@material-ui/core/styles/zIndex'
 
 export default {
-  spacing,
-  zIndex: zIndex,
   fontFamily: 'Roboto, sans-serif',
   palette: {
     primary: blue,

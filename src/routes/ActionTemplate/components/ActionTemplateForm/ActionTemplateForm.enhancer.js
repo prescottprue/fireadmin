@@ -10,7 +10,7 @@ import { ACTION_TEMPLATE_FORM_NAME } from 'constants/formNames'
 
 const styles = theme => ({
   button: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(),
     cursor: 'finger'
   }
 })

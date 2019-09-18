@@ -58,7 +58,7 @@ function ActionRunnerForm({
             Run an action by selecting a template, filling in the template's
             configuation options, then clicking <strong>run action</strong>.
           </Typography>
-          <Grid container spacing={16} justify="center">
+          <Grid container spacing={8} justify="center">
             <Grid item xs={12} sm={8} md={8} style={{ textAlign: 'center' }}>
               <Button
                 color="primary"

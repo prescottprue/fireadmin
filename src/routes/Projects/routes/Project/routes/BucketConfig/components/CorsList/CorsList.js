@@ -2,13 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import IconButton from '@material-ui/core/IconButton'
 import { Field, FieldArray } from 'redux-form'
-import { TextField, Select } from 'redux-form-material-ui'
 import Button from '@material-ui/core/Button'
 import MenuItem from '@material-ui/core/MenuItem'
 import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
 import DeleteIcon from '@material-ui/icons/Delete'
+import TextField from 'components/FormTextField'
+import Select from 'components/FormSelectField'
 import CorsOriginList from '../CorsOriginList'
 
 const methods = ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS']
@@ -19,10 +20,7 @@ function CorsList({ classes, fields, meta: { error, submitFailed } }) {
       {fields.map((member, index) => (
         <div key={index} className={classes.item}>
           <div className="flex-row">
-            <Typography
-              className={classes.subHeader}
-              variant="h5"
-              component="h4">
+            <Typography className={classes.subHeader} variant="h5">
               CORS Config #{index + 1}
             </Typography>
             <IconButton onClick={() => fields.remove(index)}>

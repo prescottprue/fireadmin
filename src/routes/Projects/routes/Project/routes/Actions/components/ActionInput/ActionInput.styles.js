@@ -1,9 +1,9 @@
 export default theme => ({
   input: {
-    margin: theme.spacing.unit
+    margin: theme.spacing()
   },
   field: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit
+    marginLeft: theme.spacing(),
+    marginRight: theme.spacing()
   }
 })

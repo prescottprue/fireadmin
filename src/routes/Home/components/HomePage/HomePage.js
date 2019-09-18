@@ -11,7 +11,7 @@ const srcUrl = 'https://github.com/prescottprue/fireadmin'
 
 function HomePage({ classes }) {
   return (
-    <Grid container spacing={16} justify="center" className={classes.root}>
+    <Grid container spacing={8} justify="center" className={classes.root}>
       <Grid item xs={10} md={8}>
         <Paper className={classes.paper}>
           <Typography variant="h3">
@@ -22,7 +22,7 @@ function HomePage({ classes }) {
               Get Started
             </Button>
           </div>
-          <Grid container spacing={16}>
+          <Grid container spacing={8}>
             <Grid item xs={12} sm={6} md={4} className={classes.section}>
               <Typography variant="h6" className={classes.sectionHeader}>
                 Build apps fast, without breaking things
@@ -60,7 +60,7 @@ function HomePage({ classes }) {
       <Grid item xs={10} md={8}>
         <Paper className={classes.paper} data-test="features">
           <Typography variant="h3">Use only what you need</Typography>
-          <Grid container spacing={16}>
+          <Grid container spacing={8}>
             <Grid item xs={12} sm={6} md={6}>
               <Typography variant="h6">Multiple Environment Support</Typography>
               <Typography variant="body1">

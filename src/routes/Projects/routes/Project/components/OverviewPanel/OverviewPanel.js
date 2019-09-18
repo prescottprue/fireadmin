@@ -17,9 +17,7 @@ export const OverviewPanel = ({
     <span className={classes.name}>{name}</span>
     <div className={classes.columns}>
       <div className={classes.column}>
-        <Typography variant="h5" component="h2">
-          Environments
-        </Typography>
+        <Typography variant="h5">Environments</Typography>
         <div className={classes.columnInner}>
           {environmentsEmpty ? (
             <div>
@@ -46,9 +44,7 @@ export const OverviewPanel = ({
         </Link>
       </div>
       <div className={classes.column}>
-        <Typography variant="h5" component="h2">
-          Actions
-        </Typography>
+        <Typography variant="h5">Actions</Typography>
         <div>
           <p className={classes.description}>
             Moving data is a nessesary part of any real world application.

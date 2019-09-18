@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
-import { Checkbox } from 'redux-form-material-ui'
 import { startCase } from 'lodash'
 import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -20,6 +19,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
 import DeleteMemberModal from '../DeleteMemberModal'
+import Checkbox from 'components/FormCheckboxField'
 
 const resourcesOptions = [
   { value: 'members' },
@@ -97,9 +97,7 @@ function RolesTableRow({
               ))}
             </Menu>
           </div>
-          <Typography
-            component="h2"
-            className={classes.resourcePermissionsHeader}>
+          <Typography className={classes.resourcePermissionsHeader}>
             Resource Permissions
           </Typography>
           <div className={classes.roleSelect}>

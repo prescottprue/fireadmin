@@ -17,7 +17,6 @@ import { withStyles } from '@material-ui/core/styles'
 import { withNotifications } from 'modules/notification'
 import * as handlers from './ActionsPage.handlers'
 import styles from './ActionPage.styles'
-import { logProps } from 'utils/components'
 
 function instanceTypeInUse(environments, type = 'src') {
   const lockedEnvIndex = findIndex(environments, {
@@ -43,7 +42,6 @@ function getLockedEnvInUse(environments) {
 }
 
 export default compose(
-  logProps(),
   setDisplayName('EnhancedActionsPage'),
   withNotifications,
   withFirestore,
