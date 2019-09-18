@@ -7,11 +7,15 @@ import {
   Configure
 } from 'react-instantsearch/dom'
 import SearchResults from './SearchResults'
-import classes from './CollectionSearch.scss'
 import { algolia } from '../../config'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 
-function CollectionSearch({ onSuggestionClick, filterString, indexName }) {
+function CollectionSearch({
+  classes,
+  onSuggestionClick,
+  filterString,
+  indexName
+}) {
   return (
     <InstantSearch
       appId={algolia.appId}
@@ -29,9 +33,10 @@ function CollectionSearch({ onSuggestionClick, filterString, indexName }) {
 }
 
 CollectionSearch.propTypes = {
-  onSuggestionClick: PropTypes.func,
-  filterString: PropTypes.string,
-  indexName: PropTypes.string.isRequired
+  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
+  filterString: PropTypes.string.isRequired, // from enhancer (withProps)
+  indexName: PropTypes.string.isRequired,
+  onSuggestionClick: PropTypes.func
 }
 
 export default CollectionSearch

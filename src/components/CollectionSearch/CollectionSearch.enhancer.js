@@ -1,6 +1,8 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withProps } from 'recompose'
+import { withStyles } from '@material-ui/core/styles'
+import styles from './CollectionSearch.styles'
 
 export default compose(
   connect(({ firebase: { auth: { uid } } }) => ({
@@ -26,5 +28,6 @@ export default compose(
         )
         .join(' ')
     }
-  })
+  }),
+  withStyles(styles)
 )

@@ -8,7 +8,6 @@ import Home from './Home'
 import LoginRoute from './Login'
 import NotFoundRoute from './NotFound'
 import ProjectsRoute from './Projects'
-import ProjectRoute from './Project'
 import SignupRoute from './Signup'
 
 export default function createRoutes(store) {
@@ -22,7 +21,6 @@ export default function createRoutes(store) {
           ActionTemplatesRoute,
           AccountRoute,
           ProjectsRoute,
-          ProjectRoute,
           SignupRoute,
           LoginRoute
           /* Add More Routes Here */

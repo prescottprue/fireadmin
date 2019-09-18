@@ -216,7 +216,16 @@ export const withStore = createWithFromContext('store')
  */
 export function Loadable(opts) {
   return LoadableComponent({
-    loading: LoadingSpinner,
+    loading: props => {
+      if (props.error) {
+        return (
+          <div>
+            Error! <button onClick={props.retry}>Retry</button>
+          </div>
+        )
+      }
+      return <LoadingSpinner />
+    },
     ...opts
   })
 }

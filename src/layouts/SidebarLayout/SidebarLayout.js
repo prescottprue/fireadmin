@@ -9,7 +9,7 @@ import Divider from '@material-ui/core/Divider'
 import SidebarList from './SidebarList'
 import sidebarOptions from './sidebarOptions'
 
-function SidebarLayout({ title, classes, drawerOpen, toggleDrawer, children }) {
+function SidebarLayout({ classes, title, drawerOpen, toggleDrawer, children }) {
   return (
     <div className={classes.appFrame}>
       <AppBar
@@ -55,11 +55,11 @@ function SidebarLayout({ title, classes, drawerOpen, toggleDrawer, children }) {
 }
 
 SidebarLayout.propTypes = {
+  classes: PropTypes.object, // from enhancer (withStyles)
+  children: PropTypes.element.isRequired,
   title: PropTypes.string,
   toggleDrawer: PropTypes.func,
-  classes: PropTypes.object, // from enhancer (withStyles)
-  drawerOpen: PropTypes.bool,
-  children: PropTypes.element.isRequired
+  drawerOpen: PropTypes.bool
 }
 
 export default SidebarLayout

@@ -8,10 +8,6 @@ import spacing from '@material-ui/core/styles/spacing'
 import zIndex from '@material-ui/core/styles/zIndex'
 
 export default {
-  // Enable typography v2: https://material-ui.com/style/typography/#migration-to-typography-v2
-  typography: {
-    useNextVariants: true
-  },
   spacing,
   zIndex: zIndex,
   fontFamily: 'Roboto, sans-serif',
@@ -22,6 +18,22 @@ export default {
     primary3Color: orange[100],
     accent1Color: pink['A200'],
     accent2Color: teal['A100']
+  },
+  typography: {
+    // Enable typography v2: https://material-ui.com/style/typography/#migration-to-typography-v2
+    useNextVariants: true,
+    body1: {
+      color: '#757575'
+    },
+    h3: {
+      color: '#757575',
+      fontWeight: 100,
+      marginBottom: '3rem'
+    }
+    // h4: {
+    //   color: '#757575',
+    //   fontWeight: 100
+    // }
   },
   flexColumnCenter: {
     display: 'flex',
