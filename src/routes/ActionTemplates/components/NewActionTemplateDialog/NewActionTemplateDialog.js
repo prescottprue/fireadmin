@@ -6,39 +6,45 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Button from '@material-ui/core/Button'
 import NewActionTemplateForm from '../NewActionTemplateForm'
-import classes from './NewActionTemplateDialog.scss'
+import { makeStyles } from '@material-ui/core/styles'
+import styles from './NewActionTemplateDialog.styles'
 
-export const NewActionTemplateDialog = ({
+const useStyles = makeStyles(styles)
+
+function NewActionTemplateDialog({
   onRequestClose,
   handleSubmit,
   submitting,
   pristine,
   open
-}) => (
-  <Dialog open={open} onClose={onRequestClose}>
-    <DialogTitle>New Action Template</DialogTitle>
-    <form className={classes.container} onSubmit={handleSubmit}>
-      <DialogContent className={classes.content}>
-        <NewActionTemplateForm />
-      </DialogContent>
-      <DialogActions>
-        <Button
-          disabled={submitting}
-          color="secondary"
-          onClick={onRequestClose}>
-          Cancel
-        </Button>
-        <Button
-          disabled={submitting || pristine}
-          color="primary"
-          type="submit"
-          className={classes.submit}>
-          Save
-        </Button>
-      </DialogActions>
-    </form>
-  </Dialog>
-)
+}) {
+  const classes = useStyles()
+  return (
+    <Dialog open={open} onClose={onRequestClose}>
+      <DialogTitle>New Action Template</DialogTitle>
+      <form onSubmit={handleSubmit}>
+        <DialogContent className={classes.content}>
+          <NewActionTemplateForm />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            disabled={submitting}
+            color="secondary"
+            onClick={onRequestClose}>
+            Cancel
+          </Button>
+          <Button
+            disabled={submitting || pristine}
+            color="primary"
+            type="submit"
+            className={classes.submit}>
+            Save
+          </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
+  )
+}
 
 NewActionTemplateDialog.propTypes = {
   open: PropTypes.bool.isRequired,

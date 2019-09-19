@@ -34,9 +34,12 @@ function Instance({
     <Card className={classes.card} data-test={`environment-${instanceId}`}>
       <CardHeader
         title={
-          <span onClick={onEditClick} className={classes.title}>
+          <Typography
+            onClick={onEditClick}
+            variant="h5"
+            className={classes.title}>
             {instanceName}
-          </span>
+          </Typography>
         }
         subheader={projectId}
         action={
@@ -66,7 +69,7 @@ function Instance({
                           <ListItemIcon className={classes.icon}>
                             <EditIcon />
                           </ListItemIcon>
-                          <ListItemText inset primary="Edit" />
+                          <ListItemText primary="Edit" />
                         </MenuItem>
                         <MenuItem
                           onClick={removeAndClose}
@@ -74,7 +77,7 @@ function Instance({
                           <ListItemIcon className={classes.icon}>
                             <DeleteIcon />
                           </ListItemIcon>
-                          <ListItemText inset primary="Remove" />
+                          <ListItemText primary="Remove" />
                         </MenuItem>
                       </MenuList>
                     </ClickAwayListener>

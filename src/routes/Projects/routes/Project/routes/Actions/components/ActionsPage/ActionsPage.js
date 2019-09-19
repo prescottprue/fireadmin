@@ -27,8 +27,8 @@ function ActionsPage({
 }) {
   return (
     <div className={classes.container}>
-      <Typography variant="h4">Actions</Typography>
-      <Typography variant="h6">Action Runner</Typography>
+      <Typography className={classes.pageHeader}>Actions</Typography>
+      <Typography variant="h5">Action Runner</Typography>
       <div className={classes.container}>
         <div className={classes.buttons}>
           <Button
@@ -69,7 +69,7 @@ function ActionsPage({
           onSubmit={runAction}
         />
       </div>
-      <Typography variant="h4">Recently Run Actions</Typography>
+      <Typography variant="h5">Recently Run Actions</Typography>
       <RecentActions projectId={projectId} rerunAction={rerunAction} />
     </div>
   )

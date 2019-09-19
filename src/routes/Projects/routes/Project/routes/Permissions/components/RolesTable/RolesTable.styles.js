@@ -26,6 +26,7 @@ export default theme => ({
     marginBottom: '3rem'
   },
   rolesTable: {
-    height: '100%'
+    height: '100%',
+    minHeight: '400px'
   }
 })

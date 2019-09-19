@@ -27,7 +27,7 @@ function HomePage({ classes }) {
               <Typography variant="h6" className={classes.sectionHeader}>
                 Build apps fast, without breaking things
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="subtitle1">
                 Fireadmin allows you to connect multiple Firebase instances into
                 one Project for easier tracking as you move code into
                 production.
@@ -37,7 +37,7 @@ function HomePage({ classes }) {
               <Typography variant="h6" className={classes.sectionHeader}>
                 Open Source
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="subtitle1">
                 Don't want to run it online? Have your own features you want to
                 add? The source code on is{' '}
                 <a href={srcUrl}>available on Github .</a>
@@ -47,7 +47,7 @@ function HomePage({ classes }) {
               <Typography variant="h6" className={classes.sectionHeader}>
                 One console, were you can see what has been done
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="subtitle1">
                 Firebase database work awesome indvidually, but sharing data
                 between them can be a pain. Fireadmin makes it easy to move data
                 while allowing you to share who in the development team has made
@@ -63,13 +63,13 @@ function HomePage({ classes }) {
           <Grid container spacing={8}>
             <Grid item xs={12} sm={6} md={6}>
               <Typography variant="h6">Multiple Environment Support</Typography>
-              <Typography variant="body1">
+              <Typography variant="subtitle1">
                 Manage multiple Firebase Instances as one Project.
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
               <Typography variant="h6">Custom Action Templates</Typography>
-              <Typography variant="body1">
+              <Typography variant="subtitle1">
                 Copy data between environments all the way through your pipeline
                 without worrying about it changing along the way.
               </Typography>
@@ -82,13 +82,13 @@ function HomePage({ classes }) {
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
               <Typography variant="h6">Project Sharing</Typography>
-              <Typography variant="body1">
+              <Typography variant="subtitle1">
                 Share projects with everyone in your team. See who does what.
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
               <Typography variant="h6">Operations Logs</Typography>
-              <Typography variant="body1">
+              <Typography variant="subtitle1">
                 Event tracking for all project based actions.
               </Typography>
             </Grid>

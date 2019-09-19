@@ -1,14 +1,19 @@
 import React from 'react'
-// import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import ActionTemplatesList from '../ActionTemplatesList'
-import classes from './ActionTemplatesPage.scss'
+import { makeStyles } from '@material-ui/core/styles'
+import styles from './ActionTemplatesPage.styles'
 
-export const ActionTemplatesPage = () => (
-  <div className={classes.container}>
-    <Typography className={classes.header}>Action Templates</Typography>
-    <ActionTemplatesList />
-  </div>
-)
+const useStyles = makeStyles(styles)
+
+function ActionTemplatesPage() {
+  const classes = useStyles()
+  return (
+    <div className={classes.root}>
+      <Typography className={classes.header}>Action Templates</Typography>
+      <ActionTemplatesList />
+    </div>
+  )
+}
 
 export default ActionTemplatesPage

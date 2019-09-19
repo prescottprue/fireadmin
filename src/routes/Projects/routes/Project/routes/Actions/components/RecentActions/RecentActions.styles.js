@@ -1,7 +1,7 @@
 export default theme => ({
   root: {
-    marginLeft: '.125',
-    marginRight: '.125'
+    // paddingLeft: '.25rem',
+    // paddingRight: '.25rem'
   },
   appFrame: {
     ...theme.flexRowCenter,

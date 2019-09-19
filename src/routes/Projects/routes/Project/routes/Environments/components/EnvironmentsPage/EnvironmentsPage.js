@@ -28,15 +28,14 @@ function EnvironmentsPage({
   return (
     <div>
       <Typography className={classes.pageHeader}>Environments</Typography>
-      <div style={{ marginBottom: '2rem' }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={toggleNewDialog}
-          data-test="add-environment-button">
-          Add Environment
-        </Button>
-      </div>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={toggleNewDialog}
+        style={{ marginBottom: '2rem' }}
+        data-test="add-environment-button">
+        Add Environment
+      </Button>
       <div>
         {projectEnvironments && projectEnvironments.length ? (
           <div className="flex-column">

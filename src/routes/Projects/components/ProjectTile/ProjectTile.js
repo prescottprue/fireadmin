@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { invoke } from 'lodash'
 import Paper from '@material-ui/core/Paper'
 import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
 import Tooltip from '@material-ui/core/Tooltip'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -16,10 +17,10 @@ import { formatDate } from 'utils/formatters'
 import SharingDialog from '../SharingDialog'
 
 function ProjectTile({
+  classes,
   open,
   project,
   numberOfCollaborators,
-  classes,
   handleEditClick,
   onDelete,
   menuClick,
@@ -31,35 +32,33 @@ function ProjectTile({
   return (
     <Paper className={classes.container} open={open} data-test="project-tile">
       <div className={classes.top}>
-        <span
+        <Typography
           className={classes.name}
           onClick={handleEditClick}
           data-test="project-tile-name">
           {project.name}
-        </span>
-        <div>
-          <IconButton onClick={menuClick} data-test="project-tile-more">
-            <MoreVertIcon />
-          </IconButton>
-          <Menu
-            id="edit-menu"
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={closeMenu}>
-            <MenuItem onClick={handleEditClick} data-test="project-tile-edit">
-              <ListItemIcon className={classes.icon}>
-                <EditIcon />
-              </ListItemIcon>
-              <ListItemText inset primary="Edit" />
-            </MenuItem>
-            <MenuItem onClick={onDelete} data-test="project-tile-delete">
-              <ListItemIcon className={classes.icon}>
-                <DeleteIcon />
-              </ListItemIcon>
-              <ListItemText inset primary="Delete" />
-            </MenuItem>
-          </Menu>
-        </div>
+        </Typography>
+        <IconButton onClick={menuClick} data-test="project-tile-more">
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id="edit-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={closeMenu}>
+          <MenuItem onClick={handleEditClick} data-test="project-tile-edit">
+            <ListItemIcon>
+              <EditIcon />
+            </ListItemIcon>
+            <ListItemText primary="Edit" />
+          </MenuItem>
+          <MenuItem onClick={onDelete} data-test="project-tile-delete">
+            <ListItemIcon>
+              <DeleteIcon />
+            </ListItemIcon>
+            <ListItemText primary="Delete" />
+          </MenuItem>
+        </Menu>
       </div>
       {project.createdAt ? (
         <span className={classes.createdAt}>

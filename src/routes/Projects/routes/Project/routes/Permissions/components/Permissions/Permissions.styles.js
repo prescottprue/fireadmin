@@ -5,6 +5,7 @@ export default theme => ({
     paddingLeft: '.125rem',
     paddingRight: '.125rem'
   },
+  pageHeader: theme.pageHeader,
   button: {
     marginLeft: '2rem'
   },

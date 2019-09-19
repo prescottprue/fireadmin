@@ -9,6 +9,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
 import Select from 'components/FormSelectField'
 import Paper from '@material-ui/core/Paper'
+import Grid from '@material-ui/core/Grid'
 import CorsList from '../CorsList'
 
 function BucketConfigForm({
@@ -44,59 +45,70 @@ function BucketConfigForm({
         </Button>
       </div>
       <Paper className={classes.paper}>
-        <FormControl className={classes.field}>
-          <InputLabel htmlFor="environment">Environment</InputLabel>
-          <Field
-            name="environment"
-            component={Select}
-            fullWidth
-            inputProps={{
-              name: 'environment',
-              id: 'environment'
-            }}>
-            {map(projectEnvironments, ({ id, name, fullPath }, i) => (
-              <MenuItem key={`Environment-${id}-${i}`} value={id}>
-                {name}
-              </MenuItem>
-            ))}
-          </Field>
-        </FormControl>
-        <FormControl className={classes.field}>
-          <InputLabel htmlFor="method">Method</InputLabel>
-          <Field
-            name="method"
-            component={Select}
-            placeholder="Action"
-            fullWidth
-            inputProps={{
-              name: 'method',
-              id: 'method'
-            }}>
-            <MenuItem value="GET">Get Config</MenuItem>
-            <MenuItem value="PUT">Update Config</MenuItem>
-          </Field>
-        </FormControl>
-        <FormControl className={classes.field} disabled>
-          <InputLabel htmlFor="bucket">
-            {storageBucket || 'Storage Bucket (defaults to app bucket)'}
-          </InputLabel>
-          <Field
-            name="bucket"
-            component={Select}
-            fullWidth
-            inputProps={{
-              name: 'bucket',
-              id: 'bucket'
-            }}>
-            <MenuItem value="empty">empty</MenuItem>
-          </Field>
-        </FormControl>
+        <Grid container spacing={8} justify="center">
+          <Grid item xs={12} md={8}>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="environment">Environment</InputLabel>
+              <Field
+                name="environment"
+                component={Select}
+                fullWidth
+                inputProps={{
+                  name: 'environment',
+                  id: 'environment'
+                }}>
+                {map(projectEnvironments, ({ id, name, fullPath }, i) => (
+                  <MenuItem key={`Environment-${id}-${i}`} value={id}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Field>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} md={8}>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="method">Method</InputLabel>
+              <Field
+                name="method"
+                component={Select}
+                placeholder="Action"
+                fullWidth
+                inputProps={{
+                  name: 'method',
+                  id: 'method'
+                }}>
+                <MenuItem value="GET">Get Config</MenuItem>
+                <MenuItem value="PUT">Update Config</MenuItem>
+              </Field>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} md={8}>
+            <FormControl disabled className={classes.formControl}>
+              <InputLabel htmlFor="bucket">
+                {storageBucket || 'Storage Bucket (defaults to app bucket)'}
+              </InputLabel>
+              <Field
+                name="bucket"
+                component={Select}
+                fullWidth
+                inputProps={{
+                  name: 'bucket',
+                  id: 'bucket'
+                }}>
+                <MenuItem value="empty">empty</MenuItem>
+              </Field>
+            </FormControl>
+          </Grid>
+        </Grid>
       </Paper>
       <Paper className={classes.paper}>
         <Typography className={classes.subHeader} variant="h5">
           CORS Configuration
         </Typography>
-        <FieldArray name="body.cors" component={CorsList} />
+        <FieldArray
+          name="body.cors"
+          component={props => <CorsList {...props} />}
+        />
       </Paper>
     </form>
   )

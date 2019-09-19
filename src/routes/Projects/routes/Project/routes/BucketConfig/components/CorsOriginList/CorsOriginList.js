@@ -10,9 +10,7 @@ import TextField from 'components/FormTextField'
 function CorsOriginList({ classes, fields, meta: { error, submitFailed } }) {
   return (
     <div style={{ marginBottom: '1rem' }}>
-      <Typography className={classes.originHeader} variant="h5">
-        Origins
-      </Typography>
+      <Typography variant="h5">Origins</Typography>
       <div className={classes.add}>
         <Button color="primary" onClick={() => fields.push()}>
           Add Origin

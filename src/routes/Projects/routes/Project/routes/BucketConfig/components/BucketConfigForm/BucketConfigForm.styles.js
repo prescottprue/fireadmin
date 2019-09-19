@@ -14,6 +14,9 @@ export default theme => ({
     width: '100%'
   },
   subHeader: {
-    color: ' rgba(0, 0, 0, 0.54)'
+    color: 'rgba(0, 0, 0, 0.54)'
+  },
+  formControl: {
+    width: '100%'
   }
 })

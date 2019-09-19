@@ -15,7 +15,9 @@ function Permissions({
 }) {
   return (
     <div className={classes.root}>
-      <Typography variant="h4">Permissions</Typography>
+      <Typography variant="h4" className={classes.pageHeader}>
+        Permissions
+      </Typography>
       <div className={classes.buttons}>
         <Button
           disabled={addMemberDisabled}

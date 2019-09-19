@@ -28,7 +28,10 @@ function CorsList({ classes, fields, meta: { error, submitFailed } }) {
             </IconButton>
           </div>
           <div className="flex-column">
-            <FieldArray name={`${member}.origin`} component={CorsOriginList} />
+            <FieldArray
+              name={`${member}.origin`}
+              component={props => <CorsOriginList {...props} />}
+            />
             <FormControl className={classes.field}>
               <InputLabel htmlFor="method">HTTP Methods To Include</InputLabel>
               <Field

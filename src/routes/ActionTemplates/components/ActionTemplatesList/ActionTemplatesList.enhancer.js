@@ -6,9 +6,7 @@ import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import { withRouter } from 'react-router-dom'
 import { spinnerWhileLoading } from 'utils/components'
 import { withNotifications } from 'modules/notification'
-import { withStyles } from '@material-ui/core/styles'
 import * as handlers from './ActionTemplatesList.handlers'
-import * as styles from './ActionTemplatesList.styles'
 
 export default compose(
   withNotifications,
@@ -48,6 +46,5 @@ export default compose(
       })
     }
   ),
-  withHandlers(handlers),
-  withStyles(styles)
+  withHandlers(handlers)
 )

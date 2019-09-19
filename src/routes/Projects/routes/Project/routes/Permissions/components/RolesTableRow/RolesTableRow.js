@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
 import { startCase } from 'lodash'
@@ -49,153 +49,155 @@ function RolesTableRow({
   anchorEl
 }) {
   return (
-    <ExpansionPanel key={roleKey}>
+    <Fragment>
       <DeleteMemberModal
         open={deleteDialogOpen}
         name={roleKey}
         onRequestClose={handleDeleteClose}
         onDeleteClick={onDeleteClick}
       />
-      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography className={classes.heading}>
-          {name || startCase(roleKey)}
-        </Typography>
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
-        <form className={classes.content} onSubmit={handleSubmit}>
-          <Divider />
-          <div className={classes.menu}>
-            <IconButton
-              aria-label="More"
-              aria-owns="long-menu"
-              aria-haspopup="true"
-              onClick={handleMenuClick}>
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              id="long-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              PaperProps={{
-                style: {
-                  maxHeight: ITEM_HEIGHT * 4.5,
-                  width: 200
-                }
-              }}>
-              {editOptions.map(option => (
-                <MenuItem key={option} onClick={startDelete}>
-                  <ListItemIcon className={classes.icon}>
-                    <DeleteIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    classes={{ primary: classes.primary }}
-                    inset
-                    primary="Delete Role"
-                  />
-                </MenuItem>
-              ))}
-            </Menu>
-          </div>
-          <Typography className={classes.resourcePermissionsHeader}>
-            Resource Permissions
+      <ExpansionPanel key={roleKey} className={classes.root}>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography className={classes.heading}>
+            {name || startCase(roleKey)}
           </Typography>
-          <div className={classes.roleSelect}>
-            <div className={classes.optionsLabels}>
-              {resourcesOptions.map((option, idx) => (
-                <FormLabel
-                  key={`${option.value}-${idx}`}
-                  className={classes.optionLabel}>
-                  {startCase(option.value)}
-                </FormLabel>
-              ))}
-            </div>
-            <div className={classes.roleOptions}>
-              <span>Create</span>
-              {resourcesOptions.map((option, idx) => (
-                <FormControlLabel
-                  key={`${option.value}-${idx}`}
-                  className={classes.roleOption}
-                  control={
-                    <Field
-                      name={`create.${option.value}`}
-                      disabled={updateRolesDisabled}
-                      component={Checkbox}
-                    />
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <form className={classes.content} onSubmit={handleSubmit}>
+            <Divider />
+            <div className={classes.menu}>
+              <IconButton
+                aria-label="More"
+                aria-owns="long-menu"
+                aria-haspopup="true"
+                onClick={handleMenuClick}>
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                PaperProps={{
+                  style: {
+                    maxHeight: ITEM_HEIGHT * 4.5,
+                    width: 200
                   }
-                />
-              ))}
-            </div>
-            <div className={classes.roleOptions}>
-              <span>Read</span>
-              {resourcesOptions.map((option, idx) => (
-                <FormControlLabel
-                  key={`${option.value}-${idx}`}
-                  className={classes.roleOption}
-                  control={
-                    <Field
-                      name={`read.${option.value}`}
-                      disabled={updateRolesDisabled}
-                      component={Checkbox}
+                }}>
+                {editOptions.map(option => (
+                  <MenuItem key={option} onClick={startDelete}>
+                    <ListItemIcon className={classes.icon}>
+                      <DeleteIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      classes={{ primary: classes.primary }}
+                      inset
+                      primary="Delete Role"
                     />
-                  }
-                />
-              ))}
+                  </MenuItem>
+                ))}
+              </Menu>
             </div>
-            <div className={classes.roleOptions}>
-              <span>Update</span>
-              {resourcesOptions.map((option, idx) => (
-                <FormControlLabel
-                  key={`${option.value}-${idx}`}
-                  className={classes.roleOption}
-                  control={
-                    <Field
-                      name={`update.${option.value}`}
-                      disabled={updateRolesDisabled}
-                      component={Checkbox}
-                    />
-                  }
-                />
-              ))}
+            <Typography className={classes.resourcePermissionsHeader}>
+              Resource Permissions
+            </Typography>
+            <div className={classes.roleSelect}>
+              <div className={classes.optionsLabels}>
+                {resourcesOptions.map((option, idx) => (
+                  <FormLabel
+                    key={`${option.value}-${idx}`}
+                    className={classes.optionLabel}>
+                    {startCase(option.value)}
+                  </FormLabel>
+                ))}
+              </div>
+              <div className={classes.roleOptions}>
+                <span>Create</span>
+                {resourcesOptions.map((option, idx) => (
+                  <FormControlLabel
+                    key={`${option.value}-${idx}`}
+                    className={classes.roleOption}
+                    control={
+                      <Field
+                        name={`create.${option.value}`}
+                        disabled={updateRolesDisabled}
+                        component={Checkbox}
+                      />
+                    }
+                  />
+                ))}
+              </div>
+              <div className={classes.roleOptions}>
+                <span>Read</span>
+                {resourcesOptions.map((option, idx) => (
+                  <FormControlLabel
+                    key={`${option.value}-${idx}`}
+                    className={classes.roleOption}
+                    control={
+                      <Field
+                        name={`read.${option.value}`}
+                        disabled={updateRolesDisabled}
+                        component={Checkbox}
+                      />
+                    }
+                  />
+                ))}
+              </div>
+              <div className={classes.roleOptions}>
+                <span>Update</span>
+                {resourcesOptions.map((option, idx) => (
+                  <FormControlLabel
+                    key={`${option.value}-${idx}`}
+                    className={classes.roleOption}
+                    control={
+                      <Field
+                        name={`update.${option.value}`}
+                        disabled={updateRolesDisabled}
+                        component={Checkbox}
+                      />
+                    }
+                  />
+                ))}
+              </div>
+              <div className={classes.roleOptions}>
+                <span>Delete</span>
+                {resourcesOptions.map((option, idx) => (
+                  <FormControlLabel
+                    key={`${option.value}-${idx}`}
+                    className={classes.roleOption}
+                    control={
+                      <Field
+                        name={`delete.${option.value}`}
+                        disabled={updateRolesDisabled}
+                        component={Checkbox}
+                      />
+                    }
+                  />
+                ))}
+              </div>
             </div>
-            <div className={classes.roleOptions}>
-              <span>Delete</span>
-              {resourcesOptions.map((option, idx) => (
-                <FormControlLabel
-                  key={`${option.value}-${idx}`}
-                  className={classes.roleOption}
-                  control={
-                    <Field
-                      name={`delete.${option.value}`}
-                      disabled={updateRolesDisabled}
-                      component={Checkbox}
-                    />
-                  }
-                />
-              ))}
+            <div className={classes.buttons}>
+              <Button
+                disabled={pristine}
+                color="secondary"
+                aria-label="Run Action"
+                onClick={reset}
+                style={{ marginRight: '2rem' }}>
+                Cancel
+              </Button>
+              <Button
+                disabled={pristine || updateRolesDisabled}
+                color="primary"
+                variant="contained"
+                aria-label="Run Action"
+                type="submit">
+                Update Member
+              </Button>
             </div>
-          </div>
-          <div className={classes.buttons}>
-            <Button
-              disabled={pristine}
-              color="secondary"
-              aria-label="Run Action"
-              onClick={reset}
-              style={{ marginRight: '2rem' }}>
-              Cancel
-            </Button>
-            <Button
-              disabled={pristine || updateRolesDisabled}
-              color="primary"
-              variant="contained"
-              aria-label="Run Action"
-              type="submit">
-              Update Member
-            </Button>
-          </div>
-        </form>
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
+          </form>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    </Fragment>
   )
 }
 

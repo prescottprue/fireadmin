@@ -8,7 +8,8 @@ export default theme => ({
     textOverflow: 'ellipsis'
   },
   title: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    color: 'black'
   },
   settings: {
     marginTop: '2rem'

@@ -1,14 +1,6 @@
 const drawerWidth = 240
 
 export default theme => ({
-  root: {
-    flexGrow: 1,
-    height: 430,
-    zIndex: 1,
-    overflow: 'hidden',
-    position: 'relative',
-    display: 'flex'
-  },
   appFrame: {
     position: 'relative',
     display: 'flex',

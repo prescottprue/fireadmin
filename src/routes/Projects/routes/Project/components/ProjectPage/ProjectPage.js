@@ -10,9 +10,13 @@ import EnvironmentsRoute from 'routes/Projects/routes/Project/routes/Environment
 import PermissionsRoute from 'routes/Projects/routes/Project/routes/Permissions'
 import ProjectEventsRoute from 'routes/Projects/routes/Project/routes/ProjectEvents'
 import OverviewPanel from '../OverviewPanel'
-import classes from './ProjectPage.scss'
+import { makeStyles } from '@material-ui/core/styles'
+import styles from './ProjectPage.styles'
+
+const useStyles = makeStyles(styles)
 
 function ProjectPage({ project, match, projectId, uid, children }) {
+  const classes = useStyles()
   return (
     <SidebarLayout title={project.name}>
       <Switch>
@@ -32,7 +36,7 @@ function ProjectPage({ project, match, projectId, uid, children }) {
         <Route
           path="/projects/:projectId"
           render={() => (
-            <div className={classes.container}>
+            <div className={classes.root}>
               <Typography className={classes.pageHeader}>Overview</Typography>
               <OverviewPanel project={project} projectId={projectId} />
             </div>

@@ -1,12 +1,13 @@
 export default theme => ({
   container: {
     ...theme.flexColumn,
+    ...theme.mixins.gutters(),
     flexDirection: 'column',
     alignItems: 'flex-start',
     height: '200px',
     width: '300px',
     margin: theme.spacing(0.5),
-    padding: theme.spacing(1.3)
+    padding: theme.spacing(2)
   },
   top: {
     display: 'flex',
@@ -15,16 +16,19 @@ export default theme => ({
   },
   name: {
     fontSize: '1.5rem',
-    cursor: 'pointer',
+    fontWeight: '300',
     textDecoration: 'none',
+    color: '#616161',
+    cursor: 'pointer',
     transition: 'all 800ms cubic-bezier(0.25,0.1,0.25,1) 0ms',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
-    ':hover': {
-      color: ''
+    marginTop: theme.spacing(0.5),
+    '&:hover': {
+      color: '#03A9F4'
     },
-    ':visited': {
+    '&:visited': {
       textDecoration: 'none'
     }
   },
@@ -33,17 +37,16 @@ export default theme => ({
     fontWeight: '300',
     textDecoration: 'none',
     color: '#616161',
-    ':hover': {
+    '&:hover': {
       color: '#03A9F4'
     }
   },
   createdAt: {
     fontSize: '.7rem',
     color: '#616161',
-    cursor: 'pointer',
     transition: 'all 800ms cubic-bezier(0.25,0.1,0.25,1) 0ms',
     marginBottom: '.5rem',
-    ':hover': {
+    '&:hover': {
       color: '#03A9F4'
     }
   },
@@ -65,7 +68,7 @@ export default theme => ({
     cursor: 'pointer',
     '-webkit-filter': 'grayscale(1)',
     filter: 'grayscale(1)',
-    ':hover': {
+    '&:hover': {
       '-webkit-filter': 'none',
       filter: 'none',
       img: {
@@ -74,7 +77,7 @@ export default theme => ({
     }
   },
   add: {
-    ':hover': {
+    '&:hover': {
       color: '#03A9F4'
     }
   }

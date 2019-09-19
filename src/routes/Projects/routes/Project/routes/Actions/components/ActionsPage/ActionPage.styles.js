@@ -1,8 +1,10 @@
 export default theme => ({
   container: {
     overflowY: 'scroll',
-    paddingBottom: '4rem'
+    paddingBottom: '4rem',
+    padding: '.125rem'
   },
+  pageHeader: theme.pageHeader,
   button: {
     marginLeft: '2rem'
   },

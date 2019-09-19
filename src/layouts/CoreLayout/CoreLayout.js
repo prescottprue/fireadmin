@@ -6,7 +6,7 @@ import VersionChangeReloader from 'components/VersionChangeReloader'
 
 function CoreLayout({ children, classes }) {
   return (
-    <div className={classes.container}>
+    <div className={classes.root}>
       <Navbar />
       <div className={classes.children}>{children}</div>
       <Notifications />

@@ -6,6 +6,7 @@ export default theme => ({
     paddingTop: '5rem',
     marginBottom: '4rem'
   },
+  pageHeader: theme.pageHeader,
   empty: {
     ...theme.flexRowCenter,
     paddingTop: '5rem'

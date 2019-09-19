@@ -18,13 +18,18 @@ export default {
   typography: {
     // Enable typography v2: https://material-ui.com/style/typography/#migration-to-typography-v2
     useNextVariants: true,
-    body1: {
+    sub: {
       color: '#757575'
     },
     h3: {
       color: '#757575',
       fontWeight: 100,
       marginBottom: '3rem'
+    },
+    h5: {
+      color: '#757575',
+      fontWeight: 400,
+      marginBottom: '2rem'
     }
     // h4: {
     //   color: '#757575',
@@ -53,6 +58,13 @@ export default {
     color: 'rgba(0, 0, 0, 0.54)',
     fontSize: '2.25rem',
     alignSelf: 'flex-start',
+    marginBottom: '2rem'
+  },
+  subHeader: {
+    color: ' rgba(0, 0, 0, 0.54)',
+    fontSize: '1.5rem',
+    alignSelf: 'flex-start',
+    marginTop: '2rem',
     marginBottom: '2rem'
   }
 }

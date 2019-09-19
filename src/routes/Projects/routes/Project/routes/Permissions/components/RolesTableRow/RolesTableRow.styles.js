@@ -1,10 +1,15 @@
 export default theme => ({
+  root: {
+    width: '100%'
+  },
   heading: {
     fontSize: theme.typography.pxToRem(18),
     fontWeight: theme.typography.fontWeightRegular
   },
   content: {
-    width: '100%'
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column'
   },
   roleSelect: {
     display: 'flex',
