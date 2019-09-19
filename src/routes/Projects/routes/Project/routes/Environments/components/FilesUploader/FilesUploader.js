@@ -4,7 +4,7 @@ import Dropzone from 'react-dropzone'
 import LoadingSpinner from 'components/LoadingSpinner'
 import UploadIcon from '@material-ui/icons/CloudUpload'
 import { makeStyles } from '@material-ui/core/styles'
-import styles from './PrivateActionTemplates.styles'
+import styles from './FilesUploader.styles'
 
 const useStyles = makeStyles(styles)
 

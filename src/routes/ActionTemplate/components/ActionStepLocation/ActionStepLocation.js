@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Select from 'components/FormSelectField'
 import TextField from 'components/FormTextField'
-import styles from './ActionTemplateForm.styles'
+import styles from './ActionStepLocation.styles'
 
 const useStyles = makeStyles(styles)
 
