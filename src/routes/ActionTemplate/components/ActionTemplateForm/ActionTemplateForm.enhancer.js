@@ -4,16 +4,8 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withProps, withHandlers } from 'recompose'
 import { withRouter } from 'react-router-dom'
-import { withStyles } from '@material-ui/core/styles'
 import { ACTION_TEMPLATES_PATH } from 'constants/paths'
 import { ACTION_TEMPLATE_FORM_NAME } from 'constants/formNames'
-
-const styles = theme => ({
-  button: {
-    margin: theme.spacing(),
-    cursor: 'finger'
-  }
-})
 
 export default compose(
   withRouter,
@@ -46,7 +38,6 @@ export default compose(
     deleteTooltip: editable ? 'Delete Template' : 'Must be owner'
   })),
   withHandlers({
-    goBack: ({ router }) => () => router.push(ACTION_TEMPLATES_PATH)
-  }),
-  withStyles(styles)
+    goBack: ({ history }) => () => history.push(ACTION_TEMPLATES_PATH)
+  })
 )

@@ -1,8 +1,13 @@
 import React from 'react'
-import classes from './PrivateActionTemplates.scss'
+import { makeStyles } from '@material-ui/core/styles'
+import styles from './PrivateActionTemplates.styles'
 
-export const NoTemplatsFound = () => (
-  <div className={classes.container}>No Private Templates Found</div>
-)
+const useStyles = makeStyles(styles)
 
-export default NoTemplatsFound
+function NoTemplatesFound() {
+  const classes = useStyles()
+
+  return <div className={classes.root}>No Private Templates Found</div>
+}
+
+export default NoTemplatesFound

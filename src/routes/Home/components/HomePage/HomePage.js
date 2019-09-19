@@ -2,14 +2,19 @@ import React from 'react'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import { Link } from 'react-router-dom'
-import { ACTION_TEMPLATES_PATH, LOGIN_PATH } from 'constants/paths'
-// import classes from './HomePage.scss'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+import { ACTION_TEMPLATES_PATH, LOGIN_PATH } from 'constants/paths'
+import styles from './HomePage.styles'
 
 const srcUrl = 'https://github.com/prescottprue/fireadmin'
 
-function HomePage({ classes }) {
+const useStyles = makeStyles(styles)
+
+function HomePage() {
+  const classes = useStyles()
+
   return (
     <Grid container spacing={8} justify="center" className={classes.root}>
       <Grid item xs={10} md={8}>

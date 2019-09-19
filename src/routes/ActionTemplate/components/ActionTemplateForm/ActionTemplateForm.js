@@ -9,25 +9,26 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Fab from '@material-ui/core/Fab'
 import Tooltip from '@material-ui/core/Tooltip'
-// import LoadIntoProjectButton from '../LoadIntoProjectButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import PublishIcon from '@material-ui/icons/Publish'
 import BackIcon from '@material-ui/icons/ArrowBack'
 import UndoIcon from '@material-ui/icons/Undo'
 import IconButton from '@material-ui/core/IconButton'
 import TextField from 'components/FormTextField'
+import { makeStyles } from '@material-ui/core/styles'
 import { ACTION_TEMPLATES_PATH } from 'constants/firebasePaths'
 import ActionTemplateStep from '../ActionTemplateStep'
 import ActionTemplateInputs from '../ActionTemplateInputs'
 import ActionTemplateEnvs from '../ActionTemplateEnvs'
 import ActionTemplateBackups from '../ActionTemplateBackups'
-import styleClasses from './ActionTemplateForm.scss'
+import styles from './ActionTemplateForm.styles'
+
+const useStyles = makeStyles(styles)
 
 function ActionTemplateForm({
   submitting,
   pristine,
   reset,
-  classes,
   handleSubmit,
   templateId,
   editable,
@@ -37,9 +38,11 @@ function ActionTemplateForm({
   startTemplateDelete,
   goBack
 }) {
+  const classes = useStyles()
+
   return (
-    <form className={styleClasses.container} onSubmit={handleSubmit}>
-      <div className={styleClasses.buttons}>
+    <form className={classes.root} onSubmit={handleSubmit}>
+      <div className={classes.buttons}>
         <div style={{ marginRight: '4rem' }}>
           <Link to={ACTION_TEMPLATES_PATH}>
             <Tooltip placement="bottom" title="Back To Templates">
@@ -71,7 +74,7 @@ function ActionTemplateForm({
             </Fab>
           </div>
         </Tooltip>
-        {/* <LoadIntoProjectButton templateId={templateId} /> */}
+        {/* TODO: Add a button/select for running this template in a project */}
         <Tooltip placement="bottom" title={deleteTooltip}>
           <div>
             <Fab
@@ -84,24 +87,24 @@ function ActionTemplateForm({
           </div>
         </Tooltip>
       </div>
-      <Typography className={styleClasses.header}>Meta Data</Typography>
-      <Paper className={styleClasses.paper}>
+      <Typography className={classes.header}>Meta Data</Typography>
+      <Paper className={classes.paper}>
         <Grid container spacing={24}>
           <Grid item xs>
             <Field
               name="name"
               component={TextField}
               label="Name"
-              className={styleClasses.field}
+              className={classes.field}
             />
             <Field
               name="description"
               component={TextField}
-              className={styleClasses.field}
+              className={classes.field}
               label="Description"
               multiline
             />
-            <div className={styleClasses.publicToggle}>
+            <div className={classes.publicToggle}>
               <FormControlLabel
                 control={<Field name="public" component={Switch} />}
                 label="Public"
@@ -110,20 +113,20 @@ function ActionTemplateForm({
           </Grid>
         </Grid>
       </Paper>
-      <div className={styleClasses.actions}>
-        <Typography className={styleClasses.header}>Environments</Typography>
+      <div className={classes.actions}>
+        <Typography className={classes.header}>Environments</Typography>
         <FieldArray name="environments" component={ActionTemplateEnvs} />
       </div>
-      <div className={styleClasses.actions}>
-        <Typography className={styleClasses.header}>Inputs</Typography>
+      <div className={classes.actions}>
+        <Typography className={classes.header}>Inputs</Typography>
         <FieldArray name="inputs" component={ActionTemplateInputs} />
       </div>
-      <div className={styleClasses.actions}>
-        <Typography className={styleClasses.header}>Backups</Typography>
+      <div className={classes.actions}>
+        <Typography className={classes.header}>Backups</Typography>
         <FieldArray name="backups" component={ActionTemplateBackups} />
       </div>
-      <div className={styleClasses.actions}>
-        <Typography className={styleClasses.header}>Steps</Typography>
+      <div className={classes.actions}>
+        <Typography className={classes.header}>Steps</Typography>
         <FieldArray
           name="steps"
           mainEditorPath={`${ACTION_TEMPLATES_PATH}/${templateId}`}
@@ -143,7 +146,6 @@ ActionTemplateForm.propTypes = {
   reset: PropTypes.func.isRequired, // from enhancer (reduxForm)
   handleSubmit: PropTypes.func.isRequired, // from enhancer (reduxForm)
   editable: PropTypes.bool.isRequired, // from enhancer (connect)
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   submitTooltip: PropTypes.string, // from enhancer (withProps)
   deleteTooltip: PropTypes.string, // from enhancer (withProps)
   cancelTooltip: PropTypes.string // from enhancer (withProps)

@@ -18,11 +18,14 @@ import Tooltip from '@material-ui/core/Tooltip'
 import Grid from '@material-ui/core/Grid'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import DeleteIcon from '@material-ui/icons/Delete'
+import { makeStyles } from '@material-ui/core/styles'
 import TextField from 'components/FormTextField'
 import Select from 'components/FormSelectField'
 import ActionEditor from '../ActionEditor'
 import ActionStepLocation from '../ActionStepLocation'
-import classes from './ActionTemplateStep.scss'
+import styles from './ActionTemplateStep.styles'
+
+const useStyles = makeStyles(styles)
 
 const typeOptions = [
   { value: 'copy' },
@@ -38,6 +41,8 @@ function ActionTemplateStep({
   addStepClick,
   inputs
 }) {
+  const classes = useStyles()
+
   return (
     <div>
       <Button

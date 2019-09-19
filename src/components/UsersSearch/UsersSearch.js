@@ -6,12 +6,17 @@ import {
   SearchBox,
   Configure
 } from 'react-instantsearch/dom'
+import { makeStyles } from '@material-ui/core/styles'
 import SearchResults from './SearchResults'
-import classes from './UsersSearch.scss'
 import { algolia } from '../../config'
+import styles from './UsersSearch.styles'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 
+const useStyles = makeStyles(styles)
+
 function UsersSearch({ onSuggestionClick, resultsTitle, filterString }) {
+  const classes = useStyles()
+
   return (
     <InstantSearch
       appId={algolia.appId}
@@ -32,8 +37,8 @@ function UsersSearch({ onSuggestionClick, resultsTitle, filterString }) {
 }
 
 UsersSearch.propTypes = {
+  filterString: PropTypes.string.isRequired, // from enhancer (withProps)
   onSuggestionClick: PropTypes.func,
-  filterString: PropTypes.string,
   resultsTitle: PropTypes.string
 }
 

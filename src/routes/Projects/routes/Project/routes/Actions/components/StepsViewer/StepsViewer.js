@@ -5,10 +5,9 @@ import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
 import StepContent from '@material-ui/core/StepContent'
 import Typography from '@material-ui/core/Typography'
-// import classes from './StepsViewer.scss'
 
-export const StepsViewer = ({ steps, convertEnv, activeStep, disabled }) => (
-  <div>
+function StepsViewer({ steps, convertEnv, activeStep, disabled }) {
+  return (
     <Stepper activeStep={activeStep} orientation="vertical" disabled={disabled}>
       {steps.map((step, index) => {
         return (
@@ -24,8 +23,8 @@ export const StepsViewer = ({ steps, convertEnv, activeStep, disabled }) => (
         )
       })}
     </Stepper>
-  </div>
-)
+  )
+}
 
 StepsViewer.propTypes = {
   steps: PropTypes.array.isRequired,

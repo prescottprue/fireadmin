@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import Dropzone from 'react-dropzone'
 import LoadingSpinner from 'components/LoadingSpinner'
 import UploadIcon from '@material-ui/icons/CloudUpload'
-import classes from './FilesUploader.scss'
+import { makeStyles } from '@material-ui/core/styles'
+import styles from './PrivateActionTemplates.styles'
+
+const useStyles = makeStyles(styles)
 
 function FilesUploader({
   onFilesDrop,
@@ -16,8 +19,10 @@ function FilesUploader({
   droppedFiles,
   label
 }) {
+  const classes = useStyles()
+
   return (
-    <div className={classes.container}>
+    <div className={classes.root}>
       {!isUploading ? (
         <Dropzone
           onDrop={onFilesDrop || dropFiles}

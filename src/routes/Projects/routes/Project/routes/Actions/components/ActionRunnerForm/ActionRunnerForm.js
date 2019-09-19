@@ -15,6 +15,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import { makeStyles } from '@material-ui/core/styles'
 import CollectionSearch from 'components/CollectionSearch'
 import TabContainer from 'components/TabContainer'
 import { databaseURLToProjectName } from 'utils'
@@ -23,7 +24,9 @@ import OutlinedSelect from 'components/OutlinedSelect'
 import ActionInput from '../ActionInput'
 import StepsViewer from '../StepsViewer'
 import PrivateActionTemplates from '../PrivateActionTemplates'
-import classes from './ActionRunnerForm.scss'
+import styles from './ActionRunnerForm.styles'
+
+const useStyles = makeStyles(styles)
 
 function ActionRunnerForm({
   selectedTemplate,
@@ -43,8 +46,10 @@ function ActionRunnerForm({
   selectTab,
   selectedTab
 }) {
+  const classes = useStyles()
+
   return (
-    <div className={classes.container}>
+    <div>
       <ExpansionPanel
         expanded={templateEditExpanded}
         onChange={toggleTemplateEdit}>

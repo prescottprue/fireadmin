@@ -11,9 +11,13 @@ import Radio from '@material-ui/core/Radio'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
 import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
 import Select from 'components/FormSelectField'
 import TextField from 'components/FormTextField'
-import classes from './ActionStepLocation.scss'
+import styles from './ActionTemplateForm.styles'
+
+const useStyles = makeStyles(styles)
 
 // const pathTypeOptions = [{ value: 'only' }, { value: 'all but' }]
 const resourcesOptions = [
@@ -22,88 +26,84 @@ const resourcesOptions = [
   { value: 'storage', label: 'Cloud Storage' }
 ]
 
-export const ActionStepLocation = ({
-  name,
-  inputs,
-  indexName,
-  steps,
-  title
-}) => (
-  <Grid item xs={12} lg={6}>
-    <h4>{title}</h4>
-    <FormControl className={classes.field}>
-      <InputLabel htmlFor="resource">Select A Resource</InputLabel>
-      <Field
-        name={`${name}.resource`}
-        component={Select}
-        fullWidth
-        inputProps={{
-          name: 'resource',
-          id: 'resource'
-        }}>
-        {resourcesOptions.map((option, idx) => (
-          <MenuItem
-            key={`Option-${option.value}-${idx}`}
-            value={option.value}
-            disabled={option.disabled}>
-            <ListItemText primary={option.label || capitalize(option.value)} />
-          </MenuItem>
-        ))}
-      </Field>
-    </FormControl>
-    <FormControl
-      component="fieldset"
-      required
-      className={classes.formControl}
-      style={{ marginTop: '2rem' }}>
-      <FormLabel component="legend">Path Type</FormLabel>
-      <Field component={RadioGroup} name={`${name}.pathType`}>
-        <FormControlLabel
-          value="constant"
-          control={<Radio />}
-          label="Constant (part of template)"
-        />
-        <FormControlLabel
-          value="input"
-          control={<Radio />}
-          label="User Input"
-        />
-      </Field>
-    </FormControl>
-    {get(steps, `${indexName}.pathType`) === 'input' ? (
+function ActionStepLocation({ name, inputs, indexName, steps, title }) {
+  const classes = useStyles()
+
+  return (
+    <Grid item xs={12} lg={6}>
+      <Typography variant="h4">{title}</Typography>
       <FormControl className={classes.field}>
-        <InputLabel htmlFor="resource">Select An Input</InputLabel>
+        <InputLabel htmlFor="resource">Select A Resource</InputLabel>
         <Field
-          name={`${name}.path`}
+          name={`${name}.resource`}
           component={Select}
           fullWidth
           inputProps={{
-            name: 'pathType',
-            id: 'pathType'
+            name: 'resource',
+            id: 'resource'
           }}>
-          {inputs.map((option, idx) => (
+          {resourcesOptions.map((option, idx) => (
             <MenuItem
               key={`Option-${option.value}-${idx}`}
-              value={idx}
+              value={option.value}
               disabled={option.disabled}>
               <ListItemText
-                primary={get(option, 'name', `Input ${idx}`)}
-                secondary={get(option, 'variableName', `Input ${idx}`)}
+                primary={option.label || capitalize(option.value)}
               />
             </MenuItem>
           ))}
         </Field>
       </FormControl>
-    ) : (
-      <Field
-        name={`${name}.path`}
-        component={TextField}
-        label="Path"
-        className={classes.field}
-      />
-    )}
-  </Grid>
-)
+      <FormControl component="fieldset" required style={{ marginTop: '2rem' }}>
+        <FormLabel component="legend">Path Type</FormLabel>
+        <Field component={RadioGroup} name={`${name}.pathType`}>
+          <FormControlLabel
+            value="constant"
+            control={<Radio />}
+            label="Constant (part of template)"
+          />
+          <FormControlLabel
+            value="input"
+            control={<Radio />}
+            label="User Input"
+          />
+        </Field>
+      </FormControl>
+      {get(steps, `${indexName}.pathType`) === 'input' ? (
+        <FormControl className={classes.field}>
+          <InputLabel htmlFor="resource">Select An Input</InputLabel>
+          <Field
+            name={`${name}.path`}
+            component={Select}
+            fullWidth
+            inputProps={{
+              name: 'pathType',
+              id: 'pathType'
+            }}>
+            {inputs.map((option, idx) => (
+              <MenuItem
+                key={`Option-${option.value}-${idx}`}
+                value={idx}
+                disabled={option.disabled}>
+                <ListItemText
+                  primary={get(option, 'name', `Input ${idx}`)}
+                  secondary={get(option, 'variableName', `Input ${idx}`)}
+                />
+              </MenuItem>
+            ))}
+          </Field>
+        </FormControl>
+      ) : (
+        <Field
+          name={`${name}.path`}
+          component={TextField}
+          label="Path"
+          className={classes.field}
+        />
+      )}
+    </Grid>
+  )
+}
 
 ActionStepLocation.propTypes = {
   steps: PropTypes.array,

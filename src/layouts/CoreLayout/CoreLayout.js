@@ -1,10 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { makeStyles } from '@material-ui/core/styles'
 import Navbar from 'containers/Navbar'
 import { Notifications } from 'modules/notification'
 import VersionChangeReloader from 'components/VersionChangeReloader'
+import styles from './CoreLayout.styles'
 
-function CoreLayout({ children, classes }) {
+const useStyles = makeStyles(styles)
+
+function CoreLayout({ children }) {
+  const classes = useStyles()
+
   return (
     <div className={classes.root}>
       <Navbar />
@@ -16,7 +22,6 @@ function CoreLayout({ children, classes }) {
 }
 
 CoreLayout.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   children: PropTypes.element.isRequired
 }
 

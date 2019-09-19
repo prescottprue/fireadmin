@@ -1,15 +1,12 @@
-export default () => ({
+export default theme => ({
   root: {
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
+    ...theme.flexColumnCenter,
     justifyContent: 'flex-start',
     paddingTop: '7rem',
     height: '100%'
   },
   progress: {
-    display: 'flex',
-    justifyContent: 'center',
+    ...theme.flexRowCenter,
     alignItems: 'center',
     height: '50%'
   }

@@ -3,19 +3,26 @@ import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { Field } from 'redux-form'
 import OutlinedTextField from 'components/OutlinedTextField'
-import classes from './ActionInput.scss'
+import { makeStyles } from '@material-ui/core/styles'
+import styles from './ActionInput.styles'
 
-export const ActionInput = ({ inputMeta, name, index }) => (
-  <Field
-    name={name}
-    props={{
-      label: get(inputMeta, `name`) || `Input ${index + 1}`,
-      'data-test': 'action-input'
-    }}
-    component={OutlinedTextField}
-    className={classes.field}
-  />
-)
+const useStyles = makeStyles(styles)
+
+function ActionInput({ inputMeta, name, index }) {
+  const classes = useStyles()
+
+  return (
+    <Field
+      name={name}
+      props={{
+        label: get(inputMeta, 'name') || `Input ${index + 1}`,
+        'data-test': 'action-input'
+      }}
+      component={OutlinedTextField}
+      className={classes.field}
+    />
+  )
+}
 
 ActionInput.propTypes = {
   inputMeta: PropTypes.object,
