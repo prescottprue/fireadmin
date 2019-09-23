@@ -6,25 +6,28 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
-import DocsIcon from '@material-ui/icons/LibraryBooks'
 import Hidden from '@material-ui/core/Hidden'
-import AccountMenu from './AccountMenu'
-import LoginMenu from './LoginMenu'
-import { LIST_PATH } from 'constants/paths'
-import { DOCS_URL } from 'constants/docs'
 import Tooltip from '@material-ui/core/Tooltip'
+import { makeStyles } from '@material-ui/core/styles'
+import DocsIcon from '@material-ui/icons/LibraryBooks'
+import { LIST_PATH, LOGIN_PATH } from 'constants/paths'
+import { isLoaded, isEmpty } from 'react-redux-firebase/lib/helpers'
+import { DOCS_URL } from 'constants/docs'
+import AccountMenu from './AccountMenu'
+import styles from './Navbar.styles'
 
-function Navbar({
-  avatarUrl,
-  displayName,
-  authExists,
-  goToAccount,
-  handleLogout,
-  closeAccountMenu,
-  anchorEl,
-  classes,
-  handleMenu
-}) {
+const buttonStyle = {
+  color: 'white',
+  textDecoration: 'none',
+  alignSelf: 'center'
+}
+
+const useStyles = makeStyles(styles)
+
+function Navbar({ history, firebase, auth, profile }) {
+  const classes = useStyles()
+  const authExists = isLoaded(auth) && !isEmpty(auth)
+
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar>
@@ -60,17 +63,15 @@ function Navbar({
           </Tooltip>
         </Hidden>
         {authExists ? (
-          <AccountMenu
-            avatarUrl={avatarUrl}
-            displayName={displayName}
-            onLogoutClick={handleLogout}
-            goToAccount={goToAccount}
-            closeAccountMenu={closeAccountMenu}
-            handleMenu={handleMenu}
-            anchorEl={anchorEl}
-          />
+          <AccountMenu />
         ) : (
-          <LoginMenu />
+          <Button
+            style={buttonStyle}
+            component={Link}
+            to={LOGIN_PATH}
+            data-test="sign-in">
+            Sign In
+          </Button>
         )}
       </Toolbar>
     </AppBar>
@@ -78,15 +79,16 @@ function Navbar({
 }
 
 Navbar.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
-  displayName: PropTypes.string, // from enhancer (flattenProps - profile)
-  avatarUrl: PropTypes.string, // from enhancer (flattenProps - profile)
-  authExists: PropTypes.bool, // from enhancer (withProps - auth)
-  goToAccount: PropTypes.func.isRequired, // from enhancer (withHandlers - router)
-  handleLogout: PropTypes.func.isRequired, // from enhancer (withHandlers - firebase)
-  closeAccountMenu: PropTypes.func.isRequired, // from enhancer (withHandlers - firebase)
-  handleMenu: PropTypes.func.isRequired, // from enhancer (withHandlers - firebase)
-  anchorEl: PropTypes.object // from enhancer (withStateHandlers - handleMenu)
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired
+  }),
+  firebase: PropTypes.shape({
+    logout: PropTypes.func.isRequired
+  }),
+  profile: PropTypes.shape({
+    displayName: PropTypes.string, // from enhancer (connect)
+    avatarUrl: PropTypes.string // from enhancer (connect)
+  })
 }
 
 export default Navbar

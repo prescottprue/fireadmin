@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Dropzone from 'react-dropzone'
-import LoadingSpinner from 'components/LoadingSpinner'
-import UploadIcon from '@material-ui/icons/CloudUpload'
+import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
+import UploadIcon from '@material-ui/icons/CloudUpload'
+import LoadingSpinner from 'components/LoadingSpinner'
 import styles from './FilesUploader.styles'
 
 const useStyles = makeStyles(styles)
@@ -35,9 +36,10 @@ function FilesUploader({
           <UploadIcon
             className={classes[`icon${isCompact ? 'Compact' : ''}`]}
           />
-          <div className={classes[`dropzone${isCompact ? 'Text' : 'Title'}`]}>
+          <Typography
+            className={classes[`dropzone${isCompact ? 'Text' : 'Title'}`]}>
             Drag & Drop
-          </div>
+          </Typography>
           <div className={classes.dropzoneText}>
             {label} or <span className="underline">browse</span>
           </div>
