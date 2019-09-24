@@ -17,7 +17,7 @@ function HomePage() {
 
   return (
     <Grid container spacing={8} justify="center" className={classes.root}>
-      <Grid item xs={10} md={8}>
+      <Grid item xs={10} md={10}>
         <Paper className={classes.paper}>
           <Typography variant="h3">
             Fireadmin helps you mange Firebase apps while you grow your team
@@ -62,7 +62,7 @@ function HomePage() {
           </Grid>
         </Paper>
       </Grid>
-      <Grid item xs={10} md={8}>
+      <Grid item xs={10} md={10}>
         <Paper className={classes.paper} data-test="features">
           <Typography variant="h3">Use only what you need</Typography>
           <Grid container spacing={8}>

@@ -35,7 +35,7 @@ function ActionTemplatesList({
             <Typography className={classes.sectionHeader}>
               Public Templates
             </Typography>
-            <Grid container spacing={24} className={classes.root}>
+            <Grid container spacing={8} className={classes.root}>
               {map(actionTemplates, (template, templateIdx) => (
                 <Grid
                   item
@@ -59,7 +59,7 @@ function ActionTemplatesList({
             <Typography className={classes.sectionHeader}>
               Private Templates
             </Typography>
-            <Grid container spacing={24} className={classes.root}>
+            <Grid container spacing={8} className={classes.root}>
               {map(myTemplates, (template, templateIdx) => (
                 <Grid
                   item

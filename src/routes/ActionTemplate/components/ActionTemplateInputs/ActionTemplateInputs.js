@@ -2,8 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { Field } from 'redux-form'
-import { Switch } from 'redux-form-material-ui'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
@@ -17,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import DeleteIcon from '@material-ui/icons/Delete'
 import TextField from 'components/FormTextField'
+import Switch from 'components/FormSwitchField'
 import styles from './ActionTemplateInputs.styles'
 
 const useStyles = makeStyles(styles)
@@ -54,7 +53,7 @@ function ActionTemplateInputs({ fields, inputs }) {
               )}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <Grid container spacing={24} style={{ flexGrow: 1 }}>
+              <Grid container spacing={8} style={{ flexGrow: 1 }}>
                 <Grid item xs={10} lg={2}>
                   <Field
                     name={`${member}.name`}
@@ -69,10 +68,9 @@ function ActionTemplateInputs({ fields, inputs }) {
                     className={classes.field}
                   />
                   <div className={classes.required}>
-                    <FormControlLabel
-                      control={
-                        <Field name={`${member}.required`} component={Switch} />
-                      }
+                    <Field
+                      name={`${member}.required`}
+                      component={Switch}
                       label="Required"
                     />
                   </div>

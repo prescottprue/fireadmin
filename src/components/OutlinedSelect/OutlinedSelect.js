@@ -1,13 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react'
-import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
-import InputLabel from '@material-ui/core/InputLabel'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import FormControl from '@material-ui/core/FormControl'
-import Select from '@material-ui/core/Select'
 import { makeStyles } from '@material-ui/core/styles'
 import styles from './OutlinedSelect.styles'
+import TextField from '@material-ui/core/TextField'
 
 const useStyles = makeStyles(styles)
 
@@ -16,7 +12,8 @@ function OutlinedSelect({
   input,
   children,
   meta: { valid },
-  inputProps
+  inputProps,
+  className
 }) {
   const classes = useStyles()
   const [labelWidth, setLabelWidth] = useState(0)
@@ -24,29 +21,29 @@ function OutlinedSelect({
 
   useEffect(() => {
     // Update the document title using the browser API
-    setLabelWidth(ReactDOM.findDOMNode(textInput).offsetWidth)
+    setLabelWidth(textInput.offsetWidth)
   }, [])
 
   return (
-    <FormControl variant="outlined" className={classes.formControl}>
-      <InputLabel ref={textInput} htmlFor="outlined-age-simple">
-        {label}
-      </InputLabel>
-      <Select
-        fullWidth
-        input={
-          <OutlinedInput
-            labelWidth={labelWidth}
-            style={{ width: '100%' }}
-            {...input}
-            {...inputProps}
-          />
+    <TextField
+      select
+      label={label}
+      fullWidth
+      variant="outlined"
+      margin="normal"
+      className={className || classes.root}
+      helperText={input.value ? null : 'Select an environment'}
+      SelectProps={{
+        MenuProps: {
+          className: classes.menu
         }
-        {...input}>
-        {children}
-      </Select>
-      {!valid ? <FormHelperText>Select an environment</FormHelperText> : null}
-    </FormControl>
+      }}
+      input={
+        <OutlinedInput labelWidth={labelWidth} {...input} {...inputProps} />
+      }
+      {...input}>
+      {children}
+    </TextField>
   )
 }
 

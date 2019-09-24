@@ -20,7 +20,9 @@ function FormTextField({
 }
 
 FormTextField.propTypes = {
-  formTextField: PropTypes.object
+  meta: PropTypes.object.isRequired,
+  input: PropTypes.object.isRequired,
+  label: PropTypes.string
 }
 
 export default FormTextField

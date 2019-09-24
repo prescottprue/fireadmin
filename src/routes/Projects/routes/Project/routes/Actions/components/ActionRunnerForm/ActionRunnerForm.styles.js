@@ -2,10 +2,8 @@ export default theme => ({
   sectionHeader: {
     fontSize: '1.3rem'
   },
-  button: {
-    marginLeft: '2rem'
-  },
   orFont: {
+    padding: theme.spacing(2),
     fontWeight: '300',
     fontSize: '1.2rem'
   },

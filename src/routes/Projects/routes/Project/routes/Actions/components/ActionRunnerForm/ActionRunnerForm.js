@@ -59,12 +59,12 @@ function ActionRunnerForm({
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className="flex-column">
-          <Typography paragraph>
-            Run an action by selecting a template, filling in the template's
-            configuation options, then clicking <strong>run action</strong>.
-          </Typography>
           <Grid container spacing={8} justify="center">
             <Grid item xs={12} sm={8} md={8} style={{ textAlign: 'center' }}>
+              <Typography paragraph>
+                Run an action by selecting a template, filling in the template's
+                configuation options, then clicking <strong>run action</strong>.
+              </Typography>
               <Button
                 color="primary"
                 component={Link}
@@ -72,9 +72,6 @@ function ActionRunnerForm({
                 className={classes.button}>
                 Create New Action Template
               </Button>
-            </Grid>
-            <br />
-            <Grid item xs={12} sm={8} md={8} style={{ textAlign: 'center' }}>
               <Typography className={classes.orFont}>
                 or select existing
               </Typography>
@@ -122,47 +119,50 @@ function ActionRunnerForm({
             <Typography className={classes.heading}>Environments</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className={classes.inputs}>
-            {selectedTemplate.environments ? (
-              selectedTemplate.environments.map((input, index) => (
-                <Field
-                  name={`environmentValues.${index}`}
-                  component={OutlinedSelect}
-                  fullWidth
-                  key={`Environment-${index}`}
-                  props={{
-                    label: get(input, `name`) || `Environment ${index + 1}`
-                  }}
-                  inputProps={{
-                    name: 'environment',
-                    id: 'environment',
-                    'data-test': 'environment-select'
-                  }}>
-                  {map(environments, (environment, envIndex) => (
-                    <MenuItem
-                      key={`Environment-Option-${environment.id}-${envIndex}`}
-                      value={environment.id}
-                      button
-                      disabled={
-                        environment.locked ||
-                        (environment.readOnly && index === 1) ||
-                        (environment.writeOnly && index === 0)
-                      }
-                      data-test={`environment-option-${environment.id}`}>
-                      <ListItemText
-                        primary={environment.name || environment.id}
-                        secondary={`${databaseURLToProjectName(
-                          environment.databaseURL
-                        )}${environment.locked ? ' - Locked' : ''}${
-                          environment.readOnly ? ' - Read Only' : ''
-                        }${environment.writeOnly ? ' - Write Only' : ''}`}
-                      />
-                    </MenuItem>
-                  ))}
-                </Field>
-              ))
-            ) : (
-              <div className="flex-row-center">No Environments</div>
-            )}
+            <Grid container spacing={8}>
+              {selectedTemplate.environments ? (
+                selectedTemplate.environments.map((input, index) => (
+                  <Grid item xs={10} md={6} key={`Environment-${index}`}>
+                    <Field
+                      name={`environmentValues.${index}`}
+                      component={props => <OutlinedSelect {...props} />}
+                      fullWidth
+                      props={{
+                        label: get(input, `name`) || `Environment ${index + 1}`
+                      }}
+                      inputProps={{
+                        name: 'environment',
+                        id: 'environment',
+                        'data-test': 'environment-select'
+                      }}>
+                      {map(environments, (environment, envIndex) => (
+                        <MenuItem
+                          key={`Environment-Option-${environment.id}-${envIndex}`}
+                          value={environment.id}
+                          button
+                          disabled={
+                            environment.locked ||
+                            (environment.readOnly && index === 1) ||
+                            (environment.writeOnly && index === 0)
+                          }
+                          data-test={`environment-option-${environment.id}`}>
+                          <ListItemText
+                            primary={environment.name || environment.id}
+                            secondary={`${databaseURLToProjectName(
+                              environment.databaseURL
+                            )}${environment.locked ? ' - Locked' : ''}${
+                              environment.readOnly ? ' - Read Only' : ''
+                            }${environment.writeOnly ? ' - Write Only' : ''}`}
+                          />
+                        </MenuItem>
+                      ))}
+                    </Field>
+                  </Grid>
+                ))
+              ) : (
+                <div className="flex-row-center">No Environments</div>
+              )}
+            </Grid>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       ) : null}
@@ -192,7 +192,7 @@ function ActionRunnerForm({
             <Typography className={classes.heading}>Steps</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Grid container spacing={24} style={{ flexGrow: 1 }}>
+            <Grid container spacing={8} style={{ flexGrow: 1 }}>
               <Grid item xs={12} lg={6}>
                 {selectedTemplate && selectedTemplate.steps ? (
                   <StepsViewer steps={selectedTemplate.steps} activeStep={0} />

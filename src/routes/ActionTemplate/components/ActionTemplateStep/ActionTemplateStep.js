@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { capitalize, get } from 'lodash'
 import { Field } from 'redux-form'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import { Checkbox } from 'redux-form-material-ui'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -24,6 +23,7 @@ import Select from 'components/FormSelectField'
 import ActionEditor from '../ActionEditor'
 import ActionStepLocation from '../ActionStepLocation'
 import styles from './ActionTemplateStep.styles'
+import FormCheckboxField from 'components/FormCheckboxField'
 
 const useStyles = makeStyles(styles)
 
@@ -60,7 +60,7 @@ function ActionTemplateStep({
             </Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Grid container spacing={24} style={{ flexGrow: 1 }}>
+            <Grid container spacing={8} style={{ flexGrow: 1 }}>
               <Grid item xs={12} lg={12}>
                 <Tooltip title="Remove Step">
                   <IconButton
@@ -117,7 +117,7 @@ function ActionTemplateStep({
                           disabled={
                             get(steps, `${index}.src.resource`) !== 'rtdb'
                           }
-                          component={Checkbox}
+                          component={FormCheckboxField}
                         />
                       }
                       label="Disable Batching (only RTDB)"
@@ -134,7 +134,7 @@ function ActionTemplateStep({
                           disabled={
                             get(steps, `${index}.src.resource`) !== 'firestore'
                           }
-                          component={Checkbox}
+                          component={FormCheckboxField}
                         />
                       }
                       label="Include subcollections (only Firestore)"
@@ -153,7 +153,7 @@ function ActionTemplateStep({
                 <Grid item xs={12} lg={12}>
                   <Grid
                     container
-                    spacing={24}
+                    spacing={8}
                     style={{ flexGrow: 1 }}
                     justify="center">
                     <ActionStepLocation

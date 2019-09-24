@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import { makeStyles } from '@material-ui/core/styles'
 import { ACCOUNT_PATH } from 'constants/paths'
+import enhancer from './Navbar.enhancer'
 
 const useStyles = makeStyles(() => ({
   buttonRoot: {
@@ -58,8 +59,12 @@ function AccountMenu({ firebase, history }) {
 }
 
 AccountMenu.propTypes = {
-  goToAccount: PropTypes.func.isRequired,
-  anchorEl: PropTypes.object
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired
+  }),
+  firebase: PropTypes.shape({
+    logout: PropTypes.func.isRequired
+  })
 }
 
-export default AccountMenu
+export default enhancer(AccountMenu)

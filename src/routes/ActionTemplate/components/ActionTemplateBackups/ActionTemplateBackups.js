@@ -57,7 +57,7 @@ function ActionTemplateBackups({ fields, steps }) {
               </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <Grid container spacing={24} style={{ flexGrow: 1 }}>
+              <Grid container spacing={8} style={{ flexGrow: 1 }}>
                 <Grid item xs={12} lg={6}>
                   <Field
                     name={`${member}.name`}

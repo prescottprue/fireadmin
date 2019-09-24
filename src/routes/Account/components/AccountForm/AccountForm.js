@@ -8,7 +8,6 @@ import ProviderDataForm from '../ProviderDataForm'
 function AccountForm({ account, handleSubmit, submitting, pristine, classes }) {
   return (
     <form className={classes.root} onSubmit={handleSubmit}>
-      <h4>Account</h4>
       <div className={classes.fields}>
         <Field
           fullWidth

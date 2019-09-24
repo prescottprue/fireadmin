@@ -2,8 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Field, FieldArray } from 'redux-form'
 import { Link } from 'react-router-dom'
-import { Switch } from 'redux-form-material-ui'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
@@ -22,6 +20,7 @@ import ActionTemplateInputs from '../ActionTemplateInputs'
 import ActionTemplateEnvs from '../ActionTemplateEnvs'
 import ActionTemplateBackups from '../ActionTemplateBackups'
 import styles from './ActionTemplateForm.styles'
+import FormSwitchField from 'components/FormSwitchField'
 
 const useStyles = makeStyles(styles)
 
@@ -89,7 +88,7 @@ function ActionTemplateForm({
       </div>
       <Typography className={classes.header}>Meta Data</Typography>
       <Paper className={classes.paper}>
-        <Grid container spacing={24}>
+        <Grid container spacing={8}>
           <Grid item xs>
             <Field
               name="name"
@@ -105,10 +104,7 @@ function ActionTemplateForm({
               multiline
             />
             <div className={classes.publicToggle}>
-              <FormControlLabel
-                control={<Field name="public" component={Switch} />}
-                label="Public"
-              />
+              <Field name="public" label="public" component={FormSwitchField} />
             </div>
           </Grid>
         </Grid>

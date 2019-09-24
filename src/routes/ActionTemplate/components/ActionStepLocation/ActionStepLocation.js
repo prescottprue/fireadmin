@@ -2,12 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize, get } from 'lodash'
 import { Field } from 'redux-form'
-import { RadioGroup } from 'redux-form-material-ui'
 import FormLabel from '@material-ui/core/FormLabel'
 import FormControl from '@material-ui/core/FormControl'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import InputLabel from '@material-ui/core/InputLabel'
-import Radio from '@material-ui/core/Radio'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
 import Grid from '@material-ui/core/Grid'
@@ -16,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Select from 'components/FormSelectField'
 import TextField from 'components/FormTextField'
 import styles from './ActionStepLocation.styles'
+import RadioGroupField from 'components/RadioGroupField'
 
 const useStyles = makeStyles(styles)
 
@@ -56,18 +54,14 @@ function ActionStepLocation({ name, inputs, indexName, steps, title }) {
       </FormControl>
       <FormControl component="fieldset" required style={{ marginTop: '2rem' }}>
         <FormLabel component="legend">Path Type</FormLabel>
-        <Field component={RadioGroup} name={`${name}.pathType`}>
-          <FormControlLabel
-            value="constant"
-            control={<Radio />}
-            label="Constant (part of template)"
-          />
-          <FormControlLabel
-            value="input"
-            control={<Radio />}
-            label="User Input"
-          />
-        </Field>
+        <Field
+          component={RadioGroupField}
+          options={[
+            { value: 'constant', label: 'Constant (part of template)' },
+            { value: 'input', label: 'User Input' }
+          ]}
+          name={`${name}.pathType`}
+        />
       </FormControl>
       {get(steps, `${indexName}.pathType`) === 'input' ? (
         <FormControl className={classes.field}>
