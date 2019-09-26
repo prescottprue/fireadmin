@@ -4460,15 +4460,15 @@ cyclist@~0.2.2:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-0.2.2.tgz#1b33792e11e914a2fd6d6ed6447464444e5fa640"
   integrity sha1-GzN5LhHpFKL9bW7WRHRkRE5fpkA=
 
-cypress-firebase@0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/cypress-firebase/-/cypress-firebase-0.2.5.tgz#2e2a938f3163cd0faaf2726002461e7fdb88b367"
-  integrity sha512-iCfZ1oqkjjRN7frAXlWtm9CvoK960Mv2QA+1POpaaCkM8uc1wr15zDE24tNymLVouvuLj+RepyWq8kWZNpVLPA==
+cypress-firebase@^0.3.0-beta:
+  version "0.3.0-beta"
+  resolved "https://registry.yarnpkg.com/cypress-firebase/-/cypress-firebase-0.3.0-beta.tgz#ef98a63d8cddcc7eebcf3435ad15b67eaa337068"
+  integrity sha512-mK9S6PbFilF4mS5nxXwxnUZkLajl3nxLJv3ARtrXftvEdywSmx5mtt5hE8qMgt1PZLXzLlKSnpUTCNY/dgIe4A==
   dependencies:
     chalk "^2.4.2"
     commander "^3.0.0"
     figures "^3.0.0"
-    firebase-admin "^8.4.0"
+    firebase-admin "^8.5.0"
     firebase-tools-extra "0.1.1"
     lodash "^4.17.15"
 
@@ -6005,6 +6005,20 @@ firebase-admin@^8.4.0:
   version "8.5.0"
   resolved "https://registry.yarnpkg.com/firebase-admin/-/firebase-admin-8.5.0.tgz#99d1a007edb1689c3012eca64968c93846d5e292"
   integrity sha512-rvgCj5Z1iFOT6K6uW37VRl4PKNpAcBFu/FIQ4Nl5bFnqbHSxf+QxzsqdsUtIxdqZU1yh2DTs2t+s5qORx/T9+g==
+  dependencies:
+    "@firebase/database" "^0.5.1"
+    "@types/node" "^8.0.53"
+    dicer "^0.3.0"
+    jsonwebtoken "8.1.0"
+    node-forge "0.7.4"
+  optionalDependencies:
+    "@google-cloud/firestore" "^2.0.0"
+    "@google-cloud/storage" "^3.0.2"
+
+firebase-admin@^8.5.0:
+  version "8.6.0"
+  resolved "https://registry.yarnpkg.com/firebase-admin/-/firebase-admin-8.6.0.tgz#ed81d6b1a0b2b1f4033c47e33595e85634d0a68b"
+  integrity sha512-+JqOinU5bYUkg434LqEBXrHMrIBhL/+HwWEgbZpS1sBKHQRJK7LlcBrayqxvQKwJzgh5xs/JTInTmkozXk7h1w==
   dependencies:
     "@firebase/database" "^0.5.1"
     "@types/node" "^8.0.53"

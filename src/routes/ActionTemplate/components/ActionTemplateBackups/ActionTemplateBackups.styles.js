@@ -4,6 +4,12 @@ export default theme => ({
     marginTop: '.5rem',
     marginBottom: '1.5rem'
   },
+  alignCenter: {
+    textAlign: 'center'
+  },
+  content: {
+    ...theme.flexColumn
+  },
   title: {
     fontSize: '1.2rem',
     flexBasis: '33.33%',
@@ -12,5 +18,13 @@ export default theme => ({
   sections: {
     ...theme.flexRow,
     alignItems: 'center'
+  },
+  deleteButton: {
+    margin: '0px',
+    padding: '0px'
+  },
+  delete: {
+    ...theme.flexRow,
+    justifyContent: 'flex-end'
   }
 })

@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 import { makeStyles } from '@material-ui/core/styles'
-import styles from './OutlinedSelect.styles'
 import TextField from '@material-ui/core/TextField'
+import styles from './OutlinedSelect.styles'
 
 const useStyles = makeStyles(styles)
 
@@ -41,7 +41,8 @@ function OutlinedSelect({
       input={
         <OutlinedInput labelWidth={labelWidth} {...input} {...inputProps} />
       }
-      {...input}>
+      {...input}
+      data-test={inputProps && inputProps['data-test']}>
       {children}
     </TextField>
   )

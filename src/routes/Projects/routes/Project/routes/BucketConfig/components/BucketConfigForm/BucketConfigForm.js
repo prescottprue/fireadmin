@@ -47,7 +47,7 @@ function BucketConfigForm({
       <Paper className={classes.paper}>
         <Grid container spacing={8} justify="center">
           <Grid item xs={12} md={8}>
-            <FormControl className={classes.formControl}>
+            <FormControl className={classes.formItem}>
               <InputLabel htmlFor="environment">Environment</InputLabel>
               <Field
                 name="environment"
@@ -66,7 +66,7 @@ function BucketConfigForm({
             </FormControl>
           </Grid>
           <Grid item xs={12} md={8}>
-            <FormControl className={classes.formControl}>
+            <FormControl className={classes.formItem}>
               <InputLabel htmlFor="method">Method</InputLabel>
               <Field
                 name="method"
@@ -83,7 +83,7 @@ function BucketConfigForm({
             </FormControl>
           </Grid>
           <Grid item xs={12} md={8}>
-            <FormControl disabled className={classes.formControl}>
+            <FormControl disabled className={classes.formItem}>
               <InputLabel htmlFor="bucket">
                 {storageBucket || 'Storage Bucket (defaults to app bucket)'}
               </InputLabel>

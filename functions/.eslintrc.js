@@ -25,7 +25,8 @@ module.exports = {
         'no-console': 0,
         'import/no-dynamic-require': 0,
         'no-unused-expressions': 0,
-        'import/prefer-default-export': 0
+        'import/prefer-default-export': 0,
+        'no-return-await': 2
       }
     }
   ]

@@ -54,7 +54,7 @@ function ActionTemplateInputs({ fields, inputs }) {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Grid container spacing={8} style={{ flexGrow: 1 }}>
-                <Grid item xs={10} lg={2}>
+                <Grid item xs={10} md={6} lg={4}>
                   <Field
                     name={`${member}.name`}
                     component={TextField}
@@ -80,6 +80,7 @@ function ActionTemplateInputs({ fields, inputs }) {
                     <Tooltip placement="bottom" title="Remove Input">
                       <IconButton
                         onClick={removeInput}
+                        color="secondary"
                         className={classes.deleteButton}>
                         <DeleteIcon />
                       </IconButton>

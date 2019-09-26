@@ -15,6 +15,16 @@ export default {
     accent1Color: pink['A200'],
     accent2Color: teal['A100']
   },
+  field: {
+    width: '100%',
+    marginTop: '2rem'
+    // maxWidth: '350px'
+  },
+  multilineField: {
+    width: '100%',
+    marginTop: '2rem'
+    // maxWidth: '500px'
+  },
   typography: {
     // Enable typography v2: https://material-ui.com/style/typography/#migration-to-typography-v2
     useNextVariants: true,

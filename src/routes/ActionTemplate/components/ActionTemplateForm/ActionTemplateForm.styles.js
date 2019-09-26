@@ -2,6 +2,7 @@ export default theme => ({
   root: {
     ...theme.flexColumn
   },
+  field: theme.field,
   buttons: {
     ...theme.flexRow,
     justifyContent: 'flex-start',

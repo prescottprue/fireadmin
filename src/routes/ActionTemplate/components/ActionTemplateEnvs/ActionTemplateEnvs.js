@@ -56,7 +56,7 @@ function ActionTemplateEnvs({ fields, environments }) {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Grid container spacing={8} style={{ flexGrow: 1 }}>
-                <Grid item xs={10} lg={2}>
+                <Grid item xs={10} md={4} lg={4}>
                   <Field
                     name={`${member}.name`}
                     component={TextField}

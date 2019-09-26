@@ -25,6 +25,8 @@
     "lint:tests": "eslint cypress",
     "lint:docs": "eslint docs",
     "lint:fix": "yarn lint --fix",
+    "test": "yarn build:testConfig && cypress run",
+    "test:open": "yarn build:testConfig && cypress open",
     "test:ui": "yarn build:testConfig && cypress run",
     "test:ui:open": "yarn build:testConfig && cypress open",
     "test:ui:stage": "yarn test:ui --env envName=stage",
@@ -66,7 +68,7 @@
   "devDependencies": {
     "babel-eslint": "^10.0.0",
     "cypress": "^3.4.1",
-    "cypress-firebase": "0.2.5",
+    "cypress-firebase": "^0.3.0-beta",
     "eslint": "^6.3.0",
     "eslint-config-prettier": "^6.1.0",
     "eslint-config-react-app": "^5.0.1",

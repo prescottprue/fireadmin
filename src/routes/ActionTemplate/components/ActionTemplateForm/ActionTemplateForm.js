@@ -43,13 +43,15 @@ function ActionTemplateForm({
     <form className={classes.root} onSubmit={handleSubmit}>
       <div className={classes.buttons}>
         <div style={{ marginRight: '4rem' }}>
-          <Link to={ACTION_TEMPLATES_PATH}>
-            <Tooltip placement="bottom" title="Back To Templates">
-              <IconButton className={classes.submit} onClick={goBack}>
-                <BackIcon />
-              </IconButton>
-            </Tooltip>
-          </Link>
+          <Tooltip placement="bottom" title="Back To Templates">
+            <IconButton
+              className={classes.submit}
+              component={Link}
+              to={ACTION_TEMPLATES_PATH}
+              onClick={goBack}>
+              <BackIcon />
+            </IconButton>
+          </Tooltip>
         </div>
         <Tooltip placement="bottom" title={cancelTooltip}>
           <div>
@@ -89,20 +91,26 @@ function ActionTemplateForm({
       <Typography className={classes.header}>Meta Data</Typography>
       <Paper className={classes.paper}>
         <Grid container spacing={8}>
-          <Grid item xs>
+          <Grid item xs={10} md={6}>
             <Field
               name="name"
               component={TextField}
               label="Name"
               className={classes.field}
+              fullWidth
             />
+          </Grid>
+          <Grid item xs={10} md={6}>
             <Field
               name="description"
               component={TextField}
               className={classes.field}
               label="Description"
+              fullWidth
               multiline
             />
+          </Grid>
+          <Grid item xs={10} md={6}>
             <div className={classes.publicToggle}>
               <Field name="public" label="public" component={FormSwitchField} />
             </div>

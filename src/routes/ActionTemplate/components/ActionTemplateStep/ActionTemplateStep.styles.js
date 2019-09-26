@@ -2,11 +2,26 @@ export default theme => ({
   root: {
     ...theme.flexColumn
   },
+  field: theme.field,
+  multilineField: theme.multilineField,
+  alignCenter: {
+    textAlign: 'center'
+  },
+  content: {
+    ...theme.flexColumn
+  },
   buttons: {
     ...theme.flexRow,
     justifyContent: 'flex-start',
     marginTop: '2rem',
     marginBottom: '2rem'
+  },
+  removeButton: {
+    ...theme.flexRow,
+    justifyContent: 'flex-end',
+    alignSelf: 'flex-end',
+    padding: '0px',
+    width: '100%'
   },
   paper: {
     padding: '2rem',
@@ -29,5 +44,9 @@ export default theme => ({
   },
   subcollectionOption: {
     marginTop: '1rem'
+  },
+  delete: {
+    ...theme.flexRow,
+    justifyContent: 'flex-end'
   }
 })
