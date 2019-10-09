@@ -14,8 +14,32 @@ import styles from './UsersSearch.styles'
 
 const useStyles = makeStyles(styles)
 
-function UsersSearch({ onSuggestionClick, resultsTitle, filterString }) {
+function UsersSearch({
+  onSuggestionClick,
+  resultsTitle,
+  ignoreSuggestions,
+  uid
+}) {
   const classes = useStyles()
+
+  // Map ignore suggestions list to get ids
+  const ignoreIds = !ignoreSuggestions
+    ? [uid] // ignore just logged in user if no ignoreSuggestions provided
+    : [uid].concat(
+        // ignore logged in user and ignoreSuggestions
+        ignoreSuggestions.map(
+          suggestion => suggestion.id || suggestion.objectID
+        )
+      )
+
+  const filterString = ignoreIds
+    .map(
+      (id, index) =>
+        `${
+          index !== 0 && index !== ignoreIds.length ? 'AND ' : ''
+        }NOT objectID:${id}`
+    )
+    .join(' ')
 
   return (
     <InstantSearch
@@ -37,7 +61,8 @@ function UsersSearch({ onSuggestionClick, resultsTitle, filterString }) {
 }
 
 UsersSearch.propTypes = {
-  filterString: PropTypes.string.isRequired, // from enhancer (withProps)
+  uid: PropTypes.string,
+  ignoreSuggestions: PropTypes.array,
   onSuggestionClick: PropTypes.func,
   resultsTitle: PropTypes.string
 }

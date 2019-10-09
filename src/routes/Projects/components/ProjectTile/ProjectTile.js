@@ -13,14 +13,16 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import PeopleIcon from '@material-ui/icons/People'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import EditIcon from '@material-ui/icons/Edit'
+import { makeStyles } from '@material-ui/core/styles'
 import { formatDate } from 'utils/formatters'
 import SharingDialog from '../SharingDialog'
+import styles from './ProjectTile.styles'
+
+const useStyles = makeStyles(styles)
 
 function ProjectTile({
-  classes,
   open,
   project,
-  numberOfCollaborators,
   handleEditClick,
   onDelete,
   menuClick,
@@ -29,6 +31,8 @@ function ProjectTile({
   sharingDialogOpen,
   toggleSharingDialog
 }) {
+  const classes = useStyles()
+
   return (
     <Paper className={classes.container} open={open} data-test="project-tile">
       <div className={classes.top}>
@@ -83,7 +87,6 @@ function ProjectTile({
 
 ProjectTile.propTypes = {
   project: PropTypes.object.isRequired,
-  numberOfCollaborators: PropTypes.number,
   handleEditClick: PropTypes.func.isRequired,
   menuClick: PropTypes.func.isRequired,
   closeMenu: PropTypes.func.isRequired,
@@ -91,7 +94,6 @@ ProjectTile.propTypes = {
   anchorEl: PropTypes.object,
   toggleSharingDialog: PropTypes.func,
   sharingDialogOpen: PropTypes.bool,
-  classes: PropTypes.object.isRequired,
   open: PropTypes.bool
 }
 

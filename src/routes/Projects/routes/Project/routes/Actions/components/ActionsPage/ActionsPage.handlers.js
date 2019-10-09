@@ -67,7 +67,7 @@ export function runAction(props) {
     }
     // Build request object for action run
     const actionRequest = {
-      projectId: props.params.projectId,
+      projectId: props.projectId,
       serviceAccountType: 'firestore',
       templateId,
       template: omit(props.selectedTemplate, ['_highlightResult']),

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { size } from 'lodash'
@@ -14,74 +14,76 @@ import ListItemText from '@material-ui/core/ListItemText'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
+import { makeStyles } from '@material-ui/core/styles'
 import { paths } from 'constants/paths'
+import styles from './ActionTemplateListCard.styles'
 
-export const ActionTemplateListCard = ({
-  name,
-  id,
-  truncatedDescription,
-  steps,
-  expanded,
-  onClick,
-  menuClick,
-  anchorEl,
-  closeMenu,
-  classes
-}) => (
-  <Card className={classes.card}>
-    <CardHeader
-      action={
-        <div>
-          <IconButton onClick={menuClick}>
-            <MoreVertIcon />
-          </IconButton>
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={closeMenu}>
-            <MenuItem onClick={onClick}>
-              <ListItemIcon className={classes.icon}>
-                <EditIcon />
-              </ListItemIcon>
-              <ListItemText inset primary="Edit" />
-            </MenuItem>
-            <MenuItem disabled>
-              <ListItemIcon className={classes.icon}>
-                <DeleteIcon />
-              </ListItemIcon>
-              <ListItemText inset primary="Remove" />
-            </MenuItem>
-          </Menu>
-        </div>
-      }
-      title={
-        <Link
-          to={`${paths.actionTemplates}/${id}`}
-          className={classes.cardTitle}>
-          {name}
-        </Link>
-      }
-      subheader={`${size(steps)} Steps`}
-      classes={{ title: classes.cardTitle }}
-    />
-    <CardContent className={classes.media}>
-      <Typography component="p">{truncatedDescription}</Typography>
-    </CardContent>
-  </Card>
-)
+const useStyles = makeStyles(styles)
+
+function ActionTemplateListCard({ name, id, steps, onClick, description }) {
+  const classes = useStyles()
+  const [anchorEl, changeMenuState] = useState(null)
+
+  function menuClick(e) {
+    changeMenuState(e.target)
+  }
+  function closeMenu() {
+    changeMenuState(null)
+  }
+  const truncatedDescription =
+    description &&
+    `${description.substring(0, 85)}${description.length >= 85 ? '...' : ''}`
+
+  return (
+    <Card className={classes.card}>
+      <CardHeader
+        action={
+          <div>
+            <IconButton onClick={menuClick}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={closeMenu}>
+              <MenuItem onClick={onClick}>
+                <ListItemIcon className={classes.icon}>
+                  <EditIcon />
+                </ListItemIcon>
+                <ListItemText primary="Edit" />
+              </MenuItem>
+              <MenuItem disabled>
+                <ListItemIcon className={classes.icon}>
+                  <DeleteIcon />
+                </ListItemIcon>
+                <ListItemText primary="Remove" />
+              </MenuItem>
+            </Menu>
+          </div>
+        }
+        title={
+          <Link
+            to={`${paths.actionTemplates}/${id}`}
+            className={classes.cardTitle}>
+            {name}
+          </Link>
+        }
+        subheader={`${size(steps)} Steps`}
+        classes={{ title: classes.cardTitle }}
+      />
+      <CardContent className={classes.media}>
+        <Typography component="p">{truncatedDescription}</Typography>
+      </CardContent>
+    </Card>
+  )
+}
 
 ActionTemplateListCard.propTypes = {
-  expanded: PropTypes.bool,
   onClick: PropTypes.func,
   id: PropTypes.string.isRequired,
-  menuClick: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  closeMenu: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  anchorEl: PropTypes.object, // from enhancer (withStateHandlers)
   name: PropTypes.string, // from enhancer (flattenProp - template)
-  steps: PropTypes.array, // from enhancer (flattenProp - template)
-  truncatedDescription: PropTypes.string, // from enhancer (withProps)
-  classes: PropTypes.object.isRequired // from enhancer (withStyles - template)
+  steps: PropTypes.array // from enhancer (flattenProp - template)
 }
 
 export default ActionTemplateListCard

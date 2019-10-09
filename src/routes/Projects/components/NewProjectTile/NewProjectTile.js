@@ -11,6 +11,7 @@ const useStyles = makeStyles(styles)
 
 function NewProjectTile({ onClick }) {
   const classes = useStyles()
+
   return (
     <Paper className={classes.root} onClick={onClick}>
       <ContentAddCircle style={iconStyle} />

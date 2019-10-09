@@ -6,17 +6,12 @@ import { triggerAnalyticsEvent } from 'utils/analytics'
 /**
  * Handler for updating an action template
  * @param {Object} props - Component props
- * @param {Object} props.router- Function which naviagtes
- * @param {Function} props.router.push - Function which naviagtes to a route
  * @param {Object} props.firestore - Firestore instance from firestoreConnect
- * @param {Object} props.params- Router params
- * @param {String} props.params.templateId - Id of template to delete
+ * @param {String} props.templateId - Id of template to delete
  */
 export function updateTemplate(props) {
   return async updateVals => {
-    const {
-      params: { templateId }
-    } = props
+    const { templateId } = props
     const updatePath = `${ACTION_TEMPLATES_PATH}/${templateId}`
     const updatesWithMeta = {
       ...updateVals,
@@ -43,17 +38,14 @@ export function updateTemplate(props) {
 /**
  * Handler for deleting an action template
  * @param {Object} props - Component props
- * @param {Object} props.router- Function which naviagtes
- * @param {Function} props.router.push - Function which naviagtes to a route
+ * @param {Object} props.history - History object from react-router-dom
+ * @param {Function} props.history.push - Function which naviagtes to a route
  * @param {Object} props.firestore - Firestore instance from firestoreConnect
- * @param {Object} props.params- Router params
- * @param {String} props.params.templateId - Id of template to delete
+ * @param {String} props.templateId - Id of template to delete
  */
 export function deleteTemplate(props) {
   return async () => {
-    const {
-      params: { templateId }
-    } = props
+    const { templateId } = props
     const updatePath = `${ACTION_TEMPLATES_PATH}/${templateId}`
     try {
       const res = await props.firestore.delete(updatePath)
@@ -61,7 +53,7 @@ export function deleteTemplate(props) {
         templateId
       })
       props.showSuccess('Template Deleted Successfully')
-      props.router.push(ACTION_TEMPLATES_ROUTE_PATH)
+      props.history.push(ACTION_TEMPLATES_ROUTE_PATH)
       return res
     } catch (err) {
       const errMsg = 'Error Deleting Template'

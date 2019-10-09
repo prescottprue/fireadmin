@@ -59,19 +59,6 @@ describe('Project - Actions Page', () => {
         'pointer-events',
         'none'
       )
-      // Click away
-      cy.get('body').click()
-      // Open destination select field
-      cy.get(createSelector('environment-select'))
-        .last()
-        .click()
-      // Pick first option for the destination environment
-      // Confirm that locked-env is disabled is disabled
-      cy.get(createSelector(`environment-option-${lockedEnvId}`)).should(
-        'have.css',
-        'pointer-events',
-        'none'
-      )
     })
 
     it('locked env is disabled as destination', () => {
@@ -81,18 +68,6 @@ describe('Project - Actions Page', () => {
       cy.get(createSelector('search-result'))
         .first()
         .click()
-      // Open source select field
-      cy.get(createSelector('environment-select'))
-        .first()
-        .click()
-      // Config that locked-env is disabled
-      cy.get(createSelector(`environment-option-${lockedEnvId}`)).should(
-        'have.css',
-        'pointer-events',
-        'none'
-      )
-      // Click away
-      cy.get('body').click()
       // Open destination select field
       cy.get(createSelector('environment-select'))
         .last()

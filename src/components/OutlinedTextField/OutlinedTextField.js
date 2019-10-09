@@ -1,8 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
+import { makeStyles } from '@material-ui/core/styles'
+import styles from './OutlinedTextField.styles'
 
-function OutlinedTextField({ input, label, classes, ...other }) {
+const useStyles = makeStyles(styles)
+
+function OutlinedTextField({ input, label, ...other }) {
+  const classes = useStyles()
+
   return (
     <TextField
       id="outlined-helperText"
@@ -17,7 +23,6 @@ function OutlinedTextField({ input, label, classes, ...other }) {
 }
 
 OutlinedTextField.propTypes = {
-  classes: PropTypes.object, // from enhancer (withStyles)
   input: PropTypes.object,
   label: PropTypes.string
 }

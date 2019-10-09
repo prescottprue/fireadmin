@@ -2,11 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
 import ActionRunnerForm from '../ActionRunnerForm'
 import RecentActions from '../RecentActions'
+import styles from './ActionPage.styles'
+
+const useStyles = makeStyles(styles)
 
 function ActionsPage({
-  classes,
   selectActionTemplate,
   runAction,
   runActionDisabled,
@@ -25,6 +28,8 @@ function ActionsPage({
   toggleSteps,
   rerunAction
 }) {
+  const classes = useStyles()
+
   return (
     <div className={classes.container}>
       <Typography className={classes.pageHeader}>Actions</Typography>
@@ -76,7 +81,6 @@ function ActionsPage({
 }
 
 ActionsPage.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   projectId: PropTypes.string.isRequired, // from enhancer (connect)
   selectedTemplate: PropTypes.object, // from enhancer (withStateHandlers)
   runAction: PropTypes.func.isRequired, // from enhancer (withHandlers)

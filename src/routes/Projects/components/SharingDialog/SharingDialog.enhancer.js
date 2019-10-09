@@ -28,7 +28,7 @@ export default compose(
     showSuccess: PropTypes.func.isRequired, // used in handlers
     showError: PropTypes.func.isRequired // used in handlers
   }),
-  connect(({ firebase: { data: { displayNames } } }, { params }) => ({
+  connect(({ firebase: { data: { displayNames } } }) => ({
     displayNames
   })),
   // State handlers as props

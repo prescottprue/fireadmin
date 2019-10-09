@@ -1,14 +1,6 @@
-import { get, size } from 'lodash'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
-import {
-  withStateHandlers,
-  withHandlers,
-  withProps,
-  setPropTypes
-} from 'recompose'
-import { withStyles } from '@material-ui/core/styles'
-import styles from './ProjectTile.styles'
+import { withStateHandlers, withHandlers, setPropTypes } from 'recompose'
 import * as handlers from './ProjectTile.handlers'
 
 export default compose(
@@ -40,10 +32,5 @@ export default compose(
     onSelect: PropTypes.func.isRequired // used in handlers
   }),
   // Handlers as props
-  withHandlers(handlers),
-  withProps(({ project }) => ({
-    numberOfCollaborators: size(get(project, 'collaborators'))
-  })),
-  // Add styles as props.classes
-  withStyles(styles)
+  withHandlers(handlers)
 )

@@ -53,8 +53,7 @@ OutlinedSelect.propTypes = {
   meta: PropTypes.object.isRequired,
   input: PropTypes.object.isRequired,
   inputProps: PropTypes.object.isRequired,
-  children: PropTypes.array.isRequired,
-  classes: PropTypes.object.isRequired // from enhancer (withStyles)
+  children: PropTypes.array.isRequired
 }
 
 export default OutlinedSelect

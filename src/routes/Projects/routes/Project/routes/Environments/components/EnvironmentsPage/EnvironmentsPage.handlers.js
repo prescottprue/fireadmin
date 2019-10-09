@@ -12,12 +12,7 @@ import { to } from 'utils/async'
  * success message has been displayed to user
  */
 export const addEnvironment = props => async newProjectData => {
-  const {
-    firestore,
-    firebase,
-    params: { projectId },
-    uid
-  } = props
+  const { firestore, firebase, projectId, uid } = props
   const locationConf = {
     collection: 'projects',
     doc: projectId,
@@ -92,8 +87,8 @@ export const addEnvironment = props => async newProjectData => {
 
 /**
  * Handler for removing environment from project. Called when hitting delete.
- * @param  {Object} props - EnvironmentsPage Component props
- * @return {Promise} Resolves after environment has been removed and
+ * @param {Object} props - EnvironmentsPage Component props
+ * @returns {Promise} Resolves after environment has been removed and
  * success message has been displayed to user
  */
 export const removeEnvironment = props => async () => {
@@ -103,7 +98,7 @@ export const removeEnvironment = props => async () => {
     showSuccess,
     uid,
     selectedDeleteKey,
-    params: { projectId }
+    projectId
   } = props
   try {
     await firestore.delete({
@@ -134,17 +129,12 @@ export const removeEnvironment = props => async () => {
 /**
  * Handler for updating environment with changes. Called when hitting save
  * in Add/Edit Environment Dialog.
- * @param  {Object} props - EnvironmentsPage Component props
- * @return {Promise} Resolves after environment has been updated and
+ * @param {Object} props - EnvironmentsPage Component props
+ * @returns {Promise} Resolves after environment has been updated and
  * success message has been displayed to user
  */
 export const updateEnvironment = props => async newValues => {
-  const {
-    firestore,
-    params: { projectId },
-    uid,
-    selectedKey
-  } = props
+  const { firestore, projectId, uid, selectedKey } = props
   try {
     await firestore.update(
       {

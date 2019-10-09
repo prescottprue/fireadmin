@@ -70,5 +70,5 @@ export function deleteTemplate(props) {
  * @param {Object} props - Component props
  */
 export function goToTemplate(props) {
-  return id => props.router.push(`${ACTION_TEMPLATES_ROUTE}/${id}`)
+  return id => props.history.push(`${ACTION_TEMPLATES_ROUTE}/${id}`)
 }

@@ -4,9 +4,9 @@ import { map } from 'lodash'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
 import NewActionTemplateDialog from '../NewActionTemplateDialog'
 import ActionTemplateListCard from '../ActionTemplateListCard'
-import { makeStyles } from '@material-ui/core/styles'
 import styles from './ActionTemplatesList.styles'
 
 const useStyles = makeStyles(styles)

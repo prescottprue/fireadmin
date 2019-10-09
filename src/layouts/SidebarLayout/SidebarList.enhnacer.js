@@ -1,9 +1,7 @@
 import { compose } from 'redux'
-import { withStyles } from '@material-ui/core/styles'
 import { withHandlers } from 'recompose'
 import { withRouter } from 'react-router-dom'
 import { LIST_PATH } from 'constants/paths'
-import styles from './SidebarLayout.styles'
 
 export default compose(
   withRouter,
@@ -18,6 +16,5 @@ export default compose(
             location.pathname === currentParentRoute
         : location.pathname.endsWith(value)
     }
-  }),
-  withStyles(styles, { withTheme: true })
+  })
 )

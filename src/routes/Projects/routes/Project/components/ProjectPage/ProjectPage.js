@@ -17,6 +17,7 @@ const useStyles = makeStyles(styles)
 
 function ProjectPage({ project, match, projectId, uid, children }) {
   const classes = useStyles()
+
   return (
     <SidebarLayout title={project.name}>
       <Switch>
@@ -49,7 +50,9 @@ function ProjectPage({ project, match, projectId, uid, children }) {
 
 ProjectPage.propTypes = {
   project: PropTypes.object,
-  params: PropTypes.object,
+  projectId: PropTypes.string,
+  uid: PropTypes.string,
+  match: PropTypes.object,
   children: PropTypes.object
 }
 

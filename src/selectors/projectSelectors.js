@@ -36,48 +36,16 @@ export function getDisplayNames(state, props) {
 }
 
 /**
- * Get projectId from props (projectId or params.projectId)
- * @param {object} state - redux state
- * @param {object} props - component props
- * @returns {object} Project data object from redux state
+ * Get project from redux state using projectId prop.
+ * @param  {object} state - redux state
+ * @param  {object} props - component props
+ * @return {object} Project data object from redux state
  */
-export function projectIdFromProps(state, props) {
-  const projectId = get(props, 'projectId', get(props, 'params.projectId'))
-  if (!projectId) {
-    /* eslint-disable no-console */
-    console.warn(
-      'projectId not found in props passed to connect. Props:',
-      props
-    )
-    /* eslint-enable no-console */
+function getProjectEvents(state, props) {
+  if (!props.projectId) {
+    console.error('props.projectId not set in getProjectEvents selector') // eslint-disable-line no-console
   }
-  return projectId
-}
-
-/**
- * Get project from redux state using projectId prop.
- * @param  {object} state - redux state
- * @param  {object} props - component props
- * @return {object} Project data object from redux state
- */
-export function getProjectEvents(state, props) {
-  return get(
-    state,
-    `firestore.data.projectEvents-${projectIdFromProps(state, props)}`
-  )
-}
-
-/**
- * Get project from redux state using projectId prop.
- * @param  {object} state - redux state
- * @param  {object} props - component props
- * @return {object} Project data object from redux state
- */
-export function getOrderedProjectEvents(state, props) {
-  return get(
-    state,
-    `firestore.ordered.projectEvents-${projectIdFromProps(state, props)}`
-  )
+  return get(state, `firestore.data.projectEvents-${props.projectId}`)
 }
 
 /**

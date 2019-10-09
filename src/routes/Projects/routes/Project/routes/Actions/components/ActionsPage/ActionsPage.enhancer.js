@@ -13,10 +13,8 @@ import {
   setDisplayName,
   setPropTypes
 } from 'recompose'
-import { withStyles } from '@material-ui/core/styles'
 import { withNotifications } from 'modules/notification'
 import * as handlers from './ActionsPage.handlers'
-import styles from './ActionPage.styles'
 
 function instanceTypeInUse(environments, type = 'src') {
   const lockedEnvIndex = findIndex(environments, {
@@ -60,7 +58,7 @@ export default compose(
   // Map redux state to props
   connect((state, { projectId }) => {
     const {
-      firebase,
+      firebase: { auth },
       firestore: { data, ordered }
     } = state
     const formSelector = formValueSelector(ACTION_RUNNER_FORM_NAME)
@@ -71,7 +69,7 @@ export default compose(
       get(data, `environments-${projectId}.${envKey}`)
     )
     return {
-      uid: firebase.auth.uid,
+      uid: auth.uid,
       project: get(data, `projects.${projectId}`),
       environments: get(ordered, `environments-${projectId}`),
       environmentsById,
@@ -132,6 +130,5 @@ export default compose(
     runActionDisabled: !selectedTemplate || lockedEnvInUse
   })),
   // Handlers as props
-  withHandlers(handlers),
-  withStyles(styles)
+  withHandlers(handlers)
 )
