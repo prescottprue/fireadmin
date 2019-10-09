@@ -3,8 +3,8 @@ export default theme => ({
     marginLeft: '1rem',
     marginRight: '1rem',
     marginBottom: '2rem',
-    width: '15rem',
-    height: '150px',
+    width: '16rem',
+    height: '160px',
     textOverflow: 'ellipsis'
   },
   title: {
@@ -13,5 +13,8 @@ export default theme => ({
   },
   settings: {
     marginTop: '2rem'
+  },
+  content: {
+    paddingBottom: '2rem'
   }
 })

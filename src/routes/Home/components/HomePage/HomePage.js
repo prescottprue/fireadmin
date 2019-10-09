@@ -22,11 +22,13 @@ function HomePage() {
           <Typography variant="h3">
             Fireadmin helps you mange Firebase apps while you grow your team
           </Typography>
-          <div className={classes.getStarted}>
-            <Button color="primary" component={Link} to={LOGIN_PATH}>
-              Get Started
-            </Button>
-          </div>
+          <Button
+            color="primary"
+            component={Link}
+            to={LOGIN_PATH}
+            className={classes.getStarted}>
+            Get Started
+          </Button>
           <Grid container spacing={8}>
             <Grid item xs={12} sm={6} md={4} className={classes.section}>
               <Typography variant="h6" className={classes.sectionHeader}>
@@ -81,7 +83,8 @@ function HomePage() {
               <Button
                 color="primary"
                 component={Link}
-                to={ACTION_TEMPLATES_PATH}>
+                to={ACTION_TEMPLATES_PATH}
+                className={classes.templatesButton}>
                 Checkout Action Templates
               </Button>
             </Grid>

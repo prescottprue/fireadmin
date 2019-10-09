@@ -1,43 +1,50 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Paper from '@material-ui/core/Paper'
+import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
 import defaultUserImageUrl from 'static/User.png'
 import AccountForm from '../AccountForm'
+import styles from './AccountPage.styles'
 
-function AccountPage({ classes, avatarUrl, updateAccount, cleanProfile }) {
+const useStyles = makeStyles(styles)
+
+function AccountPage({ updateAccount, cleanProfile }) {
+  const classes = useStyles()
+
   return (
-    <div className={classes.root}>
-      <Paper className={classes.pane}>
-        <Typography variant="h6" className={classes.title}>
-          Account
-        </Typography>
-        <div className={classes.settings}>
-          <div className={classes.avatar}>
-            <img
-              className={classes.avatarCurrent}
-              src={avatarUrl || defaultUserImageUrl}
-              alt=""
-            />
-          </div>
-          <div className={classes.meta}>
-            <AccountForm
-              onSubmit={updateAccount}
-              account={cleanProfile}
-              initialValues={cleanProfile}
-            />
-          </div>
-        </div>
-      </Paper>
-    </div>
+    <Grid container className={classes.root} justify="center">
+      <Grid item xs={10} md={8} lg={6} className={classes.gridItem}>
+        <Paper className={classes.pane}>
+          <Typography variant="h4" className={classes.title}>
+            Account
+          </Typography>
+          <Grid container spacing={2} justify="center">
+            <Grid item xs={12} md={6} lg={6} className={classes.gridItem}>
+              <img
+                className={classes.avatarCurrent}
+                src={cleanProfile.avatarUrl || defaultUserImageUrl}
+                alt=""
+              />
+            </Grid>
+            <Grid item xs={12} md={6} lg={6} className={classes.gridItem}>
+              <AccountForm
+                onSubmit={updateAccount}
+                account={cleanProfile}
+                initialValues={cleanProfile}
+              />
+            </Grid>
+          </Grid>
+        </Paper>
+      </Grid>
+    </Grid>
   )
 }
 
 AccountPage.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   updateAccount: PropTypes.func.isRequired, // from enhancer (withHandlers)
   cleanProfile: PropTypes.object, // from enhancer (withProps)
-  avatarUrl: PropTypes.string,
   profile: PropTypes.object
 }
 

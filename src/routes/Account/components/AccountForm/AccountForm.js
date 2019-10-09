@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
 import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
 import TextField from 'components/FormTextField'
 import ProviderDataForm from '../ProviderDataForm'
 
@@ -25,7 +26,7 @@ function AccountForm({ account, handleSubmit, submitting, pristine, classes }) {
       </div>
       {!!account && !!account.providerData && (
         <div>
-          <h4>Linked Accounts</h4>
+          <Typography variant="h6">Linked Accounts</Typography>
           <ProviderDataForm providerData={account.providerData} />
         </div>
       )}

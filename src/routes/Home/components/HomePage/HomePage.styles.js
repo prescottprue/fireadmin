@@ -7,14 +7,20 @@ export default theme => ({
   paper: {
     textAlign: 'center',
     // margin: '1rem',
-    padding: '4rem'
+    padding: '3rem'
   },
   section: {
     // ...theme.flexColumn,
     // margin: '1rem'
   },
   disclaimer: {
-    marginBottom: '4rem',
+    marginBottom: '2rem',
     textAlign: 'center'
+  },
+  getStarted: {
+    marginBottom: theme.spacing(4)
+  },
+  templatesButton: {
+    marginTop: theme.spacing(2)
   }
 })

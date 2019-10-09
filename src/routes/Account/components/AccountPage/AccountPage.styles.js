@@ -1,18 +1,19 @@
 export default theme => ({
   root: {
-    ...theme.flexRowCenter,
-    width: '100%',
-    height: '100%',
-    paddingTop: '1.5rem'
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
+    overflowY: 'scroll'
   },
   pane: {
     ...theme.flexColumnCenter,
     justifyContent: 'space-around',
-    flexBasis: '60%',
-    padding: theme.spacing()
+    padding: theme.spacing(6)
+    // maxHeight: '40rem'
   },
-  settings: {
-    ...theme.flexRowCenter
+  settings: {},
+  avatar: {
+    maxWidth: '13rem',
+    marginTop: '3rem'
   },
   avatarCurrent: {
     width: '100%',
@@ -20,6 +21,13 @@ export default theme => ({
     marginTop: '3rem',
     height: 'auto',
     cursor: 'pointer'
+  },
+  title: {
+    // marginBottom: theme.spacing(5)
+  },
+  gridItem: {
+    textAlign: 'center',
+    marginTop: theme.spacing(5)
   },
   meta: {
     ...theme.flexColumnCenter,

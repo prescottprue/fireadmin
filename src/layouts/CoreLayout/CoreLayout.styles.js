@@ -1,7 +1,6 @@
 export default theme => ({
   root: {
     height: '100%',
-    overflowY: 'scroll',
     '-webkit-overflow-scrolling': 'touch'
   },
   children: {

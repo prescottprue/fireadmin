@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { get } from 'lodash'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
@@ -16,20 +17,36 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import Paper from '@material-ui/core/Paper'
 import Popper from '@material-ui/core/Popper'
+import { makeStyles } from '@material-ui/core/styles'
+import { databaseURLToProjectName } from 'utils'
+import styles from './Instance.styles'
 
-function Instance({
-  projectId,
-  instanceName,
-  instanceId,
-  classes,
-  anchorEl,
-  closeMenu,
-  menuClick,
-  removeAndClose,
-  editAndClose,
-  instanceDescription,
-  onEditClick
-}) {
+const useStyles = makeStyles(styles)
+
+function Instance({ instanceId, onRemoveClick, onEditClick, instance }) {
+  const classes = useStyles()
+  const [anchorEl, changeDialogState] = useState(null)
+  const projectId = databaseURLToProjectName(get(instance, 'databaseURL', ''))
+  const instanceName = get(instance, 'name', '')
+  const originalDesc = get(instance, 'description', '')
+  const instanceDescription = originalDesc.length
+    ? originalDesc.length > 50
+      ? originalDesc.substring(0, 50).concat('...')
+      : originalDesc
+    : null
+  const openMenu = e => changeDialogState(e.target)
+  const closeMenu = () => changeDialogState(null)
+
+  function editAndClose() {
+    typeof onEditClick === 'function' && onEditClick()
+    changeDialogState(null)
+  }
+
+  function removeAndClose() {
+    typeof onRemoveClick === 'function' && onRemoveClick()
+    changeDialogState(null)
+  }
+
   return (
     <Card className={classes.card} data-test={`environment-${instanceId}`}>
       <CardHeader
@@ -44,7 +61,7 @@ function Instance({
         subheader={projectId}
         action={
           <div>
-            <IconButton onClick={menuClick} data-test="environment-tile-more">
+            <IconButton onClick={openMenu} data-test="environment-tile-more">
               <MoreVertIcon />
             </IconButton>
             <Popper
@@ -89,7 +106,7 @@ function Instance({
         }
       />
       {instanceDescription && (
-        <CardContent>
+        <CardContent className={classes.content}>
           <Typography>{instanceDescription}</Typography>
         </CardContent>
       )}
@@ -98,15 +115,7 @@ function Instance({
 }
 
 Instance.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
-  projectId: PropTypes.string.isRequired, // from enhancer (withProps)
-  instanceName: PropTypes.string.isRequired, // from enhancer (withProps)
-  instanceDescription: PropTypes.string, // from enhancer (withProps)
-  removeAndClose: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  editAndClose: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  menuClick: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  closeMenu: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  anchorEl: PropTypes.object, // from enhancer (withStateHandlers)
+  onRemoveClick: PropTypes.func.isRequired,
   onEditClick: PropTypes.func.isRequired,
   instanceId: PropTypes.string.isRequired
 }
