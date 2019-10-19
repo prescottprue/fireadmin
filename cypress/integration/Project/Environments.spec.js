@@ -39,14 +39,25 @@ describe('Project - Environments Page', () => {
       cy.get(createSelector('new-environment-name'))
         .find('input')
         .type(newProjectName, { delay: 0 })
+
       // Type in new environment url
       cy.get(createSelector('new-environment-db-url'))
         .find('input')
         .type(`https://some-project.firebaseio.com`, { delay: 0 })
+
       // Upload service account
-      cy.uploadFile(createSelector('file-uploader'), 'fakeServiceAccount.json')
+      cy.uploadFile(
+        createSelector('file-uploader-input'),
+        'fakeServiceAccount.json'
+      )
+
       // Click on the new environment button
       cy.get(createSelector('new-environment-create-button')).click()
+      // Confirm user is notified of successful environment creation
+      cy.get(createSelector('notification-message')).should(
+        'contain',
+        'Environment added successfully'
+      )
       // Verify new environment was added to Firestore with correct data
       cy.callFirestore('get', 'projects/test-project/environments').then(
         environments => {
@@ -57,11 +68,6 @@ describe('Project - Environments Page', () => {
           )
           expect(matchingEnv).to.exist
         }
-      )
-      // Confirm user is notified of successful environment creation
-      cy.get(createSelector('notification-message')).should(
-        'contain',
-        'Environment added successfully'
       )
     })
   })
@@ -99,7 +105,7 @@ describe('Project - Environments Page', () => {
             environments,
             ({ data = {} }) => data.name === 'test-env'
           )
-          expect(matchingEnv).to.exist
+          expect(matchingEnv).to.not.exist
         }
       )
     })

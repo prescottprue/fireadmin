@@ -26,7 +26,7 @@ function initStackdriverErrorReporter() {
  * Initialize Sentry (reports to sentry.io)
  */
 function initSentry() {
-  if (environment !== 'dev') {
+  if (environment !== 'dev' && !window.Cypress) {
     Sentry.init({
       dsn: sentryDsn,
       environment,

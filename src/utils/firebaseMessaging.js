@@ -70,6 +70,14 @@ export function requestPermission() {
  * @param {Function} dispatch - redux action dispatching function
  */
 export function initializeMessaging(dispatch) {
+  if (window.Cypress) {
+    /* eslint-disable no-console */
+    console.log(
+      'Running UI tests, skipping initialization of Firebase Messaging....'
+    )
+    /* eslint-enable no-console */
+    return
+  }
   const messaging = firebase.messaging()
   if (!publicVapidKey) {
     /* eslint-disable no-console */

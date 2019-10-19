@@ -32,7 +32,8 @@ function FilesUploader({
           activeClassName={classes.dropzoneActive}
           disableClick={disabled}
           accept={acceptedFormats.join(', ')}
-          inputProps={{ 'data-test': 'file-uploader' }}>
+          data-test="file-uploader"
+          inputProps={{ 'data-test': 'file-uploader-input' }}>
           <UploadIcon
             className={classes[`icon${isCompact ? 'Compact' : ''}`]}
           />

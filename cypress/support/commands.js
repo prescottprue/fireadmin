@@ -39,7 +39,7 @@ attachCustomCommands({ Cypress, cy, firebase })
 Cypress.Commands.add(
   'uploadFile',
   (selectorValue, fileUrl, type = 'application/json') => {
-    return cy.get(selectorValue).then(subject => {
+    return cy.get(selectorValue, { force: true }).then(subject => {
       return getFixtureBlob(fileUrl, type).then(blob => {
         return cy.window().then(win => {
           const el = subject[0]
@@ -49,7 +49,10 @@ Cypress.Commands.add(
           const dataTransfer = new win.DataTransfer()
           dataTransfer.items.add(testFile)
           el.files = dataTransfer.files
-          return subject
+          cy.wrap(subject).trigger('drop', {
+            dataTransfer: { files: [testFile] },
+            force: true
+          })
         })
       })
     })

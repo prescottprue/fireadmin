@@ -170,6 +170,7 @@ describe('Project - Actions Page', () => {
       // Select the first action template
       cy.get(createSelector('search-result'))
         .first()
+        .scrollIntoView()
         .click()
       // Open source select field
       cy.get(createSelector('environment-select'))
@@ -196,6 +197,7 @@ describe('Project - Actions Page', () => {
         .click()
       // Confirm request was created with correct settings
       cy.callRtdb('get', 'requests/actionRunner', {
+        orderByChild: 'createdAt',
         limitToLast: 1
       }).then(requests => {
         cy.log('request:', requests)

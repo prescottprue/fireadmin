@@ -44,7 +44,7 @@ export default (initialState = {}) => {
   const enhancers = []
   if (env === 'local') {
     const devToolsExtension = window.__REDUX_DEVTOOLS_EXTENSION__
-    if (typeof devToolsExtension === 'function') {
+    if (typeof devToolsExtension === 'function' && !window.Cypress) {
       enhancers.push(devToolsExtension())
     }
   }
@@ -76,6 +76,10 @@ export default (initialState = {}) => {
   if (!window.fbInstance) {
     firebase.initializeApp(fbConfig)
   }
+
+  // if (window.Cypress) {
+  //   firebase.functions().useFunctionsEmulator('http://localhost:5005');
+  // }
 
   // ======================================================
   // Store Instantiation and HMR Setup

@@ -47,7 +47,12 @@ export function triggerAnalyticsEvent(eventNameKey, eventData) {
     )
     /* eslint-enable no-console */
   } else {
-    if (segmentId && window.analytics && env === 'production') {
+    if (
+      segmentId &&
+      window.analytics &&
+      env === 'production' &&
+      !window.Cypress
+    ) {
       window.analytics.track(eventName, eventData)
     } else {
       console.debug('Analytics Event:', eventName, eventData) // eslint-disable-line no-console
