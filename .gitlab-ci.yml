@@ -298,14 +298,14 @@ Build Prod App:
     # Note: Functions are not rebuilt since a bundle with env specific config
     # is not created as with React App
 
-# Deploy Production Stage
+# Deploy Production
 ## Deploy React App and Cloud Functions to production environment
 Deploy Production:
   stage: deploy_production
   image: node:10
   environment:
     name: production
-    url: https://fireadmin.firebaseapp.com
+    url: https://fireadmin.io
   when: manual # Only allow run through button on Gitlab site
   only:
     - master

@@ -62,10 +62,7 @@ describe('Project - Environments Page', () => {
       cy.callFirestore('get', 'projects/test-project/environments').then(
         environments => {
           expect(environments).to.be.an('array')
-          const matchingEnv = find(
-            environments,
-            ({ data = {} }) => data.name === newProjectName
-          )
+          const matchingEnv = find(environments, { name: newProjectName })
           expect(matchingEnv).to.exist
         }
       )
@@ -73,12 +70,13 @@ describe('Project - Environments Page', () => {
   })
 
   describe('Delete Environment -', () => {
+    const newEnvName = 'test-env'
     beforeEach(() => {
       // Remove created environment
       cy.callFirestore('delete', 'projects/test-project/environments', {
         recursive: true
       })
-      cy.addProjectEnvironment('test-project', 'test-env')
+      cy.addProjectEnvironment('test-project', newEnvName)
     })
 
     it('allows environment to be deleted by project owner', () => {
@@ -101,10 +99,7 @@ describe('Project - Environments Page', () => {
       cy.callFirestore('get', 'projects/test-project/environments').then(
         environments => {
           expect(environments).to.be.an('array')
-          const matchingEnv = find(
-            environments,
-            ({ data = {} }) => data.name === 'test-env'
-          )
+          const matchingEnv = find(environments, { name: newEnvName })
           expect(matchingEnv).to.not.exist
         }
       )
