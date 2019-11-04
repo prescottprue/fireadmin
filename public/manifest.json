@@ -2,7 +2,8 @@
   "short_name": "Fireadmin",
   "name": "Fireadmin",
   "start_url": "/login/",
-  "background_color": "#2196f3",
-  "theme_color": "#2196f3",
-  "display": "standalone"
+  "background_color": "#ef6c00",
+  "theme_color": "#ef6c00",
+  "display": "standalone",
+  "gcm_sender_id": "103953800507"
 }
