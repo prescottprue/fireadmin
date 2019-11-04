@@ -70,7 +70,7 @@ function ActionTemplateListCard({ name, id, steps, onClick, description }) {
           </Link>
         }
         subheader={`${size(steps)} Steps`}
-        classes={{ title: classes.cardTitle }}
+        classes={{ title: classes.cardTitle, subheader: classes.cardSubheader }}
       />
       <CardContent className={classes.media}>
         <Typography component="p">{truncatedDescription}</Typography>

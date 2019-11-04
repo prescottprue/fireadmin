@@ -1,14 +1,11 @@
 export default theme => ({
+  root: {
+    ...theme.flexColumn
+  },
   field: theme.field,
   addAction: {
     marginTop: '.5rem',
     marginBottom: '1.5rem'
-  },
-  alignCenter: {
-    textAlign: 'center'
-  },
-  content: {
-    ...theme.flexColumn
   },
   title: {
     fontSize: '1.2rem',

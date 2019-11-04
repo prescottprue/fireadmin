@@ -3,7 +3,7 @@ import red from '@material-ui/core/colors/red'
 export default theme => ({
   card: {
     maxWidth: 400,
-    height: '10rem'
+    height: '14rem'
   },
   cardTitle: {
     cursor: 'pointer',

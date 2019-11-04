@@ -26,7 +26,6 @@ function AccountMenu({ firebase, history }) {
   }
   function handleLogout() {
     return firebase.logout().then(() => {
-      closeAccountMenu()
       history.push('/')
     })
   }

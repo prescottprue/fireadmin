@@ -10,10 +10,8 @@ export default theme => ({
   panel: {
     ...theme.flexColumnCenter,
     justifyContent: 'center',
-    flexGrow: 1,
     padding: '1.25rem',
-    minWidth: '250px',
-    minHeight: '270px'
+    minWidth: '4rem'
   },
   orLabel: {
     marginTop: '1rem',
