@@ -1,6 +1,6 @@
 {
-  "short_name": "Fireadmin",
-  "name": "Fireadmin",
+  "short_name": "fireadmin",
+  "name": "fireadmin",
   "start_url": "/login/",
   "background_color": "#ef6c00",
   "theme_color": "#ef6c00",

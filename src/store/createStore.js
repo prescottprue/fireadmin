@@ -12,11 +12,7 @@ import makeRootReducer from './reducers'
 import { setErrorUser } from '../utils/errorHandler'
 import { setAnalyticsUser } from '../utils/analytics'
 import { initializeMessaging } from '../utils/messaging'
-import {
-  firebase as fbConfig,
-  reduxFirebase as rrfConfig,
-  env
-} from '../config'
+import config from '../config'
 import { version } from '../../package.json'
 
 export default (initialState = {}) => {
@@ -33,16 +29,11 @@ export default (initialState = {}) => {
     // This is where you add other middleware like redux-observable
   ]
 
-  if (env === 'local') {
-    // Add redux-logger to log action dispatches
-    // middleware.push(logger)
-  }
-
   // ======================================================
   // Store Enhancers
   // ======================================================
   const enhancers = []
-  if (env === 'local') {
+  if (config.env !== 'prod') {
     const devToolsExtension = window.__REDUX_DEVTOOLS_EXTENSION__
     if (typeof devToolsExtension === 'function' && !window.Cypress) {
       enhancers.push(devToolsExtension())
@@ -68,13 +59,13 @@ export default (initialState = {}) => {
     }
   }
 
-  const combinedConfig = rrfConfig
-    ? { ...defaultRRFConfig, ...rrfConfig }
+  const combinedConfig = config.reduxFirebase
+    ? { ...defaultRRFConfig, ...config.reduxFirebase }
     : defaultRRFConfig
 
   // Initialize Firebase only if an fbInstance was not passed to the window (tests)
   if (!window.fbInstance) {
-    firebase.initializeApp(fbConfig)
+    firebase.initializeApp(config.firebase)
   }
 
   // if (window.Cypress) {
