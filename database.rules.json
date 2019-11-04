@@ -33,6 +33,7 @@
     },
     "requests": {
       "$requestGroup": {
+        ".indexOn": ["createdAt", "createdBy"],
         "$requestId": {
           ".read": "auth !== null && data.child('createdBy').val() === auth.uid",
           ".write": "auth !== null && newData.child('createdBy').val() === auth.uid"
@@ -47,6 +48,7 @@
         }
       },
       "$responseGroup": {
+        ".indexOn": ["createdAt", "createdBy"],
         "$responseId": {
           ".read": "auth !== null && root.child('requests').child($responseGroup).child($responseId).child('createdBy').val() == auth.uid",
           ".write": "auth !== null && root.child('requests').child($responseGroup).child($responseId).child('createdBy').val() == auth.uid"

@@ -5,10 +5,14 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { Highlight } from 'react-instantsearch/dom'
 
 function SuggestedItem({ hit, onClick }) {
+  function handleClick() {
+    onClick(hit)
+  }
+
   return (
     <MenuItem
       style={{ marginTop: '10px' }}
-      onClick={() => onClick(hit)}
+      onClick={handleClick}
       data-test="search-result">
       <div className="flex-column">
         <span className="hit-name">

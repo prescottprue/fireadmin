@@ -19,9 +19,7 @@ async function addServiceAccountAuthToRequest(serviceAccount, requestSettings) {
   return {
     ...requestSettings,
     headers: {
-      Authorization: `${client.credentials.token_type} ${
-        client.credentials.access_token
-      }`
+      Authorization: `${client.credentials.token_type} ${client.credentials.access_token}`
     }
   }
 }

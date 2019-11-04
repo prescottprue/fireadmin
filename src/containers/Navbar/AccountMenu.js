@@ -1,29 +1,41 @@
-import React from 'react'
+import React, { Fragment, useState } from 'react'
 import PropTypes from 'prop-types'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import IconButton from '@material-ui/core/IconButton'
 import AccountCircle from '@material-ui/icons/AccountCircle'
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
+import { ACCOUNT_PATH } from 'constants/paths'
+import enhancer from './Navbar.enhancer'
 
-const styles = {
+const useStyles = makeStyles(() => ({
   buttonRoot: {
     color: 'white'
   }
-}
+}))
 
-function AccountMenu({
-  avatarUrl,
-  displayName,
-  goToAccount,
-  onLogoutClick,
-  closeAccountMenu,
-  anchorEl,
-  handleMenu,
-  classes
-}) {
+function AccountMenu({ firebase, history }) {
+  const classes = useStyles()
+  const [anchorEl, setMenu] = useState(null)
+
+  function closeAccountMenu(e) {
+    setMenu(null)
+  }
+  function handleMenu(e) {
+    setMenu(e.target)
+  }
+  function handleLogout() {
+    return firebase.logout().then(() => {
+      history.push('/')
+    })
+  }
+  function goToAccount() {
+    history.push(ACCOUNT_PATH)
+    closeAccountMenu()
+  }
+
   return (
-    <div>
+    <Fragment>
       <IconButton
         aria-owns={anchorEl ? 'menu-appbar' : null}
         aria-haspopup="true"
@@ -39,21 +51,19 @@ function AccountMenu({
         open={Boolean(anchorEl)}
         onClose={closeAccountMenu}>
         <MenuItem onClick={goToAccount}>Account</MenuItem>
-        <MenuItem onClick={onLogoutClick}>Sign Out</MenuItem>
+        <MenuItem onClick={handleLogout}>Sign Out</MenuItem>
       </Menu>
-    </div>
+    </Fragment>
   )
 }
 
 AccountMenu.propTypes = {
-  displayName: PropTypes.string,
-  avatarUrl: PropTypes.string,
-  goToAccount: PropTypes.func.isRequired,
-  onLogoutClick: PropTypes.func.isRequired,
-  anchorEl: PropTypes.object,
-  closeAccountMenu: PropTypes.func.isRequired,
-  handleMenu: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired // from withStyles
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired
+  }),
+  firebase: PropTypes.shape({
+    logout: PropTypes.func.isRequired
+  })
 }
 
-export default withStyles(styles)(AccountMenu)
+export default enhancer(AccountMenu)

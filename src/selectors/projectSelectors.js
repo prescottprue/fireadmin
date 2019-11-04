@@ -1,14 +1,15 @@
 import { get, map, size, orderBy, groupBy, invoke } from 'lodash'
 import { createSelector } from 'reselect'
 import { formatDate } from 'utils/formatters'
+import { isLoaded } from 'react-redux-firebase/lib/helpers'
 
 /**
  * Get the currently logged in user's Auth UID from firebase state. Data is
  * placed into redux state by react-redux-firebase on firebase auth state
  * changes.
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
- * @return {String} Current logged in user's UID
+ * @param {object} state - redux state
+ * @param {object} props - component props
+ * @returns {String} Current logged in user's UID
  */
 export function getAuthUid(state) {
   return get(state, 'firebase.auth.uid')
@@ -16,9 +17,9 @@ export function getAuthUid(state) {
 
 /**
  * Get project from redux state using projectId prop.
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
- * @return {Object} Project data object from redux state
+ * @param {object} state - redux state
+ * @param {object} props - component props
+ * @returns {object} Project data object from redux state
  */
 export function getProject(state, props) {
   return get(state, `firestore.data.projects.${props.projectId}`)
@@ -26,63 +27,31 @@ export function getProject(state, props) {
 
 /**
  * Get project from redux state using projectId prop.
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
- * @return {Object} Project data object from redux state
+ * @param {object} state - redux state
+ * @param {object} props - component props
+ * @returns {object} Project data object from redux state
  */
 export function getDisplayNames(state, props) {
-  return get(state, `firebase.data.displayNames`)
+  return get(state, 'firebase.data.displayNames')
 }
 
 /**
- * Get projectId from props (projectId or params.projectId)
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
- * @return {Object} Project data object from redux state
+ * Get project from redux state using projectId prop.
+ * @param  {object} state - redux state
+ * @param  {object} props - component props
+ * @return {object} Project data object from redux state
  */
-export function projectIdFromProps(state, props) {
-  const projectId = get(props, 'projectId', get(props, 'params.projectId'))
-  if (!projectId) {
-    /* eslint-disable no-console */
-    console.warn(
-      'projectId not found in props passed to connect. Props:',
-      props
-    )
-    /* eslint-enable no-console */
+function getProjectEvents(state, props) {
+  if (!props.projectId) {
+    console.error('props.projectId not set in getProjectEvents selector') // eslint-disable-line no-console
   }
-  return projectId
-}
-
-/**
- * Get project from redux state using projectId prop.
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
- * @return {Object} Project data object from redux state
- */
-export function getProjectEvents(state, props) {
-  return get(
-    state,
-    `firestore.data.projectEvents-${projectIdFromProps(state, props)}`
-  )
-}
-
-/**
- * Get project from redux state using projectId prop.
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
- * @return {Object} Project data object from redux state
- */
-export function getOrderedProjectEvents(state, props) {
-  return get(
-    state,
-    `firestore.ordered.projectEvents-${projectIdFromProps(state, props)}`
-  )
+  return get(state, `firestore.data.projectEvents-${props.projectId}`)
 }
 
 /**
  * Get whether or not the currently logged in user is the project owner
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
+ * @param  {object} state - redux state
+ * @param  {object} props - component props
  */
 export const getCurrentUserCreatedProject = createSelector(
   [getProject, getAuthUid],
@@ -91,8 +60,8 @@ export const getCurrentUserCreatedProject = createSelector(
 
 /**
  * Get roles from project
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
+ * @param  {object} state - redux state
+ * @param  {object} props - component props
  */
 export const getRoles = createSelector(
   getProject,
@@ -101,8 +70,8 @@ export const getRoles = createSelector(
 
 /**
  * Get roles from project
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
+ * @param {object} state - redux state
+ * @param {object} props - component props
  */
 export const getOrderedRoles = createSelector(
   getRoles,
@@ -116,8 +85,8 @@ export const getOrderedRoles = createSelector(
 
 /**
  * Get roles from project
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
+ * @param {object} state - redux state
+ * @param {object} props - component props
  */
 export const getProjectPermissions = createSelector(
   getProject,
@@ -126,8 +95,8 @@ export const getProjectPermissions = createSelector(
 
 /**
  * Get roles from project
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
+ * @param {object} state - redux state
+ * @param {object} props - component props
  */
 export const getPopulatedProjectPermissions = createSelector(
   [getRoles, getDisplayNames, getProjectPermissions],
@@ -143,12 +112,15 @@ export const getPopulatedProjectPermissions = createSelector(
 
 /**
  * Get project's events grouped by date
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
+ * @param {object} state - redux state
+ * @param {object} props - component props
  */
 export const getProjectEventsGroupedByDate = createSelector(
   [getProjectEvents, getDisplayNames],
   (projectEvents, displayNames) => {
+    if (!isLoaded(projectEvents)) {
+      return projectEvents
+    }
     const events = map(projectEvents, event => {
       const createdBy = get(event, 'createdBy')
       if (createdBy) {
@@ -170,9 +142,9 @@ export const getProjectEventsGroupedByDate = createSelector(
 /**
  * Get logged in user's role from project (under collabatorPermissions
  * parameter stored by user's UID)
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
- * @return {String} Current user's role name
+ * @param {object} state - redux state
+ * @param {object} props - component props
+ * @returns {string} Current user's role name
  */
 export const getCurrentUserRoleName = createSelector(
   [getProject, getAuthUid],
@@ -184,9 +156,9 @@ export const getCurrentUserRoleName = createSelector(
 /**
  * Get logged in user's permissions from project by getting roles then selecting
  * the user's role (under collabatorPermissions parameter stored by user's UID)
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
- * @return {Object}       [description]
+ * @param {object} state - redux state
+ * @param {object} props - component props
+ * @return {object} User's project permissions
  */
 export const currentUserProjectPermissions = createSelector(
   [getRoles, getCurrentUserRoleName],
@@ -196,8 +168,8 @@ export const currentUserProjectPermissions = createSelector(
 /**
  * Get options for roles from roles parameter of project (for use within select
  * dropdown)
- * @param  {Object} state - redux state
- * @param  {Object} props - component props
+ * @param {object} state - redux state
+ * @param {object} props - component props
  * @return {Array<string>} Role option strings
  */
 export const getRoleOptions = createSelector(

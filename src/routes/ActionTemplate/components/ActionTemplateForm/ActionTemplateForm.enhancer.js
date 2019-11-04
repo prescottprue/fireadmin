@@ -3,16 +3,9 @@ import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withProps, withHandlers } from 'recompose'
-import { withStyles } from '@material-ui/core/styles'
-import { withRouter } from 'utils/components'
-import { formNames, paths } from 'constants'
-
-const styles = theme => ({
-  button: {
-    margin: theme.spacing.unit,
-    cursor: 'finger'
-  }
-})
+import { withRouter } from 'react-router-dom'
+import { ACTION_TEMPLATES_PATH } from 'constants/paths'
+import { ACTION_TEMPLATE_FORM_NAME } from 'constants/formNames'
 
 export default compose(
   withRouter,
@@ -31,7 +24,7 @@ export default compose(
   }),
   // Create form (submitted by submit button)
   reduxForm({
-    form: formNames.actionTemplate,
+    form: ACTION_TEMPLATE_FORM_NAME,
     enableReinitialize: true
   }),
   // Add props
@@ -45,7 +38,6 @@ export default compose(
     deleteTooltip: editable ? 'Delete Template' : 'Must be owner'
   })),
   withHandlers({
-    goBack: ({ router }) => () => router.push(paths.actionTemplates)
-  }),
-  withStyles(styles)
+    goBack: ({ history }) => () => history.push(ACTION_TEMPLATES_PATH)
+  })
 )

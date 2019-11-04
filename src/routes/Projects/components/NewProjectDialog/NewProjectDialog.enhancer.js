@@ -1,7 +1,7 @@
 import { compose } from 'redux'
 import { reduxForm } from 'redux-form'
 import { withHandlers } from 'recompose'
-import { NEW_PROJECT_FORM_NAME } from 'constants'
+import { NEW_PROJECT_FORM_NAME } from 'constants/formNames'
 
 export default compose(
   reduxForm({

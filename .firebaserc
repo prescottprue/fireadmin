@@ -39,7 +39,9 @@
           "databaseURL": "https://fireadmin-33d82.firebaseio.com",
           "projectId": "fireadmin-33d82",
           "storageBucket": "fireadmin-33d82.appspot.com",
-          "messagingSenderId": "286913465508"
+          "messagingSenderId": "286913465508",
+          "appId": "1:286913465508:web:c5b9e41062f4a42ef3aa31",
+          "measurementId": "G-X0ZR0VFH3Y"
         },
         "analyticsTrackingId": "${GA_TRACKING_ID}",
         "segmentId": "${PROD_SEGMENT_ID}",

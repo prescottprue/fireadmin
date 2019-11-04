@@ -2,12 +2,13 @@ stages:
   - unit_tests
   - build
   - deploy_staging
-  - e2e_tests
+  - ui_tests
   - build_production
   - deploy_production
 
-# Cache dependencies across jobs only pulling not uploading (upload to cache
-# happens in build stage)
+# Shared Settings
+## Cache dependencies across jobs only pulling not uploading (upload to cache
+## happens in build stage)
 cache:
   policy: pull # only pull cache, skip uploading
   key: $CI_COMMIT_REF_SLUG
@@ -186,8 +187,8 @@ Build Staging:
     - yarn build # build app bundles
     - yarn size # confirm that bundles have not grown too much
 
-# Deploy Staging
-# Deploy React App and Cloud Functions
+# Deploy Staging Stage
+## Deploy React App and Firebase Functions
 Deploy Staging:
   stage: deploy_staging
   image: node:10
@@ -217,7 +218,7 @@ Deploy Staging:
 # Install Cypress binary and run end to end tests using Cypress
 UI Tests:
 # .uitest_template: &job
-  stage: e2e_tests
+  stage: ui_tests
   image: cypress/base:10
   when: on_success
   allow_failure: true
@@ -298,7 +299,7 @@ Build Prod App:
     # is not created as with React App
 
 # Deploy Production
-# Deploy React App and Cloud Functions to production environment
+## Deploy React App and Cloud Functions to production environment
 Deploy Production:
   stage: deploy_production
   image: node:10

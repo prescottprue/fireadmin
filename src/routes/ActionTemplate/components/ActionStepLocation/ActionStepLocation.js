@@ -2,16 +2,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize, get } from 'lodash'
 import { Field } from 'redux-form'
-import { TextField, Select, RadioGroup } from 'redux-form-material-ui'
 import FormLabel from '@material-ui/core/FormLabel'
 import FormControl from '@material-ui/core/FormControl'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import InputLabel from '@material-ui/core/InputLabel'
-import Radio from '@material-ui/core/Radio'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
 import Grid from '@material-ui/core/Grid'
-import classes from './ActionStepLocation.scss'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+import Select from 'components/FormSelectField'
+import TextField from 'components/FormTextField'
+import styles from './ActionStepLocation.styles'
+import FormRadioGroupField from 'components/FormRadioGroupField'
+
+const useStyles = makeStyles(styles)
 
 // const pathTypeOptions = [{ value: 'only' }, { value: 'all but' }]
 const resourcesOptions = [
@@ -20,88 +24,93 @@ const resourcesOptions = [
   { value: 'storage', label: 'Cloud Storage' }
 ]
 
-export const ActionStepLocation = ({
-  name,
-  inputs,
-  indexName,
-  steps,
-  title
-}) => (
-  <Grid item xs={12} lg={6}>
-    <h4>{title}</h4>
-    <FormControl className={classes.field}>
-      <InputLabel htmlFor="resource">Select A Resource</InputLabel>
-      <Field
-        name={`${name}.resource`}
-        component={Select}
-        fullWidth
-        inputProps={{
-          name: 'resource',
-          id: 'resource'
-        }}>
-        {resourcesOptions.map((option, idx) => (
-          <MenuItem
-            key={`Option-${option.value}-${idx}`}
-            value={option.value}
-            disabled={option.disabled}>
-            <ListItemText primary={option.label || capitalize(option.value)} />
-          </MenuItem>
-        ))}
-      </Field>
-    </FormControl>
-    <FormControl
-      component="fieldset"
-      required
-      className={classes.formControl}
-      style={{ marginTop: '2rem' }}>
-      <FormLabel component="legend">Path Type</FormLabel>
-      <Field component={RadioGroup} name={`${name}.pathType`}>
-        <FormControlLabel
-          value="constant"
-          control={<Radio />}
-          label="Constant (part of template)"
-        />
-        <FormControlLabel
-          value="input"
-          control={<Radio />}
-          label="User Input"
-        />
-      </Field>
-    </FormControl>
-    {get(steps, `${indexName}.pathType`) === 'input' ? (
-      <FormControl className={classes.field}>
-        <InputLabel htmlFor="resource">Select An Input</InputLabel>
-        <Field
-          name={`${name}.path`}
-          component={Select}
-          fullWidth
-          inputProps={{
-            name: 'pathType',
-            id: 'pathType'
-          }}>
-          {inputs.map((option, idx) => (
-            <MenuItem
-              key={`Option-${option.value}-${idx}`}
-              value={idx}
-              disabled={option.disabled}>
-              <ListItemText
-                primary={get(option, 'name', `Input ${idx}`)}
-                secondary={get(option, 'variableName', `Input ${idx}`)}
-              />
-            </MenuItem>
-          ))}
-        </Field>
-      </FormControl>
-    ) : (
-      <Field
-        name={`${name}.path`}
-        component={TextField}
-        label="Path"
-        className={classes.field}
-      />
-    )}
-  </Grid>
-)
+function ActionStepLocation({ name, inputs, indexName, steps, title }) {
+  const classes = useStyles()
+
+  return (
+    <Grid item xs={12} md={8} lg={6}>
+      <Typography variant="h4">{title}</Typography>
+      <Grid container spacing={8}>
+        <Grid item xs={12} md={8}>
+          <FormControl className={classes.field}>
+            <InputLabel htmlFor="resource">Select A Resource</InputLabel>
+            <Field
+              name={`${name}.resource`}
+              component={Select}
+              fullWidth
+              inputProps={{
+                name: 'resource',
+                id: 'resource'
+              }}>
+              {resourcesOptions.map((option, idx) => (
+                <MenuItem
+                  key={`Option-${option.value}-${idx}`}
+                  value={option.value}
+                  disabled={option.disabled}>
+                  <ListItemText
+                    primary={option.label || capitalize(option.value)}
+                  />
+                </MenuItem>
+              ))}
+            </Field>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <FormControl
+            component="fieldset"
+            required
+            style={{ marginTop: '2rem' }}>
+            <FormLabel component="legend">Path Type</FormLabel>
+            <Field
+              component={FormRadioGroupField}
+              options={[
+                { value: 'constant', label: 'Constant (part of template)' },
+                { value: 'input', label: 'User Input' }
+              ]}
+              name={`${name}.pathType`}
+            />
+          </FormControl>
+        </Grid>
+        {get(steps, `${indexName}.pathType`) === 'input' ? (
+          <Grid item xs={12} md={8}>
+            <FormControl className={classes.field}>
+              <InputLabel htmlFor="resource">Select An Input</InputLabel>
+              <Field
+                name={`${name}.path`}
+                component={Select}
+                fullWidth
+                inputProps={{
+                  name: 'pathType',
+                  id: 'pathType'
+                }}>
+                {inputs.map((option, idx) => (
+                  <MenuItem
+                    key={`Option-${option.value}-${idx}`}
+                    value={idx}
+                    disabled={option.disabled}>
+                    <ListItemText
+                      primary={get(option, 'name', `Input ${idx}`)}
+                      secondary={get(option, 'variableName', `Input ${idx}`)}
+                    />
+                  </MenuItem>
+                ))}
+              </Field>
+            </FormControl>
+          </Grid>
+        ) : (
+          <Grid item xs={12} md={8}>
+            <Field
+              name={`${name}.path`}
+              component={TextField}
+              label="Path"
+              className={classes.field}
+            />
+          </Grid>
+        )}
+      </Grid>
+    </Grid>
+  )
+}
 
 ActionStepLocation.propTypes = {
   steps: PropTypes.array,

@@ -9,7 +9,14 @@
   "plugins": [
     "lodash",
     ["module-resolver", {
-     "root": ["./src"]
+      "root": ["./src"]
     }]
-  ]
+  ],
+  "env": {
+    "production": {
+      "comments": false,
+      "minified": true,
+      "sourceMaps": "inline"
+    }
+  }
 }

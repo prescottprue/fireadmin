@@ -1,9 +1,7 @@
 import { compose } from 'redux'
 import { withStateHandlers, withProps } from 'recompose'
-import { withStyles } from '@material-ui/core/styles'
 import { get, filter } from 'lodash'
 import { Link } from 'gatsby'
-import styles from './SidebarItem.styles'
 import { slugIsInCurrentPath } from '../../utils'
 
 function getChildChapters(pages) {
@@ -31,6 +29,5 @@ export default compose(
           ? { onClick: toggleOpen }
           : { component: Link, to: frontmatter.slug }
     }
-  }),
-  withStyles(styles)
+  })
 )

@@ -1,0 +1,91 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import Paper from '@material-ui/core/Paper'
+import { get, map, startCase, invoke } from 'lodash'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
+import RedoIcon from '@material-ui/icons/Redo'
+import { formatDateTime } from 'utils/formatters'
+
+function RecentActions({ classes, orderedActions, rerunAction }) {
+  return (
+    <Paper className={classes.root}>
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Time</TableCell>
+            <TableCell>Created By</TableCell>
+            <TableCell>Template</TableCell>
+            <TableCell>Source/Dest</TableCell>
+            <TableCell>Input 1 Value</TableCell>
+            <TableCell>Redo</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {map(orderedActions, (action, groupName) => [
+            <TableRow key={groupName} className={classes.tableRowDivider}>
+              <TableCell>
+                {formatDateTime(invoke(action, 'createdAt.toDate'))}
+              </TableCell>
+              <TableCell>
+                <span>
+                  {action.createdBy || startCase(action.createdByType)}
+                </span>
+              </TableCell>
+              <TableCell>
+                <span>{get(action, 'eventData.template.name', 'No Name')}</span>
+              </TableCell>
+              <TableCell>
+                <span>
+                  <strong>Source:</strong> {action.src}
+                  <br />
+                  <strong>Dest:</strong> {action.dest}
+                </span>
+              </TableCell>
+              <TableCell>
+                <span>
+                  {get(
+                    action,
+                    'eventData.inputValues.2',
+                    get(action, 'eventData.inputValues.0', 'No Path')
+                  )}
+                </span>
+              </TableCell>
+              <TableCell>
+                <Tooltip
+                  title={
+                    <div>
+                      <span style={{ marginLeft: '.3rem' }}>Rerun Action</span>
+                      <br />
+                      <span>(Same Settings)</span>
+                    </div>
+                  }>
+                  <IconButton
+                    onClick={() => rerunAction(action)}
+                    color="secondary"
+                    className={classes.submit}
+                    data-test="redo-action-button">
+                    <RedoIcon />
+                  </IconButton>
+                </Tooltip>
+              </TableCell>
+            </TableRow>
+          ])}
+        </TableBody>
+      </Table>
+    </Paper>
+  )
+}
+
+RecentActions.propTypes = {
+  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
+  orderedActions: PropTypes.array,
+  rerunAction: PropTypes.func.isRequired
+}
+
+export default RecentActions

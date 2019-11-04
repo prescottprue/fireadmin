@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import { find } from 'lodash'
 import PersonIcon from '@material-ui/icons/Person'
 import Checkbox from '@material-ui/core/Checkbox'
+import Avatar from '@material-ui/core/Avatar'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 
@@ -12,11 +14,22 @@ function UsersList({ users, onUserClick }) {
   return (
     <List>
       {users.map((user, i) => (
-        <ListItem key={`SelectedUser-${user.id || user.objectID}-${i}`}>
-          <PersonIcon />
-          <ListItemText primary={user.displayName} />
+        <ListItem
+          key={`SelectedUser-${user.id || user.objectID}-${i}`}
+          style={{ cursor: 'pointer' }}>
+          <ListItemAvatar>
+            {user.avatarUrl ? (
+              <Avatar src={user.avatarUrl} />
+            ) : (
+              <Avatar>
+                <PersonIcon />
+              </Avatar>
+            )}
+          </ListItemAvatar>
+          <ListItemText primary={user.displayName} secondary={user.email} />
           <ListItemSecondaryAction>
             <Checkbox
+              edge="end"
               onChange={() => onUserClick(user)}
               checked={
                 !!find(users, {

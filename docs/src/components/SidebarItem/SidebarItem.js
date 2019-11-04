@@ -30,7 +30,6 @@ function slugToIcon(slug) {
 function SidebarItem({
   frontmatter,
   childChapters,
-  classes,
   open,
   parentProps,
   toggleOpen,
@@ -76,7 +75,6 @@ function SidebarItem({
 }
 
 SidebarItem.propTypes = {
-  classes: PropTypes.object, // from enhancer (withStyles)
   childChapters: PropTypes.array,
   open: PropTypes.bool,
   toggleOpen: PropTypes.func,

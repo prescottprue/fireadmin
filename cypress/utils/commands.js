@@ -5,7 +5,10 @@
  * a blob (prevents issues with invalid string decoding).
  * @param {String} fileUrl - The file url to upload
  * @param {String} type - content type of the uploaded file
- * @return {Promise} Resolves with blob containing fixture contents
+ * @returns {Promise} Resolves with blob containing fixture contents
+ * @example
+ * createSelector('some-btn')
+ * // => [data-test=some-btn]
  */
 export function getFixtureBlob(fileUrl, type) {
   console.log('fixture blob', fileUrl)

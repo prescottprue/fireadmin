@@ -1,3 +1,4 @@
+import { find } from 'lodash'
 import { createSelector } from '../../utils'
 import fakeProject from '../../fixtures/fakeProject.json'
 
@@ -38,40 +39,44 @@ describe('Project - Environments Page', () => {
       cy.get(createSelector('new-environment-name'))
         .find('input')
         .type(newProjectName, { delay: 0 })
+
       // Type in new environment url
       cy.get(createSelector('new-environment-db-url'))
         .find('input')
         .type(`https://some-project.firebaseio.com`, { delay: 0 })
+
       // Upload service account
-      cy.uploadFile(createSelector('file-uploader'), 'fakeServiceAccount.json')
+      cy.uploadFile(
+        createSelector('file-uploader-input'),
+        'fakeServiceAccount.json'
+      )
+
       // Click on the new environment button
       cy.get(createSelector('new-environment-create-button')).click()
-      // Verify new environment was added to Firestore with correct data
-      cy.callFirestore('get', 'projects/test-project/environments').then(
-        environments => {
-          expect(environments).to.be.an('array')
-          const matchingEnv = find(
-            environments,
-            ({ data = {} }) => data.name === newProjectName
-          )
-          expect(matchingEnv).to.exist
-        }
-      )
       // Confirm user is notified of successful environment creation
       cy.get(createSelector('notification-message')).should(
         'contain',
         'Environment added successfully'
       )
+      // Verify new environment was added to Firestore with correct data
+      cy.callFirestore('get', 'projects/test-project/environments').then(
+        environments => {
+          expect(environments).to.be.an('array')
+          const matchingEnv = find(environments, { name: newProjectName })
+          expect(matchingEnv).to.exist
+        }
+      )
     })
   })
 
   describe('Delete Environment -', () => {
+    const newEnvName = 'test-env'
     beforeEach(() => {
       // Remove created environment
       cy.callFirestore('delete', 'projects/test-project/environments', {
         recursive: true
       })
-      cy.addProjectEnvironment('test-project', 'test-env')
+      cy.addProjectEnvironment('test-project', newEnvName)
     })
 
     it('allows environment to be deleted by project owner', () => {
@@ -94,11 +99,8 @@ describe('Project - Environments Page', () => {
       cy.callFirestore('get', 'projects/test-project/environments').then(
         environments => {
           expect(environments).to.be.an('array')
-          const matchingEnv = find(
-            environments,
-            ({ data = {} }) => data.name === 'test-env'
-          )
-          expect(matchingEnv).to.exist
+          const matchingEnv = find(environments, { name: newEnvName })
+          expect(matchingEnv).to.not.exist
         }
       )
     })

@@ -5,7 +5,7 @@ import DeviceHubIcon from '@material-ui/icons/SettingsEthernet'
 import StorageIcon from '@material-ui/icons/Dns'
 import EventIcon from '@material-ui/icons/ViewList'
 import PeopleIcon from '@material-ui/icons/People'
-import { paths } from 'constants'
+import { paths } from 'constants/paths'
 
 export default [
   {

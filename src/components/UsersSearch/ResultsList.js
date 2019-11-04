@@ -2,19 +2,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connectHits } from 'react-instantsearch/connectors'
+import List from '@material-ui/core/List'
 import SuggestedUser from './SuggestedUser'
 
 function ResultsList({ hits, onSuggestionClick }) {
   return (
-    <div>
+    <List>
       {hits.map((hit, i) => (
         <SuggestedUser
           key={`Hit-${hit.objectID}-${i}`}
+          id={hit.objectID}
           hit={hit}
           onClick={onSuggestionClick}
         />
       ))}
-    </div>
+    </List>
   )
 }
 

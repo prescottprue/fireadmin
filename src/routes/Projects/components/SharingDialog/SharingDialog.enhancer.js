@@ -28,7 +28,7 @@ export default compose(
     showSuccess: PropTypes.func.isRequired, // used in handlers
     showError: PropTypes.func.isRequired // used in handlers
   }),
-  connect(({ firebase: { data: { displayNames } } }, { params }) => ({
+  connect(({ firebase: { data: { displayNames } } }) => ({
     displayNames
   })),
   // State handlers as props
@@ -78,9 +78,12 @@ export default compose(
     const collaborators = get(project, 'collaborators')
     if (collaborators) {
       return {
-        projectCollaborators: map(collaborators, (collaborator, collabId) =>
-          get(displayNames, collabId, 'User')
-        )
+        projectCollaborators: map(collaborators, (collaborator, collabId) => {
+          return {
+            displayName: get(displayNames, collabId, 'User'),
+            ...collaborator
+          }
+        })
       }
     }
   })

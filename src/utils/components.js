@@ -14,6 +14,7 @@ import {
 import { connect } from 'react-redux'
 import LoadingSpinner from 'components/LoadingSpinner'
 import { isLoaded, isEmpty } from 'react-redux-firebase/lib/helpers'
+import LoadableComponent from 'react-loadable'
 import {
   compose,
   mapProps,
@@ -199,15 +200,6 @@ export function createWithFromContext(withVar) {
 }
 
 /**
- * HOC that adds router to props
- * @return {HigherOrderComponent}
- * @example Basic
- * // Wrapped is SomeComponent with props.router from context
- * const Wrapped = withRouter(SomeComponent)
- */
-export const withRouter = createWithFromContext('router')
-
-/**
  * HOC that adds store to props
  * @return {HigherOrderComponent}
  * @example Basic
@@ -215,3 +207,25 @@ export const withRouter = createWithFromContext('router')
  * const Wrapped = withStore(SomeComponent)
  */
 export const withStore = createWithFromContext('store')
+
+/**
+ * Create component which is loaded async, showing a loading spinner
+ * in the meantime.
+ * @param {Object} opts - Loading options
+ * @param {Function} opts.loader - Loader function (should return import promise)
+ */
+export function Loadable(opts) {
+  return LoadableComponent({
+    loading: props => {
+      if (props.error) {
+        return (
+          <div>
+            Error! <button onClick={props.retry}>Retry</button>
+          </div>
+        )
+      }
+      return <LoadingSpinner />
+    },
+    ...opts
+  })
+}

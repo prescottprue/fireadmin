@@ -6,12 +6,40 @@ import {
   SearchBox,
   Configure
 } from 'react-instantsearch/dom'
+import { makeStyles } from '@material-ui/core/styles'
+import styles from './CollectionSearch.styles'
 import SearchResults from './SearchResults'
-import classes from './CollectionSearch.scss'
 import { algolia } from '../../config'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 
-function CollectionSearch({ onSuggestionClick, filterString, indexName }) {
+const useStyles = makeStyles(styles)
+
+function CollectionSearch({
+  onSuggestionClick,
+  ignoreSuggestions,
+  uid,
+  indexName
+}) {
+  const classes = useStyles()
+
+  // Map ignore suggestions list to get ids
+  const ignoreIds = !ignoreSuggestions
+    ? [uid] // ignore just logged in user if no ignoreSuggestions provided
+    : [uid].concat(
+        // ignore logged in user and ignoreSuggestions
+        ignoreSuggestions.map(
+          suggestion => suggestion.id || suggestion.objectID
+        )
+      )
+
+  const filterString = ignoreIds
+    .map(
+      (id, index) =>
+        `${
+          index !== 0 && index !== ignoreIds.length ? 'AND ' : ''
+        }NOT objectID:${id}`
+    )
+    .join(' ')
   return (
     <InstantSearch
       appId={algolia.appId}
@@ -29,9 +57,10 @@ function CollectionSearch({ onSuggestionClick, filterString, indexName }) {
 }
 
 CollectionSearch.propTypes = {
-  onSuggestionClick: PropTypes.func,
-  filterString: PropTypes.string,
-  indexName: PropTypes.string.isRequired
+  indexName: PropTypes.string.isRequired,
+  uid: PropTypes.string.isRequired,
+  ignoreSuggestions: PropTypes.array,
+  onSuggestionClick: PropTypes.func
 }
 
 export default CollectionSearch

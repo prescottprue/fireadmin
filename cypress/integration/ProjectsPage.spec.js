@@ -1,8 +1,6 @@
 import { createSelector } from '../utils'
 
 describe('Projects Page', () => {
-  let open // eslint-disable-line no-unused-vars
-  // Setup before tests including creating a server to listen for external requests
   beforeEach(() => {
     // Login using custom token
     cy.login()

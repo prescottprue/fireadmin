@@ -26,17 +26,23 @@ function updateUserProfileWithToken(messagingToken) {
     })
 }
 
+let vapidKeyHasBeenInitialized = false
+
 /**
  * Get messaging token from Firebase messaging
  */
 function getMessagingToken() {
-  return firebase
-    .messaging()
-    .getToken()
-    .catch(err => {
-      console.error('Unable to retrieve refreshed token ', err) // eslint-disable-line no-console
-      return Promise.reject(err)
-    })
+  const messaging = firebase.messaging()
+
+  if (!vapidKeyHasBeenInitialized) {
+    messaging.usePublicVapidKey(publicVapidKey)
+    vapidKeyHasBeenInitialized = true
+  }
+
+  return messaging.getToken().catch(err => {
+    console.error('Unable to retrieve refreshed token ', err) // eslint-disable-line no-console
+    return Promise.reject(err)
+  })
 }
 
 /**
@@ -71,7 +77,6 @@ export function requestPermission() {
  */
 export function initializeMessaging(dispatch) {
   const messaging = firebase.messaging()
-  messaging.usePublicVapidKey(publicVapidKey)
 
   // Handle Instance ID token updates
   messaging.onTokenRefresh(() => {

@@ -8,22 +8,27 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import { makeStyles } from '@material-ui/core/styles'
 import LayersIcon from '@material-ui/icons/Layers'
 import enhance from './SidebarList.enhnacer'
+import styles from './SidebarLayout.styles'
 
 // Fix issue with padding
 const listItemStyle = {
   paddingLeft: '18px'
 }
 
+const useStyles = makeStyles(styles)
+
 function SidebarList({
-  classes,
-  drawerOpen,
   itemIsActive,
   optionsConfig,
   goTo,
+  drawerOpen,
   toggleDrawer
 }) {
+  const classes = useStyles()
+
   return (
     <List className={classes.list}>
       {optionsConfig.map(({ value, iconElement, label }, i) => (
@@ -50,11 +55,10 @@ function SidebarList({
 }
 
 SidebarList.propTypes = {
-  toggleDrawer: PropTypes.func,
-  itemIsActive: PropTypes.func,
-  goTo: PropTypes.func,
+  toggleDrawer: PropTypes.func.isRequired,
+  itemIsActive: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  goTo: PropTypes.func.isRequired, // from enhancer (withHandlers)
   optionsConfig: PropTypes.array,
-  classes: PropTypes.object, // added by withStyles
   drawerOpen: PropTypes.bool
 }
 

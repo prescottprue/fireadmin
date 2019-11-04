@@ -113,7 +113,6 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 ├── firebase.json            # Firebase resource settings (including which folders are deployed)
 ├── firestore.indexes.json   # Firestore Indexes
 ├── firestore.rules          # Firestore Database Rules
-├── project.config.js        # Project configuration settings
 └── storage.rules            # Cloud Storage Rules
 ```
 

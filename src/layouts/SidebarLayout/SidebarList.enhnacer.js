@@ -1,23 +1,20 @@
 import { compose } from 'redux'
-import { withStyles } from '@material-ui/core/styles'
 import { withHandlers } from 'recompose'
-import { withRouter } from 'utils/components'
-import { LIST_PATH } from 'constants'
-import styles from './SidebarLayout.styles'
+import { withRouter } from 'react-router-dom'
+import { LIST_PATH } from 'constants/paths'
 
 export default compose(
   withRouter,
   withHandlers({
-    goTo: ({ router }) => value => {
-      router.push(`${LIST_PATH}/${router.params.projectId}/${value}`)
+    goTo: ({ history, match }) => value => {
+      history.push(`${LIST_PATH}/${match.params.projectId}/${value}`)
     },
-    itemIsActive: ({ router }) => value => {
-      const currentParentRoute = `${LIST_PATH}/${router.params.projectId}/`
+    itemIsActive: ({ location, match }) => value => {
+      const currentParentRoute = `${LIST_PATH}/${match.params.projectId}/`
       return value === ''
-        ? `${router.getCurrentLocation().pathname}/` === currentParentRoute ||
-            router.getCurrentLocation().pathname === currentParentRoute
-        : router.isActive(`${currentParentRoute}${value}/`)
+        ? `${location.pathname}/` === currentParentRoute ||
+            location.pathname === currentParentRoute
+        : location.pathname.endsWith(value)
     }
-  }),
-  withStyles(styles, { withTheme: true })
+  })
 )

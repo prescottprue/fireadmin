@@ -1,13 +1,12 @@
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withStateHandlers, withHandlers } from 'recompose'
-import { firebasePaths } from 'constants'
+import { ACTION_TEMPLATES_PATH } from 'constants/firebasePaths'
 import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
-import { spinnerWhileLoading, withRouter } from 'utils/components'
+import { withRouter } from 'react-router-dom'
+import { spinnerWhileLoading } from 'utils/components'
 import { withNotifications } from 'modules/notification'
-import { withStyles } from '@material-ui/core/styles'
 import * as handlers from './ActionTemplatesList.handlers'
-import * as styles from './ActionTemplatesList.styles'
 
 export default compose(
   withNotifications,
@@ -19,13 +18,13 @@ export default compose(
   // Set listeners for Firestore
   firestoreConnect(({ uid }) => [
     {
-      collection: firebasePaths.actionTemplates,
+      collection: ACTION_TEMPLATES_PATH,
       where: ['public', '==', true],
       limit: 30
     },
     // Listener for projects current user collaborates on
     {
-      collection: firebasePaths.actionTemplates,
+      collection: ACTION_TEMPLATES_PATH,
       where: [['createdBy', '==', uid], ['public', '==', false]],
       storeAs: 'myTemplates'
     }
@@ -47,6 +46,5 @@ export default compose(
       })
     }
   ),
-  withHandlers(handlers),
-  withStyles(styles)
+  withHandlers(handlers)
 )

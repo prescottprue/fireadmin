@@ -1,13 +1,16 @@
 export default theme => ({
   root: {
-    display: 'flex',
-    flexWrap: 'wrap'
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   formControl: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(),
     minWidth: 350
   },
   selectEmpty: {
-    marginTop: theme.spacing.unit * 2
+    marginTop: theme.spacing(2)
+  },
+  menu: {
+    width: 200
   }
 })

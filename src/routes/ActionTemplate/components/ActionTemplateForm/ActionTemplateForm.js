@@ -1,32 +1,33 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Field, FieldArray } from 'redux-form'
-import { Link } from 'react-router'
-import { TextField, Switch } from 'redux-form-material-ui'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
+import { Link } from 'react-router-dom'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Fab from '@material-ui/core/Fab'
 import Tooltip from '@material-ui/core/Tooltip'
-// import LoadIntoProjectButton from '../LoadIntoProjectButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import PublishIcon from '@material-ui/icons/Publish'
 import BackIcon from '@material-ui/icons/ArrowBack'
 import UndoIcon from '@material-ui/icons/Undo'
 import IconButton from '@material-ui/core/IconButton'
+import TextField from 'components/FormTextField'
+import { makeStyles } from '@material-ui/core/styles'
+import { ACTION_TEMPLATES_PATH } from 'constants/paths'
 import ActionTemplateStep from '../ActionTemplateStep'
 import ActionTemplateInputs from '../ActionTemplateInputs'
 import ActionTemplateEnvs from '../ActionTemplateEnvs'
 import ActionTemplateBackups from '../ActionTemplateBackups'
-import { firebasePaths, paths } from 'constants'
-import styleClasses from './ActionTemplateForm.scss'
+import styles from './ActionTemplateForm.styles'
+import FormSwitchField from 'components/FormSwitchField'
 
-export const ActionTemplateForm = ({
+const useStyles = makeStyles(styles)
+
+function ActionTemplateForm({
   submitting,
   pristine,
   reset,
-  classes,
   handleSubmit,
   templateId,
   editable,
@@ -35,101 +36,110 @@ export const ActionTemplateForm = ({
   cancelTooltip,
   startTemplateDelete,
   goBack
-}) => (
-  <form className={styleClasses.container} onSubmit={handleSubmit}>
-    <div className={styleClasses.buttons}>
-      <div style={{ marginRight: '4rem' }}>
-        <Link to={paths.dataAction}>
+}) {
+  const classes = useStyles()
+
+  return (
+    <form className={classes.root} onSubmit={handleSubmit}>
+      <div className={classes.buttons}>
+        <div style={{ marginRight: '4rem' }}>
           <Tooltip placement="bottom" title="Back To Templates">
-            <IconButton className={classes.submit} onClick={goBack}>
+            <IconButton
+              className={classes.submit}
+              component={Link}
+              to={ACTION_TEMPLATES_PATH}
+              onClick={goBack}>
               <BackIcon />
             </IconButton>
           </Tooltip>
-        </Link>
-      </div>
-      <Tooltip placement="bottom" title={cancelTooltip}>
-        <div>
-          <Fab
-            disabled={pristine || submitting}
-            onClick={reset}
-            color="secondary"
-            className={classes.button}>
-            <UndoIcon />
-          </Fab>
         </div>
-      </Tooltip>
-      <Tooltip placement="bottom" title={submitTooltip}>
-        <div>
-          <Fab
-            type="submit"
-            disabled={!editable || submitting || pristine}
-            color="primary"
-            className={classes.button}>
-            <PublishIcon />
-          </Fab>
-        </div>
-      </Tooltip>
-      {/* <LoadIntoProjectButton templateId={templateId} /> */}
-      <Tooltip placement="bottom" title={deleteTooltip}>
-        <div>
-          <Fab
-            onClick={startTemplateDelete}
-            disabled={!editable}
-            color="secondary"
-            className={classes.button}>
-            <DeleteIcon />
-          </Fab>
-        </div>
-      </Tooltip>
-    </div>
-    <Typography className={styleClasses.header}>Meta Data</Typography>
-    <Paper className={styleClasses.paper}>
-      <Grid container spacing={24}>
-        <Grid item xs>
-          <Field
-            name="name"
-            component={TextField}
-            label="Name"
-            className={styleClasses.field}
-          />
-          <Field
-            name="description"
-            component={TextField}
-            className={styleClasses.field}
-            label="Description"
-            multiline
-          />
-          <div className={styleClasses.publicToggle}>
-            <FormControlLabel
-              control={<Field name="public" component={Switch} />}
-              label="Public"
-            />
+        <Tooltip placement="bottom" title={cancelTooltip}>
+          <div>
+            <Fab
+              disabled={pristine || submitting}
+              onClick={reset}
+              color="secondary"
+              className={classes.button}>
+              <UndoIcon />
+            </Fab>
           </div>
+        </Tooltip>
+        <Tooltip placement="bottom" title={submitTooltip}>
+          <div>
+            <Fab
+              type="submit"
+              disabled={!editable || submitting || pristine}
+              color="primary"
+              className={classes.button}>
+              <PublishIcon />
+            </Fab>
+          </div>
+        </Tooltip>
+        {/* TODO: Add a button/select for running this template in a project */}
+        <Tooltip placement="bottom" title={deleteTooltip}>
+          <div>
+            <Fab
+              onClick={startTemplateDelete}
+              disabled={!editable}
+              color="secondary"
+              className={classes.button}>
+              <DeleteIcon />
+            </Fab>
+          </div>
+        </Tooltip>
+      </div>
+      <Typography className={classes.header}>Meta Data</Typography>
+      <Paper className={classes.paper}>
+        <Grid container spacing={8}>
+          <Grid item xs={10} md={6}>
+            <Field
+              name="name"
+              component={TextField}
+              label="Name"
+              className={classes.field}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={10} md={6}>
+            <Field
+              name="description"
+              component={TextField}
+              className={classes.field}
+              label="Description"
+              fullWidth
+              multiline
+            />
+          </Grid>
+          <Grid item xs={10} md={6}>
+            <div className={classes.publicToggle}>
+              <Field name="public" label="public" component={FormSwitchField} />
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
-    </Paper>
-    <div className={styleClasses.actions}>
-      <Typography className={styleClasses.header}>Environments</Typography>
-      <FieldArray name="environments" component={ActionTemplateEnvs} />
-    </div>
-    <div className={styleClasses.actions}>
-      <Typography className={styleClasses.header}>Inputs</Typography>
-      <FieldArray name="inputs" component={ActionTemplateInputs} />
-    </div>
-    <div className={styleClasses.actions}>
-      <Typography className={styleClasses.header}>Backups</Typography>
-      <FieldArray name="backups" component={ActionTemplateBackups} />
-    </div>
-    <div className={styleClasses.actions}>
-      <Typography className={styleClasses.header}>Steps</Typography>
-      <FieldArray
-        name="steps"
-        mainEditorPath={`${firebasePaths.actionTemplates}/${templateId}`}
-        component={ActionTemplateStep}
-      />
-    </div>
-  </form>
-)
+      </Paper>
+      <div className={classes.actions}>
+        <Typography className={classes.header}>Environments</Typography>
+        <FieldArray name="environments" component={ActionTemplateEnvs} />
+      </div>
+      <div className={classes.actions}>
+        <Typography className={classes.header}>Inputs</Typography>
+        <FieldArray name="inputs" component={ActionTemplateInputs} />
+      </div>
+      <div className={classes.actions}>
+        <Typography className={classes.header}>Backups</Typography>
+        <FieldArray name="backups" component={ActionTemplateBackups} />
+      </div>
+      <div className={classes.actions}>
+        <Typography className={classes.header}>Steps</Typography>
+        <FieldArray
+          name="steps"
+          mainEditorPath={`${ACTION_TEMPLATES_PATH}/${templateId}`}
+          component={ActionTemplateStep}
+        />
+      </div>
+    </form>
+  )
+}
 
 ActionTemplateForm.propTypes = {
   templateId: PropTypes.string.isRequired,
@@ -140,7 +150,6 @@ ActionTemplateForm.propTypes = {
   reset: PropTypes.func.isRequired, // from enhancer (reduxForm)
   handleSubmit: PropTypes.func.isRequired, // from enhancer (reduxForm)
   editable: PropTypes.bool.isRequired, // from enhancer (connect)
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   submitTooltip: PropTypes.string, // from enhancer (withProps)
   deleteTooltip: PropTypes.string, // from enhancer (withProps)
   cancelTooltip: PropTypes.string // from enhancer (withProps)

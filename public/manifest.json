@@ -4,5 +4,6 @@
   "start_url": "/login/",
   "background_color": "#ef6c00",
   "theme_color": "#ef6c00",
-  "display": "standalone"
+  "display": "standalone",
+  "gcm_sender_id": "103953800507"
 }

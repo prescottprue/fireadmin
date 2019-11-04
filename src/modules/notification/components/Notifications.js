@@ -1,14 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { size } from 'lodash'
 import { connect } from 'react-redux'
-import { compose, renderNothing, branch } from 'recompose'
 import Snackbar from '@material-ui/core/Snackbar'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import * as actions from '../actions'
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import ErrorIcon from '@material-ui/icons/Error'
 import InfoIcon from '@material-ui/icons/Info'
@@ -24,18 +22,51 @@ const variantIcon = {
   info: InfoIcon
 }
 
+const useStyles = makeStyles(theme => ({
+  success: {
+    backgroundColor: green[600]
+  },
+  error: {
+    backgroundColor: theme.palette.error.dark
+  },
+  info: {
+    // backgroundColor: theme.palette.primary.dark
+  },
+  warning: {
+    backgroundColor: amber[700]
+  },
+  icon: {
+    fontSize: 20,
+    opacity: 0.9,
+    marginRight: theme.spacing()
+  },
+  message: {
+    display: 'flex',
+    alignItems: 'center'
+  }
+}))
+
 function Notifications({
-  classes,
   className,
   allIds,
   byId,
   variant = 'info',
   dismissNotification
 }) {
+  const classes = useStyles()
+
+  // Only render if notifications exist
+  if (!allIds || !Object.keys(allIds).length) {
+    return null
+  }
+
   return (
     <div>
       {allIds.map(id => {
         const Icon = variantIcon[byId[id].type] || variantIcon[variant]
+        function dismissNotificationById() {
+          return dismissNotification(id)
+        }
         return (
           <Snackbar
             key={id}
@@ -53,9 +84,7 @@ function Notifications({
                   id="client-snackbar"
                   data-test="notification-message"
                   className={classes.message}>
-                  <Icon
-                    className={classNames(classes.icon, classes.iconVariant)}
-                  />
+                  <Icon className={classes.icon} />
                   {byId[id].message}
                 </span>
               }
@@ -65,7 +94,7 @@ function Notifications({
                   aria-label="Close"
                   color="inherit"
                   className={classes.close}
-                  onClick={() => dismissNotification(id)}>
+                  onClick={dismissNotificationById}>
                   <CloseIcon className={classes.icon} />
                 </IconButton>
               ]}
@@ -82,44 +111,10 @@ Notifications.propTypes = {
   byId: PropTypes.object.isRequired,
   variant: PropTypes.string,
   className: PropTypes.string,
-  classes: PropTypes.object.isRequired,
   dismissNotification: PropTypes.func.isRequired
 }
 
-const styles = theme => ({
-  success: {
-    backgroundColor: green[600]
-  },
-  error: {
-    backgroundColor: theme.palette.error.dark
-  },
-  info: {
-    // backgroundColor: theme.palette.primary.dark
-  },
-  warning: {
-    backgroundColor: amber[700]
-  },
-  icon: {
-    fontSize: 20
-  },
-  iconVariant: {
-    opacity: 0.9,
-    marginRight: theme.spacing.unit
-  },
-  message: {
-    display: 'flex',
-    alignItems: 'center'
-  }
-})
-
-const enhance = compose(
-  withStyles(styles),
-  connect(
-    ({ notifications: { allIds, byId } }) => ({ allIds, byId }),
-    actions
-  ),
-  branch(props => !size(props.allIds), renderNothing), // only render if notifications exist
-  withStyles(styles)
-)
-
-export default enhance(Notifications)
+export default connect(
+  ({ notifications: { allIds, byId } }) => ({ allIds, byId }),
+  actions
+)(Notifications)

@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize } from 'lodash'
 import { Field } from 'redux-form'
-import { TextField, Select } from 'redux-form-material-ui'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -12,11 +11,17 @@ import Typography from '@material-ui/core/Typography'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
 import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
+import { makeStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import DeleteIcon from '@material-ui/icons/Delete'
-import classes from './ActionTemplateBackups.scss'
+import Select from 'components/FormSelectField'
+import TextField from 'components/FormTextField'
+import styles from './ActionTemplateBackups.styles'
+
+const useStyles = makeStyles(styles)
 
 // const pathTypeOptions = [{ value: 'only' }, { value: 'all but' }]
 const resourcesOptions = [
@@ -25,50 +30,63 @@ const resourcesOptions = [
   { value: 'storage', label: 'Cloud Storage' }
 ]
 
-export const ActionTemplateBackups = ({ fields, steps }) => (
-  <div>
-    <Button
-      onClick={() => fields.push({ dest: { resource: 'firestore' } })}
-      color="primary"
-      className={classes.addAction}
-      variant="contained">
-      Add Backup
-    </Button>
-    {fields.map((member, index, field) => (
-      <ExpansionPanel key={index}>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.title}>
-            {fields.get(index).name || fields.get(index).type || 'No Name'}
-          </Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <Grid container spacing={24} style={{ flexGrow: 1 }}>
-            <Grid item xs={12} lg={6}>
-              <Field
-                name={`${member}.name`}
-                component={TextField}
-                label="Name"
-                className={classes.field}
-              />
-              <Field
-                name={`${member}.description`}
-                component={TextField}
-                label="Description"
-                className={classes.field}
-              />
-            </Grid>
-            <Grid item xs={12} lg={6}>
-              <IconButton
-                onClick={() => fields.remove(index)}
-                color="secondary"
-                className={classes.submit}>
-                <DeleteIcon />
-              </IconButton>
-            </Grid>
-            <Grid item xs={12} lg={6}>
-              <div className={classes.sections}>
-                <div className="flex-column">
-                  <h4>Source</h4>
+function ActionTemplateBackups({ fields, steps }) {
+  const classes = useStyles()
+
+  function addBackup() {
+    return fields.push({ dest: { resource: 'firestore' } })
+  }
+
+  return (
+    <div>
+      <Button
+        onClick={addBackup}
+        color="primary"
+        className={classes.addAction}
+        variant="contained">
+        Add Backup
+      </Button>
+      {fields.map((member, index, field) => {
+        function removeBackup() {
+          return fields.remove(index)
+        }
+        return (
+          <ExpansionPanel key={index}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={classes.title}>
+                {fields.get(index).name || fields.get(index).type || 'No Name'}
+              </Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Grid container spacing={8} style={{ flexGrow: 1 }}>
+                <Grid item xs={10} md={6} lg={6}>
+                  <Field
+                    name={`${member}.name`}
+                    component={TextField}
+                    label="Name"
+                    className={classes.field}
+                  />
+                  <Field
+                    name={`${member}.description`}
+                    component={TextField}
+                    label="Description"
+                    className={classes.field}
+                  />
+                </Grid>
+                <Grid item xs={2} lg={2}>
+                  <div className={classes.delete}>
+                    <Tooltip placement="bottom" title="Remove Step">
+                      <IconButton
+                        onClick={removeBackup}
+                        color="secondary"
+                        className={classes.deleteButton}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                </Grid>
+                <Grid item xs={6} lg={6}>
+                  <Typography variant="h5">Source</Typography>
                   <FormControl className={classes.field}>
                     <InputLabel htmlFor="resource">Select Resource</InputLabel>
                     <Field
@@ -97,15 +115,15 @@ export const ActionTemplateBackups = ({ fields, steps }) => (
                     label="Path"
                     className={classes.field}
                   />
-                </div>
-              </div>
-            </Grid>
-          </Grid>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    ))}
-  </div>
-)
+                </Grid>
+              </Grid>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        )
+      })}
+    </div>
+  )
+}
 
 ActionTemplateBackups.propTypes = {
   fields: PropTypes.object.isRequired,

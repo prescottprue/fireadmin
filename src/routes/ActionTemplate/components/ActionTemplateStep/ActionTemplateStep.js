@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { capitalize, get } from 'lodash'
 import { Field } from 'redux-form'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import { TextField, Select, Checkbox } from 'redux-form-material-ui'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -18,9 +17,15 @@ import Tooltip from '@material-ui/core/Tooltip'
 import Grid from '@material-ui/core/Grid'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import DeleteIcon from '@material-ui/icons/Delete'
+import { makeStyles } from '@material-ui/core/styles'
+import TextField from 'components/FormTextField'
+import Select from 'components/FormSelectField'
 import ActionEditor from '../ActionEditor'
 import ActionStepLocation from '../ActionStepLocation'
-import classes from './ActionTemplateStep.scss'
+import styles from './ActionTemplateStep.styles'
+import FormCheckboxField from 'components/FormCheckboxField'
+
+const useStyles = makeStyles(styles)
 
 const typeOptions = [
   { value: 'copy' },
@@ -36,6 +41,8 @@ function ActionTemplateStep({
   addStepClick,
   inputs
 }) {
+  const classes = useStyles()
+
   return (
     <div>
       <Button
@@ -53,33 +60,18 @@ function ActionTemplateStep({
             </Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Grid container spacing={24} style={{ flexGrow: 1 }}>
-              <Grid item xs={12} lg={12}>
-                <Tooltip title="Remove Step">
-                  <IconButton
-                    onClick={() => fields.remove(index)}
-                    color="secondary"
-                    className={classes.submit}>
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={12} lg={12}>
+            <Grid container spacing={8} style={{ flexGrow: 1 }}>
+              <Grid item xs={10} md={6} lg={6} className={classes.alignCenter}>
                 <Field
                   name={`${member}.name`}
                   component={TextField}
                   label="Name"
                   className={classes.field}
                 />
-                <Field
-                  name={`${member}.description`}
-                  component={TextField}
-                  label="Description"
-                  className={classes.field}
-                />
+                <br />
                 <FormControl
                   className={classes.field}
-                  style={{ marginTop: '2rem' }}>
+                  style={{ textAlign: 'left' }}>
                   <InputLabel htmlFor="actionType">Action Type</InputLabel>
                   <Field
                     name={`${member}.type`}
@@ -101,25 +93,44 @@ function ActionTemplateStep({
                     ))}
                   </Field>
                 </FormControl>
+                <br />
+                <Field
+                  name={`${member}.description`}
+                  component={TextField}
+                  label="Description"
+                  className={classes.multilineField}
+                />
+              </Grid>
+              <Grid item xs={2} lg={1}>
+                <div className={classes.delete}>
+                  <Tooltip placement="bottom" title="Remove Step">
+                    <IconButton
+                      onClick={() => fields.remove(index)}
+                      color="secondary"
+                      className={classes.deleteButton}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                </div>
+              </Grid>
+              <Grid item xs={12} lg={12}>
                 {get(steps, `${index}.type`) === 'copy' ? (
-                  <div className="flex-column">
-                    <FormControlLabel
-                      control={
-                        <Field
-                          name={`steps.${index}.disableBatching`}
-                          disabled={
-                            get(steps, `${index}.src.resource`) !== 'rtdb'
-                          }
-                          component={Checkbox}
-                        />
-                      }
-                      label="Disable Batching (only RTDB)"
-                      className={classes.subcollectionOption}
-                    />
-                  </div>
+                  <FormControlLabel
+                    control={
+                      <Field
+                        name={`steps.${index}.disableBatching`}
+                        disabled={
+                          get(steps, `${index}.src.resource`) !== 'rtdb'
+                        }
+                        component={FormCheckboxField}
+                      />
+                    }
+                    label="Disable Batching (only RTDB)"
+                    className={classes.subcollectionOption}
+                  />
                 ) : null}
                 {get(steps, `${index}.type`) === 'copy' ? (
-                  <div className="flex-column">
+                  <Fragment>
                     <FormControlLabel
                       control={
                         <Field
@@ -127,7 +138,7 @@ function ActionTemplateStep({
                           disabled={
                             get(steps, `${index}.src.resource`) !== 'firestore'
                           }
-                          component={Checkbox}
+                          component={FormCheckboxField}
                         />
                       }
                       label="Include subcollections (only Firestore)"
@@ -139,14 +150,14 @@ function ActionTemplateStep({
                       All collections will by copied by default. Specific
                       subcollection support coming soon.
                     </Typography>
-                  </div>
+                  </Fragment>
                 ) : null}
               </Grid>
               {get(steps, `${index}.type`) !== 'custom' ? (
                 <Grid item xs={12} lg={12}>
                   <Grid
                     container
-                    spacing={24}
+                    spacing={8}
                     style={{ flexGrow: 1 }}
                     justify="center">
                     <ActionStepLocation

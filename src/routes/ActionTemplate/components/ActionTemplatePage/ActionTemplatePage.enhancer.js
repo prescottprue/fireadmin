@@ -1,16 +1,22 @@
+import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
-import { firebasePaths } from 'constants'
-import { withHandlers, withStateHandlers, withProps } from 'recompose'
+import { withRouter } from 'react-router-dom'
+import {
+  withHandlers,
+  withStateHandlers,
+  withProps,
+  setPropTypes
+} from 'recompose'
 import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import { withNotifications } from 'modules/notification'
 import {
   spinnerWhileLoading,
-  withRouter,
   renderWhile,
   renderIfError
 } from 'utils/components'
+import { ACTION_TEMPLATES_PATH } from 'constants/firebasePaths'
 import TemplateLoadingError from './TemplateLoadingError'
 import TemplateNotFound from './TemplateNotFound'
 import * as handlers from './ActionTemplatePage.handlers'
@@ -18,24 +24,32 @@ import * as handlers from './ActionTemplatePage.handlers'
 export default compose(
   withNotifications,
   withRouter,
+  setPropTypes({
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        templateId: PropTypes.string.isRequired
+      }).isRequired
+    }).isRequired
+  }),
+  withProps(({ match: { params: { templateId } } }) => ({
+    templateId
+  })),
   // Set listeners for Firestore
-  firestoreConnect(props => [
+  firestoreConnect(({ templateId }) => [
     {
-      collection: `${firebasePaths.actionTemplates}`,
-      doc: props.params.templateId
+      collection: ACTION_TEMPLATES_PATH,
+      doc: templateId
     }
   ]),
   // map redux state to props
-  connect(({ firestore: { data: { actionTemplates } } }, { params }) => ({
-    template: get(actionTemplates, params.templateId)
+  connect(({ firestore: { data: { actionTemplates } } }, { templateId }) => ({
+    template: get(actionTemplates, templateId)
   })),
   // Show spinner while template is loading
   spinnerWhileLoading(['template']),
   // Render Error page if there is an error loading the action template
   renderIfError(
-    (state, { params: { templateId } }) => [
-      `${firebasePaths.actionTemplates}.${templateId}`
-    ],
+    (state, { templateId }) => [`${ACTION_TEMPLATES_PATH}.${templateId}`],
     TemplateLoadingError
   ),
   withProps(({ template }) => ({ templateExists: !!template })),

@@ -1,8 +1,13 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+import styles from './HomePage.styles'
 
-function HomePage({ homePage, classes }) {
+const useStyles = makeStyles(styles)
+
+function HomePage() {
+  const classes = useStyles()
+
   return (
     <div className={classes.root}>
       <div className={classes.words}>
@@ -16,11 +21,6 @@ function HomePage({ homePage, classes }) {
       </div>
     </div>
   )
-}
-
-HomePage.propTypes = {
-  classes: PropTypes.object, // from enhancer (withStyles)
-  homePage: PropTypes.object // from enhancer (firestoreConnect + connect)
 }
 
 export default HomePage
