@@ -1927,6 +1927,11 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
+"@types/sizzle@2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@types/sizzle/-/sizzle-2.3.2.tgz#a811b8c18e2babab7d542b3365887ae2e4d9de47"
+  integrity sha512-7EJYyKTL7tFR8+gDbB6Wwz/arpGa0Mywk1TJbNzKzHtzbwVmY4HR9WqS5VV7dsBUKQmPNr192jHr/VpBluj/hg==
+
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
@@ -4511,13 +4516,14 @@ cypress-firebase@^0.4.0:
     firebase-tools-extra "0.2.0"
     lodash "^4.17.15"
 
-cypress@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-3.4.1.tgz#ca2e4e9864679da686c6a6189603efd409664c30"
-  integrity sha512-1HBS7t9XXzkt6QHbwfirWYty8vzxNMawGj1yI+Fu6C3/VZJ8UtUngMW6layqwYZzLTZV8tiDpdCNBypn78V4Dg==
+cypress@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-3.6.0.tgz#b7c88c169970aeb74a00182a1e8dc43a355d9eea"
+  integrity sha512-ODhbOrH1XZx0DUoYmJSvOSbEQjycNOpFYe7jOnHkT1+sdsn2+uqwAjZ1x982q3H4R/5iZjpSd50gd/iw2bofzg==
   dependencies:
     "@cypress/listr-verbose-renderer" "0.4.1"
     "@cypress/xvfb" "1.2.4"
+    "@types/sizzle" "2.3.2"
     arch "2.1.1"
     bluebird "3.5.0"
     cachedir "1.3.0"
@@ -4544,6 +4550,7 @@ cypress@^3.4.1:
     request-progress "3.0.0"
     supports-color "5.5.0"
     tmp "0.1.0"
+    untildify "3.0.3"
     url "0.11.0"
     yauzl "2.10.0"
 
@@ -11750,15 +11757,15 @@ react-dnd@^2.5.4:
     lodash "^4.2.0"
     prop-types "^15.5.10"
 
-react-dom@^16.9.0:
-  version "16.9.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.9.0.tgz#5e65527a5e26f22ae3701131bcccaee9fb0d3962"
-  integrity sha512-YFT2rxO9hM70ewk9jq0y6sQk8cL02xm4+IzYBz75CQGlClQQ1Bxq0nhHF6OtSbit+AIahujJgb/CPRibFkMNJQ==
+react-dom@^16.11.0:
+  version "16.11.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.11.0.tgz#7e7c4a5a85a569d565c2462f5d345da2dd849af5"
+  integrity sha512-nrRyIUE1e7j8PaXSPtyRKtz+2y9ubW/ghNgqKFHHAHaeP0fpF5uXR+sq8IMRHC+ZUxw7W9NyCDTBtwWxvkb0iA==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-    scheduler "^0.15.0"
+    scheduler "^0.17.0"
 
 react-dropzone@^4.2.1:
   version "4.3.0"
@@ -11818,10 +11825,10 @@ react-loadable@^5.5.0:
   dependencies:
     prop-types "^15.5.0"
 
-react-redux-firebase@^2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/react-redux-firebase/-/react-redux-firebase-2.4.1.tgz#edb6b84bd3bed2731a17c13d31a56faf4a41d597"
-  integrity sha512-nVQ4B0XoVJqFSObR/Y9I0G0dBda9Ce+vZcIbHcKG8xVK+JbwV8eKjEQjwgm9OT9W6WuGk938rY6/dNjpi1FDZA==
+react-redux-firebase@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/react-redux-firebase/-/react-redux-firebase-2.5.0.tgz#e0f9d99ae160bed5af94c924090261aff280dcbc"
+  integrity sha512-ZKX2jhRtnaaT04I3zQBVErhTZz7feBsvRmR/hoeefu+xC4ln4ZiHDC2UKsQ8iax3C8fDoZrLHAjjUPoMj6Mpaw==
   dependencies:
     hoist-non-react-statics "^3.3.0"
     lodash "^4.17.15"
@@ -11936,10 +11943,10 @@ react-transition-group@^4.0.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react@^16.9.0:
-  version "16.9.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.9.0.tgz#40ba2f9af13bc1a38d75dbf2f4359a5185c4f7aa"
-  integrity sha512-+7LQnFBwkiw+BobzOF6N//BdoNw0ouwmSJTEm9cglOOmsg/TMiFHZLe2sEoN5M7LgJTj9oHH0gxklfnQe66S1w==
+react@^16.11.0:
+  version "16.11.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.11.0.tgz#d294545fe62299ccee83363599bf904e4a07fdbb"
+  integrity sha512-M5Y8yITaLmU0ynd0r1Yvfq98Rmll6q8AxaEe88c8e7LxO8fZ2cNgmFt0aGAS9wzf1Ao32NKXtCl+/tVVtkxq6g==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -12667,10 +12674,10 @@ saxes@^3.1.9:
   dependencies:
     xmlchars "^2.1.1"
 
-scheduler@^0.15.0:
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.15.0.tgz#6bfcf80ff850b280fed4aeecc6513bc0b4f17f8e"
-  integrity sha512-xAefmSfN6jqAa7Kuq7LIJY0bwAPG3xlCj0HMEBQk1lxYiDKZscY2xJ5U/61ZTrYbmNQbXa+gc7czPkVo11tnCg==
+scheduler@^0.17.0:
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.17.0.tgz#7c9c673e4ec781fac853927916d1c426b6f3ddfe"
+  integrity sha512-7rro8Io3tnCPuY4la/NuI5F2yfESpnfZyT6TtkXnSWVkcu0BCDJ+8gk5ozUaFaxpIyNuWAPXrH0yFcSi28fnDA==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -14045,6 +14052,11 @@ unset-value@^1.0.0:
   dependencies:
     has-value "^0.3.1"
     isobject "^3.0.0"
+
+untildify@3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/untildify/-/untildify-3.0.3.tgz#1e7b42b140bcfd922b22e70ca1265bfe3634c7c9"
+  integrity sha512-iSk/J8efr8uPT/Z4eSUywnqyrQU7DSdMfdqK4iWEaUVVmcP5JcnpRqmVMwcwcnmI1ATFNgC5V90u09tBynNFKA==
 
 unzip-response@^2.0.1:
   version "2.0.1"
