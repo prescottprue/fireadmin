@@ -1,15 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import MenuItem from '@material-ui/core/MenuItem'
 import { Highlight } from 'react-instantsearch/dom'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
 
 function SuggestedUser({ hit, onClick }) {
   return (
-    <MenuItem style={{ marginTop: '10px' }} onClick={() => onClick(hit)}>
-      <span className="hit-name">
-        <Highlight attributeName="displayName" hit={hit} />
-      </span>
-    </MenuItem>
+    <ListItem onClick={() => onClick(hit)} style={{ cursor: 'pointer' }}>
+      <ListItemText
+        primary={<Highlight attributeName="displayName" hit={hit} />}
+        // secondary={<Highlight attributeName="email" hit={hit} />}
+      />
+    </ListItem>
   )
 }
 

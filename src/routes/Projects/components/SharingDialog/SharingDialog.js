@@ -30,40 +30,43 @@ function SharingDialog({
 }) {
   const classes = useStyles()
   return (
-    <Dialog open={open} onClose={onRequestClose} className={classes.container}>
+    <Dialog open={open} onClose={onRequestClose}>
       <DialogTitle>Sharing</DialogTitle>
       <DialogContent className={classes.content}>
         {projectCollaborators ? (
-          <div>
+          <div className={classes.current}>
             <Typography variant="h6">Current Collaborators</Typography>
             <List>
-              {map(projectCollaborators, (displayName, i) => {
+              {map(projectCollaborators, (collab, i) => {
                 return (
                   <ListItem key={`Collab-${i}`}>
                     <PersonIcon />
-                    <ListItemText primary={displayName} />
+                    <ListItemText
+                      primary={collab.displayName}
+                      secondary={collab.email}
+                    />
                   </ListItem>
                 )
               })}
             </List>
           </div>
         ) : null}
-        <div className={classes.search}>
-          <UsersSearch
-            onSuggestionClick={selectCollaborator}
-            ignoreSuggestions={map(project.collaborators, (val, key) => key)}
-            resultsTitle="New Collaborators"
-          />
-        </div>
         {selectedCollaborators.length ? (
-          <div>
-            <Typography>New Collaborators</Typography>
+          <div className={classes.current}>
+            <Typography variant="h6">New Collaborators</Typography>
             <UsersList
               users={selectedCollaborators}
               onUserClick={selectCollaborator}
             />
           </div>
         ) : null}
+        <div className={classes.search}>
+          <UsersSearch
+            onSuggestionClick={selectCollaborator}
+            ignoreSuggestions={map(project.collaborators, (val, key) => key)}
+            resultsTitle="User Results (click to add)"
+          />
+        </div>
       </DialogContent>
       <DialogActions>
         <Button color="secondary" onClick={onRequestClose}>

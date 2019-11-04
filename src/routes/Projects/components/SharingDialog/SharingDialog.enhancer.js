@@ -78,9 +78,12 @@ export default compose(
     const collaborators = get(project, 'collaborators')
     if (collaborators) {
       return {
-        projectCollaborators: map(collaborators, (collaborator, collabId) =>
-          get(displayNames, collabId, 'User')
-        )
+        projectCollaborators: map(collaborators, (collaborator, collabId) => {
+          return {
+            displayName: get(displayNames, collabId, 'User'),
+            ...collaborator
+          }
+        })
       }
     }
   })
