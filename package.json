@@ -1,18 +1,19 @@
 {
   "name": "fireadmin",
-  "version": "0.8.10",
+  "version": "0.8.11",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "scripts": {
     "clean": "rimraf dist",
     "size": "size-limit",
-    "build": "react-scripts build",
+    "build": "react-scripts build && cp public/manifest.json dist",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "start:dist": "yarn build && firebase serve --only hosting -p 3000",
     "build:config": "firebase-ci createConfig",
     "build:testConfig": "cypress-firebase createTestEnvFile",
     "build:size": "yarn build && size-limit",
-    "build:size:why": "cross-env SIZE=true yarn size",
+    "build:size:why": "yarn build && yarn size --why",
+    "size:why": " yarn size --why",
     "deploy:functions": "firebase deploy --only functions",
     "deploy": "firebase-ci deploy -s",
     "docs:start": "yarn --cwd docs start",
@@ -68,6 +69,8 @@
     "reselect": "^3.0.1"
   },
   "devDependencies": {
+    "@size-limit/preset-app": "^2.1.6",
+    "@size-limit/webpack": "^2.1.6",
     "babel-eslint": "^10.0.0",
     "cypress": "^3.6.0",
     "cypress-firebase": "^0.4.1",
@@ -89,8 +92,7 @@
     "husky": "^3.0.9",
     "node-sass": "^4.12.0",
     "prettier": "^1.18.2",
-    "react-scripts": "3.1.1",
-    "size-limit": "^2.1.6"
+    "react-scripts": "3.1.1"
   },
   "eslintConfig": {
     "extends": "./eslintrc.js"

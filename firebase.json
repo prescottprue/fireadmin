@@ -12,7 +12,7 @@
   "hosting": [
     {
       "target": "app",
-      "public": "dist",
+      "public": "build",
       "ignore": [
         "**/node_modules/**",
         "firebase.json",
@@ -51,7 +51,6 @@
         "**/.*",
         "Dockerfile",
         "LICENSE",
-        "build",
         "dist",
         "src",
         "test"

@@ -1,16 +1,16 @@
 module.exports = [
   {
-    path: "dist/main.*.js",
-    limit: "1.5 MB",
+    path: "build/static/js/main.*.chunk.js",
+    limit: "30kb",
     name: "Main bundle",
-    webpack: false,
+    webpack: true,
     gzip: false
   },
   {
-    path: "dist/vendor.*.js",
-    limit: "1.2 MB",
+    path: "build/static/js/runtime~main.*.js",
+    limit: "3 kb",
     name: "Vendor bundle",
     gzip: false,
-    webpack: false
+    webpack: true
   }
 ]
