@@ -77,7 +77,6 @@ function PermissionsTableRow({
                   </ListItemIcon>
                   <ListItemText
                     classes={{ primary: classes.primary }}
-                    inset
                     primary="Delete Member"
                   />
                 </MenuItem>
@@ -86,7 +85,7 @@ function PermissionsTableRow({
           </div>
           <div>
             <div className={classes.roleSelect}>
-              <FormControl>
+              <FormControl className={classes.field}>
                 <InputLabel htmlFor="role">Role</InputLabel>
                 <Field
                   name={`${uid}.role`}
@@ -114,7 +113,7 @@ function PermissionsTableRow({
             <Button
               disabled={pristine}
               color="secondary"
-              aria-label="Run Action"
+              aria-label="Cancel"
               onClick={reset}
               style={{ marginRight: '2rem' }}>
               Cancel
@@ -123,7 +122,7 @@ function PermissionsTableRow({
               disabled={pristine}
               color="primary"
               variant="contained"
-              aria-label="Run Action"
+              aria-label="Update Member"
               type="submit">
               Update Member
             </Button>

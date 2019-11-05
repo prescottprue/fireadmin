@@ -46,7 +46,7 @@ function RolesTable({
           orderedRoles.map(({ name, permissions, key }) => (
             <RolesTableRow
               key={key}
-              form={`${PROJECT_ROLES_FORM_NAME}.${key}`}
+              form={`${PROJECT_ROLES_FORM_NAME}-${key}`}
               roleKey={key}
               name={name}
               onSubmit={updateRole}

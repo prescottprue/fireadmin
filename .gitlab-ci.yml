@@ -248,7 +248,7 @@ UI Tests:
       - cypress.env.json
   before_script:
      # Install deps including Cypress binary (skipped in default before_script)
-    - yarn install --check-files --frozen-lockfile --cache-folder .yarn
+    - yarn install --ignore-engines --check-files --frozen-lockfile --cache-folder .yarn
     # Confirm Cypress is ready to use
     - $(npm bin)/cypress verify
   script:

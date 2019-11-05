@@ -13,16 +13,25 @@ const useStyles = makeStyles(styles)
 function DeleteMemberModal({
   onRequestClose,
   removeDisabled,
-  removeAndClose,
+  onDeleteClick,
   name,
+  uid,
   open
 }) {
   const classes = useStyles()
+
+  function removeAndClose() {
+    onRequestClose && onRequestClose()
+    onDeleteClick && onDeleteClick(uid || name)
+  }
+
   return (
     <Dialog onClose={onRequestClose} open={open}>
-      <DialogTitle id="dialog-title">Delete Member</DialogTitle>
+      <DialogTitle id="dialog-title">
+        Delete {uid ? 'Member' : 'Role'}
+      </DialogTitle>
       <DialogContent className={classes.body}>
-        Are you sure you want to remove {name}?
+        Are you sure you want to remove {name} {uid ? `(${uid})` : null}?
       </DialogContent>
       <DialogActions>
         <Button color="secondary" onClick={onRequestClose}>
@@ -42,9 +51,9 @@ function DeleteMemberModal({
 DeleteMemberModal.propTypes = {
   removeDisabled: PropTypes.bool,
   onRequestClose: PropTypes.func.isRequired,
+  onDeleteClick: PropTypes.func.isRequired,
   name: PropTypes.string,
-  open: PropTypes.bool.isRequired, // captured in other
-  removeAndClose: PropTypes.func.isRequired // from enhancer (withHandlers)
+  open: PropTypes.bool.isRequired
 }
 
 export default DeleteMemberModal

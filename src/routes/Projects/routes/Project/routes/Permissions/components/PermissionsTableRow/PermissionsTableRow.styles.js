@@ -2,6 +2,7 @@ export default theme => ({
   root: {
     width: '100%'
   },
+  field: theme.field,
   heading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular
@@ -23,7 +24,7 @@ export default theme => ({
   roleSelect: {
     marginTop: '2.5rem',
     paddingLeft: '2rem',
-    width: '250px'
+    width: '350px'
   },
   content: {
     width: '100%',

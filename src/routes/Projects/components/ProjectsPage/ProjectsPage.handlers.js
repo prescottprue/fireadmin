@@ -1,4 +1,5 @@
-import { LIST_PATH, defaultRoles } from 'constants/paths'
+import { LIST_PATH } from 'constants/paths'
+import defaultRoles from 'constants/defaultRoles'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 
 /**
@@ -60,8 +61,8 @@ export function deleteProject(props) {
  * Handler for navigating to a project
  * @param {Object} props - component props
  */
-export function goToProject({ router }) {
+export function goToProject({ history }) {
   return projectId => {
-    router.push(`${LIST_PATH}/${projectId}`)
+    history.push(`${LIST_PATH}/${projectId}`)
   }
 }

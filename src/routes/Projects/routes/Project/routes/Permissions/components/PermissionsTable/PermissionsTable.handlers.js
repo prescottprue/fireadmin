@@ -52,9 +52,9 @@ export function removeMember({
   projectId
 }) {
   return async uid => {
-    const currentPermissions = get(project, `permissions`)
+    const currentPermissions = get(project, 'permissions')
     const permissions = omit(currentPermissions, [uid])
-    const currentCollaborators = get(project, `collaborators`)
+    const currentCollaborators = get(project, 'collaborators')
     const collaborators = omit(currentCollaborators, [uid])
     const [err] = await to(
       firestore.update(`projects/${projectId}`, {

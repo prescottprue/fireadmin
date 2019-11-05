@@ -6,7 +6,8 @@ import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import { withNotifications } from 'modules/notification'
 import { spinnerWhileLoading } from 'utils/components'
 import { UserIsAuthenticated } from 'utils/router'
-import { LIST_PATH } from 'constants/paths'
+import { getAllCurrentUsersProjects } from 'selectors'
+import * as handlers from './ProjectsPage.handlers'
 
 export default compose(
   // Set component display name (more clear in dev/error tools)
@@ -23,11 +24,17 @@ export default compose(
     {
       collection: 'projects',
       where: ['createdBy', '==', uid]
+    },
+    // Listener for projects current user collaborates on
+    {
+      collection: 'projects',
+      where: [`collaborators.${uid}`, '==', true],
+      storeAs: 'collabProjects'
     }
   ]),
   // Map projects from state to props
-  connect(({ firestore: { ordered } }) => ({
-    projects: ordered.projects
+  connect((state, props) => ({
+    projects: getAllCurrentUsersProjects(state, props)
   })),
   // Show loading spinner while projects and collabProjects are loading
   spinnerWhileLoading(['projects']),
@@ -49,44 +56,5 @@ export default compose(
     }
   ),
   // Add handlers as props
-  withHandlers({
-    addProject: props => newInstance => {
-      const { firestore, uid, showError, showSuccess, toggleDialog } = props
-      if (!uid) {
-        return showError('You must be logged in to create a project')
-      }
-      return firestore
-        .add(
-          { collection: 'projects' },
-          {
-            ...newInstance,
-            createdBy: uid,
-            createdAt: firestore.FieldValue.serverTimestamp()
-          }
-        )
-        .then(() => {
-          toggleDialog()
-          showSuccess('Project added successfully')
-        })
-        .catch(err => {
-          console.error('Error:', err) // eslint-disable-line no-console
-          showError(err.message || 'Could not add project')
-          return Promise.reject(err)
-        })
-    },
-    deleteProject: props => projectId => {
-      const { firestore, showError, showSuccess } = props
-      return firestore
-        .delete({ collection: 'projects', doc: projectId })
-        .then(() => showSuccess('Project deleted successfully'))
-        .catch(err => {
-          console.error('Error:', err) // eslint-disable-line no-console
-          showError(err.message || 'Could not delete project')
-          return Promise.reject(err)
-        })
-    },
-    goToProject: ({ history }) => projectId => {
-      history.push(`${LIST_PATH}/${projectId}`)
-    }
-  })
+  withHandlers(handlers)
 )

@@ -36,4 +36,26 @@ describe('Projects Page', () => {
       cy.get(createSelector('new-project-name')).should('not.exist')
     })
   })
+
+  describe('List of Projects', () => {
+    const collabProjectName = 'collab project'
+    before(() => {
+      const fakeProject = {
+        name: collabProjectName,
+        collaborators: { [Cypress.env('TEST_UID')]: true }
+      }
+      cy.callFirestore('set', 'projects/test-project', fakeProject)
+    })
+
+    after(() => {
+      cy.callFirestore('delete', 'projects/test-project')
+    })
+
+    it.only('shows projects which have the user as a collaborator', () => {
+      // Confirm first project tile has title passed to new project input
+      cy.get(createSelector('project-tile-name'))
+        .first()
+        .should('have.text', collabProjectName)
+    })
+  })
 })

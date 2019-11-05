@@ -14,6 +14,7 @@ function PermissionsTable({
   startDelete,
   handleDeleteClose,
   selectedMemberName,
+  selectedMemberId,
   deleteDialogOpen,
   removeMember
 }) {
@@ -26,6 +27,7 @@ function PermissionsTable({
       <DeleteMemberModal
         open={deleteDialogOpen}
         name={selectedMemberName}
+        uid={selectedMemberId}
         onRequestClose={handleDeleteClose}
         onDeleteClick={removeMember}
       />

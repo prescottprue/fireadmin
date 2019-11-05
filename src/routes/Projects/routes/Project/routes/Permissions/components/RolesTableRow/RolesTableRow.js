@@ -91,7 +91,6 @@ function RolesTableRow({
                     </ListItemIcon>
                     <ListItemText
                       classes={{ primary: classes.primary }}
-                      inset
                       primary="Delete Role"
                     />
                   </MenuItem>
