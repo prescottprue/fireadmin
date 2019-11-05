@@ -16,6 +16,9 @@
       "ignore": [
         "**/node_modules/**",
         "firebase.json",
+        "cypress.env.json",
+        "cypress.json",
+        "serviceAccount.json",
         "*.json",
         "*.md",
         "*.log",
@@ -45,23 +48,28 @@
       "ignore": [
         "**/node_modules/**",
         "firebase.json",
+        "cypress.env.json",
+        "cypress.json",
+        "serviceAccount.json",
         "*.json",
         "*.md",
         "*.log",
         "**/.*",
         "Dockerfile",
         "LICENSE",
-        "dist",
         "src",
         "test"
       ]
     },
     {
       "target": "stageApp",
-      "public": "dist",
+      "public": "build",
       "ignore": [
         "**/node_modules/**",
         "firebase.json",
+        "cypress.env.json",
+        "cypress.json",
+        "serviceAccount.json",
         "*.json",
         "*.md",
         "*.log",
@@ -69,7 +77,6 @@
         "Dockerfile",
         "LICENSE",
         "coverage",
-        "build",
         "docs",
         "src",
         "test"
@@ -100,7 +107,6 @@
         "LICENSE",
         "coverage",
         "build",
-        "dist",
         "src",
         "test"
       ]

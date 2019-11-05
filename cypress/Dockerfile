@@ -1,4 +1,4 @@
-FROM cypress/base:8
+FROM cypress/base:10
 
 ## Build Arguments
 # URL which Cypress will run tests against (with default)
@@ -30,11 +30,11 @@ ENV TERM xterm
 ### Files
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
-COPY package*.json cypress.json serviceAccount.json project.config.js ./
+COPY package*.json cypress.json serviceAccount.json yarn.lock ./
 
 ### Directories
-COPY build/ /build/
-COPY test/e2e/ /test/e2e/
+COPY src/ /src/
+COPY cypress/ /cypress/
 
 # Install Dependencies (only those used to build config files)
 RUN CYPRESS_INSTALL_BINARY=0 npm install cypress-firebase
