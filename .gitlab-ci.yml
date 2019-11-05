@@ -180,12 +180,12 @@ Build Staging:
     expire_in: 2 weeks
     when: always
     paths:
-      - dist
+      - build
   script:
     - yarn build:config # create env specific src/config.js
     - yarn lint:app # confirm there is no lint in app code
     - yarn build # build app bundles
-    - yarn size # confirm that bundles have not grown too much
+    # - yarn size # confirm that bundles have not grown too much
 
 # Deploy Staging Stage
 ## Deploy React App and Firebase Functions
@@ -290,9 +290,9 @@ Build Prod App:
     expire_in: 1 week
     when: always
     paths:
-      - dist
+      - build
   script:
-    - yarn clean # remove existing dist folder
+    - yarn clean # remove existing build folder
     - yarn build:config # create env specific src/config.js
     - yarn build # rebuild bundle with new config
     # Note: Functions are not rebuilt since a bundle with env specific config

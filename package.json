@@ -3,9 +3,9 @@
   "version": "0.8.11",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf build",
     "size": "size-limit",
-    "build": "react-scripts build && cp public/manifest.json dist",
+    "build": "react-scripts build && cp public/manifest.json build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "start:dist": "yarn build && firebase serve --only hosting -p 3000",

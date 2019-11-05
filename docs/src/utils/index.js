@@ -19,8 +19,10 @@ export function getChildChapters(pages) {
  * @param {String} slug - Slug value to check for in path
  */
 export function slugIsInCurrentPath(slug) {
+  /* eslint-disable no-restricted-globals */
   return (
-    typeof window.location !== 'undefined' &&
-    window.location.pathname.includes(withPrefix(slug))
+    typeof location !== 'undefined' &&
+    location.pathname.includes(withPrefix(slug))
   )
+  /* eslint-enable no-restricted-globals */
 }
