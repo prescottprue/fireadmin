@@ -1,0 +1,113 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+      - next
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v1
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+
+      - uses: actions/cache@v1
+        with:
+          path: .yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Run Unit Tests
+        run: npm test
+
+      - name: Archive Build Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: build
+          path: build
+
+deploy:
+  name: Deploy Stage App
+  needs: build
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout Repo
+      uses: actions/checkout@master
+
+    - name: Download Build Artifact
+      uses: actions/download-artifact@master
+      with:
+        name: build
+
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10
+
+    - name: Deploy to Firebase
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      run: |
+        firebase-ci deploy --only hosting:stageApp,hosting:stageDocs,functions,storage,database,firestore # Deploy Cloud Functions and React App (Firebase Hosting)
+
+    - name: Archive Debug Log
+      uses: actions/upload-artifact@master
+      with:
+        name: firebase-debug
+        path: firebase-debug.log
+
+ui-tests:
+  name: UI Tests
+  needs: build
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout Repo
+      uses: actions/checkout@master
+
+    # Install NPM dependencies, cache them correctly
+    # and run all Cypress tests
+    - name: Cypress run
+      uses: cypress-io/github-action@v1
+
+deploy-prod:
+  name: Deploy Prod App
+  needs: build
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout Repo
+      uses: actions/checkout@master
+
+    - name: Download Build Artifact
+      uses: actions/download-artifact@master
+      with:
+        name: build
+
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10
+
+    - name: Deploy to Firebase
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        FIREBASE_CI_PROJECT: prod
+      run: |
+        firebase-ci deploy --only hosting:app,hosting:docs,functions,storage,database,firestore # Deploy Cloud Functions and React App (Firebase Hosting)
+
+    - name: Archive Debug Log
+      uses: actions/upload-artifact@master
+      with:
+        name: firebase-debug
+        path: firebase-debug.log
