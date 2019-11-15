@@ -1,4 +1,4 @@
-name: NPM Package Publish
+name: Verify App
 
 on: [pull_request]
 
@@ -23,11 +23,20 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install Dependencies
+        env:
+          CYPRESS_INSTALL_BINARY: 0 # Skip installing of cypress
         run: |
-          CYPRESS_INSTALL_BINARY=0 yarn install
+          yarn install --frozen-lockfile --cache-folder .yarn
           yarn --cwd functions install --frozen-lockfile --cache-folder .yarn
+
+      - name: Verify App
+        run: |
+          yarn build:config # Create env specific src/config.js
+          yarn lint:app # Check for lint in app code
+          yarn build # Build app bundles
 
       - name: Verify Functions
         run: |
           yarn lint:functions # Check for lint within functions
           yarn --cwd functions test:cov # Run unit tests with coverage
+          yarn --cwd functions build

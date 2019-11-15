@@ -330,5 +330,5 @@ NOTE: `npm run start:dist` is used to start the local server in the example abov
 [license-url]: https://github.com/prescottprue/fireadmin/blob/master/LICENSE
 [code-style-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [code-style-url]: http://standardjs.com/
-[main-workflow-badge]: https://github.com/prescottprue/fireadmin/workflows/main/badge.svg?branch=master
+[main-workflow-badge]: https://github.com/prescottprue/fireadmin/workflows/main/badge.svg?branch=github-actions
 [main-workflow-url]: https://github.com/prescottprue/fireadmin/workflows/main/badge.svg

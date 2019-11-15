@@ -27,7 +27,11 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install Dependencies
-        run: yarn install
+        env:
+          CYPRESS_INSTALL_BINARY: 0 # Skip installing of cypress
+        run: |
+          yarn install --frozen-lockfile --cache-folder .yarn
+          yarn --cwd functions install --frozen-lockfile --cache-folder .yarn
 
       - name: Run Unit Tests
         run: npm test
@@ -37,6 +41,12 @@ jobs:
         with:
           name: build
           path: build
+
+      - name: Archive Build Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: functions-build
+          path: functions/dist
 
 deploy:
   name: Deploy Stage App
@@ -50,6 +60,11 @@ deploy:
       uses: actions/download-artifact@master
       with:
         name: build
+
+    - name: Download Build Artifact
+      uses: actions/download-artifact@master
+      with:
+        name: functions-build
 
     - name: Setup Node
       uses: actions/setup-node@v1
@@ -109,5 +124,5 @@ deploy-prod:
     - name: Archive Debug Log
       uses: actions/upload-artifact@master
       with:
-        name: firebase-debug
+        name: firebase-prod-debug
         path: firebase-debug.log
