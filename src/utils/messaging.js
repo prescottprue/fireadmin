@@ -3,6 +3,7 @@ import firebase from 'firebase/app'
 import messageActions from 'modules/notification'
 import { publicVapidKey } from '../config'
 import 'firebase/messaging'
+import { triggerAnalyticsEvent } from 'utils/analytics'
 
 /**
  * Write FCM messagingToken to user profile
@@ -57,14 +58,26 @@ function getTokenAndWriteToProfile() {
  * Request permission from the user to display display
  * browser notifications
  */
-export function requestPermission() {
+function requestPermission() {
   return firebase
     .messaging()
     .requestPermission()
     .then(getTokenAndWriteToProfile)
     .catch(err => {
-      console.error('Unable to get permission to notify: ', err) // eslint-disable-line no-console
-      return Promise.reject(err)
+      if (
+        err &&
+        (err.code === 'messaging/permission-blocked' ||
+          err.code === 'messaging/permission-default')
+      ) {
+        console.log('Messaging permission blocked') // eslint-disable-line no-console
+        triggerAnalyticsEvent('denyMessagingPermission', {
+          uid: firebase.auth().currentUser.uid
+        })
+        // Do Not throw error to prevent this from going to the error handler
+      } else {
+        console.error('Error requesting permission to notify:', err) // eslint-disable-line no-console
+        return Promise.reject(err)
+      }
     })
 }
 

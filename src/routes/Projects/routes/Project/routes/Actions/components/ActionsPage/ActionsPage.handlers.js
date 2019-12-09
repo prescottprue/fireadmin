@@ -59,9 +59,9 @@ export function runAction(props) {
       const errMsg =
         'A valid template must be selected in order to run an action'
       props.showError(errMsg)
-      Sentry.captureException('An invalid template was selected', {
-        formValues,
-        selectedTemplate: get(props, 'selectedTemplate')
+      triggerAnalyticsEvent('invalidTemplateRunAttempt', {
+        projectId: props.projectId,
+        environmentValues
       })
       throw new Error(errMsg)
     }

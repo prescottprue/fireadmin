@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.8.13",
+  "version": "0.8.14",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "scripts": {
     "clean": "rimraf build",
@@ -41,7 +41,7 @@
   "dependencies": {
     "@material-ui/core": "^4.4.2",
     "@material-ui/icons": "^4.4.1",
-    "@sentry/browser": "^5.6.3",
+    "@sentry/browser": "^5.10.1",
     "classnames": "^2.2.6",
     "date-fns": "^1.29.0",
     "firebase": "^7.2.3",
@@ -54,7 +54,7 @@
     "react-dom": "^16.11.0",
     "react-dropzone": "^4.2.1",
     "react-ga": "^2.3.5",
-    "react-google-button": "^0.5.3",
+    "react-google-button": "^0.7.0",
     "react-instantsearch": "^4.2.0",
     "react-loadable": "^5.5.0",
     "react-redux": "^5.0.7",
@@ -72,8 +72,8 @@
     "@size-limit/preset-app": "^2.1.6",
     "@size-limit/webpack": "^2.1.6",
     "babel-eslint": "^10.0.0",
-    "cypress": "^3.6.0",
-    "cypress-firebase": "^0.4.1",
+    "cypress": "^3.7.0",
+    "cypress-firebase": "^0.5.1",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.5.0",
     "eslint-config-react-app": "^5.0.1",
