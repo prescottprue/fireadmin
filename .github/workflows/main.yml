@@ -15,9 +15,14 @@ jobs:
         with:
           node-version: 10
 
-      - uses: actions/cache@v1
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v1
         with:
-          path: .yarn
+          path: ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
@@ -26,8 +31,8 @@ jobs:
         env:
           CYPRESS_INSTALL_BINARY: 0 # Skip installing of cypress
         run: |
-          yarn install --frozen-lockfile --cache-folder .yarn
-          yarn --cwd functions install --frozen-lockfile --cache-folder .yarn
+          yarn install --frozen-lockfile
+          yarn --cwd functions install --frozen-lockfile
 
       - name: Verify App
         run: |
