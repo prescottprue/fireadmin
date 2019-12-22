@@ -1,4 +1,5 @@
 import React from 'react'
+import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
@@ -12,12 +13,11 @@ const useStyles = makeStyles(styles)
 function ActionsPage({
   selectActionTemplate,
   runAction,
-  runActionDisabled,
+  lockedEnvInUse,
   clearRunner,
   selectedTemplate,
   toggleTemplateEdit,
   templateEditExpanded,
-  templateName,
   submitActionRunner,
   projectId,
   inputsExpanded,
@@ -29,7 +29,9 @@ function ActionsPage({
   rerunAction
 }) {
   const classes = useStyles()
-
+  const templateName = selectedTemplate
+    ? `Template: ${get(selectedTemplate, 'name', '')}`
+    : 'Template'
   return (
     <div className={classes.container}>
       <Typography className={classes.pageHeader}>Actions</Typography>
@@ -37,7 +39,7 @@ function ActionsPage({
       <div className={classes.container}>
         <div className={classes.buttons}>
           <Button
-            disabled={runActionDisabled}
+            disabled={!selectedTemplate || lockedEnvInUse}
             color="primary"
             variant="contained"
             aria-label="Run Action"
@@ -82,6 +84,7 @@ function ActionsPage({
 
 ActionsPage.propTypes = {
   projectId: PropTypes.string.isRequired, // from enhancer (connect)
+  lockedEnvInUse: PropTypes.bool.isRequired, // from enhancer (connect)
   selectedTemplate: PropTypes.object, // from enhancer (withStateHandlers)
   runAction: PropTypes.func.isRequired, // from enhancer (withHandlers)
   rerunAction: PropTypes.func.isRequired, // from enhancer (withHandlers)
@@ -95,9 +98,7 @@ ActionsPage.propTypes = {
   toggleEnvironments: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
   templateEditExpanded: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
   stepsExpanded: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
-  toggleSteps: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  runActionDisabled: PropTypes.bool.isRequired, // from enhancer (withProps)
-  templateName: PropTypes.string.isRequired // from enhancer (withProps)
+  toggleSteps: PropTypes.func.isRequired // from enhancer (withStateHandlers)
 }
 
 export default ActionsPage

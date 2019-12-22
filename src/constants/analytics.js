@@ -17,5 +17,7 @@ export default {
   requestActionRun: 'Request Action Run',
   addCollaborator: 'Add Collaborator',
   removeCollaborator: 'Remove Collaborator',
-  deleteRole: 'Delete Role'
+  deleteRole: 'Delete Role',
+  denyMessagingPermission: 'Deny Messaging Permissions',
+  invalidTemplateRunAttempt: 'Invalid Template Run Attempt'
 }
