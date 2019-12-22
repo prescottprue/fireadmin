@@ -70,10 +70,8 @@ function requestPermission() {
           err.code === 'messaging/permission-default')
       ) {
         console.log('Messaging permission blocked') // eslint-disable-line no-console
-        triggerAnalyticsEvent('denyMessagingPermission', {
-          uid: firebase.auth().currentUser.uid
-        })
-        // Do Not throw error to prevent this from going to the error handler
+        triggerAnalyticsEvent('denyMessagingPermission')
+        // Skip throwing of error to prevent this from going to the error handler
       } else {
         console.error('Error requesting permission to notify:', err) // eslint-disable-line no-console
         return Promise.reject(err)
