@@ -165,13 +165,6 @@ Deploy Docs Production:
 Build Staging:
   stage: build
   image: node:10
-  only:
-    changes:
-      - src/**/* # Run only when app is changed
-      - package.json
-      - .eslintrc.js
-      - firebase.json
-      - .gitlab-ci.yml
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /skip-build/
