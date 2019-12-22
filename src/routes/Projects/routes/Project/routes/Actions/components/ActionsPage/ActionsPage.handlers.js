@@ -1,5 +1,4 @@
 import { get, omit } from 'lodash'
-import * as Sentry from '@sentry/browser'
 import { ACTION_RUNNER_REQUESTS_PATH } from 'constants/firebasePaths'
 import { ACTION_RUNNER_FORM_NAME } from 'constants/formNames'
 import { submit, initialize } from 'redux-form'
