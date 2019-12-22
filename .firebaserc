@@ -15,7 +15,9 @@
           "authDomain": "fireadmin-stage.firebaseapp.com",
           "databaseURL": "https://fireadmin-stage.firebaseio.com",
           "projectId": "fireadmin-stage",
+          "appId": "1:566109548798:web:29831023bb21d00edc35af",
           "storageBucket": "fireadmin-stage.appspot.com",
+          "locationId": "us-central",
           "messagingSenderId": "566109548798"
         },
         "analyticsTrackingId": "${GA_TRACKING_ID}",
@@ -40,6 +42,7 @@
           "projectId": "fireadmin-33d82",
           "storageBucket": "fireadmin-33d82.appspot.com",
           "messagingSenderId": "286913465508",
+          "locationId": "us-central",
           "appId": "1:286913465508:web:c5b9e41062f4a42ef3aa31",
           "measurementId": "G-X0ZR0VFH3Y"
         },
