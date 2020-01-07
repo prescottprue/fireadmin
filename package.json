@@ -41,6 +41,7 @@
   "dependencies": {
     "@material-ui/core": "^4.4.2",
     "@material-ui/icons": "^4.4.1",
+    "@material-ui/lab": "^4.0.0-alpha.39",
     "@sentry/browser": "^5.10.1",
     "classnames": "^2.2.6",
     "date-fns": "^1.29.0",

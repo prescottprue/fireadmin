@@ -8,10 +8,9 @@ const useStyles = makeStyles(styles)
 
 function OutlinedTextField({ input, label, ...other }) {
   const classes = useStyles()
-
   return (
     <TextField
-      id="outlined-helperText"
+      id={`outlined-helperText-${input.name}`}
       label={label}
       className={classes.root}
       margin="normal"

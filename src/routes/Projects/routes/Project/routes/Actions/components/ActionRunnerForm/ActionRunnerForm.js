@@ -21,6 +21,7 @@ import TabContainer from 'components/TabContainer'
 import { databaseURLToProjectName } from 'utils'
 import { ACTION_TEMPLATES_PATH } from 'constants/paths'
 import OutlinedSelect from 'components/OutlinedSelect'
+import FormAutocomplete from 'components/FormAutocomplete'
 import ActionInput from '../ActionInput'
 import StepsViewer from '../StepsViewer'
 import PrivateActionTemplates from '../PrivateActionTemplates'
@@ -125,17 +126,38 @@ function ActionRunnerForm({
                   <Grid item xs={10} md={6} key={`Environment-${index}`}>
                     <Field
                       name={`environmentValues.${index}`}
-                      component={props => <OutlinedSelect {...props} />}
+                      component={props => <FormAutocomplete {...props} />}
                       fullWidth
-                      props={{
-                        label: get(input, `name`) || `Environment ${index + 1}`
-                      }}
+                      label={get(input, `name`) || `Environment ${index + 1}`}
                       inputProps={{
                         name: 'environment',
                         id: 'environment',
                         'data-test': 'environment-select'
-                      }}>
-                      {map(environments, (environment, envIndex) => (
+                      }}
+                      options={environments}
+                      // getOptionLabel={environment =>
+                      //   environment.name || environment.id
+                      // }
+                      renderOption={environment => {
+                        return (
+                          <ListItemText
+                            primary={environment.name || environment.id}
+                            secondary={`${databaseURLToProjectName(
+                              environment.databaseURL
+                            )}${environment.locked ? ' - Locked' : ''}${
+                              environment.readOnly ? ' - Read Only' : ''
+                            }${environment.writeOnly ? ' - Write Only' : ''}`}
+                            data-test={`environment-option-${environment.id}`}
+                          />
+                        )
+                      }}
+                      getOptionDisabled={environment =>
+                        environment.locked ||
+                        (environment.readOnly && index === 1) ||
+                        (environment.writeOnly && index === 0)
+                      }
+                    />
+                    {/* {map(environments, (environment, envIndex) => (
                         <MenuItem
                           key={`Environment-Option-${environment.id}-${envIndex}`}
                           value={environment.id}
@@ -156,7 +178,7 @@ function ActionRunnerForm({
                           />
                         </MenuItem>
                       ))}
-                    </Field>
+                    </Field> */}
                   </Grid>
                 ))
               ) : (
