@@ -22,7 +22,7 @@ const fbConfig = {
   storageBucket: `${projectId}.appspot.com`
 }
 
-window.fbInstance = firebase.initializeApp(fbConfig)
+firebase.initializeApp(fbConfig)
 
 // Custom commands including login, signup, callRtdb, and callFirestore
 attachCustomCommands({ Cypress, cy, firebase })

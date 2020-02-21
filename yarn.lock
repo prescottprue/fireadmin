@@ -4443,6 +4443,13 @@ cross-env@^5.1.3:
     cross-spawn "^6.0.5"
     is-windows "^1.0.0"
 
+cross-env@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-7.0.0.tgz#5a3b2ddce51ec713ea58f2fb79ce22e65b4f5479"
+  integrity sha512-rV6M9ldNgmwP7bx5u6rZsTbYidzwvrwIYZnT08hSGLcQCcggofgFW+sNe7IhA1SRauPS0QuLbbX+wdNtpqE5CQ==
+  dependencies:
+    cross-spawn "^7.0.1"
+
 cross-spawn@6.0.5, cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
@@ -4471,7 +4478,7 @@ cross-spawn@^5.0.1:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-cross-spawn@^7.0.0:
+cross-spawn@^7.0.0, cross-spawn@^7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.1.tgz#0ab56286e0f7c24e153d04cc2aa027e43a9a5d14"
   integrity sha512-u7v4o84SwFpD32Z8IIcPZ6z1/ie24O6RU3RbtL5Y316l3KuHVPx9ItBgWQ6VlfAFnRnTtMUrsQ9MUUTuEZjogg==
@@ -4788,16 +4795,16 @@ cyclist@~0.2.2:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-0.2.2.tgz#1b33792e11e914a2fd6d6ed6447464444e5fa640"
   integrity sha1-GzN5LhHpFKL9bW7WRHRkRE5fpkA=
 
-cypress-firebase@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/cypress-firebase/-/cypress-firebase-0.10.0.tgz#f916ddbd00e3f098d6061cd0149b4e4312c359cb"
-  integrity sha512-HDQ3R6AwUDKihukLJvIs2RlRknYPMEYBn6nQ2+DOVeejKJ8TIirBZU3UMj8B+eZSzcFOsydcT/COacvXarVzIA==
+cypress-firebase@^0.10.2:
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/cypress-firebase/-/cypress-firebase-0.10.2.tgz#dd250f2ac3f23ae0d686252e9d707293f3b38535"
+  integrity sha512-rHFiDa1uzze3LYDLwDW/w+/S1ObqcraC88HvyqpFPb0C22GuG32dBKS9KuCvuoL0QMXKUX9qyddgnFFM1LgRPw==
   dependencies:
     chalk "^3.0.0"
     commander "^4.1.0"
     figures "^3.1.0"
     firebase-admin "^8.9.2"
-    firebase-tools-extra "0.5.0"
+    firebase-tools-extra "0.5.2"
     lodash "^4.17.15"
 
 cypress-plugin-retries@^1.5.2:
@@ -4807,10 +4814,10 @@ cypress-plugin-retries@^1.5.2:
   dependencies:
     chalk "^3.0.0"
 
-cypress@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-4.0.1.tgz#815da77c8e2528501b9af2e8d12cfcaec8c9dde7"
-  integrity sha512-P+cSwc5yE+1hIkWwJzpsiSQthKmzkFeFz2ySejSrJJ6FiXoL8pp0vr1cyWp+75KT4nqL9IYt1GMrHp+mVmvocA==
+cypress@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-4.0.2.tgz#ede194d7bc73fb449f8de553c9e1db4ca15309ef"
+  integrity sha512-WRzxOoSd+TxyXKa7Zi9orz3ii5VW7yhhVYstCU+EpOKfPan9x5Ww2Clucmy4H/W0GHUYAo7GYFZRD33ZCSNBQA==
   dependencies:
     "@cypress/listr-verbose-renderer" "0.4.1"
     "@cypress/xvfb" "1.2.4"
@@ -6616,10 +6623,10 @@ firebase-ci@^0.12.1:
     figures "^3.1.0"
     lodash "^4.17.15"
 
-firebase-tools-extra@0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/firebase-tools-extra/-/firebase-tools-extra-0.5.0.tgz#160cbb59d30eec14c2b2bfd5d83990b8cf3023f2"
-  integrity sha512-DxIIkYRmRiADP1HT+ZrstDZ0MwOWg5jHnDpntyHuPoPxTukgG5ZzRA+ZWIlNO8X0MqXkoCNhBdr5Sle/9KGC4A==
+firebase-tools-extra@0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/firebase-tools-extra/-/firebase-tools-extra-0.5.2.tgz#2f18de24f7eef00e08ad447eb8fc84cebfb52eaa"
+  integrity sha512-fwmXyVeISFwQebf92KxrAa2mdDp+B43fFbdsAwfJr14DZ5I1O5IGPc0w8J09Km8NarQuoiuDBKKDuR1ADgSjag==
   dependencies:
     firebase-admin "^8.9.2"
     lodash "^4.17.15"

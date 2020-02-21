@@ -31,12 +31,10 @@
     "lint:fix": "yarn lint --fix",
     "test": "yarn build:testConfig && cypress run",
     "test:open": "yarn build:testConfig && cypress open",
-    "test:ui": "yarn build:testConfig && cypress run",
-    "test:ui:open": "yarn build:testConfig && cypress open",
-    "test:ui:stage": "yarn test:ui --env envName=stage",
-    "test:ui:open:stage": "yarn test:ui:open --env envName=stage",
-    "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\"",
-    "pre-push": "yarn lint"
+    "emulate": "firebase emulators:start --only firestore,database",
+    "dev": "cross-env REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" REACT_APP_FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn start",
+    "test:emulate": "cross-env FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn test:open",
+    "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\""
   },
   "dependencies": {
     "@material-ui/core": "^4.4.2",
@@ -72,8 +70,9 @@
     "@size-limit/preset-app": "^2.1.6",
     "@size-limit/webpack": "^2.1.6",
     "babel-eslint": "^10.0.0",
-    "cypress": "^4.0.1",
-    "cypress-firebase": "^0.10.0",
+    "cross-env": "^7.0.0",
+    "cypress": "^4.0.2",
+    "cypress-firebase": "^0.10.2",
     "cypress-plugin-retries": "^1.5.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
