@@ -1,0 +1,56 @@
+name: Publish Fireadmin Tools Package
+
+on:
+  push:
+    paths:
+      - 'packages/fireadmin-tools/**'
+    branches:
+      - master
+      - next
+
+jobs:
+  build-docs:
+    name: Build Core Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v1
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache Dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-docs-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install Dependencies
+        run: |
+          yarn --cwd packages/fireadmin-tools install --frozen-lockfile
+
+      - name: Build
+        run: |
+          yarn --cwd packages/fireadmin-tools build
+
+      - name: Verify
+        run: |
+          yarn --cwd packages/fireadmin-tools lint
+
+      - name: Archive Build Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: build-tools
+          path: packages/fireadmin-tools/lib*
+
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm --prefix packages/fireadmin-tools publish $(if [ ${{github.ref}} == 'refs/heads/next' ]; then echo '--tag next';fi;)
+

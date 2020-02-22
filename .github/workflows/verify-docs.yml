@@ -1,0 +1,45 @@
+name: Verify Docs
+
+on: 
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - 'packages/**'
+
+jobs:
+  verify-build:
+    name: Verify + Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-docs-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install Dependencies
+        env:
+          CYPRESS_INSTALL_BINARY: 0 # Skip installing of cypress
+        run: |
+          yarn install --frozen-lockfile
+          yarn --cwd docs install --frozen-lockfile
+
+      - name: Build
+        run: |
+          yarn --cwd docs build
+
+      - name: Verify
+        run: |
+          yarn lint:docs
