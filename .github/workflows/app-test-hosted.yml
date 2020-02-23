@@ -1,79 +1,19 @@
-name: Verify + Build + Test App
+name: Test Hosted App
 
 on: 
   pull_request:
+    branches:
+      - v0.8.15
+      - tests-*
     paths-ignore:
       - 'docs/**'
 
 jobs:
-  verify-build:
-    name: Verify + Build App
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 10
-
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache npm dependencies
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-main-${{ hashFiles('**/yarn.lock') }}
-
-      - name: Install Dependencies
-        env:
-          CYPRESS_INSTALL_BINARY: 0 # Skip installing of cypress
-        run: |
-          yarn install --frozen-lockfile
-          yarn --cwd functions install --frozen-lockfile
-
-      - name: Build App Config
-        run: |
-          yarn build:config
-
-      - name: Verify
-        run: |
-          yarn lint
-
-      - name: Run Unit Tests
-        run: |
-          yarn --cwd functions test:cov
-
-      - name: Build App
-        run: |
-          yarn build
-
-      - name: Build Functions
-        run: |
-          yarn --cwd functions build
-
-      - name: Archive Build Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: build
-          path: build
-
-      - name: Archive Build Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: functions-build
-          path: functions/dist
-
-  # Skipped due to 404 while waiting for localhost:3000 served
-  # by firebase serve (from firebase-tools).
-  # TODO: Uncommnet to try different hosting options
   ui-tests:
-    name: UI Test Emulated App
+    name: UI Test Hosted App
     needs: verify-build
     runs-on: ubuntu-16.04
+    if: github.ref == 'refs/heads/stage'
     # strategy:
     #   matrix:
     #     # Run multiple copies of the current job in parallel
@@ -136,16 +76,6 @@ jobs:
           name: test-config
           path: cypress.env.json
 
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: build
-  
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: functions-build
-
       - name: Set Emulator Settings
         id: emulator-settings
         run: |
@@ -167,10 +97,6 @@ jobs:
           record: true
           headless: true
           group: 'UI Tests'
-          start: yarn all:dev
-          wait-on: http://localhost:3000
-          # wait for 4 minutes for the server to respond
-          wait-on-timeout: 240
         env:
           # TODO: Look into if this can be moved to an npm script
           TZ: America/Los_Angeles
@@ -181,3 +107,5 @@ jobs:
           GITHUB_REF: ${{ github.ref }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_PROJECT: fireadmin-stage
+          FIREBASE_PROJECT_ID: fireadmin-stage
+          CYPRESS_baseUrl: https://fireadmin-stage.firebaseapp.com
