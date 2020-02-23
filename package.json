@@ -8,14 +8,13 @@
     "build": "react-scripts build && cp public/manifest.json build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
-    "start:dist": "yarn build && firebase serve --only hosting -p 3000",
+    "start:dist": "yarn build && yarn serve",
+    "serve": "firebase serve --only hosting -p 3000",
     "build:config": "firebase-ci createConfig",
     "build:testConfig": "cypress-firebase createTestEnvFile",
     "build:size": "yarn build && size-limit",
     "build:size:why": "yarn build && yarn size --why",
     "size:why": " yarn size --why",
-    "deploy:functions": "firebase deploy --only functions",
-    "deploy": "firebase-ci deploy -s",
     "docs:start": "yarn --cwd docs start",
     "docs:build": "yarn --cwd docs build",
     "functions:start": "yarn --cwd functions start",
@@ -31,12 +30,7 @@
     "lint:fix": "yarn lint --fix",
     "test": "yarn build:testConfig && cypress run",
     "test:open": "yarn build:testConfig && cypress open",
-    "test:ui": "yarn build:testConfig && cypress run",
-    "test:ui:open": "yarn build:testConfig && cypress open",
-    "test:ui:stage": "yarn test:ui --env envName=stage",
-    "test:ui:open:stage": "yarn test:ui:open --env envName=stage",
-    "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\"",
-    "pre-push": "yarn lint"
+    "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\""
   },
   "dependencies": {
     "@material-ui/core": "^4.4.2",
@@ -111,7 +105,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "yarn lint"
+      "pre-commit": "yarn lint:fix"
     }
   }
 }

@@ -1,0 +1,88 @@
+name: Deploy
+
+on:
+  push:
+    paths-ignore:
+      - 'docs/**'
+    branches:
+      - master
+      - stage
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v1
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install Dependencies
+        env:
+          CYPRESS_INSTALL_BINARY: 0 # Skip installing of cypress
+        run: |
+          yarn install --frozen-lockfile
+          yarn --cwd functions install --frozen-lockfile
+
+      - name: Build App Config
+        run: |
+          yarn build:config
+
+      - name: Verify
+        run: |
+          yarn lint
+
+      - name: Run Unit Tests
+        run: |
+          yarn --cwd functions test:cov
+
+      - name: Build App
+        run: |
+          yarn build
+
+      - name: Build Functions
+        run: |
+          yarn --cwd functions build
+
+      - name: Archive Build Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: app-build
+          path: build
+
+      - name: Archive Build Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: functions-build
+          path: functions/dist
+
+      - name: Deploy to Firebase
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_REF: ${{ github.ref }}
+        run: |
+          export GIT_BRANCH=${GITHUB_REF##*/}
+          export FIREBASE_TARGETS=hosting:app$(if [ "$GIT_BRANCH" = "stage" ]; then echo "Stage"; fi;),functions,storage,database,firestore
+          echo "Firebase targets $FIREBASE_TARGETS"
+          firebase-ci deploy --only $FIREBASE_TARGETS
+
+      - name: Archive Debug Log
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: firebase-debug
+          path: firebase-debug.log
