@@ -87,7 +87,7 @@ jobs:
 
   ui-tests:
     name: UI Test Hosted App
-    needs: verify-build
+    needs: build
     runs-on: ubuntu-16.04
     if: github.ref == 'refs/heads/stage'
     # strategy:
@@ -183,4 +183,5 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_PROJECT: fireadmin-stage
           FIREBASE_PROJECT_ID: fireadmin-stage
+          SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
           CYPRESS_baseUrl: https://fireadmin-stage.firebaseapp.com

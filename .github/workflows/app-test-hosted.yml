@@ -13,10 +13,10 @@ jobs:
   ui-tests:
     name: UI Test Hosted App
     runs-on: ubuntu-16.04
-    # strategy:
-    #   matrix:
-    #     # Run multiple copies of the current job in parallel
-    #     containers: [1, 2, 3]
+    strategy:
+      matrix:
+        # Run multiple copies of the current job in parallel
+        containers: [1, 2, 3]
     steps:
       - name: Setup Node
         uses: actions/setup-node@v1
@@ -91,7 +91,7 @@ jobs:
           install: false
           cache-key: ${{ runner.os }}-verify-cypress-${{ hashFiles('**/yarn.lock') }}
           browser: chrome
-          # parallel: true
+          parallel: true
           record: true
           headless: true
           group: 'UI Tests'
@@ -106,4 +106,5 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_PROJECT: fireadmin-stage
           FIREBASE_PROJECT_ID: fireadmin-stage
+          SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
           CYPRESS_baseUrl: https://fireadmin-stage.firebaseapp.com

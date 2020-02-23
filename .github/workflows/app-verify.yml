@@ -181,4 +181,5 @@ jobs:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_REF: ${{ github.ref }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
           FIREBASE_PROJECT: fireadmin-stage
