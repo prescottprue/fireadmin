@@ -31,8 +31,8 @@ service cloud.firestore {
       allow read: if isOwnerOrPublic(resource);
       allow write: if isOwner(resource);
       match /{allChildren=**} {
-        allow read: if isOwnerOrPublic(get(/databases/$(database)/documents/actionTemplates/$(projectId)));
-        allow write: if isOwnerOrPublic(get(/databases/$(database)/documents/actionTemplates/$(projectId)));
+        allow read: if isOwnerOrPublic(get(/databases/$(database)/documents/actionTemplates/$(templateId)));
+        allow write: if isOwnerOrPublic(get(/databases/$(database)/documents/actionTemplates/$(templateId)));
       }
     }
   }

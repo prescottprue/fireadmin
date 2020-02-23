@@ -8,14 +8,13 @@
     "build": "react-scripts build && cp public/manifest.json build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
-    "start:dist": "yarn build && firebase serve --only hosting -p 3000",
+    "start:dist": "yarn build && yarn serve",
+    "serve": "firebase serve --only hosting -p 3000",
     "build:config": "firebase-ci createConfig",
     "build:testConfig": "cypress-firebase createTestEnvFile",
     "build:size": "yarn build && size-limit",
     "build:size:why": "yarn build && yarn size --why",
     "size:why": " yarn size --why",
-    "deploy:functions": "firebase deploy --only functions",
-    "deploy": "firebase-ci deploy -s",
     "docs:start": "yarn --cwd docs start",
     "docs:build": "yarn --cwd docs build",
     "functions:start": "yarn --cwd functions start",
@@ -87,9 +86,10 @@
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.18.3",
     "eslint-plugin-react-hooks": "^2.3.0",
-    "firebase-ci": "^0.12.1",
+    "firebase-ci": "^0.12.2",
     "firebase-tools": "^7.13.0",
     "husky": "^4.2.3",
+    "lint-staged": "^10.0.7",
     "prettier": "^1.18.2",
     "react-scripts": "3.1.1"
   },
@@ -111,7 +111,12 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "yarn lint"
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.{js}": [
+      "eslint --fix"
+    ]
   }
 }
