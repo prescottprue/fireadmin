@@ -12,6 +12,7 @@
     "serve": "firebase serve --only hosting:stageApp,hosting:docs -p 3000",
     "serve:dev": "cross-env FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn serve",
     "serve:emulate": "concurrently -c yellow,green npm:emulate \"sleep 7 && yarn serve:dev\"",
+    "serve:emulate:ci": "concurrently -c yellow,green npm:emulate \"sleep 7 && yarn serve:dev --project fireadmin-stage\"",
     "build:config": "firebase-ci createConfig",
     "build:testConfig": "cypress-firebase createTestEnvFile",
     "build:size": "yarn build && size-limit",

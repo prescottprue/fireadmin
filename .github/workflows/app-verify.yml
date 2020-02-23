@@ -164,7 +164,7 @@ jobs:
           record: true
           headless: true
           group: 'UI Tests'
-          start: concurrently -c yellow,green npm:emulate \"sleep 7 && yarn serve:dev --project $FIREBASE_PROJECT\"
+          start: yarn serve:emulate:ci
           wait-on: http://localhost:3000
           # wait for 4 minutes for the server to respond
           wait-on-timeout: 240
