@@ -71,6 +71,10 @@ jobs:
     name: UI Tests
     needs: verify-build
     runs-on: ubuntu-16.04
+    # strategy:
+    #   matrix:
+    #     # Run multiple copies of the current job in parallel
+    #     containers: [1, 2, 3]
     steps:
       - name: Setup Node
         uses: actions/setup-node@v1
@@ -139,6 +143,12 @@ jobs:
         with:
           name: functions-build
 
+      - name: Set Emulator Settings
+        id: emulator-settings
+        run: |
+          echo "::set-env name=FIREBASE_DATABASE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.database.port)"
+          echo "::set-env name=FIRESTORE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.firestore.port)"
+
       # Cypress action manages installing/caching npm dependencies and Cypress binary.
       # Because of "record" and "parallel" parameters these containers will load
       # balance all found tests among themselves. The step tests a version of the app
@@ -150,10 +160,11 @@ jobs:
           install: false
           cache-key: ${{ runner.os }}-verify-cypress-${{ hashFiles('**/yarn.lock') }}
           browser: chrome
+          # parallel: true
           record: true
           headless: true
           group: 'UI Tests'
-          start: yarn serve:emulate --project $FIREBASE_PROJECT
+          start: $(yarn bin)/concurrently -c yellow,green npm:emulate "sleep 7 && yarn serve:dev --project $FIREBASE_PROJECT"
           wait-on: http://localhost:3000
           # wait for 4 minutes for the server to respond
           wait-on-timeout: 240
@@ -167,5 +178,3 @@ jobs:
           GITHUB_REF: ${{ github.ref }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_PROJECT: fireadmin-stage
-          TEST_UID:  ${{ secrets.TEST_UID }}
-          SERVICE_ACCOUNT:  ${{ secrets.SERVICE_ACCOUNT }}
