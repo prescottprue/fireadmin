@@ -153,7 +153,7 @@ jobs:
           record: true
           headless: true
           group: 'UI Tests'
-          start: yarn emulate && sleep 5 && yarn serve:dev --project $FIREBASE_PROJECT
+          start: yarn serve:emulate --project $FIREBASE_PROJECT
           wait-on: http://localhost:3000
           # wait for 4 minutes for the server to respond
           wait-on-timeout: 240
@@ -161,7 +161,11 @@ jobs:
           # TODO: Look into if this can be moved to an npm script
           TZ: America/Los_Angeles
           CI: true
+          # Pass the Dashboard record key as an environment variable
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_KEY }}
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_REF: ${{ github.ref }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_PROJECT: fireadmin-stage
+          TEST_UID:  ${{ secrets.TEST_UID }}
+          SERVICE_ACCOUNT:  ${{ secrets.SERVICE_ACCOUNT }}
