@@ -31,7 +31,6 @@ yo react-firebase:component
 ##### Patterns
 
 * Should be stateless \(just a function instead of a Class\)
-* Should import styles from \`./SomeComponent.scss\` \(scss file named to match component\)
 
 ##### Example
 
@@ -39,7 +38,6 @@ yo react-firebase:component
 
 ```js
 import React, { PropTypes } from 'react';
-import classes from './SomeComponent.scss';
 
 function SomeComponent({ someProp }) {
   return (
@@ -69,7 +67,6 @@ These are the only authorized files, anything that doesn't have a clear home sho
 |	`Component.js`	|	Functional React Component	|
 |	`Component.lifecycle.js`	|	All lifecycle methods	|
 |	`Component.readme.md`	|		|
-|	`Component.scss`	|	Styles	|
 |	`Component.selectors.js`	|	Reselect (re-reselect?) selectors - pure javascript - no react	|
 |	`Component.spec.js`	|	Unit tests per component	|
 |	`Component.stateHandlers.js`	|	Internal component state	|
@@ -134,8 +131,6 @@ This allows Webpack to handle chunking of asset files, which means in the case o
 ##### Location
 
 Global/Shared: `src/styles`
-
-Component: `src/components/SomeComponent/SomeComponent.scss`
 
 ##### Patterns
 
