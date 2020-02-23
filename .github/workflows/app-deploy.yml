@@ -58,39 +58,16 @@ jobs:
           yarn --cwd functions build
 
       - name: Archive Build Artifact
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v1
         with:
-          name: build
+          name: app-build
           path: build
 
       - name: Archive Build Artifact
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v1
         with:
           name: functions-build
           path: functions/dist
-
-  deploy:
-    name: Deploy App
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: build
-
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: functions-build
-
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 10
 
       - name: Deploy to Firebase
         env:
@@ -100,10 +77,12 @@ jobs:
         run: |
           export GIT_BRANCH=${GITHUB_REF##*/}
           export FIREBASE_TARGETS=hosting:app$(if [ "$GIT_BRANCH" = "stage" ]; then echo "Stage"; fi;),functions,storage,database,firestore
+          echo "Firebase targets $FIREBASE_TARGETS"
           firebase-ci deploy --only $FIREBASE_TARGETS
 
       - name: Archive Debug Log
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v1
+        if: failure()
         with:
           name: firebase-debug
           path: firebase-debug.log

@@ -2,12 +2,12 @@ name: Verify Docs
 
 on: 
   pull_request:
-    paths-ignore:
+    paths:
       - 'docs/**'
 
 jobs:
   verify-build:
-    name: Verify + Build
+    name: Verify + Build Docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -32,13 +32,13 @@ jobs:
         env:
           CYPRESS_INSTALL_BINARY: 0 # Skip installing of cypress
         run: |
-          yarn install --frozen-lockfile
           yarn --cwd docs install --frozen-lockfile
+
+      - name: Verify
+        run: |
+          yarn lint:docs
 
       - name: Build
         run: |
           yarn --cwd docs build
 
-      - name: Verify
-        run: |
-          yarn lint:docs

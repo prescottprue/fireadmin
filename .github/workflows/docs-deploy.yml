@@ -9,12 +9,12 @@ on:
       - stage
 
 jobs:
-  build-docs:
-    name: Build Docs
+  build-deploy:
+    name: Verify + Build + Deploy Docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Setup Node
         uses: actions/setup-node@v1
@@ -38,56 +38,19 @@ jobs:
           yarn install --frozen-lockfile
           yarn --cwd docs install --frozen-lockfile
 
-      - name: Build
-        run: |
-          yarn --cwd docs build
-
       - name: Verify
         run: |
           yarn lint:docs
+
+      - name: Build
+        run: |
+          yarn --cwd docs build
 
       - name: Archive Build Artifact
         uses: actions/upload-artifact@master
         with:
           name: docs
           path: docs/public
-
-      # TODO: Look into saving docs/.cache for faster builds
-
-  deploy:
-    name: Deploy Docs
-    needs: build-docs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: docs
-
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 10
-
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache Dependencies
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-docs-${{ hashFiles('**/yarn.lock') }}
-
-      - name: Install Dependencies
-        env:
-          CYPRESS_INSTALL_BINARY: 0 # Skip installing of cypress
-        run: |
-          yarn install --frozen-lockfile
-          yarn --cwd docs install --frozen-lockfile
 
       - name: Deploy to Firebase
         env:
@@ -98,7 +61,10 @@ jobs:
           firebase-ci deploy --only hosting:docs
 
       - name: Archive Debug Log
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v1
+        if: failure()
         with:
           name: firebase-debug
           path: firebase-debug.log
+
+      # TODO: Look into saving docs/.cache for faster builds

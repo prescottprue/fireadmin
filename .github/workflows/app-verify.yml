@@ -7,7 +7,7 @@ on:
 
 jobs:
   verify-build:
-    name: Verify + Build
+    name: Verify + Build App
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
