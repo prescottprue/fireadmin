@@ -58,7 +58,7 @@ jobs:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_REF: ${{ github.ref }}
         run: |
-          firebase-ci deploy --only hosting:docs
+          $(yarn bin)/firebase-ci deploy --only hosting:docs
 
       - name: Archive Debug Log
         uses: actions/upload-artifact@v1
