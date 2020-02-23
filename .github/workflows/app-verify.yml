@@ -66,102 +66,102 @@ jobs:
         with:
           name: functions-build
           path: functions/dist
-  # TODO: Uncomment once test changes are merged
-  # ui-tests:
-  #   name: UI Tests
-  #   needs: verify-build
-  #   runs-on: ubuntu-16.04
-  #   steps:
-  #     - name: Setup Node
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: 10
 
-  #     - name: Checkout Repo
-  #       uses: actions/checkout@v2
+  ui-tests:
+    name: UI Tests
+    needs: verify-build
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
 
-  #     - name: Get yarn cache
-  #       id: yarn-cache
-  #       run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Checkout Repo
+        uses: actions/checkout@v2
 
-  #     - name: Cache npm dependencies
-  #       uses: actions/cache@v1
-  #       with:
-  #         path: ${{ steps.yarn-cache.outputs.dir }}
-  #         key: ${{ runner.os }}-verify-${{ hashFiles('**/yarn.lock') }}
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-  #     - name: Cache Cypress Binary
-  #       uses: actions/cache@v1
-  #       with:
-  #         path: ~/.cache
-  #         key: ${{ runner.os }}-verify-cypress-${{ hashFiles('**/yarn.lock') }}
+      - name: Cache npm dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-verify-${{ hashFiles('**/yarn.lock') }}
 
-  #     # Install is run separately from test so that dependencies are available
-  #     # for other steps like Get Project Info and build test environment config
-  #     - name: Install Dependencies
-  #       run: |
-  #         yarn install --frozen-lockfile
-  #         $(yarn bin)/cypress verify
+      - name: Cache Cypress Binary
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache
+          key: ${{ runner.os }}-verify-cypress-${{ hashFiles('**/yarn.lock') }}
 
-  #     - name: Build Test Environment Config
-  #       id: test-config
-  #       env:
-  #         # UID and Service Account for each reserved environment
-  #         TEST_UID: ${{ secrets.TEST_UID }}
-  #         SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
-  #         GITHUB_HEAD_REF: ${{ github.head_ref }}
-  #         GITHUB_REF: ${{ github.ref }}
-  #       # Create environment specific cypress.env.json file based on
-  #       # current branch and environment variables. FIREBASE_PROJECT is
-  #       # set to point to a different project for config than hosting.
-  #       # NOTE: Hardcoded environment can be passed from variable like so:
-  #       # $(npm bin)/cypress-firebase createTestEnvFile $TEST_ENV
-  #       # NOTE: Hosting project is set to default to master if environment matching
-  #       # branch name is not found. To change this behavior, update TEST_UID and SERVICE_ACCOUNT
-  #       # environment variables to point to the associated environment and set the default for
-  #       # the hosting project by using the default option (i.e. $(npm bin)/firebase-ci project -d test))
-  #       run: |
-  #         $(yarn bin)/cypress-firebase createTestEnvFile
+      # Install is run separately from test so that dependencies are available
+      # for other steps like Get Project Info and build test environment config
+      - name: Install Dependencies
+        run: |
+          yarn install --frozen-lockfile
+          $(yarn bin)/cypress verify
 
-  #     - name: Upload Test Config
-  #       uses: actions/upload-artifact@v1
-  #       with:
-  #         name: test-config
-  #         path: cypress.env.json
+      - name: Build Test Environment Config
+        id: test-config
+        env:
+          # UID and Service Account for each reserved environment
+          TEST_UID: ${{ secrets.TEST_UID }}
+          SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_REF: ${{ github.ref }}
+        # Create environment specific cypress.env.json file based on
+        # current branch and environment variables. FIREBASE_PROJECT is
+        # set to point to a different project for config than hosting.
+        # NOTE: Hardcoded environment can be passed from variable like so:
+        # $(npm bin)/cypress-firebase createTestEnvFile $TEST_ENV
+        # NOTE: Hosting project is set to default to master if environment matching
+        # branch name is not found. To change this behavior, update TEST_UID and SERVICE_ACCOUNT
+        # environment variables to point to the associated environment and set the default for
+        # the hosting project by using the default option (i.e. $(npm bin)/firebase-ci project -d test))
+        run: |
+          $(yarn bin)/cypress-firebase createTestEnvFile
 
-  #     - name: Download Build Artifact
-  #       uses: actions/download-artifact@v1
-  #       with:
-  #         name: build
+      - name: Upload Test Config
+        uses: actions/upload-artifact@v1
+        with:
+          name: test-config
+          path: cypress.env.json
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: build
   
-  #     - name: Download Build Artifact
-  #       uses: actions/download-artifact@v1
-  #       with:
-  #         name: functions-build
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: functions-build
 
-  #     # Cypress action manages installing/caching npm dependencies and Cypress binary.
-  #     # Because of "record" and "parallel" parameters these containers will load
-  #     # balance all found tests among themselves. The step tests a version of the app
-  #     # which is running locally in the container on port 3000
-  #     - name: Cypress Run
-  #       uses: cypress-io/github-action@v1
-  #       with:
-  #         # we have already installed all dependencies above
-  #         install: false
-  #         cache-key: ${{ runner.os }}-tests-${{ hashFiles('**/yarn.lock') }}
-  #         browser: chrome
-  #         record: true
-  #         headless: true
-  #         group: 'UI Tests'
-  #         start: yarn serve --project $FIREBASE_PROJECT
-  #         wait-on: http://localhost:3000
-  #         # wait for 4 minutes for the server to respond
-  #         wait-on-timeout: 240
-  #       env:
-  #         # TODO: Look into if this can be moved to an npm script
-  #         TZ: America/Los_Angeles
-  #         CI: true
-  #         GITHUB_HEAD_REF: ${{ github.head_ref }}
-  #         GITHUB_REF: ${{ github.ref }}
-  #         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-  #         FIREBASE_PROJECT: fireadmin-stage
+      # Cypress action manages installing/caching npm dependencies and Cypress binary.
+      # Because of "record" and "parallel" parameters these containers will load
+      # balance all found tests among themselves. The step tests a version of the app
+      # which is running locally in the container on port 3000
+      - name: Cypress Run
+        uses: cypress-io/github-action@v1
+        with:
+          # we have already installed all dependencies above
+          install: false
+          cache-key: ${{ runner.os }}-verify-cypress-${{ hashFiles('**/yarn.lock') }}
+          browser: chrome
+          record: true
+          headless: true
+          group: 'UI Tests'
+          start: yarn emulate && sleep 5 && yarn serve:dev --project $FIREBASE_PROJECT
+          wait-on: http://localhost:3000
+          # wait for 4 minutes for the server to respond
+          wait-on-timeout: 240
+        env:
+          # TODO: Look into if this can be moved to an npm script
+          TZ: America/Los_Angeles
+          CI: true
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_REF: ${{ github.ref }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_PROJECT: fireadmin-stage
