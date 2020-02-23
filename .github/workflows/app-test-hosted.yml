@@ -3,11 +3,12 @@ name: Test Hosted App
 on: 
   pull_request:
     branches:
-      - v0.8.15
       - tests-*
     paths-ignore:
       - 'docs/**'
-
+    push:
+      branches:
+        - v0.8.15
 jobs:
   ui-tests:
     name: UI Test Hosted App
