@@ -43,7 +43,7 @@
       ]
     },
     {
-      "target": "stageApp",
+      "target": "appStage",
       "public": "build",
       "ignore": [
         "**/node_modules/**",
