@@ -110,6 +110,13 @@ jobs:
           yarn install --frozen-lockfile
           $(yarn bin)/cypress verify
 
+      - name: Set Emulator Settings
+        id: emulator-settings
+        run: |
+          echo "::set-env name=FIREBASE_DATABASE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.database.port)"
+          echo "::set-env name=FIRESTORE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.firestore.port)"
+          echo "::set-env name=FIREBASE_API_KEY::$(cat .firebaserc | jq .ci.createConfig.stage.firebase.apiKey)"
+
       - name: Build Test Environment Config
         id: test-config
         env:
@@ -145,12 +152,6 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: functions-build
-
-      - name: Set Emulator Settings
-        id: emulator-settings
-        run: |
-          echo "::set-env name=FIREBASE_DATABASE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.database.port)"
-          echo "::set-env name=FIRESTORE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.firestore.port)"
 
       # Cypress action manages installing/caching npm dependencies and Cypress binary.
       # Because of "record" and "parallel" parameters these containers will load
