@@ -4,7 +4,6 @@ on:
   pull_request:
     paths-ignore:
       - 'docs/**'
-      - 'packages/**'
 
 jobs:
   verify-build:
@@ -36,16 +35,24 @@ jobs:
           yarn install --frozen-lockfile
           yarn --cwd functions install --frozen-lockfile
 
-      - name: Verify App
+      - name: Build App Config
         run: |
-          yarn build:config # Create env specific src/config.js
-          yarn lint:app # Check for lint in app code
-          yarn build # Build app bundles
+          yarn build:config
 
-      - name: Verify + Unit Test Functions
+      - name: Verify
         run: |
-          yarn lint:functions # Check for lint within functions
-          yarn --cwd functions test:cov # Run unit tests with coverage
+          yarn lint
+
+      - name: Run Unit Tests
+        run: |
+          yarn --cwd functions test:cov
+
+      - name: Build App
+        run: |
+          yarn build
+
+      - name: Build Functions
+        run: |
           yarn --cwd functions build
 
       - name: Archive Build Artifact

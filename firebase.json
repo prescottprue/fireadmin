@@ -43,25 +43,6 @@
       ]
     },
     {
-      "target": "docs",
-      "public": "docs/public",
-      "ignore": [
-        "**/node_modules/**",
-        "firebase.json",
-        "cypress.env.json",
-        "cypress.json",
-        "serviceAccount.json",
-        "*.json",
-        "*.md",
-        "*.log",
-        "**/.*",
-        "Dockerfile",
-        "LICENSE",
-        "src",
-        "test"
-      ]
-    },
-    {
       "target": "stageApp",
       "public": "build",
       "ignore": [
@@ -94,21 +75,25 @@
       ]
     },
     {
-      "target": "stageDocs",
+      "target": "docs",
       "public": "docs/public",
       "ignore": [
-        "**/node_modules/**",
-        "firebase.json",
         "*.json",
         "*.md",
         "*.log",
         "**/.*",
+        "**/node_modules/**",
+        "firebase.json",
+        "cypress.env.json",
+        "cypress.json",
+        "cypress",
+        "serviceAccount.json",
+        "jsconfig.json",
         "Dockerfile",
         "LICENSE",
-        "coverage",
+        "scripts",
         "build",
-        "src",
-        "test"
+        "src"
       ]
     }
   ],
@@ -118,7 +103,6 @@
     ],
     "ignore": [
       "**/node_modules/**",
-      ".runtimeconfig.json",
       "jsconfig.json",
       "*.md",
       "*.log",
