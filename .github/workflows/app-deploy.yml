@@ -91,6 +91,7 @@ jobs:
     runs-on: ubuntu-16.04
     if: github.ref == 'refs/heads/stage'
     # strategy:
+    #   fail-fast: false
     #   matrix:
     #     # Run multiple copies of the current job in parallel
     #     containers: [1, 2, 3]
@@ -125,11 +126,6 @@ jobs:
         run: |
           yarn install --frozen-lockfile
           $(yarn bin)/cypress verify
-
-      - name: Set Test Settings
-        id: emulator-settings
-        run: |
-          echo "::set-env name=FIREBASE_API_KEY::$(cat .firebaserc | jq .ci.createConfig.stage.firebase.apiKey)"
   
       - name: Build Test Environment Config
         id: test-config

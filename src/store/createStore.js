@@ -21,6 +21,8 @@ export default (initialState = {}) => {
   // ======================================================
   window.version = version
 
+  window.firebase = firebase
+
   // ======================================================
   // Middleware Configuration
   // ======================================================
@@ -65,19 +67,19 @@ export default (initialState = {}) => {
 
   // Use RTDB emulator
   if (process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST) {
-    console.log('Using RTDB emulator') // eslint-disable-line
-    config.databaseURL = `http://${process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST}?ns=${config.firebase.projectId}`
+    config.firebase.databaseURL = `http://${process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST}?ns=${config.firebase.projectId}`
+    console.log('Using RTDB emulator', config.firebase) // eslint-disable-line
   }
 
   firebase.initializeApp(config.firebase)
 
   // Use Firestore emulator
   if (process.env.REACT_APP_FIRESTORE_EMULATOR_HOST) {
-    console.log('Using Firestore emulator') // eslint-disable-line
     const firestoreSettings = {
       host: process.env.REACT_APP_FIRESTORE_EMULATOR_HOST,
       ssl: false
     }
+    console.log('Using Firestore emulator', firestoreSettings.host) // eslint-disable-line
 
     if (window.Cypress) {
       // Needed for Firestore support in Cypress (see https://github.com/cypress-io/cypress/issues/6350)
@@ -102,8 +104,8 @@ export default (initialState = {}) => {
     makeRootReducer(),
     initialState,
     compose(
-      reactReduxFirebase(window.fbInstance || firebase, combinedConfig),
-      reduxFirestore(window.fbInstance || firebase),
+      reactReduxFirebase(firebase, combinedConfig),
+      reduxFirestore(firebase),
       applyMiddleware(...middleware),
       ...enhancers
     )

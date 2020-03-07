@@ -14,6 +14,7 @@ jobs:
     name: UI Test Hosted App
     runs-on: ubuntu-16.04
     strategy:
+      fail-fast: false
       matrix:
         # Run multiple copies of the current job in parallel
         containers: [1, 2, 3]
@@ -74,11 +75,6 @@ jobs:
         with:
           name: test-config
           path: cypress.env.json
-
-      - name: Set Test Settings
-        id: emulator-settings
-        run: |
-          echo "::set-env name=FIREBASE_API_KEY::$(cat .firebaserc | jq .ci.createConfig.stage.firebase.apiKey)"
 
       # Cypress action manages installing/caching npm dependencies and Cypress binary.
       # Because of "record" and "parallel" parameters these containers will load

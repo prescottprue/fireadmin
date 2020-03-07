@@ -12,7 +12,7 @@
     "emulate": "firebase emulators:start --only firestore,database",
     "dev": "cross-env REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" REACT_APP_FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn start",
     "test:emulate": "cross-env FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn test:open",
-    "serve": "firebase serve --only hosting:stageApp,hosting:docs -p 3000",
+    "serve": "firebase serve --only hosting:stageApp,hosting:docs -p npm_package_config_port",
     "serve:dev": "cross-env FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn serve",
     "all:dev": "concurrently -c yellow,green npm:emulate \"sleep 7 && yarn dev\"",
     "all:serve": "concurrently -c yellow,green npm:emulate \"sleep 7 && yarn serve:dev --project fireadmin-stage\"",
@@ -74,8 +74,8 @@
     "babel-eslint": "^10.0.0",
     "concurrently": "^5.1.0",
     "cross-env": "^7.0.0",
-    "cypress": "^4.0.2",
-    "cypress-firebase": "^0.10.2",
+    "cypress": "^4.1.0",
+    "cypress-firebase": "alpha",
     "cypress-plugin-retries": "^1.5.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
@@ -90,6 +90,7 @@
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.18.3",
     "eslint-plugin-react-hooks": "^2.3.0",
+    "firebase-admin": "^8.9.2",
     "firebase-ci": "^0.12.2",
     "firebase-tools": "^7.13.0",
     "husky": "^4.2.3",
@@ -111,7 +112,7 @@
   "author": "prescottprue (https://github.com/prescottprue)",
   "license": "MIT",
   "config": {
-    "port": "3000"
+    "port": 3000
   },
   "husky": {
     "hooks": {
