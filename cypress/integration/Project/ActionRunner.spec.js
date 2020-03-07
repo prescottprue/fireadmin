@@ -39,7 +39,10 @@ describe('Project - Actions Page', () => {
 
     after(() => {
       // Remove environment after
-      cy.callFirestore('delete', `projects/test-project/${lockedEnvId}`)
+      cy.callFirestore(
+        'delete',
+        `projects/test-project/environments/${lockedEnvId}`
+      )
     })
 
     it('locked env is disabled as a source', () => {

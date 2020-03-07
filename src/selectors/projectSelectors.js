@@ -131,11 +131,10 @@ export const getProjectEventsGroupedByDate = createSelector(
       }
       return event
     })
-    if (displayNames && events) {
-      return groupBy(events, event =>
-        formatDate(invoke(get(event, 'createdAt'), 'toDate'))
-      )
-    }
+    return groupBy(events, event => {
+      const createdAt = get(event, 'createdAt')
+      return formatDate(createdAt.toDate ? createdAt.toDate() : createdAt)
+    })
   }
 )
 

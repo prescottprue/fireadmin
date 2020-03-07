@@ -25,7 +25,7 @@ export default compose(
     projectEvents: getProjectEventsGroupedByDate(state, props)
   })),
   // Show spinner while project events are loading
-  spinnerWhileLoading(['projectEvents']),
+  // spinnerWhileLoading(({ projectId }) => [`projectEvents-${projectId}`]),
   // Add styles as props.classes
   withStyles(styles)
 )

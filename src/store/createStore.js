@@ -68,7 +68,7 @@ export default (initialState = {}) => {
   // Use RTDB emulator
   if (process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST) {
     config.firebase.databaseURL = `http://${process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST}?ns=${config.firebase.projectId}`
-    console.log('Using RTDB emulator', config.firebase) // eslint-disable-line
+    console.log('Using RTDB emulator', config.firebase.databaseURL) // eslint-disable-line
   }
 
   firebase.initializeApp(config.firebase)

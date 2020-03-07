@@ -38,7 +38,7 @@ function EventsTable({ groupedEvents, classes }) {
                 data-test="event-row"
                 data-test-id={eventKey}>
                 <TableCell data-test="event-createdAt">
-                  {formatTime(invoke(get(projectEvent, 'createdAt'), 'toDate'))}
+                  {formatTime(get(projectEvent, 'createdAt'))}
                 </TableCell>
                 <TableCell>
                   {startCase(get(projectEvent, 'eventType', ''))}

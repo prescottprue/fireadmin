@@ -22,6 +22,22 @@ const fbConfig = {
 
 firebase.initializeApp(fbConfig)
 
+// Use Firestore emulator
+if (Cypress.env('FIRESTORE_EMULATOR_HOST')) {
+  const firestoreSettings = {
+    host: Cypress.env('FIRESTORE_EMULATOR_HOST'),
+    ssl: false
+  }
+    console.log('Using Firestore emulator', firestoreSettings.host) // eslint-disable-line
+
+  if (window.Cypress) {
+    // Needed for Firestore support in Cypress (see https://github.com/cypress-io/cypress/issues/6350)
+    firestoreSettings.experimentalForceLongPolling = true
+  }
+
+  firebase.firestore().settings(firestoreSettings)
+}
+
 // Custom commands including login, signup, callRtdb, and callFirestore
 attachCustomCommands({ Cypress, cy, firebase })
 

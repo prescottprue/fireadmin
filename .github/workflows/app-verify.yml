@@ -183,5 +183,6 @@ jobs:
           GITHUB_REF: ${{ github.ref }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+          GCLOUD_PROJECT: fireadmin-stage
           FIREBASE_PROJECT: fireadmin-stage
           FIREBASE_PROJECT_ID: fireadmin-stage
