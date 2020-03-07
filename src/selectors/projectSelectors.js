@@ -1,4 +1,4 @@
-import { get, map, size, orderBy, groupBy, invoke } from 'lodash'
+import { get, map, size, orderBy, groupBy } from 'lodash'
 import { createSelector } from 'reselect'
 import { formatDate } from 'utils/formatters'
 import { isLoaded } from 'react-redux-firebase/lib/helpers'

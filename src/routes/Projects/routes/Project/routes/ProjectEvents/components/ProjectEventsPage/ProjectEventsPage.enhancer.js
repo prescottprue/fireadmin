@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import firebaseConnect from 'react-redux-firebase/lib/firebaseConnect'
 import { withStyles } from '@material-ui/core/styles'
-import { spinnerWhileLoading } from 'utils/components'
+// import { spinnerWhileLoading } from 'utils/components'
 import { getProjectEventsGroupedByDate } from 'selectors/projectSelectors'
 import styles from './ProjectEventsPage.styles'
 
