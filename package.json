@@ -10,7 +10,7 @@
     "start": "react-scripts start",
     "start:dist": "yarn build && yarn serve",
     "emulate:dbs": "firebase emulators:start --only firestore,database",
-    "emulate:all": "firebase emulators:start --only firestore,database,hosting:appStage,hosting:docs",
+    "emulate:all": "firebase emulators:start --only firestore,database,hosting",
     "dev": "concurrently -c yellow,green npm:emulate:dbs \"sleep 7 && yarn dev\"",
     "start:emulate": "cross-env REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" REACT_APP_FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn start",
     "test:emulate": "cross-env FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn test:open",
