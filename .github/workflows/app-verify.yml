@@ -36,8 +36,10 @@ jobs:
           yarn --cwd functions install --frozen-lockfile
 
       - name: Build App Config
-        run: |
-          yarn build:config
+        env:
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_REF: ${{ github.ref }}
+        run: yarn build:config
 
       - name: Verify
         run: |
@@ -52,8 +54,7 @@ jobs:
           yarn build
 
       - name: Build Functions
-        run: |
-          yarn --cwd functions build
+        run: yarn --cwd functions build
 
       - name: Archive Build Artifact
         uses: actions/upload-artifact@v1
@@ -165,7 +166,7 @@ jobs:
           headless: true
           group: 'UI Integration Tests'
           tag: emulated
-          start: yarn all:dev
+          start: yarn emulate:all
           wait-on: 'http://localhost:3000'
           # wait for 4 minutes for the server to respond
           wait-on-timeout: 240

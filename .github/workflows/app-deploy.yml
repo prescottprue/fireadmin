@@ -38,6 +38,9 @@ jobs:
           yarn --cwd functions install --frozen-lockfile
 
       - name: Build App Config
+        env:
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_REF: ${{ github.ref }}
         run: |
           yarn build:config
 

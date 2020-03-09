@@ -72,7 +72,7 @@ export default (initialState = {}) => {
   }
 
   firebase.initializeApp(config.firebase)
-
+  window.firebaseConfig = config.firebase
   // Use Firestore emulator
   if (process.env.REACT_APP_FIRESTORE_EMULATOR_HOST) {
     const firestoreSettings = {
