@@ -6,9 +6,9 @@ on:
       - tests-*
     paths-ignore:
       - 'docs/**'
-  push:
-    branches:
-      - v0.8.15
+  # push:
+  #   ignore-branches:
+  #     - v0.8.15
 jobs:
   ui-tests:
     name: UI Test Hosted App

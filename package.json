@@ -10,10 +10,10 @@
     "start": "react-scripts start",
     "start:dist": "yarn build && yarn serve",
     "emulate:dbs": "firebase emulators:start --only firestore,database",
-    "emulate:all": "firebase emulators:start",
-    "dev": "cross-env REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" REACT_APP_FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn start",
+    "emulate:all": "firebase emulators:start --only firestore,database,hosting:appStage,hosting:docs",
+    "dev": "concurrently -c yellow,green npm:emulate:dbs \"sleep 7 && yarn dev\"",
+    "start:emulate": "cross-env REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" REACT_APP_FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn start",
     "test:emulate": "cross-env FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn test:open",
-    "all:dev": "concurrently -c yellow,green npm:emulate:dbs \"sleep 7 && yarn dev\"",
     "build:config": "firebase-ci createConfig",
     "build:testConfig": "cypress-firebase createTestEnvFile",
     "build:size": "yarn build && size-limit",
@@ -74,6 +74,7 @@
     "cross-env": "^7.0.0",
     "cypress": "^4.1.0",
     "cypress-firebase": "0.11.0-alpha.8",
+    "cypress-log-to-output": "^1.0.8",
     "cypress-plugin-retries": "^1.5.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
@@ -94,7 +95,7 @@
     "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
     "prettier": "^1.18.2",
-    "react-scripts": "3.1.1"
+    "react-scripts": "3.4.0"
   },
   "eslintConfig": {
     "extends": "./eslintrc.js"
