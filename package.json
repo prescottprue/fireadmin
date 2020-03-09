@@ -75,7 +75,7 @@
     "concurrently": "^5.1.0",
     "cross-env": "^7.0.0",
     "cypress": "^4.1.0",
-    "cypress-firebase": "alpha",
+    "cypress-firebase": "0.11.0-alpha.8",
     "cypress-plugin-retries": "^1.5.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",

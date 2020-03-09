@@ -4818,10 +4818,10 @@ cyclist@~0.2.2:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-0.2.2.tgz#1b33792e11e914a2fd6d6ed6447464444e5fa640"
   integrity sha1-GzN5LhHpFKL9bW7WRHRkRE5fpkA=
 
-cypress-firebase@alpha:
-  version "0.11.0-alpha.7"
-  resolved "https://registry.yarnpkg.com/cypress-firebase/-/cypress-firebase-0.11.0-alpha.7.tgz#79311af12992a46dc1ff8c82f43d1521d2400474"
-  integrity sha512-IoOE/9xjdusi4zrAD14EeGGDyGpTF2HscKpzhDpxo8jfrHed5PtCJNuE6VvbKap10MgxbNXvMIRh0AjMMZbuuA==
+cypress-firebase@0.11.0-alpha.8:
+  version "0.11.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/cypress-firebase/-/cypress-firebase-0.11.0-alpha.8.tgz#b3f8aba38d51d8f04fd329494f8b357fb4eed844"
+  integrity sha512-zGCuOKkhAIpBBW0vsN6Qrm8WsWlx80rohyN7H0eoL2WS1/2gwgL7dPODFKW3NgNcihYM9WvYsdP5p+Jt0OORcg==
   dependencies:
     chalk "^3.0.0"
     commander "^4.1.0"
