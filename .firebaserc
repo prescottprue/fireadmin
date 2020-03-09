@@ -63,7 +63,7 @@
         "docs": [
           "fireadmin-stage-docs"
         ],
-        "appStage": [
+        "app": [
           "fireadmin-stage"
         ]
       }
