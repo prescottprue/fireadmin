@@ -147,11 +147,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: build
-  
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: functions-build
+          path: build
 
       # Cypress action manages installing/caching npm dependencies and Cypress binary.
       # Because of "record" and "parallel" parameters these containers will load
