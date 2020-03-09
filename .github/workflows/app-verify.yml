@@ -166,7 +166,7 @@ jobs:
           headless: true
           group: 'UI Integration Tests'
           tag: emulated
-          start: yarn emulate:all
+          start: yarn emulate:all --project fireadmin-stage
           wait-on: 'http://localhost:3000'
           # wait for 4 minutes for the server to respond
           wait-on-timeout: 240
