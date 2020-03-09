@@ -22,11 +22,11 @@ module.exports = (on, config) => {
     // if `type` is `console`, `event` is an object of the type passed to `Runtime.consoleAPICalled`:
     //  https://chromedevtools.github.io/devtools-protocol/tot/Runtime#event-consoleAPICalled
 
-    if (event.level === 'error' || event.type === 'error') {
-      return true
-    }
+    // if (event.level === 'error' || event.type === 'error') {
+    //   return true
+    // }
 
-    return false
+    return true
   })
   // Extends with config from .firebaserc
   return cypressFirebasePlugin(on, config, admin)
