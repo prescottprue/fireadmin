@@ -7,7 +7,7 @@
 // You can read more here:
 // https://on.cypress.io/plugins-guide
 // ***********************************************************
-const cypressFirebasePlugin = require('cypress-firebase').plugin
+const cypressFirebasePlugin = require('cypress-firebase').pluginWithTasks
 const admin = require('firebase-admin')
 
 module.exports = (on, config) => {

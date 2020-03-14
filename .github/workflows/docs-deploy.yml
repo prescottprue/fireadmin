@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-deploy:
-    name: Verify + Build + Deploy Docs
+    name: Verify + Build + Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo

@@ -92,8 +92,8 @@
     "firebase-tools": "7.15.0",
     "firebase-tools-extra": "^1.0.0-alpha.3",
     "husky": "^4.2.3",
-    "lint-staged": "^10.0.7",
-    "prettier": "^1.18.2",
+    "lint-staged": "^10.0.8",
+    "prettier": "^1.19.1",
     "react-scripts": "3.4.0"
   },
   "eslintConfig": {
