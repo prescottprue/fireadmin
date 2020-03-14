@@ -3,6 +3,6 @@
   "chromeWebSecurity": false,
   "defaultCommandTimeout": 9000,
   "env": {
-    "RETRIES": 3
+    "RETRIES": 1
   }
 }
