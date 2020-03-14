@@ -176,4 +176,4 @@ jobs:
           GCLOUD_PROJECT: fireadmin-stage
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
           CYPRESS_TEST_UID: ${{ secrets.TEST_UID }}
-          CYPRESS_baseUrl: https://fireadmin-stage.firebaseapp.com
+          CYPRESS_BASE_URL: https://fireadmin-stage.firebaseapp.com
