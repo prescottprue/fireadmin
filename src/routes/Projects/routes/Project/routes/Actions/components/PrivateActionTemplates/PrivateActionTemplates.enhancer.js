@@ -14,7 +14,10 @@ export default compose(
   firestoreConnect(({ uid }) => [
     {
       collection: 'actionTemplates',
-      where: [['createdBy', '==', uid], ['public', '==', false]],
+      where: [
+        ['createdBy', '==', uid],
+        ['public', '==', false]
+      ],
       storeAs: 'privateTemplates'
     }
   ]),

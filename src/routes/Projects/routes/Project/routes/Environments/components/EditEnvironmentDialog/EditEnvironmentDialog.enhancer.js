@@ -27,10 +27,11 @@ export default compose(
     const envUpdateDisabled =
       get(permissionsByType, 'update.environments') !== true
     const formValues = selector(state, 'readOnly', 'writeOnly', 'locked')
-    const { locked = false, writeOnly = false, readOnly = false } = mapValues(
-      formValues,
-      val => (!isBoolean(val) ? false : val)
-    )
+    const {
+      locked = false,
+      writeOnly = false,
+      readOnly = false
+    } = mapValues(formValues, val => (!isBoolean(val) ? false : val))
     return {
       lockedDisabled: envUpdateDisabled || writeOnly || readOnly,
       readOnlyDisabled: envUpdateDisabled || locked || writeOnly,

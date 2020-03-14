@@ -63,9 +63,8 @@ export const getCurrentUserCreatedProject = createSelector(
  * @param  {object} state - redux state
  * @param  {object} props - component props
  */
-export const getRoles = createSelector(
-  getProject,
-  project => (project === null ? null : get(project, 'roles'))
+export const getRoles = createSelector(getProject, project =>
+  project === null ? null : get(project, 'roles')
 )
 
 /**
@@ -73,14 +72,12 @@ export const getRoles = createSelector(
  * @param {object} state - redux state
  * @param {object} props - component props
  */
-export const getOrderedRoles = createSelector(
-  getRoles,
-  roles =>
-    orderBy(
-      map(roles, (role, key) => ({ ...role, key })),
-      [role => size(get(role, 'permissions'))],
-      ['desc']
-    )
+export const getOrderedRoles = createSelector(getRoles, roles =>
+  orderBy(
+    map(roles, (role, key) => ({ ...role, key })),
+    [role => size(get(role, 'permissions'))],
+    ['desc']
+  )
 )
 
 /**
@@ -88,9 +85,8 @@ export const getOrderedRoles = createSelector(
  * @param {object} state - redux state
  * @param {object} props - component props
  */
-export const getProjectPermissions = createSelector(
-  getProject,
-  project => (project === null ? null : get(project, 'permissions'))
+export const getProjectPermissions = createSelector(getProject, project =>
+  project === null ? null : get(project, 'permissions')
 )
 
 /**
@@ -171,7 +167,6 @@ export const currentUserProjectPermissions = createSelector(
  * @param {object} props - component props
  * @return {Array<string>} Role option strings
  */
-export const getRoleOptions = createSelector(
-  getRoles,
-  roles => map(roles, ({ name }, value) => ({ value, name }))
+export const getRoleOptions = createSelector(getRoles, roles =>
+  map(roles, ({ name }, value) => ({ value, name }))
 )
