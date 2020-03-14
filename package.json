@@ -31,8 +31,8 @@
     "lint:tests": "eslint cypress",
     "lint:docs": "eslint docs",
     "lint:fix": "yarn lint --fix",
-    "test": "cypress run",
-    "test:open": "cypress open",
+    "test": "cross-env CYPRESS_BASE_URL=\"http://localhost:$npm_package_config_port\" cypress run",
+    "test:open": "cross-env CYPRESS_BASE_URL=\"http://localhost:$npm_package_config_port\" cypress open",
     "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\""
   },
   "dependencies": {
@@ -72,7 +72,7 @@
     "concurrently": "^5.1.0",
     "cross-env": "^7.0.0",
     "cypress": "^4.1.0",
-    "cypress-firebase": "0.11.0",
+    "cypress-firebase": "1.0.0-alpha",
     "cypress-plugin-retries": "^1.5.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
