@@ -37,11 +37,16 @@ jobs:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-main-${{ hashFiles('**/yarn.lock') }}
 
+      - name: Get Library Versions For Binary Caching
+        id: dep-versions
+        run: |
+          echo "::set-output name=cypress::$(cat package.json | jq -r .devDependencies.cypress)"
+
       - name: Cache Cypress Binary
         uses: actions/cache@v1
         with:
-          path: ~/.cache
-          key: ${{ runner.os }}-main-cypress-${{ hashFiles('**/yarn.lock') }}
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ steps.dep-versions.outputs.cypress }}
 
       # Install is run separately from test so that dependencies are available
       # for other steps like Get Project Info and build test environment config
@@ -50,31 +55,12 @@ jobs:
           yarn install --frozen-lockfile
           $(yarn bin)/cypress verify
 
-      - name: Build Test Environment Config
-        id: test-config
-        env:
-          # UID and Service Account for each reserved environment
-          TEST_UID: ${{ secrets.TEST_UID }}
-          SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
-          GITHUB_HEAD_REF: ${{ github.head_ref }}
-          GITHUB_REF: ${{ github.ref }}
-        # Create environment specific cypress.env.json file based on
-        # current branch and environment variables. FIREBASE_PROJECT is
-        # set to point to a different project for config than hosting.
-        # NOTE: Hardcoded environment can be passed from variable like so:
-        # $(npm bin)/cypress-firebase createTestEnvFile $TEST_ENV
-        # NOTE: Hosting project is set to default to master if environment matching
-        # branch name is not found. To change this behavior, update TEST_UID and SERVICE_ACCOUNT
-        # environment variables to point to the associated environment and set the default for
-        # the hosting project by using the default option (i.e. $(npm bin)/firebase-ci project -d test))
-        run: |
-          $(yarn bin)/cypress-firebase createTestEnvFile
-
-      - name: Upload Test Config
+      - name: Archive Error Logs
         uses: actions/upload-artifact@v1
+        if: failure()
         with:
-          name: test-config
-          path: cypress.env.json
+          name: test-error-logs
+          path: yarn-error.log
 
       # Cypress action manages installing/caching npm dependencies and Cypress binary.
       # Because of "record" and "parallel" parameters these containers will load
@@ -100,7 +86,7 @@ jobs:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_REF: ${{ github.ref }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          FIREBASE_PROJECT: fireadmin-stage
-          FIREBASE_PROJECT_ID: fireadmin-stage
+          GCLOUD_PROJECT: fireadmin-stage
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+          CYPRESS_TEST_UID: ${{ secrets.TEST_UID }}
           CYPRESS_baseUrl: https://fireadmin-stage.firebaseapp.com
