@@ -58,6 +58,8 @@ jobs:
 
       - name: Build App
         run: |
+          export REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST="localhost:$(cat firebase.json | jq .emulators.database.port)"
+          export REACT_APP_FIRESTORE_EMULATOR_HOST="localhost:$(cat firebase.json | jq .emulators.firestore.port)"
           yarn build
 
       - name: Build Functions
