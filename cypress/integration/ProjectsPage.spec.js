@@ -41,7 +41,9 @@ describe('Projects Page', () => {
         .find(createSelector('project-tile-more'))
         .click()
       cy.get(createSelector('project-tile-delete')).click()
-      // Confirm project is removed
+      // Confirm project tile is removed
+      cy.get(createIdSelector('test-delete-project')).should('not.exist')
+      // Confirm project is removed from DB
       cy.callFirestore('get', 'projects/test-delete-project').then(
         deletedProject => {
           cy.log('deleted project', deletedProject)
