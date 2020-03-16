@@ -13,6 +13,7 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 import 'cypress-plugin-retries'
+import 'cypress-wait-until'
 // Import commands.js using ES2015 syntax:
 import './commands'
 

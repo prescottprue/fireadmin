@@ -44,11 +44,10 @@ describe('Projects Page', () => {
       // Confirm project tile is removed
       cy.get(createIdSelector('test-delete-project')).should('not.exist')
       // Confirm project is removed from DB
-      cy.callFirestore('get', 'projects/test-delete-project').then(
-        deletedProject => {
-          cy.log('deleted project', deletedProject)
-          expect(deletedProject).to.be.null
-        }
+      cy.waitUntil(() =>
+        cy
+          .callFirestore('get', 'projects/test-delete-project')
+          .then(deletedProject => deletedProject === null)
       )
     })
   })
