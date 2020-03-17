@@ -84,11 +84,11 @@ jobs:
     name: UI Test Emulated App
     needs: verify-build
     runs-on: ubuntu-16.04
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     # Run multiple copies of the current job in parallel
-    #     containers: [1, 2, 3]
+    strategy:
+      fail-fast: false
+      matrix:
+        # Run multiple copies of the current job in parallel
+        containers: [1, 2, 3, 4]
     steps:
       - name: Setup Node
         uses: actions/setup-node@v1
@@ -143,6 +143,11 @@ jobs:
       - name: Set Test Environment Settings
         id: emulator-settings
         run: |
+          export GIT_BRANCH=${GITHUB_REF##*/}
+          export GCLOUD_PROJECT=$(cat .firebaserc | jq -r --arg GIT_BRANCH "$GIT_BRANCH" '.projects[$GIT_BRANCH] // .projects.master')
+          echo "::set-output name=GCLOUD_PROJECT::$GCLOUD_PROJECT"
+          echo "Environment set for branch: $GIT_BRANCH and project: $GCLOUD_PROJECT"
+          echo "Setting emulator settings to environment..."
           echo "::set-env name=FIREBASE_DATABASE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.database.port)"
           echo "::set-env name=FIRESTORE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.firestore.port)"
           echo "::set-env name=CYPRESS_BASE_URL::http://localhost:$(cat package.json | jq .config.port)"
@@ -166,7 +171,7 @@ jobs:
           # we have already installed all dependencies above
           install: false
           browser: chrome
-          # parallel: true
+          parallel: true
           record: true
           headless: true
           group: 'UI Integration Tests'
@@ -184,6 +189,5 @@ jobs:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_REF: ${{ github.ref }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          GCLOUD_PROJECT: fireadmin-stage
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
           CYPRESS_TEST_UID: ${{ secrets.TEST_UID }}
