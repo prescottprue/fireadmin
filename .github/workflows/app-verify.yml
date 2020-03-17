@@ -77,9 +77,6 @@ jobs:
           name: functions-build
           path: functions/dist
 
-  # Skipped due to 404 while waiting for localhost:3000 served
-  # by firebase serve (from firebase-tools).
-  # TODO: Uncommnet to try different hosting options
   ui-tests:
     name: UI Test Emulated App
     needs: verify-build
