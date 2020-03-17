@@ -1,12 +1,37 @@
 {
   "projects": {
-    "master": "fireadmin-33d82",
+    "master": "fireadmin-stage",
+    "prod": "fireadmin-33d82",
     "stage": "fireadmin-stage",
     "default": "fireadmin-stage"
   },
   "ci": {
     "createConfig": {
       "master": {
+        "version": "${npm_package_version}",
+        "env": "stage",
+        "firebase": {
+          "apiKey": "AIzaSyCmw3fvlPnZtqChbIY_yEWXUcDGlemeIRQ",
+          "authDomain": "fireadmin-stage.firebaseapp.com",
+          "databaseURL": "https://fireadmin-stage.firebaseio.com",
+          "projectId": "fireadmin-stage",
+          "appId": "1:566109548798:web:29831023bb21d00edc35af",
+          "storageBucket": "fireadmin-stage.appspot.com",
+          "locationId": "us-central",
+          "messagingSenderId": "566109548798"
+        },
+        "segmentId": "HWEhRQnBTbnYCgv9b4qeA793wVcR0W5b",
+        "sentryDsn": "https://65bfbcc3e0f94d1391daae55500165fa@sentry.io/1238306",
+        "publicVapidKey": "BMQbbkyTknePwCeoqbyFVC6z4WJ6A3mdFKgIeNXDmcwUwl_DLIY6LYHKOAedvZW4rge-cD0iO4ZP7nxZ3LbFJVk",
+        "googleApis": {
+          "apiKey": "AIzaSyCmw3fvlPnZtqChbIY_yEWXUcDGlemeIRQ"
+        },
+        "algolia": {
+          "appId": "WULRUE0M3R",
+          "apiKey": "96c289817959585293abf860ec7aca8a"
+        }
+      },
+      "prod": {
         "version": "${npm_package_version}",
         "env": "production",
         "firebase": {
@@ -30,30 +55,6 @@
           "appId": "C0D1I0GB86",
           "apiKey": "7327fc566154893e3834a49de6fa73c3"
         }
-      },
-      "stage": {
-        "version": "${npm_package_version}",
-        "env": "stage",
-        "firebase": {
-          "apiKey": "AIzaSyCmw3fvlPnZtqChbIY_yEWXUcDGlemeIRQ",
-          "authDomain": "fireadmin-stage.firebaseapp.com",
-          "databaseURL": "https://fireadmin-stage.firebaseio.com",
-          "projectId": "fireadmin-stage",
-          "appId": "1:566109548798:web:29831023bb21d00edc35af",
-          "storageBucket": "fireadmin-stage.appspot.com",
-          "locationId": "us-central",
-          "messagingSenderId": "566109548798"
-        },
-        "segmentId": "HWEhRQnBTbnYCgv9b4qeA793wVcR0W5b",
-        "sentryDsn": "https://65bfbcc3e0f94d1391daae55500165fa@sentry.io/1238306",
-        "publicVapidKey": "BMQbbkyTknePwCeoqbyFVC6z4WJ6A3mdFKgIeNXDmcwUwl_DLIY6LYHKOAedvZW4rge-cD0iO4ZP7nxZ3LbFJVk",
-        "googleApis": {
-          "apiKey": "AIzaSyCmw3fvlPnZtqChbIY_yEWXUcDGlemeIRQ"
-        },
-        "algolia": {
-          "appId": "WULRUE0M3R",
-          "apiKey": "96c289817959585293abf860ec7aca8a"
-        }
       }
     }
   },
@@ -63,7 +64,7 @@
         "docs": [
           "fireadmin-stage-docs"
         ],
-        "appStage": [
+        "app": [
           "fireadmin-stage"
         ]
       }

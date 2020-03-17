@@ -1,13 +1,13 @@
 # fireadmin
 
 <!-- [![NPM version][npm-image]][npm-url] -->
-[![Build Status][travis-image]][travis-url]
+[![Build Status][build-status-image]][build-status-url]
+[![Cypress Dashboard][cypress-dashboard-image]][cypress-dashboard-url]
 <!-- [![Dependency Status][daviddm-image]][daviddm-url] -->
 <!-- [![Code Coverage][coverage-image]][coverage-url] -->
 <!-- [![Code Climate][climate-image]][climate-url] -->
 [![License][license-image]][license-url]
 [![Code Style][code-style-image]][code-style-url]
-[![Workflow Status][main-workflow-badge]][main-workflow-url]
 
 > Application for Managing Firebase Applications. Includes support for multiple environments and data migrations
 
@@ -26,6 +26,7 @@
 1. [FAQ](#faq)
 
 ## Features
+
 * Manage multiple environments as a single project
 * Project Sharing (invite by email coming soon)
 * "Action Runner" for common project actions such as data migrations, and generating reports
@@ -38,6 +39,7 @@
 * Testing for React App (Cypress) and Cloud Functions (Mocha)
 
 *coming soon*
+
 * Support for copying Single Firestore Document in Copy Action
 * Map action - for mapping each item in a collection both on RTDB and Firestore
 * Authorized Google API Request Panel
@@ -220,30 +222,21 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 
 #### CI Deploy (recommended)
 
-**Note**: Config for this is located within `.gitlab-ci.yml`. `firebase-ci` has been added to simplify the CI deployment process by getting settings from the `.firebaserc`. All that is required is providing authentication with Firebase:
+**Note**: Config for this is located within `.github/workflows/app-deploy.yml`. `firebase-ci` has been added to simplify the CI deployment process by getting settings from the `.firebaserc`. All that is required is providing authentication with Firebase:
 
 1. Have at least two Firebase projects to ready to use, one for each environment (staging and production)
-1. Replace info within `.firebaserc` under both the `projects` and `ci` sections
-1. Replace environment settings within `.gitlab-ci.yml` with your own. This will make the "Operations" tab of Gitlab point to your environment URLs.
+1. Replace info within `.firebaserc` under both the `projects`, `ci`, and `targets` sections
 1. Login: `firebase login:ci` to generate an authentication token. This token will be used to give the CI provider rights to deploy on your behalf. Settings are provided for Gitlab, but any CI provider can be used.
-1. Set `FIREBASE_TOKEN` environment variable within Gitlab-CI environment variables
-1. Add the following environment variables to Gitlab-CI's variables (within `/settings/ci_cd`):
+1. Set `FIREBASE_TOKEN` environment variable within Github Actions secrets
+1. Add the following environment variables to Github Actions's variables (within `/settings/ci_cd`):
+
     ```js
     FIREBASE_TOKEN // Used to deploy to Firebase (token generated in last step)
-    /* Stage Vars */
-    STAGE_FIREBASE_API_KEY // apiKey staging project (from Firebase Auth Tab)
-    STAGE_ALGOLIA_APP_ID // algolia app_id of staging project
-    STAGE_ALGOLIA_BROWSER_KEY // algolia browser_key of staging project
-    /* Prod Vars */
-    PROD_FIREBASE_API_KEY // apiKey staging project (from Firebase Auth Tab)
-    PROD_ALGOLIA_APP_ID // algolia app_id of staging project
-    PROD_ALGOLIA_BROWSER_KEY // algolia browser_key of staging project
-    /* Optional */
-    SENTRY_DSN // Sentry DSN for error tracking
-    STAGE_GOOGLE_API_KEY // API Key for Stackdriver error logging (can use firebase apiKey)
-    PROD_GOOGLE_API_KEY // API Key for Stackdriver error logging (can use firebase apiKey)
+    CYPRESS_RECORD_KEY // Record key for Cypress Dashboard
+    SERVICE_ACCOUNT // Used to authenticate with database to run hosted tests
     ```
-1. Run a build on Gitlab-CI by pushing code to your Git remote (most likely Github)
+
+1. Run a build on Github Actions by pushing code to your Git remote (most likely Github)
 
 For more options on CI settings checkout the [firebase-ci docs](https://github.com/prescottprue/firebase-ci).
 
@@ -251,10 +244,12 @@ For more options on CI settings checkout the [firebase-ci docs](https://github.c
 
 1. Make sure you have created a `src/config.js` file as mentioned above
 1. Initialize project with `firebase init` then answer:
+
   * What file should be used for Database Rules?  -> `database.rules.json`
   * What do you want to use as your public directory? -> `build`
   * Configure as a single-page app (rewrite all urls to /index.html)? -> `Yes`
   * What Firebase project do you want to associate as default?  -> **your Firebase project name**
+
 1. Build Project: `npm run build`
 1. Confirm Firebase config by running locally: `firebase serve`
 1. Deploy to firebase: `firebase deploy`
@@ -269,12 +264,15 @@ All source code and content for docs is located within the [`docs`](/docs) folde
 Visit the [docs README for more info](/docs/README.md).
 
 ### Testing
+
 **NOTE**: If you have setup CI deployment, [E2E tests](#app-e2e-tests) and [Unit Tests](#cloud-functions-unit-tests) can automatically run against your staging environment before running the production build.
 
 #### Cloud Functions Unit Tests
+
 Cloud Functions Unit tests are written in [Mocha](https://github.com/mochajs/mocha) with code coverage generated by [Istanbul](https://github.com/gotwarlost/istanbul). These tests cover "backend functionality" handled by Cloud Functions by stubbing the functions environment (including dependencies).
 
 ##### Run Locally
+
 1. Go into the functions folder: `cd functions`
 1. Confirm you have dependencies installed: `npm i`
 1. Run unit tests: `npm test`
@@ -282,21 +280,21 @@ Cloud Functions Unit tests are written in [Mocha](https://github.com/mochajs/moc
 
 #### App UI Tests
 
-End to End tests are done using [Cypress](https://cypress.io) and they live within the `cypress` folder. These tests cover UI functionality and are run directly on the hosted environment of Fireadmin. Application end to end tests are run automatically in Gitlab-CI the after deploying to the staging environment before deploying to production.
+End to End tests are done using [Cypress](https://cypress.io) and they live within the `cypress` folder. These tests cover UI functionality and are run directly on the hosted environment of Fireadmin. Application end to end tests are run automatically in Github Actions the after deploying to the staging environment before deploying to production.
 
 ##### Run Locally
 
 1. Create a service account within the Firebase console
 1. Save the service account as `serviceAccount.json` within the root of the project
 1. Get the UID of the user that you want to use while testing from the Authentication tab of the Firebase console to
-1. Create a `cypress/config.json` with the following format:
+1. Create `cyress.env.json` with the following format:
+
     ```json
     {
-      "TEST_UID": "<- user account's UID ->",
-      "FIREBASE_PROJECT_ID": "<- your projectId ->",
-      "FIREBASE_API_KEY": "<- your firebase apiKey ->"
+      "TEST_UID": "<- user account's UID ->"
     }
     ```
+
 1. Run `npm run start:dist`. This will:
     1. Build the React app to the `dist` folder
     1. Host the build app on a local server using `firebase serve`
@@ -316,10 +314,10 @@ NOTE: `npm run start:dist` is used to start the local server in the example abov
     When uploading a service account, it first goes to a Google Cloud Storage Bucket which [has security rules](/storage.rules) and does not have CORS access. The [copyServiceAccountToFirestore Cloud Function](/functions/src/copyServiceAccountToFirestore) converts it into an encrypted string, stores it within Firestore, then removes the original file from Cloud Storage. Firestore rules keep anyone that is not a collaborator on your project using or reading the service account. Since it is associated with a specific environment, you can then limit access to what can be done with it right in the Users/Permissions tab of Fireadmin.
 
 [functions-runtime-url]: https://cloud.google.com/functions/docs/writing/#the_cloud_functions_runtime
-[npm-image]: https://img.shields.io/npm/v/fireadmin.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/fireadmin
-[travis-image]: https://img.shields.io/travis/prescottprue/fireadmin/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/prescottprue/fireadmin
+[build-status-url]: https://travis-ci.org/prescottprue/fireadmin
+[build-status-image]: https://img.shields.io/github/workflow/status/prescottprue/fireadmin/Verify%20App?style=flat-square
+[cypress-dashboard-image]: https://img.shields.io/static/v1?label=Cypress&message=Dashboard&color=00BF88&style=flat-square
+[cypress-dashboard-url]: https://dashboard.cypress.io/projects/6my6ku/runs
 [daviddm-image]: https://img.shields.io/david/prescottprue/fireadmin.svg?style=flat-square
 [daviddm-url]: https://david-dm.org/prescottprue/fireadmin
 [climate-image]: https://img.shields.io/codeclimate/github/prescottprue/fireadmin.svg?style=flat-square

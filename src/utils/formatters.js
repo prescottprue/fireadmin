@@ -7,6 +7,9 @@ import { format } from 'date-fns'
  * @return {Date} Formatted time
  */
 export function getDateObject(dateValue = null) {
+  if (dateValue && typeof dateValue.toDate === 'function') {
+    return dateValue.toDate()
+  }
   return isDate(dateValue) ? dateValue : new Date(dateValue)
 }
 

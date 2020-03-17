@@ -8,21 +8,35 @@ import { getFixtureBlob } from '../utils/commands'
 import fakeEnvironment from '../fixtures/fakeEnvironment.json'
 import fakeEvent from '../fixtures/fakeEvent.json'
 
-const projectId = Cypress.env('FIREBASE_PROJECT_ID')
-const env = Cypress.env('env') || 'stage'
-const apiKey =
-  Cypress.env(`${env.toUpperCase()}_FIREBASE_API_KEY`) ||
-  Cypress.env('FIREBASE_API_KEY')
-
 const fbConfig = {
-  apiKey,
-  authDomain: `${projectId}.firebaseapp.com`,
-  databaseURL: `https://${projectId}.firebaseio.com`,
-  projectId: `${projectId}`,
-  storageBucket: `${projectId}.appspot.com`
+  apiKey: 'AIzaSyCmw3fvlPnZtqChbIY_yEWXUcDGlemeIRQ',
+  authDomain: 'fireadmin-stage.firebaseapp.com',
+  databaseURL: Cypress.env('FIREBASE_DATABASE_EMULATOR_HOST')
+    ? `http://${Cypress.env(
+        'FIREBASE_DATABASE_EMULATOR_HOST'
+      )}?ns=fireadmin-stage`
+    : `https://fireadmin-stage.firebaseio.com`,
+  projectId: 'fireadmin-stage',
+  storageBucket: `fireadmin-stage.appspot.com`
 }
 
-window.fbInstance = firebase.initializeApp(fbConfig)
+firebase.initializeApp(fbConfig)
+
+// Use Firestore emulator
+if (Cypress.env('FIRESTORE_EMULATOR_HOST')) {
+  const firestoreSettings = {
+    host: Cypress.env('FIRESTORE_EMULATOR_HOST'),
+    ssl: false
+  }
+    console.log('Using Firestore emulator', firestoreSettings.host) // eslint-disable-line
+
+  if (window.Cypress) {
+    // Needed for Firestore support in Cypress (see https://github.com/cypress-io/cypress/issues/6350)
+    firestoreSettings.experimentalForceLongPolling = true
+  }
+
+  firebase.firestore().settings(firestoreSettings)
+}
 
 // Custom commands including login, signup, callRtdb, and callFirestore
 attachCustomCommands({ Cypress, cy, firebase })

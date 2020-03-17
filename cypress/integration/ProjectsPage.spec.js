@@ -1,4 +1,4 @@
-import { createSelector } from '../utils'
+import { createSelector, createIdSelector } from '../utils'
 
 describe('Projects Page', () => {
   beforeEach(() => {
@@ -26,36 +26,68 @@ describe('Projects Page', () => {
   })
 
   describe('Delete Project', () => {
+    before(() => {
+      const fakeProject = {
+        name: 'test delete project',
+        collaborators: { [Cypress.env('TEST_UID')]: true }
+      }
+      cy.callFirestore('delete', 'projects')
+      cy.callFirestore('set', 'projects/test-delete-project', fakeProject)
+    })
+
     it('allows project to be deleted by project owner', () => {
-      // click on the more button
-      cy.get(createSelector('project-tile-more'))
-        .first()
+      // Find tile with matching ID and click on the more button
+      cy.get(createIdSelector('test-delete-project'))
+        .find(createSelector('project-tile-more'))
         .click()
       cy.get(createSelector('project-tile-delete')).click()
-      // Confirm that new project is not available
-      cy.get(createSelector('new-project-name')).should('not.exist')
+      // Confirm project tile is removed
+      cy.get(createIdSelector('test-delete-project')).should('not.exist')
+      // Confirm project is removed from DB
+      cy.waitUntil(() =>
+        cy
+          .callFirestore('get', 'projects/test-delete-project')
+          .then(deletedProject => deletedProject === null)
+      )
     })
   })
 
   describe('List of Projects', () => {
-    const collabProjectName = 'collab project'
+    const fakeProject = {
+      name: 'collab project 1',
+      collaborators: { [Cypress.env('TEST_UID')]: true }
+    }
+    const fakeProject2 = {
+      name: 'collab project 2',
+      collaborators: { [Cypress.env('TEST_UID')]: true }
+    }
+    const ownedProject = {
+      name: 'owned an collab project',
+      createdBy: Cypress.env('TEST_UID'),
+      collaborators: { [Cypress.env('TEST_UID')]: true }
+    }
     before(() => {
-      const fakeProject = {
-        name: collabProjectName,
-        collaborators: { [Cypress.env('TEST_UID')]: true }
-      }
-      cy.callFirestore('set', 'projects/test-project', fakeProject)
+      cy.callFirestore('delete', 'projects')
+      cy.callFirestore('set', 'projects/collab-project-1', fakeProject)
+      cy.callFirestore('set', 'projects/collab-project-2', fakeProject2)
+      cy.callFirestore('set', 'projects/owned-project-1', ownedProject)
     })
 
-    after(() => {
-      cy.callFirestore('delete', 'projects/test-project')
-    })
-
-    it.only('shows projects which have the user as a collaborator', () => {
+    it('shows projects which are created by the current user', () => {
       // Confirm first project tile has title passed to new project input
+      cy.get(createIdSelector('owned-project-1')).should('exist')
+    })
+
+    it('shows projects which have the user as a collaborator', () => {
+      // Confirm first project tile has title passed to new project input
+      cy.get(createIdSelector('collab-project-1')).should('exist')
+      cy.get(createIdSelector('collab-project-2')).should('exist')
+    })
+
+    it('does not display the same project twice (even is creator is also collaborator)', () => {
       cy.get(createSelector('project-tile-name'))
-        .first()
-        .should('have.text', collabProjectName)
+        .its('length')
+        .should('be', 3)
     })
   })
 })

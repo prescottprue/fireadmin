@@ -55,9 +55,11 @@ export function spinnerWhile(condition) {
  * @return {HigherOrderComponent}
  */
 export function spinnerWhileLoading(propNames) {
-  return spinnerWhile(props =>
-    some(propNames, name => !isLoaded(get(props, name)))
-  )
+  return spinnerWhile(props => {
+    const propNamesToCheck =
+      typeof propNames === 'function' ? propNames(props) : propNames
+    return some(propNamesToCheck, name => !isLoaded(get(props, name)))
+  })
 }
 
 /**

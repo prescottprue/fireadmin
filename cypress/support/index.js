@@ -12,9 +12,17 @@
 // You can read more here:
 // https://on.cypress.io/configuration
 // ***********************************************************
-
+import 'cypress-plugin-retries'
+import 'cypress-wait-until'
 // Import commands.js using ES2015 syntax:
 import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+Cypress.on('uncaught:exception', (err, runnable) => {
+  console.log('Error in uncaught exception:', err.message)
+  // returning false here prevents Cypress from
+  // failing the test
+  return false
+})

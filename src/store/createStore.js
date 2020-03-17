@@ -21,6 +21,8 @@ export default (initialState = {}) => {
   // ======================================================
   window.version = version
 
+  window.firebase = firebase
+
   // ======================================================
   // Middleware Configuration
   // ======================================================
@@ -63,14 +65,37 @@ export default (initialState = {}) => {
     ? { ...defaultRRFConfig, ...config.reduxFirebase }
     : defaultRRFConfig
 
-  // Initialize Firebase only if an fbInstance was not passed to the window (tests)
-  if (!window.fbInstance) {
-    firebase.initializeApp(config.firebase)
+  // Use RTDB emulator
+  if (process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST) {
+    config.firebase.databaseURL = `http://${process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST}?ns=${config.firebase.projectId}`
+    console.log('Using RTDB emulator', config.firebase.databaseURL) // eslint-disable-line
   }
 
-  // if (window.Cypress) {
-  //   firebase.functions().useFunctionsEmulator('http://localhost:5005');
-  // }
+  firebase.initializeApp(config.firebase)
+  window.firebaseConfig = config.firebase
+  // Use Firestore emulator
+  if (process.env.REACT_APP_FIRESTORE_EMULATOR_HOST) {
+    const firestoreSettings = {
+      host: process.env.REACT_APP_FIRESTORE_EMULATOR_HOST,
+      ssl: false
+    }
+    console.log('Using Firestore emulator', firestoreSettings.host) // eslint-disable-line
+
+    if (window.Cypress) {
+      // Needed for Firestore support in Cypress (see https://github.com/cypress-io/cypress/issues/6350)
+      firestoreSettings.experimentalForceLongPolling = true
+    }
+
+    firebase.firestore().settings(firestoreSettings)
+  }
+
+  // Use Functions emulator
+  if (process.env.REACT_APP_FUNCTIONS_EMULATOR_HOST) {
+    console.log('Using Functions emulator') // eslint-disable-line
+    firebase
+      .functions()
+      .useFunctionsEmulator(process.env.REACT_APP_FUNCTIONS_EMULATOR_HOST)
+  }
 
   // ======================================================
   // Store Instantiation and HMR Setup
@@ -79,8 +104,8 @@ export default (initialState = {}) => {
     makeRootReducer(),
     initialState,
     compose(
-      reactReduxFirebase(window.fbInstance || firebase, combinedConfig),
-      reduxFirestore(window.fbInstance || firebase),
+      reactReduxFirebase(firebase, combinedConfig),
+      reduxFirestore(firebase),
       applyMiddleware(...middleware),
       ...enhancers
     )

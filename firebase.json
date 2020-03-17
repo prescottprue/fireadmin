@@ -2,9 +2,9 @@
   "database": {
     "rules": "database.rules.json"
   },
-  "firestore": {	
-    "rules": "firestore.rules",	
-    "indexes": "firestore.indexes.json"	
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   },
   "storage": {
     "rules": "storage.rules"
@@ -38,38 +38,6 @@
         {
           "source": "/docs/:page*",
           "destination": "https://fireadmin-docs.firebaseapp.com/:page",
-          "type": 301
-        }
-      ]
-    },
-    {
-      "target": "appStage",
-      "public": "build",
-      "ignore": [
-        "**/node_modules/**",
-        "firebase.json",
-        "cypress.env.json",
-        "cypress.json",
-        "serviceAccount.json",
-        "*.json",
-        "*.md",
-        "*.log",
-        "**/.*",
-        "Dockerfile",
-        "LICENSE",
-        "coverage",
-        "docs",
-        "src",
-        "test"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        },
-        {
-          "source": "/docs/:page*",
-          "destination": "https://fireadmin-stage-docs.firebaseapp.com/:page",
           "type": 301
         }
       ]
@@ -114,5 +82,16 @@
       "src",
       "test"
     ]
+  },
+  "emulators": {
+    "database": {
+      "port": 9000
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "hosting": {
+      "port": 3000
+    }
   }
 }

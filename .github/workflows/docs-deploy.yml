@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-deploy:
-    name: Verify + Build + Deploy Docs
+    name: Verify + Build + Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -29,7 +29,13 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-docs-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-docs-yarn-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Cache Gatsby Build
+        uses: actions/cache@v1
+        with:
+          path: docs/.cache
+          key: ${{ runner.os }}-docs-build
 
       - name: Install Dependencies
         env:
@@ -45,7 +51,7 @@ jobs:
       - name: Build
         run: |
           yarn --cwd docs build
-
+   
       - name: Archive Build Artifact
         uses: actions/upload-artifact@master
         with:

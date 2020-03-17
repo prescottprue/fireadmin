@@ -25,7 +25,10 @@ export default compose(
     // Listener for projects current user collaborates on
     {
       collection: ACTION_TEMPLATES_PATH,
-      where: [['createdBy', '==', uid], ['public', '==', false]],
+      where: [
+        ['createdBy', '==', uid],
+        ['public', '==', false]
+      ],
       storeAs: 'myTemplates'
     }
   ]),

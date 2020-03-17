@@ -13,7 +13,10 @@ function NewProjectTile({ onClick }) {
   const classes = useStyles()
 
   return (
-    <Paper className={classes.root} onClick={onClick}>
+    <Paper
+      className={classes.root}
+      onClick={onClick}
+      data-test="new-project-tile">
       <ContentAddCircle style={iconStyle} />
     </Paper>
   )

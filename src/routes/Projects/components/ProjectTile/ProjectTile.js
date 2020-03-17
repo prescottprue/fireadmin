@@ -28,13 +28,18 @@ function ProjectTile({
   menuClick,
   closeMenu,
   anchorEl,
+  projectId,
   sharingDialogOpen,
   toggleSharingDialog
 }) {
   const classes = useStyles()
 
   return (
-    <Paper className={classes.container} open={open} data-test="project-tile">
+    <Paper
+      className={classes.container}
+      open={open}
+      data-test="project-tile"
+      data-test-id={projectId}>
       <div className={classes.top}>
         <Typography
           className={classes.name}
@@ -86,6 +91,7 @@ function ProjectTile({
 }
 
 ProjectTile.propTypes = {
+  projectId: PropTypes.string.isRequired,
   project: PropTypes.object.isRequired,
   handleEditClick: PropTypes.func.isRequired,
   menuClick: PropTypes.func.isRequired,

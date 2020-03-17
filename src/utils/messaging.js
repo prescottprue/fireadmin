@@ -19,12 +19,15 @@ function updateUserProfileWithToken(messagingToken) {
     .firestore()
     .collection('users')
     .doc(currentUserUid)
-    .update({
-      messaging: {
-        mostRecentToken: messagingToken,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }
-    })
+    .set(
+      {
+        messaging: {
+          mostRecentToken: messagingToken,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }
+      },
+      { merge: true }
+    )
 }
 
 let vapidKeyHasBeenInitialized = false

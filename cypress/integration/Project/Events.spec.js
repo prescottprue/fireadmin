@@ -17,13 +17,8 @@ describe('Project - Events Page', () => {
     cy.visit('projects/test-project/events')
   })
 
-  after(() => {
-    // Remove fake project and subcollections
-    cy.callFirestore('delete', 'projects/test-project', { recursive: true })
-  })
-
   describe('Events List -', () => {
-    describe('when there are events', () => {
+    describe.skip('when there are events', () => {
       it('shows a "no existing events" message', () => {
         cy.get(createSelector('no-project-events')).should('exist')
       })
