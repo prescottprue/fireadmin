@@ -7,6 +7,9 @@ on:
     branches:
       - master
       - stage
+env:
+  # Whether or not to run hosted tests after deploying (second job of this workflow)
+  RUN_HOSTED_TESTS: false
 
 jobs:
   build:
@@ -99,7 +102,7 @@ jobs:
     name: UI Test Hosted App
     needs: build
     runs-on: ubuntu-16.04
-    if: github.ref == 'refs/heads/stage' && secrets.RUN_HOSTED_TESTS == 'true'
+    if: ${{ env.RUN_HOSTED_TESTS }} == true && github.ref == 'refs/heads/stage'
     strategy:
       fail-fast: false
       matrix:
