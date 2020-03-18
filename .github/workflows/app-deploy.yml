@@ -6,7 +6,7 @@ on:
       - 'docs/**'
     branches:
       - master
-      - stage
+      - prod
 env:
   # Whether or not to run hosted tests after deploying (second job of this workflow)
   RUN_HOSTED_TESTS: false

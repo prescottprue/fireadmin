@@ -6,7 +6,7 @@ on:
       - 'docs/**'
     branches:
       - master
-      - stage
+      - prod
 
 jobs:
   build-deploy:

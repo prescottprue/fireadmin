@@ -1,11 +1,8 @@
 # fireadmin
 
-<!-- [![NPM version][npm-image]][npm-url] -->
 [![Build Status][build-status-image]][build-status-url]
 [![Cypress Dashboard][cypress-dashboard-image]][cypress-dashboard-url]
-<!-- [![Dependency Status][daviddm-image]][daviddm-url] -->
-<!-- [![Code Coverage][coverage-image]][coverage-url] -->
-<!-- [![Code Climate][climate-image]][climate-url] -->
+
 [![License][license-image]][license-url]
 [![Code Style][code-style-image]][code-style-url]
 
@@ -123,7 +120,7 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 
 ### Requirements
 
-* node `^8.11.3` (node 8 suggested in order to match [Cloud Functions Runtime][functions-runtime-url])
+* node `^10.18.0` (node 10 suggested in order to match newest [Cloud Functions Runtime][functions-runtime-url])
 
 ### Before Starting
 
@@ -308,18 +305,16 @@ NOTE: `npm run start:dist` is used to start the local server in the example abov
 
 ## FAQ
 
-1. Why node `8.11.3` instead of a newer version?
-    [Cloud Functions runtime supports `6` or `8`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
+1. Why node `10.18.0` instead of a newer version?
+    [Cloud Functions runtime supports `8` or `10`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
 1. Uploading service accounts? Where do they go and how are my service accounts stored?
     When uploading a service account, it first goes to a Google Cloud Storage Bucket which [has security rules](/storage.rules) and does not have CORS access. The [copyServiceAccountToFirestore Cloud Function](/functions/src/copyServiceAccountToFirestore) converts it into an encrypted string, stores it within Firestore, then removes the original file from Cloud Storage. Firestore rules keep anyone that is not a collaborator on your project using or reading the service account. Since it is associated with a specific environment, you can then limit access to what can be done with it right in the Users/Permissions tab of Fireadmin.
 
-[functions-runtime-url]: https://cloud.google.com/functions/docs/writing/#the_cloud_functions_runtime
-[build-status-url]: https://travis-ci.org/prescottprue/fireadmin
+[functions-runtime-url]: https://cloud.google.com/functions/docs/concepts/exec
+[build-status-url]: https://github.com/prescottprue/fireadmin/actions
 [build-status-image]: https://img.shields.io/github/workflow/status/prescottprue/fireadmin/Verify%20App?style=flat-square
 [cypress-dashboard-image]: https://img.shields.io/static/v1?label=Cypress&message=Dashboard&color=00BF88&style=flat-square
 [cypress-dashboard-url]: https://dashboard.cypress.io/projects/6my6ku/runs
-[daviddm-image]: https://img.shields.io/david/prescottprue/fireadmin.svg?style=flat-square
-[daviddm-url]: https://david-dm.org/prescottprue/fireadmin
 [climate-image]: https://img.shields.io/codeclimate/github/prescottprue/fireadmin.svg?style=flat-square
 [climate-url]: https://codeclimate.com/github/prescottprue/fireadmin
 [coverage-image]: https://img.shields.io/codeclimate/coverage/github/prescottprue/fireadmin.svg?style=flat-square
