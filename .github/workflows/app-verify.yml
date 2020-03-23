@@ -139,10 +139,13 @@ jobs:
 
       - name: Set Test Environment Settings
         id: emulator-settings
+        env:
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_REF: ${{ github.ref }}
         run: |
           export GIT_BRANCH=${GITHUB_REF##*/}
           export GCLOUD_PROJECT=$(cat .firebaserc | jq -r --arg GIT_BRANCH "$GIT_BRANCH" '.projects[$GIT_BRANCH] // .projects.master')
-          echo "::set-output name=GCLOUD_PROJECT::$GCLOUD_PROJECT"
+          echo "::set-env name=GCLOUD_PROJECT::$GCLOUD_PROJECT"
           echo "Environment set for branch: $GIT_BRANCH and project: $GCLOUD_PROJECT"
           echo "Setting emulator settings to environment..."
           echo "::set-env name=FIREBASE_DATABASE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.database.port)"

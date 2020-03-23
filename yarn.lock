@@ -4001,6 +4001,11 @@ commander@^4.0.1, commander@^4.1.0, commander@^4.1.1:
   resolved "https://registry.yarnpkg.com/commander/-/commander-4.1.1.tgz#9fd602bd936294e9e9ef46a3f4d6964044b18068"
   integrity sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==
 
+commander@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-5.0.0.tgz#dbf1909b49e5044f8fdaf0adc809f0c0722bdfd0"
+  integrity sha512-JrDGPAKjMGSP1G0DUoaceEJ3DZgAfr/q6X7FVk4+U5KxUSKviYGM2k6zWkfyyBHy5rAtzgYJFa1ro2O9PtoxwQ==
+
 common-tags@1.8.0, common-tags@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/common-tags/-/common-tags-1.8.0.tgz#8e3153e542d4a39e9b10554434afaaf98956a937"
@@ -4664,13 +4669,10 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-cypress-firebase@1.0.0-alpha:
-  version "1.0.0-alpha"
-  resolved "https://registry.yarnpkg.com/cypress-firebase/-/cypress-firebase-1.0.0-alpha.tgz#0168aba0bbf4e29598e3edbd585f1ab4bc3e1e4c"
-  integrity sha512-R5VCkVe5teqsAUxqAuwa4cc41YzQBH69SRyR3URU4ME5BRqb5BK8Z9MsoC+vQPHNd+u8GFJFGNVq4S86b13TMw==
-  dependencies:
-    firebase-admin "^8.10.0"
-    lodash "^4.17.15"
+cypress-firebase@1.0.0-beta:
+  version "1.0.0-beta"
+  resolved "https://registry.yarnpkg.com/cypress-firebase/-/cypress-firebase-1.0.0-beta.tgz#dfa304acb9280a9ec01e569d4430c52e4e30ae1b"
+  integrity sha512-nlW4Dy+l0Zq01H9Ki5L2MZZfQuPBRm47TGLEI/D/vg3i752FDnm28efNMP9nrKqSUWSEDe94r1nK5bvHjeLz6g==
 
 cypress-log-to-output@^1.0.8:
   version "1.0.8"
@@ -6335,16 +6337,15 @@ firebase-ci@^0.12.2:
     figures "^3.1.0"
     lodash "^4.17.15"
 
-firebase-tools-extra@^1.0.0-alpha.3:
-  version "1.0.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/firebase-tools-extra/-/firebase-tools-extra-1.0.0-alpha.3.tgz#df75b182ee918dc1f02d3b996a6e2f83279545d0"
-  integrity sha512-LfEQjZgXu8ZRy1PFhsypkadlpP03Q/WOn3F9knYmSAtnZ6uzD8Xg8Nu+BsRYISfHybXqplJbYzEGvEw5wmnw6w==
+firebase-tools-extra@^1.0.0-beta.4:
+  version "1.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/firebase-tools-extra/-/firebase-tools-extra-1.0.0-beta.4.tgz#a5bdc1401cf008112902a3514d94f12b52c26527"
+  integrity sha512-Ix4UbF0oXXLC8tu84NUpZu2R9j4qFTfPswzcogtrfm+Jj9iaaT8Q2w8Yxr6sGQUxX438JscFY9Dm0ehu1HOEag==
   dependencies:
     chalk "^3.0.0"
-    commander "^4.1.1"
+    commander "^5.0.0"
     figures "^3.2.0"
     firebase-admin "^8.10.0"
-    lodash "^4.17.15"
 
 firebase-tools@7.15.0:
   version "7.15.0"
