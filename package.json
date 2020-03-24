@@ -72,7 +72,7 @@
     "concurrently": "^5.1.0",
     "cross-env": "^7.0.0",
     "cypress": "^4.2.0",
-    "cypress-firebase": "1.0.0-beta.2",
+    "cypress-firebase": "1.0.0-beta.3",
     "cypress-log-to-output": "^1.0.8",
     "cypress-plugin-retries": "^1.5.2",
     "cypress-wait-until": "^1.6.1",
