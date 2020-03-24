@@ -98,9 +98,7 @@ describe('Project - Environments Page', () => {
       // Confirm that deleted environment is no longer within Firestore
       cy.callFirestore('get', 'projects/test-project/environments').then(
         environments => {
-          expect(environments).to.be.an('array')
-          const matchingEnv = find(environments, { name: newEnvName })
-          expect(matchingEnv).to.not.exist
+          expect(environments).to.be.null
         }
       )
     })
