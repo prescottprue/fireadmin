@@ -57,14 +57,11 @@ export async function uploadToStorage(app, pathInStorage, jsonObject) {
   try {
     // Upload file from bucket to local filesystem
     await fs.outputJson(tempLocalPath, jsonObject, { spaces: 2 })
-    await app
-      .storage()
-      .bucket()
-      .upload(tempLocalPath, {
-        destination: pathInStorage,
-        contentType: 'application/json',
-        contentLanguage: 'en'
-      })
+    await app.storage().bucket().upload(tempLocalPath, {
+      destination: pathInStorage,
+      contentType: 'application/json',
+      contentLanguage: 'en'
+    })
     // Return JSON file contents
   } catch (err) {
     console.error('Error uploading file to storage', err.message || err)
@@ -81,8 +78,5 @@ export function slashPathToStorageRef(storagePath) {
   if (!admin.storage) {
     throw new Error('Storage is not enabled on firebase-admin')
   }
-  return admin
-    .storage()
-    .bucket()
-    .file(storagePath)
+  return admin.storage().bucket().file(storagePath)
 }

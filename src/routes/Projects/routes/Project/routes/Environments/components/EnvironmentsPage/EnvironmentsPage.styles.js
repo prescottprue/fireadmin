@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   container: {
     ...theme.flexColumn,
     width: '70%',

@@ -9,7 +9,7 @@ export function updatePermissions({
   project,
   projectId
 }) {
-  return async values => {
+  return async (values) => {
     const currentPermissions = get(project, `permissions`)
     const permissions = reduce(
       currentPermissions,
@@ -51,7 +51,7 @@ export function removeMember({
   project,
   projectId
 }) {
-  return async uid => {
+  return async (uid) => {
     const currentPermissions = get(project, 'permissions')
     const permissions = omit(currentPermissions, [uid])
     const currentCollaborators = get(project, 'collaborators')

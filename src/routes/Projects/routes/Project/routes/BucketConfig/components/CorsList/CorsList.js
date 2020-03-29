@@ -30,21 +30,21 @@ function CorsList({ classes, fields, meta: { error, submitFailed } }) {
           <div className="flex-column">
             <FieldArray
               name={`${member}.origin`}
-              component={props => <CorsOriginList {...props} />}
+              component={(props) => <CorsOriginList {...props} />}
             />
             <FormControl className={classes.field}>
               <InputLabel htmlFor="method">HTTP Methods To Include</InputLabel>
               <Field
                 name={`${member}.method`}
                 component={Select}
-                format={value => (Array.isArray(value) ? value : [])}
+                format={(value) => (Array.isArray(value) ? value : [])}
                 fullWidth
                 multiple
                 inputProps={{
                   name: 'method',
                   id: 'method'
                 }}>
-                {methods.map(name => (
+                {methods.map((name) => (
                   <MenuItem key={name} value={name}>
                     {name}
                   </MenuItem>

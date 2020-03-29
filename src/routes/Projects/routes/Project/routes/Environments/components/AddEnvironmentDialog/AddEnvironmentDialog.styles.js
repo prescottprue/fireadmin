@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   body: {
     ...theme.flexColumn,
     alignItems: 'center',

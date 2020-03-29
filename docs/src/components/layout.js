@@ -18,14 +18,14 @@ import './index.css'
 import 'prismjs/themes/prism-tomorrow.css'
 
 function groupBySlugLength(pages) {
-  return groupBy(pages, page => {
+  return groupBy(pages, (page) => {
     const slug = get(page, 'node.frontmatter.slug') || ''
     return slug.split('/')[0]
   })
 }
 
 function topLevelChapters(pages) {
-  return filter(pages, page => {
+  return filter(pages, (page) => {
     const slug = get(page, 'node.frontmatter.slug') || ''
     return slug.split('/').length === 1
   })
@@ -87,7 +87,7 @@ Layout.propTypes = {
 
 const drawerWidth = 260
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     display: 'flex'
   },

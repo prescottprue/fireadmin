@@ -43,7 +43,7 @@ function getMessagingToken() {
     vapidKeyHasBeenInitialized = true
   }
 
-  return messaging.getToken().catch(err => {
+  return messaging.getToken().catch((err) => {
     console.error('Unable to retrieve refreshed token ', err) // eslint-disable-line no-console
     return Promise.reject(err)
   })
@@ -66,7 +66,7 @@ function requestPermission() {
     .messaging()
     .requestPermission()
     .then(getTokenAndWriteToProfile)
-    .catch(err => {
+    .catch((err) => {
       if (
         err &&
         (err.code === 'messaging/permission-blocked' ||
@@ -101,7 +101,7 @@ export function initializeMessaging(dispatch) {
   // - a message is received while the app has focus
   // - the user clicks on an app notification created by a service worker
   //   `messaging.setBackgroundMessageHandler` handler.
-  messaging.onMessage(payload => {
+  messaging.onMessage((payload) => {
     const DEFAULT_MESSAGE = 'Message!'
     const message = get(payload, 'notification.body', DEFAULT_MESSAGE)
     const messageMethod = message.toLowerCase().includes('success')

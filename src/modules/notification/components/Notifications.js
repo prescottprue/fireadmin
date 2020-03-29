@@ -22,7 +22,7 @@ const variantIcon = {
   info: InfoIcon
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   success: {
     backgroundColor: green[600]
   },
@@ -62,7 +62,7 @@ function Notifications({
 
   return (
     <div>
-      {allIds.map(id => {
+      {allIds.map((id) => {
         const Icon = variantIcon[byId[id].type] || variantIcon[variant]
         function dismissNotificationById() {
           return dismissNotification(id)

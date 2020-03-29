@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   field: theme.field,
   addAction: {
     marginTop: '.5rem',

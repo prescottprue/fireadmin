@@ -38,7 +38,7 @@ export default compose(
   // Render NoRecentActions component if no recent actions exist
   renderWhileEmpty(['recentActions'], NoRecentActions),
   withProps(({ recentActions, displayNames, environments }) => ({
-    orderedActions: map(recentActions, event => {
+    orderedActions: map(recentActions, (event) => {
       const createdBy = get(event, 'createdBy')
       const envLabelFromEnvironmentValIndex = (envIndex = 0) => {
         const envKey = get(event, `eventData.environmentValues.${envIndex}`)

@@ -50,13 +50,13 @@ export function createIndexFunc({
     }
     const firebaseObject = Object.assign({}, data, { objectID })
     return Promise.all([
-      index.saveObject(firebaseObject).then(algoliaResponse => {
+      index.saveObject(firebaseObject).then((algoliaResponse) => {
         console.log(
           `Object with ID: ${objectID} successfully saved to index: ${indexName} on Algolia successfully. Exiting.`
         )
         return algoliaResponse
       }),
-      ...otherPromises.map(otherPromiseCreator =>
+      ...otherPromises.map((otherPromiseCreator) =>
         otherPromiseCreator(data, objectID)
       )
     ]).then(() => firebaseObject)

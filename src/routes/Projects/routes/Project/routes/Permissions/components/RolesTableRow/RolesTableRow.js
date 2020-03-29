@@ -84,7 +84,7 @@ function RolesTableRow({
                     width: 200
                   }
                 }}>
-                {editOptions.map(option => (
+                {editOptions.map((option) => (
                   <MenuItem key={option} onClick={startDelete}>
                     <ListItemIcon className={classes.icon}>
                       <DeleteIcon />

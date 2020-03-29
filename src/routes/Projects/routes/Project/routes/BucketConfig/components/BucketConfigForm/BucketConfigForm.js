@@ -107,7 +107,7 @@ function BucketConfigForm({
         </Typography>
         <FieldArray
           name="body.cors"
-          component={props => <CorsList {...props} />}
+          component={(props) => <CorsList {...props} />}
         />
       </Paper>
     </form>

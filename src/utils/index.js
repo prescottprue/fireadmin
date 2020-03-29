@@ -16,7 +16,7 @@ export function databaseURLToProjectName(databaseURL) {
 }
 
 export function createPermissionChecker(state, props) {
-  return permission => {
+  return (permission) => {
     const permissionsByType = currentUserProjectPermissions(state, props)
     return get(permissionsByType, permission) === true
   }

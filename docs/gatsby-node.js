@@ -41,8 +41,8 @@ exports.createPages = async function createPages({ graphql, actions }) {
 
   // generate pages
   markdownFiles
-    .filter(item => item.node.frontmatter.type === 'page')
-    .forEach(page => {
+    .filter((item) => item.node.frontmatter.type === 'page')
+    .forEach((page) => {
       createPage({
         path: page.node.frontmatter.slug,
         component: pageTemplate,

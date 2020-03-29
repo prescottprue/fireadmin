@@ -17,7 +17,7 @@ function FormRadioGroupField({ label, input, children, options }) {
         onChange={input.onChange}>
         {children ||
           (options &&
-            options.map(option => (
+            options.map((option) => (
               <FormControlLabel
                 key={option && option.value}
                 value={option && option.value}

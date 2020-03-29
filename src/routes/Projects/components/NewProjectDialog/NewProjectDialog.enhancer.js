@@ -10,7 +10,7 @@ export default compose(
     onSubmitSuccess: (result, dispatch, props) => props.reset()
   }),
   withHandlers({
-    closeAndReset: props => () => {
+    closeAndReset: (props) => () => {
       props.reset()
       props.onRequestClose && props.onRequestClose()
     }

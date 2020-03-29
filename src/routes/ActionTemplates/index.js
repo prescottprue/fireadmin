@@ -1,12 +1,11 @@
-import { Loadable } from 'utils/components'
+import { loadable } from 'utils/router'
 import { ACTION_TEMPLATES_PATH as path } from 'constants/paths'
 
 export default {
   path,
-  component: Loadable({
-    loader: () =>
-      import(
-        /* webpackChunkName: 'ActionTemplates' */ './components/ActionTemplatesPage'
-      )
-  })
+  component: loadable(() =>
+    import(
+      /* webpackChunkName: 'ActionTemplates' */ './components/ActionTemplatesPage'
+    )
+  )
 }

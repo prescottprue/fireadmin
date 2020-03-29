@@ -6,10 +6,10 @@ import { LIST_PATH } from 'constants/paths'
 export default compose(
   withRouter,
   withHandlers({
-    goTo: ({ history, match }) => value => {
+    goTo: ({ history, match }) => (value) => {
       history.push(`${LIST_PATH}/${match.params.projectId}/${value}`)
     },
-    itemIsActive: ({ location, match }) => value => {
+    itemIsActive: ({ location, match }) => (value) => {
       const currentParentRoute = `${LIST_PATH}/${match.params.projectId}/`
       return value === ''
         ? `${location.pathname}/` === currentParentRoute ||

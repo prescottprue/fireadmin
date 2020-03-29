@@ -11,7 +11,7 @@ import { to } from 'utils/async'
  * @return {Promise} Resolves after environment has been added and
  * success message has been displayed to user
  */
-export const addEnvironment = props => async newProjectData => {
+export const addEnvironment = (props) => async (newProjectData) => {
   const { firestore, firebase, projectId, uid } = props
   const locationConf = {
     collection: 'projects',
@@ -91,7 +91,7 @@ export const addEnvironment = props => async newProjectData => {
  * @returns {Promise} Resolves after environment has been removed and
  * success message has been displayed to user
  */
-export const removeEnvironment = props => async () => {
+export const removeEnvironment = (props) => async () => {
   const {
     firestore,
     showError,
@@ -133,7 +133,7 @@ export const removeEnvironment = props => async () => {
  * @returns {Promise} Resolves after environment has been updated and
  * success message has been displayed to user
  */
-export const updateEnvironment = props => async newValues => {
+export const updateEnvironment = (props) => async (newValues) => {
   const { firestore, projectId, uid, selectedKey } = props
   try {
     await firestore.update(

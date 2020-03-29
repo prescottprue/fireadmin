@@ -49,13 +49,9 @@ describe('Project - Actions Page', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
-      cy.get(createSelector('search-result'))
-        .first()
-        .click()
+      cy.get(createSelector('search-result')).first().click()
       // Open source select field
-      cy.get(createSelector('environment-select'))
-        .first()
-        .click()
+      cy.get(createSelector('environment-select')).first().click()
       // Config that locked-env is disabled
       cy.get(createSelector(`environment-option-${lockedEnvId}`)).should(
         'have.css',
@@ -68,13 +64,9 @@ describe('Project - Actions Page', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
-      cy.get(createSelector('search-result'))
-        .first()
-        .click()
+      cy.get(createSelector('search-result')).first().click()
       // Open destination select field
-      cy.get(createSelector('environment-select'))
-        .last()
-        .click()
+      cy.get(createSelector('environment-select')).last().click()
       // Pick first option for the destination environment
       // Confirm that locked-env is disabled is disabled
       cy.get(createSelector(`environment-option-${lockedEnvId}`)).should(
@@ -101,9 +93,7 @@ describe('Project - Actions Page', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
-      cy.get(createSelector('search-result'))
-        .first()
-        .click()
+      cy.get(createSelector('search-result')).first().click()
       // Open dest select field
       cy.get(createSelector('environment-select'))
         .last()
@@ -134,9 +124,7 @@ describe('Project - Actions Page', () => {
       // Search for an action template
       cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
       // Select the first action template
-      cy.get(createSelector('search-result'))
-        .first()
-        .click()
+      cy.get(createSelector('search-result')).first().click()
       // Open destination select field
       cy.get(createSelector('environment-select'))
         .first()
@@ -175,14 +163,9 @@ describe('Project - Actions Page', () => {
         .scrollIntoView()
         .type('Copy Firestore Collection')
       // Select the first action template
-      cy.get(createSelector('search-result'))
-        .first()
-        .scrollIntoView()
-        .click()
+      cy.get(createSelector('search-result')).first().scrollIntoView().click()
       // Open source select field
-      cy.get(createSelector('environment-select'))
-        .first()
-        .click()
+      cy.get(createSelector('environment-select')).first().click()
       // Pick the src env
       cy.get(createSelector(`environment-option-${srcId}`)).click()
       // Click away
@@ -195,9 +178,7 @@ describe('Project - Actions Page', () => {
       // Pick the dest env
       cy.get(createSelector(`environment-option-${destId}`)).click()
       // Fill out the input (which collection to copy)
-      cy.get(createSelector('action-input'))
-        .first()
-        .type('test')
+      cy.get(createSelector('action-input')).first().type('test')
       // Click run action button to start action run
       cy.get(createSelector('run-action-button'))
         .scrollIntoView()
@@ -208,7 +189,7 @@ describe('Project - Actions Page', () => {
         orderByChild: 'createdAt',
         limitToLast: 1,
         shallow: true
-      }).then(requests => {
+      }).then((requests) => {
         cy.log('requests:', requests)
         cy.wrap(requests[Object.keys(requests)[0]])
           .its('createdBy')

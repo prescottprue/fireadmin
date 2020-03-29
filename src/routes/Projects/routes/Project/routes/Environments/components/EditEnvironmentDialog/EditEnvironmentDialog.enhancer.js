@@ -31,7 +31,7 @@ export default compose(
       locked = false,
       writeOnly = false,
       readOnly = false
-    } = mapValues(formValues, val => (!isBoolean(val) ? false : val))
+    } = mapValues(formValues, (val) => (!isBoolean(val) ? false : val))
     return {
       lockedDisabled: envUpdateDisabled || writeOnly || readOnly,
       readOnlyDisabled: envUpdateDisabled || locked || writeOnly,
@@ -39,7 +39,7 @@ export default compose(
     }
   }),
   withHandlers({
-    closeAndReset: ({ reset, onRequestClose }) => value => {
+    closeAndReset: ({ reset, onRequestClose }) => (value) => {
       reset()
       onRequestClose && onRequestClose()
     }

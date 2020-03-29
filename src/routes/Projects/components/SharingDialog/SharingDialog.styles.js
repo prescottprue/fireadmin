@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   content: {
     ...theme.flexColumnCenter,
     width: '30rem'

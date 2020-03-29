@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   heading: {
     fontSize: theme.typography.pxToRem(18),
     fontWeight: theme.typography.fontWeightRegular

@@ -22,14 +22,14 @@ async function removeCollection(collectionSnap) {
     `Removing ${collectionQueryResult.size} docs from the "${collectionSnap.id}" subcollection`
   )
   const docRefs = []
-  collectionQueryResult.forEach(doc => {
+  collectionQueryResult.forEach((doc) => {
     docRefs.push(doc)
   })
 
   // Remove all documents from collection (removing the document's
   // subcollections first if they exist)
   return Promise.all(
-    docRefs.map(async docSnap => {
+    docRefs.map(async (docSnap) => {
       // Remove all subcollections before deleting document
       const [deleteSubcollectionsErr] = await to(
         removeAllCollections(docSnap.ref)
@@ -82,7 +82,7 @@ async function removeAllCollections(docRef) {
   }
   // Add each collection snap to a snaps array
   const snaps = []
-  collectionSnaps.forEach(collectionSnap => {
+  collectionSnaps.forEach((collectionSnap) => {
     snaps.push(collectionSnap)
   })
   // Remove each collection

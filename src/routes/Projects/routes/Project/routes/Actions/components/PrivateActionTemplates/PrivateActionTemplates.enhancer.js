@@ -29,7 +29,7 @@ export default compose(
   spinnerWhileLoading(['templates']),
   renderWhileEmpty(['templates'], NoTemplatesFound),
   withHandlers({
-    itemClickHandler: props => item =>
+    itemClickHandler: (props) => (item) =>
       function onItemClick(e) {
         props.onTemplateClick(item)
       }

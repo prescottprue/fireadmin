@@ -45,7 +45,7 @@ describe('indexUser RTDB Cloud Function (onWrite)', () => {
   })
 
   // Skipped due to "Uncaught TypeError: server[kServerResponse] is not a constructor" on CI environment
-  it.skip('removes user when user profile is being deleted', async function() {
+  it.skip('removes user when user profile is being deleted', async function () {
     const res = await indexUser(
       { after: { exists: false } },
       { params: { userId: 'asdf' } }
@@ -62,7 +62,7 @@ describe('indexUser RTDB Cloud Function (onWrite)', () => {
   })
 
   // Skipped due to "Uncaught TypeError: server[kServerResponse] is not a constructor" on CI environment
-  it.skip('updates profile with new displayName if changed', async function() {
+  it.skip('updates profile with new displayName if changed', async function () {
     const objectID = 'asdf'
     const afterData = { displayName: 'fdas' }
     const res = await indexUser(

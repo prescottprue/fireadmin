@@ -1,12 +1,11 @@
-import { Loadable } from 'utils/components'
+import { loadable } from 'utils/router'
 import { PERMISSIONS_PATH as path } from 'constants/paths'
 
 export default {
   path,
-  component: Loadable({
-    loader: () =>
-      import(
-        /* webpackChunkName: 'ProjectPermissions' */ './components/Permissions'
-      )
-  })
+  component: loadable(() =>
+    import(
+      /* webpackChunkName: 'ProjectPermissions' */ './components/Permissions'
+    )
+  )
 }

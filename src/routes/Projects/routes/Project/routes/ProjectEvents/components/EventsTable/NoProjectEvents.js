@@ -23,7 +23,7 @@ NoProjectEvents.propTypes = {
   classes: PropTypes.object.isRequired // from enhancer (withStyles)
 }
 
-const styles = theme => ({
+const styles = (theme) => ({
   empty: {
     ...theme.flexColumnCenter,
     padding: '3rem'

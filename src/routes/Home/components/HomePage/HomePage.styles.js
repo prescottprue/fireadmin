@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   root: {
     paddingTop: '4rem',
     overflowY: 'scroll',

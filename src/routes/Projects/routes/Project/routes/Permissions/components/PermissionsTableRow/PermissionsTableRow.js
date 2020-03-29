@@ -70,7 +70,7 @@ function PermissionsTableRow({
                   width: 200
                 }
               }}>
-              {editOptions.map(option => (
+              {editOptions.map((option) => (
                 <MenuItem key={option} onClick={closeAndCallDelete}>
                   <ListItemIcon className={classes.icon}>
                     <DeleteIcon />

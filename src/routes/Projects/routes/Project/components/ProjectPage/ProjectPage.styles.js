@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   root: {
     ...theme.flexColumnCenter,
     marginBottom: theme.spacing(4)

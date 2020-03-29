@@ -11,7 +11,7 @@ export default compose(
       anchorEl: initialAnchorEl
     }),
     {
-      toggleSharingDialog: ({ sharingDialogOpen }) => action => ({
+      toggleSharingDialog: ({ sharingDialogOpen }) => (action) => ({
         sharingDialogOpen: !sharingDialogOpen,
         selectedInstance: action
       }),
@@ -21,7 +21,7 @@ export default compose(
       closeMenu: () => () => ({
         anchorEl: null
       }),
-      menuClick: () => e => ({
+      menuClick: () => (e) => ({
         anchorEl: e.target
       })
     }

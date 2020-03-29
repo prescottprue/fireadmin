@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   add: {
     ...theme.flexRow,
     justifyContent: 'flex-end',

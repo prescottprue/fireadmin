@@ -14,14 +14,14 @@ export default compose(
       selectedServiceAccountInd: null
     }),
     {
-      selectServiceAccount: ({ selectedServiceAccountInd }) => pickInd => ({
+      selectServiceAccount: ({ selectedServiceAccountInd }) => (pickInd) => ({
         selectedServiceAccountInd:
           selectedServiceAccountInd === pickInd ? null : pickInd
       }),
       clearServiceAccount: () => () => ({
         selectedServiceAccountInd: null
       }),
-      dropFiles: ({ droppedFiles, selectedServiceAccountInd }) => files => {
+      dropFiles: ({ droppedFiles, selectedServiceAccountInd }) => (files) => {
         const newDroppedFiles = droppedFiles.concat(files)
         return {
           droppedFiles: newDroppedFiles, // add newly dropped files to existing
@@ -35,7 +35,7 @@ export default compose(
   reduxForm({
     form: NEW_ENVIRONMENT_FORM_NAME
   }),
-  connect(state => {
+  connect((state) => {
     return {
       formValues: selector(state, 'databaseURL', 'name', 'description')
     }

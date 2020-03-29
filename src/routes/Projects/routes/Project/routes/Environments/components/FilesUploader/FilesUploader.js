@@ -27,8 +27,9 @@ function FilesUploader({
       {!isUploading ? (
         <Dropzone
           onDrop={onFilesDrop || dropFiles}
-          className={`${classes.dropzone} ${isCompact &&
-            classes.dropzoneCompact}`}
+          className={`${classes.dropzone} ${
+            isCompact && classes.dropzoneCompact
+          }`}
           activeClassName={classes.dropzoneActive}
           disableClick={disabled}
           accept={acceptedFormats.join(', ')}

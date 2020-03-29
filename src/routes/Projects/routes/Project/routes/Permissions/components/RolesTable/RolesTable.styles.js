@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   root: {
     height: '100%',
     marginTop: '3rem'

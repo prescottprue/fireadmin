@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   sectionHeader: {
     fontSize: '1.3rem'
   },

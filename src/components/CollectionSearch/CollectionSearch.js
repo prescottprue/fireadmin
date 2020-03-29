@@ -28,7 +28,7 @@ function CollectionSearch({
     : [uid].concat(
         // ignore logged in user and ignoreSuggestions
         ignoreSuggestions.map(
-          suggestion => suggestion.id || suggestion.objectID
+          (suggestion) => suggestion.id || suggestion.objectID
         )
       )
 

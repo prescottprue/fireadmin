@@ -5,7 +5,7 @@ import { StyledLink } from '../Commons'
 function RelatedPosts({ posts }) {
   return (
     <ul>
-      {posts.map(post => {
+      {posts.map((post) => {
         const title = post.node.frontmatter.title
         const slug = post.node.frontmatter.slug
         return (

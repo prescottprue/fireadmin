@@ -65,7 +65,7 @@ export default compose(
     const environmentValues = formSelector(state, 'environmentValues')
     const environmentsById = get(data, `environments-${projectId}`)
     // Populate selected keys from form into list of environment objects
-    const selectedEnvironments = map(environmentValues, envKey =>
+    const selectedEnvironments = map(environmentValues, (envKey) =>
       get(data, `environments-${projectId}.${envKey}`)
     )
     return {
@@ -93,7 +93,7 @@ export default compose(
       closeTemplateEdit: () => () => ({
         templateEditExpanded: false
       }),
-      selectActionTemplate: () => newSelectedTemplate => ({
+      selectActionTemplate: () => (newSelectedTemplate) => ({
         selectedTemplate: newSelectedTemplate,
         templateEditExpanded: false,
         inputsExpanded: true,

@@ -392,7 +392,7 @@ export async function runStep({
           step,
           convertedInputValues,
           eventData
-        ).catch(batchErr => {
+        ).catch((batchErr) => {
           // Fallback to copying without batching
           console.error('Batch copy error:', batchErr)
           console.error('Batch copy error info', { inputs, step, eventData })

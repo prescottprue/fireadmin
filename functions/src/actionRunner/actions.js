@@ -74,8 +74,9 @@ export async function copyFromFirestoreToRTDB(
   // Handle errors getting original data
   if (getErr) {
     console.error(
-      `Error getting data from first firestore instance: ${getErr.message ||
-        ''}`,
+      `Error getting data from first firestore instance: ${
+        getErr.message || ''
+      }`,
       getErr
     )
     throw getErr
@@ -298,7 +299,7 @@ export async function batchCopyBetweenRTDBInstances(
     keysChunks.map((keyChunk, i) => {
       console.log(`Copying key chunk: "${i}" from path: "${srcPath}"`)
       return Promise.all(
-        keyChunk.map(rtdbKey =>
+        keyChunk.map((rtdbKey) =>
           copyPathBetweenRTDBInstances(
             app1,
             app2,

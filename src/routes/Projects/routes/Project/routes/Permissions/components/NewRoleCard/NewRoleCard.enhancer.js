@@ -14,7 +14,7 @@ export default compose(
     reset: PropTypes.func.isRequired // from reduxForm
   }),
   withHandlers({
-    closeAndReset: props => value => {
+    closeAndReset: (props) => (value) => {
       props.reset()
       props.onRequestClose()
     }

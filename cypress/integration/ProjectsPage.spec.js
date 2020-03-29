@@ -47,7 +47,7 @@ describe('Projects Page', () => {
       cy.waitUntil(() =>
         cy
           .callFirestore('get', 'projects/test-delete-project')
-          .then(deletedProject => deletedProject === null)
+          .then((deletedProject) => deletedProject === null)
       )
     })
   })
@@ -85,9 +85,7 @@ describe('Projects Page', () => {
     })
 
     it('does not display the same project twice (even is creator is also collaborator)', () => {
-      cy.get(createSelector('project-tile-name'))
-        .its('length')
-        .should('be', 3)
+      cy.get(createSelector('project-tile-name')).its('length').should('be', 3)
     })
   })
 })

@@ -125,7 +125,7 @@ function ActionRunnerForm({
                   <Grid item xs={10} md={6} key={`Environment-${index}`}>
                     <Field
                       name={`environmentValues.${index}`}
-                      component={props => <OutlinedSelect {...props} />}
+                      component={(props) => <OutlinedSelect {...props} />}
                       fullWidth
                       props={{
                         label: get(input, `name`) || `Environment ${index + 1}`

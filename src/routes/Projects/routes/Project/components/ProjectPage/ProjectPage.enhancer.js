@@ -71,20 +71,22 @@ export default compose(
       envDialogOpen: false
     }),
     {
-      addAction: ({ selectedActions }) => action => ({
+      addAction: ({ selectedActions }) => (action) => ({
         selectedActions: selectedActions.concat(action)
       }),
-      toggleDialogWithData: ({ envDialogOpen }) => action => ({
+      toggleDialogWithData: ({ envDialogOpen }) => (action) => ({
         envDialogOpen: !envDialogOpen,
         selectedInstance: action
       }),
       toggleDialog: ({ envDialogOpen }) => () => ({
         envDialogOpen: !envDialogOpen
       }),
-      removeAction: ({ selectedActions }) => ind => ({
+      removeAction: ({ selectedActions }) => (ind) => ({
         selectedActions: selectedActions.filter((_, i) => i !== ind)
       }),
-      selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => ({
+      selectServiceAccount: ({ selectedServiceAccount }) => (
+        pickedAccount
+      ) => ({
         selectedServiceAccount: pickedAccount
       })
     }

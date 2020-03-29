@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   root: {
     padding: '2rem'
   },
