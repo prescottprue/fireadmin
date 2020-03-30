@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'docs/**'
+      - '.github/workflows/docs-deploy.yml'
     branches:
       - master
       - prod
@@ -40,6 +41,7 @@ jobs:
       - name: Install Dependencies
         env:
           CYPRESS_INSTALL_BINARY: 0 # Skip installing of cypress
+          CI: true
         run: |
           yarn install --frozen-lockfile
           yarn --cwd docs install --frozen-lockfile

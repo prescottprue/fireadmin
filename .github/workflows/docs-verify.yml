@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'docs/**'
+      - '.github/workflows/docs-deploy.yml'
 
 jobs:
   verify-build:
@@ -36,7 +37,7 @@ jobs:
 
       - name: Verify
         run: |
-          yarn lint:docs
+          yarn --cwd docs lint
 
       - name: Build
         run: |
