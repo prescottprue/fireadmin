@@ -40,7 +40,9 @@ function PermissionsTableRow({
 }) {
   return (
     <ExpansionPanel className={classes.root}>
-      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+      <ExpansionPanelSummary
+        expandIcon={<ExpandMoreIcon />}
+        data-test="member-expand">
         <Typography className={classes.displayName}>
           {displayName || uid}
         </Typography>
@@ -56,7 +58,8 @@ function PermissionsTableRow({
               aria-label="More"
               aria-owns="long-menu"
               aria-haspopup="true"
-              onClick={handleMenuClick}>
+              onClick={handleMenuClick}
+              data-test={`member-more-${uid}`}>
               <MoreVertIcon />
             </IconButton>
             <Menu
@@ -71,7 +74,10 @@ function PermissionsTableRow({
                 }
               }}>
               {editOptions.map((option) => (
-                <MenuItem key={option} onClick={closeAndCallDelete}>
+                <MenuItem
+                  key={option}
+                  onClick={closeAndCallDelete}
+                  data-test="member-delete">
                   <ListItemIcon className={classes.icon}>
                     <DeleteIcon />
                   </ListItemIcon>
@@ -94,12 +100,14 @@ function PermissionsTableRow({
                   inputProps={{
                     name: 'role',
                     id: 'role'
-                  }}>
+                  }}
+                  data-test="role-select">
                   {roleOptions.map((option, idx) => (
                     <MenuItem
                       key={`Role-Option-${option.value}-${idx}`}
                       value={option.value}
-                      disabled={option.disabled}>
+                      disabled={option.disabled}
+                      data-test={`role-option-${option.value}`}>
                       <ListItemText
                         primary={option.name || capitalize(option.value)}
                       />
@@ -123,7 +131,8 @@ function PermissionsTableRow({
               color="primary"
               variant="contained"
               aria-label="Update Member"
-              type="submit">
+              type="submit"
+              data-test="update-member-button">
               Update Member
             </Button>
           </div>

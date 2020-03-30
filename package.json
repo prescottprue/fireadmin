@@ -13,7 +13,7 @@
     "emulate:all": "firebase emulators:start --only firestore,database,hosting",
     "dev": "concurrently -c yellow,green npm:emulate:dbs \"sleep 7 && yarn dev\"",
     "start:emulate": "cross-env REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" REACT_APP_FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn start",
-    "test:emulate": "cross-env FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" CYPRESS_TEST_UID=\"aDLWpwXbcpNAUcWA7pJcJtdw6sC2\" yarn test:open",
+    "test:emulate": "cross-env FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" CYPRESS_TEST_UID=$npm_package_config_testUid yarn test:open",
     "build:config": "firebase-ci createConfig",
     "build:size": "yarn build && size-limit",
     "build:size:why": "yarn build && yarn size --why",
@@ -31,8 +31,8 @@
     "lint:tests": "eslint cypress",
     "lint:docs": "eslint docs",
     "lint:fix": "yarn lint --fix",
-    "test": "cross-env CYPRESS_BASE_URL=\"http://localhost:$npm_package_config_port\" cypress run",
-    "test:open": "cross-env CYPRESS_BASE_URL=\"http://localhost:$npm_package_config_port\" cypress open",
+    "test": "cross-env CYPRESS_BASE_URL=\"http://localhost:$npm_package_config_port\" CYPRESS_TEST_UID=$npm_package_config_testUid cypress run",
+    "test:open": "cross-env CYPRESS_BASE_URL=\"http://localhost:$npm_package_config_port\" CYPRESS_TEST_UID=$npm_package_config_testUid cypress open",
     "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\""
   },
   "dependencies": {
@@ -114,7 +114,8 @@
   "author": "prescottprue (https://github.com/prescottprue)",
   "license": "MIT",
   "config": {
-    "port": 3000
+    "port": 3000,
+    "testUid": "aDLWpwXbcpNAUcWA7pJcJtdw6sC2"
   },
   "husky": {
     "hooks": {

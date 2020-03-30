@@ -24,7 +24,6 @@ function AccountForm({ account, onSubmit }) {
     defaultValues: account
   })
 
-  console.log('account', account)
   return (
     <form className={classes.root} onSubmit={handleSubmit(onSubmit)}>
       <div className={classes.fields}>

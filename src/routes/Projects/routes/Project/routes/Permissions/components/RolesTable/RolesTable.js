@@ -1,26 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Collapse from '@material-ui/core/Collapse'
 import Typography from '@material-ui/core/Typography'
 import DownArrow from '@material-ui/icons/ArrowDownward'
+import { makeStyles } from '@material-ui/core/styles'
 import { PROJECT_ROLES_FORM_NAME } from 'constants/formNames'
 import RolesTableRow from '../RolesTableRow'
 import NewRoleCard from '../NewRoleCard'
 import NoRolesFound from './NoRolesFound'
+import styles from './RolesTable.styles'
+
+const useStyles = makeStyles(styles)
 
 function RolesTable({
   orderedRoles,
-  classes,
   addRole,
   updateRole,
   deleteRole,
-  openNewRole,
-  newRoleOpen,
-  closeNewRole,
-  addRoleDisabled,
   projectId
 }) {
+  const classes = useStyles()
+  const [newRoleOpen, changeRoleOpen] = useState()
+  const openNewRole = () => changeRoleOpen(true)
+  const closeNewRole = () => changeRoleOpen(false)
+
   return (
     <div className={classes.root}>
       <Typography className={classes.heading}>Roles</Typography>
@@ -30,7 +34,7 @@ function RolesTable({
           variant="contained"
           aria-label="Add Role"
           onClick={openNewRole}
-          disabled={addRoleDisabled}>
+          disabled={newRoleOpen}>
           Add Role
         </Button>
       </div>
@@ -64,14 +68,9 @@ function RolesTable({
 }
 
 RolesTable.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   addRole: PropTypes.func.isRequired, // from enhancer (withHandlers)
   updateRole: PropTypes.func.isRequired, // from enhancer (withHandlers)
   deleteRole: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  openNewRole: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  closeNewRole: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  newRoleOpen: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
-  addRoleDisabled: PropTypes.bool.isRequired, // from enhancer (withProps)
   projectId: PropTypes.string.isRequired,
   orderedRoles: PropTypes.array
 }

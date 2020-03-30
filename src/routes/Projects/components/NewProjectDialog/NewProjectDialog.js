@@ -1,32 +1,41 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useForm } from 'react-hook-form'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import { makeStyles } from '@material-ui/core/styles'
-import { Field } from 'redux-form'
-import TextField from 'components/FormTextField'
-import { required } from 'utils/form'
+import TextField from '@material-ui/core/TextField'
 import styles from './NewProjectDialog.styles'
 
 const useStyles = makeStyles(styles)
 
-function NewProjectDialog({ handleSubmit, open, onRequestClose }) {
+function NewProjectDialog({ onSubmit, open, onRequestClose }) {
   const classes = useStyles()
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState: { isSubmitting, isValid }
+  } = useForm({ mode: 'onChange' })
 
   return (
     <Dialog open={open} onClose={onRequestClose}>
       <DialogTitle id="new-project-dialog-title">New Project</DialogTitle>
-      <form onSubmit={handleSubmit} className={classes.inputs}>
+      <form onSubmit={handleSubmit(onSubmit)} className={classes.inputs}>
         <DialogContent>
-          <Field
+          <TextField
+            error={!!errors.name}
+            helperText={errors.name && 'Name is required'}
             name="name"
-            component={TextField}
             label="Project Name"
-            validate={[required]}
-            data-test="new-project-name"
+            inputRef={register({
+              required: true
+            })}
+            margin="normal"
+            fullWidth
           />
         </DialogContent>
         <DialogActions>
@@ -36,8 +45,9 @@ function NewProjectDialog({ handleSubmit, open, onRequestClose }) {
           <Button
             type="submit"
             color="primary"
+            disabled={isSubmitting || !isValid}
             data-test="new-project-create-button">
-            Create
+            {isSubmitting ? 'Creating...' : 'Create'}
           </Button>
         </DialogActions>
       </form>
@@ -46,7 +56,7 @@ function NewProjectDialog({ handleSubmit, open, onRequestClose }) {
 }
 
 NewProjectDialog.propTypes = {
-  handleSubmit: PropTypes.func.isRequired, // from enhancer (reduxForm)
+  onSubmit: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   onRequestClose: PropTypes.func.isRequired
 }

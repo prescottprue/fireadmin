@@ -56,7 +56,10 @@ function RolesTableRow({
         onRequestClose={handleDeleteClose}
         onDeleteClick={onDeleteClick}
       />
-      <ExpansionPanel key={roleKey} className={classes.root}>
+      <ExpansionPanel
+        key={roleKey}
+        className={classes.root}
+        data-test={`role-panel-${roleKey}`}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>
             {name || startCase(roleKey)}
@@ -70,7 +73,8 @@ function RolesTableRow({
                 aria-label="More"
                 aria-owns="long-menu"
                 aria-haspopup="true"
-                onClick={handleMenuClick}>
+                onClick={handleMenuClick}
+                data-test={`role-more-${roleKey}`}>
                 <MoreVertIcon />
               </IconButton>
               <Menu
@@ -85,7 +89,10 @@ function RolesTableRow({
                   }
                 }}>
                 {editOptions.map((option) => (
-                  <MenuItem key={option} onClick={startDelete}>
+                  <MenuItem
+                    key={option}
+                    onClick={startDelete}
+                    data-test="role-delete">
                     <ListItemIcon className={classes.icon}>
                       <DeleteIcon />
                     </ListItemIcon>
@@ -121,6 +128,7 @@ function RolesTableRow({
                         name={`create.${option.value}`}
                         disabled={updateRolesDisabled}
                         component={Checkbox}
+                        data-test={`create-option-${option.value}`}
                       />
                     }
                   />
@@ -137,6 +145,7 @@ function RolesTableRow({
                         name={`read.${option.value}`}
                         disabled={updateRolesDisabled}
                         component={Checkbox}
+                        data-test={`read-option-${option.value}`}
                       />
                     }
                   />
@@ -153,6 +162,7 @@ function RolesTableRow({
                         name={`update.${option.value}`}
                         disabled={updateRolesDisabled}
                         component={Checkbox}
+                        data-test={`update-option-${option.value}`}
                       />
                     }
                   />
@@ -169,6 +179,7 @@ function RolesTableRow({
                         name={`delete.${option.value}`}
                         disabled={updateRolesDisabled}
                         component={Checkbox}
+                        data-test={`delete-option-${option.value}`}
                       />
                     }
                   />
@@ -179,18 +190,20 @@ function RolesTableRow({
               <Button
                 disabled={pristine}
                 color="secondary"
-                aria-label="Run Action"
+                aria-label="Cancel Role Update"
                 onClick={reset}
-                style={{ marginRight: '2rem' }}>
+                style={{ marginRight: '2rem' }}
+                data-test="role-cancel">
                 Cancel
               </Button>
               <Button
-                disabled={pristine || updateRolesDisabled}
+                disabled={updateRolesDisabled}
                 color="primary"
                 variant="contained"
-                aria-label="Run Action"
-                type="submit">
-                Update Member
+                aria-label="Update Role"
+                type="submit"
+                data-test="role-update">
+                Update Role
               </Button>
             </div>
           </form>

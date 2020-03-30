@@ -40,7 +40,8 @@ function DeleteMemberModal({
         <Button
           color="primary"
           disabled={removeDisabled}
-          onClick={removeAndClose}>
+          onClick={removeAndClose}
+          data-test="delete-submit">
           Remove
         </Button>
       </DialogActions>
