@@ -16,8 +16,8 @@ export function getFixtureBlob(fileUrl, type) {
     ? cy
         .fixture(fileUrl)
         .then(JSON.stringify)
-        .then(jsonStr => new Blob([jsonStr], { type: 'application/json' }))
+        .then((jsonStr) => new Blob([jsonStr], { type: 'application/json' }))
     : cy
         .fixture(fileUrl, 'base64')
-        .then(item => Cypress.Blob.base64StringToBlob(item, type))
+        .then((item) => Cypress.Blob.base64StringToBlob(item, type))
 }

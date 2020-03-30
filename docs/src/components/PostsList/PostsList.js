@@ -6,7 +6,7 @@ function PostsList({ posts }) {
   return (
     <Fragment>
       {posts &&
-        posts.map(post => {
+        posts.map((post) => {
           const itemProps = {
             title: post.node.frontmatter.title,
             excerpt: post.node.excerpt,

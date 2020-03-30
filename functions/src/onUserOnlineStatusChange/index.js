@@ -28,7 +28,7 @@ async function onUserOnlineStatusChangeEvent(change, context) {
   // this event has already been overwritten by a fast change in
   // online / offline status, so we'll re-read the current data
   // and compare the timestamps.
-  return change.after.ref.once('value').then(statusSnapshot => {
+  return change.after.ref.once('value').then((statusSnapshot) => {
     const status = statusSnapshot.val()
     console.log(status, eventStatus)
     // If the current timestamp for this data is newer than

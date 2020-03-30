@@ -7,7 +7,7 @@ import { withPrefix } from 'gatsby'
  * @param {Array} pages - List of pages
  */
 export function getChildChapters(pages) {
-  return filter(pages, page => {
+  return filter(pages, (page) => {
     const slug = get(page, 'node.frontmatter.slug') || ''
     return slug.split('/').length > 1
   })

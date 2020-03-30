@@ -1,12 +1,9 @@
-import { Loadable } from 'utils/components'
+import { loadable } from 'utils/router'
 import { PROJECT_ACTION_PATH as path } from 'constants/paths'
 
 export default {
   path,
-  component: Loadable({
-    loader: () =>
-      import(
-        /* webpackChunkName: 'ProjectActions' */ './components/ActionsPage'
-      )
-  })
+  component: loadable(() =>
+    import(/* webpackChunkName: 'ProjectActions' */ './components/ActionsPage')
+  )
 }

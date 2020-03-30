@@ -22,7 +22,7 @@ export default compose(
       deleteDialogOpen: false
     }),
     {
-      handleMenuClick: () => e => ({
+      handleMenuClick: () => (e) => ({
         anchorEl: e.target
       }),
       handleMenuClose: () => () => ({

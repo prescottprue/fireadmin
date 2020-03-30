@@ -30,7 +30,7 @@ export async function authClientFromServiceAccount(serviceAccount) {
     STORAGE_AND_PLATFORM_SCOPES
   )
   return new Promise((resolve, reject) => {
-    jwtClient.authorize(err => {
+    jwtClient.authorize((err) => {
       if (!err) {
         google.options({ auth: jwtClient })
         resolve(jwtClient)
@@ -167,8 +167,9 @@ export async function serviceAccountFromFirestorePath(
     return tempLocalPath
   } catch (err) {
     console.error(
-      `Error writing service account from Firestore to local file ${err.message ||
-        ''}`,
+      `Error writing service account from Firestore to local file ${
+        err.message || ''
+      }`,
       err
     )
     throw err

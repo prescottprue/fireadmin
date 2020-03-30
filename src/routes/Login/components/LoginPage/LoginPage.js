@@ -29,7 +29,7 @@ function LoginPage({ firebase, showError, history }) {
       .then(() => {
         history.push(LIST_PATH)
       })
-      .catch(err => showError(err.message))
+      .catch((err) => showError(err.message))
   }
 
   return (

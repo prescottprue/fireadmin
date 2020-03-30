@@ -11,12 +11,12 @@ export function saveCollaborators({
   selectedCollaborators,
   showSuccess
 }) {
-  return async newInstance => {
+  return async (newInstance) => {
     const currentProject = await firestore.get(`projects/${project.id}`)
     const projectData = invoke(currentProject, 'data')
     const collaborators = get(projectData, 'collaborators', {})
     const permissions = get(projectData, 'permissions', {})
-    selectedCollaborators.forEach(currentCollaborator => {
+    selectedCollaborators.forEach((currentCollaborator) => {
       if (!get(projectData, `collaborators.${currentCollaborator.objectID}`)) {
         collaborators[currentCollaborator.objectID] = true
         permissions[currentCollaborator.objectID] = {

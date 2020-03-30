@@ -125,7 +125,7 @@ describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
               get: sinon.stub().returns(
                 Promise.resolve({
                   size: 1,
-                  forEach: feCb => {
+                  forEach: (feCb) => {
                     feCb({ ref: { delete: deleteStub } })
                   }
                 })
@@ -152,7 +152,7 @@ describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
               get: sinon.stub().returns(
                 Promise.resolve({
                   size: 1,
-                  forEach: feCb => {
+                  forEach: (feCb) => {
                     feCb({ ref: { delete: deleteStub } })
                   }
                 })

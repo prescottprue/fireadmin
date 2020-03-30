@@ -27,7 +27,7 @@ export default compose(
       anchorEl: null
     }),
     {
-      handleMenuClick: () => e => ({
+      handleMenuClick: () => (e) => ({
         anchorEl: e.target
       }),
       handleMenuClose: () => () => ({
@@ -39,7 +39,7 @@ export default compose(
     roleOptions: getRoleOptions(state, props)
   })),
   withHandlers({
-    closeAndCallDelete: props => () => {
+    closeAndCallDelete: (props) => () => {
       props.handleMenuClose()
       props.onDeleteClick(props.uid)
     }

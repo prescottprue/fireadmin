@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Route } from 'react-router-dom'
 import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
@@ -27,7 +27,7 @@ export const UserIsAuthenticated = connectedRouterRedirect({
     !auth.isEmpty && !!auth.uid,
   authenticatingSelector: ({ firebase: { auth, isInitializing } }) =>
     !auth.isLoaded || isInitializing,
-  redirectAction: newLoc => dispatch => {
+  redirectAction: (newLoc) => (dispatch) => {
     // Use push, replace, and go to navigate around.
     history.push(newLoc)
     dispatch({
@@ -55,7 +55,7 @@ export const UserIsNotAuthenticated = connectedRouterRedirect({
     !auth.isLoaded || isInitializing,
   redirectPath: (state, ownProps) =>
     locationHelper.getRedirectQueryParam(ownProps) || LIST_PATH,
-  redirectAction: newLoc => dispatch => {
+  redirectAction: (newLoc) => (dispatch) => {
     // Use push, replace, and go to navigate around.
     history.push(newLoc)
     dispatch({
@@ -72,13 +72,30 @@ export const UserIsNotAuthenticated = connectedRouterRedirect({
  * @param {Object} parentProps - Props to pass to children from parent
  */
 export function renderChildren(routes, match, parentProps) {
-  return routes.map(route => {
+  return routes.map((route) => {
     return (
       <Route
         key={`${match.url}-${route.path}`}
         path={`${match.url}/${route.path}`}
-        render={props => <route.component {...parentProps} {...props} />}
+        render={(props) => <route.component {...parentProps} {...props} />}
       />
     )
   })
+}
+
+/**
+ * Create component which is loaded async, showing a loading spinner
+ * in the meantime.
+ * @param {Function} loadFunc - Loading options
+ * @returns {React.Component}
+ */
+export function loadable(loadFunc) {
+  const OtherComponent = React.lazy(loadFunc)
+  return function LoadableWrapper(loadableProps) {
+    return (
+      <Suspense fallback={<LoadingSpinner />}>
+        <OtherComponent {...loadableProps} />
+      </Suspense>
+    )
+  }
 }

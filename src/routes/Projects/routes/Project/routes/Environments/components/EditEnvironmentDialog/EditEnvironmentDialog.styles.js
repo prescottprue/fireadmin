@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   card: {
     marginLeft: '1rem',
     marginRight: '1rem',

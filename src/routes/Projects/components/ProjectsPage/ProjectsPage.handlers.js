@@ -7,7 +7,7 @@ import { triggerAnalyticsEvent } from 'utils/analytics'
  * @param {Object} props - component props
  */
 export function addProject(props) {
-  return async newInstance => {
+  return async (newInstance) => {
     const { firestore, firebase, uid, showError } = props
     if (!uid) {
       return showError('You must be logged in to create a project')
@@ -44,7 +44,7 @@ export function addProject(props) {
  * @param {Object} props - component props
  */
 export function deleteProject(props) {
-  return async projectId => {
+  return async (projectId) => {
     const { firestore, showError, showSuccess } = props
     try {
       await firestore.delete({ collection: 'projects', doc: projectId })
@@ -62,7 +62,7 @@ export function deleteProject(props) {
  * @param {Object} props - component props
  */
 export function goToProject({ history }) {
-  return projectId => {
+  return (projectId) => {
     history.push(`${LIST_PATH}/${projectId}`)
   }
 }

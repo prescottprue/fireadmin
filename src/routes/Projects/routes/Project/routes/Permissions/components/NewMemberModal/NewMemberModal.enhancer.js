@@ -19,13 +19,13 @@ export default compose(
       value: ''
     }),
     {
-      setSuggestions: () => suggestions => ({
+      setSuggestions: () => (suggestions) => ({
         suggestions
       }),
       clearSuggestions: () => () => ({
         suggestions: []
       }),
-      selectCollaborator: ({ selectedCollaborators }) => newCollaborator => {
+      selectCollaborator: ({ selectedCollaborators }) => (newCollaborator) => {
         const currentIndex = findIndex(selectedCollaborators, {
           objectID: newCollaborator.id || newCollaborator.objectID
         })
@@ -41,7 +41,7 @@ export default compose(
           selectedCollaborators: newSelected
         }
       },
-      handleChange: () => e => ({
+      handleChange: () => (e) => ({
         value: e.target.value
       }),
       reset: () => () => ({
@@ -79,12 +79,12 @@ export default compose(
       selectedCollaborators,
       project,
       projectId
-    }) => async newInstance => {
+    }) => async (newInstance) => {
       // Get existing collaborators and permissions
       const collaborators = get(project, 'collaborators', {})
       const permissions = get(project, 'permissions', {})
       // Add new collaborators from selectCollaborator prop
-      selectedCollaborators.forEach(currentCollaborator => {
+      selectedCollaborators.forEach((currentCollaborator) => {
         // Only add new collaborators which do not already exist
         if (!get(project, `collaborators.${currentCollaborator.objectID}`)) {
           collaborators[currentCollaborator.objectID] = true

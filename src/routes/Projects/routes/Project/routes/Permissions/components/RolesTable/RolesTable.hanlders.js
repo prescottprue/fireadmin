@@ -37,7 +37,7 @@ export function updateRole({
 }
 
 export function addRole(props) {
-  return async newRole => {
+  return async (newRole) => {
     const { firestore, project, projectId, uid } = props
     const currentRoles = get(project, `roles`, {})
     if (some(currentRoles, { name: newRole.name })) {
@@ -75,7 +75,7 @@ export function deleteRole({
   projectId,
   showSuccess
 }) {
-  return async roleKey => {
+  return async (roleKey) => {
     await firestore.update(`projects/${projectId}`, {
       roles: omit(roles, [roleKey])
     })

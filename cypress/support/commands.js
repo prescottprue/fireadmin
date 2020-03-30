@@ -53,9 +53,9 @@ attachCustomCommands({ Cypress, cy, firebase })
 Cypress.Commands.add(
   'uploadFile',
   (selectorValue, fileUrl, type = 'application/json') => {
-    return cy.get(selectorValue, { force: true }).then(subject => {
-      return getFixtureBlob(fileUrl, type).then(blob => {
-        return cy.window().then(win => {
+    return cy.get(selectorValue, { force: true }).then((subject) => {
+      return getFixtureBlob(fileUrl, type).then((blob) => {
+        return cy.window().then((win) => {
           const el = subject[0]
           const nameSegments = fileUrl.split('/')
           const name = nameSegments[nameSegments.length - 1]

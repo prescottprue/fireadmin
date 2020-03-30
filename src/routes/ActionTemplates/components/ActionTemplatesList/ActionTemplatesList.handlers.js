@@ -12,7 +12,7 @@ import { triggerAnalyticsEvent } from 'utils/analytics'
  * @param {String} props.uid - Component props
  */
 export function createNewActionTemplate(props) {
-  return async newTemplate => {
+  return async (newTemplate) => {
     try {
       const newTemplateWithMeta = {
         public: false,
@@ -46,7 +46,7 @@ export function createNewActionTemplate(props) {
  * @param {Object} props - Component props
  */
 export function deleteTemplate(props) {
-  return async templateId => {
+  return async (templateId) => {
     try {
       // TODO: Add delete confirmation
       await props.firestore.delete(ACTION_TEMPLATES_PATH)
@@ -70,5 +70,5 @@ export function deleteTemplate(props) {
  * @param {Object} props - Component props
  */
 export function goToTemplate(props) {
-  return id => props.history.push(`${ACTION_TEMPLATES_ROUTE}/${id}`)
+  return (id) => props.history.push(`${ACTION_TEMPLATES_ROUTE}/${id}`)
 }

@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   spacer: {
     height: '2rem'
   },

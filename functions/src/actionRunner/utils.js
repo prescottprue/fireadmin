@@ -199,7 +199,7 @@ export async function writeProjectEvent(projectId, extraEventAttributes = {}) {
 export function collectionsSnapToArray(collectionsSnap) {
   const collectionsIds = []
   if (collectionsSnap.forEach) {
-    collectionsSnap.forEach(collectionSnap => {
+    collectionsSnap.forEach((collectionSnap) => {
       collectionsIds.push(collectionSnap.id)
     })
   }
@@ -330,7 +330,7 @@ export async function batchCopyBetweenFirestoreRefs({
         }
 
         return Promise.all(
-          subcollectionNames.map(collectionName =>
+          subcollectionNames.map((collectionName) =>
             batchCopyBetweenFirestoreRefs({
               srcRef: docSrcRef.collection(collectionName),
               destRef: docDestRef.collection(collectionName),
@@ -344,9 +344,9 @@ export async function batchCopyBetweenFirestoreRefs({
 
   if (subcollectionWriteErr) {
     console.error(
-      `Error writing subcollections for collection "${
-        srcRef.id
-      }": ${subcollectionWriteErr.message || ''}`,
+      `Error writing subcollections for collection "${srcRef.id}": ${
+        subcollectionWriteErr.message || ''
+      }`,
       subcollectionWriteErr
     )
     throw subcollectionWriteErr

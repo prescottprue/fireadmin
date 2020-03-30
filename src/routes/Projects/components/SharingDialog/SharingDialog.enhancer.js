@@ -40,13 +40,13 @@ export default compose(
       value: ''
     }),
     {
-      setSuggestions: () => suggestions => ({
+      setSuggestions: () => (suggestions) => ({
         suggestions
       }),
       clearSuggestions: () => () => ({
         suggestions: []
       }),
-      selectCollaborator: ({ selectedCollaborators }) => newCollaborator => {
+      selectCollaborator: ({ selectedCollaborators }) => (newCollaborator) => {
         const currentIndex = findIndex(selectedCollaborators, {
           objectID: newCollaborator.id || newCollaborator.objectID
         })
@@ -62,7 +62,7 @@ export default compose(
           selectedCollaborators: newSelected
         }
       },
-      handleChange: () => e => ({
+      handleChange: () => (e) => ({
         value: e.target.value
       }),
       reset: () => () => ({

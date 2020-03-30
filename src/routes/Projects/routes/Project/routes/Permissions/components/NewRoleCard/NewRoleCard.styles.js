@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   root: {
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing(2),

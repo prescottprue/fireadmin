@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   add: {
     ...theme.flexRowCenter,
     marginBottom: '2rem',

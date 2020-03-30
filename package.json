@@ -36,12 +36,12 @@
     "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\""
   },
   "dependencies": {
-    "@material-ui/core": "^4.4.2",
-    "@material-ui/icons": "^4.4.1",
-    "@sentry/browser": "^5.10.1",
+    "@material-ui/core": "^4.9.8",
+    "@material-ui/icons": "^4.9.1",
+    "@sentry/browser": "^5.15.4",
     "classnames": "^2.2.6",
     "date-fns": "^1.29.0",
-    "firebase": "^7.11.0",
+    "firebase": "^7.13.1",
     "history": "^4.9.0",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
@@ -53,7 +53,6 @@
     "react-ga": "^2.3.5",
     "react-google-button": "^0.7.0",
     "react-instantsearch": "^4.2.0",
-    "react-loadable": "^5.5.0",
     "react-redux": "^5.0.7",
     "react-redux-firebase": "^2.5.0",
     "react-router-dom": "^4.3.1",
@@ -66,13 +65,13 @@
     "reselect": "^3.0.1"
   },
   "devDependencies": {
-    "@size-limit/preset-app": "^2.1.6",
-    "@size-limit/webpack": "^2.1.6",
-    "babel-eslint": "^10.0.0",
+    "@size-limit/preset-app": "^4.4.2",
+    "@size-limit/webpack": "^4.4.2",
+    "babel-eslint": "^10.1.0",
     "concurrently": "^5.1.0",
     "cross-env": "^7.0.0",
     "cypress": "^4.2.0",
-    "cypress-firebase": "1.0.0-beta.3",
+    "cypress-firebase": "^1.0.0",
     "cypress-log-to-output": "^1.0.8",
     "cypress-plugin-retries": "^1.5.2",
     "cypress-wait-until": "^1.6.1",
@@ -81,22 +80,23 @@
     "eslint-config-react-app": "^5.2.0",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-chai-friendly": "^0.5.0",
-    "eslint-plugin-cypress": "^2.9.0",
-    "eslint-plugin-flowtype": "^4.6.0",
+    "eslint-plugin-cypress": "^2.10.3",
+    "eslint-plugin-flowtype": "^4.7.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-react": "^7.18.3",
-    "eslint-plugin-react-hooks": "^2.3.0",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^3.0.0",
     "firebase-admin": "^8.10.0",
     "firebase-ci": "^0.12.2",
-    "firebase-tools": "7.15.0",
-    "firebase-tools-extra": "^1.0.0-beta.4",
+    "firebase-tools": "7.16.1",
+    "firebase-tools-extra": "^1.0.0",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
-    "prettier": "^1.19.1",
-    "react-scripts": "3.4.0"
+    "prettier": "^2.0.2",
+    "react-scripts": "3.4.0",
+    "size-limit": "^4.4.2"
   },
   "eslintConfig": {
     "extends": "./eslintrc.js"
@@ -120,6 +120,9 @@
     }
   },
   "lint-staged": {
+    "*.{json,md}": [
+      "prettier --write"
+    ],
     "*.{js}": [
       "eslint --fix"
     ]

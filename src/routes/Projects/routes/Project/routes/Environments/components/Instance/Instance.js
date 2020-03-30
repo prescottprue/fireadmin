@@ -34,7 +34,7 @@ function Instance({ instanceId, onRemoveClick, onEditClick, instance }) {
       ? originalDesc.substring(0, 50).concat('...')
       : originalDesc
     : null
-  const openMenu = e => changeDialogState(e.target)
+  const openMenu = (e) => changeDialogState(e.target)
   const closeMenu = () => changeDialogState(null)
 
   function editAndClose() {

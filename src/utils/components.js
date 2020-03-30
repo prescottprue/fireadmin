@@ -14,7 +14,6 @@ import {
 import { connect } from 'react-redux'
 import LoadingSpinner from 'components/LoadingSpinner'
 import { isLoaded, isEmpty } from 'react-redux-firebase/lib/helpers'
-import LoadableComponent from 'react-loadable'
 import {
   compose,
   mapProps,
@@ -55,10 +54,10 @@ export function spinnerWhile(condition) {
  * @return {HigherOrderComponent}
  */
 export function spinnerWhileLoading(propNames) {
-  return spinnerWhile(props => {
+  return spinnerWhile((props) => {
     const propNamesToCheck =
       typeof propNames === 'function' ? propNames(props) : propNames
-    return some(propNamesToCheck, name => !isLoaded(get(props, name)))
+    return some(propNamesToCheck, (name) => !isLoaded(get(props, name)))
   })
 }
 
@@ -87,8 +86,8 @@ export function renderWhile(condition, component) {
 export function renderWhileEmpty(propsNames, component) {
   return renderWhile(
     // Any of the listed prop name correspond to empty props (supporting dot path names)
-    props =>
-      some(propsNames, name => {
+    (props) =>
+      some(propsNames, (name) => {
         const propValue = get(props, name)
         return (
           isLoaded(propValue) &&
@@ -164,7 +163,7 @@ export function renderIfError(listenerPaths, component) {
  * @return {HigherOrderComponent}
  */
 export function logProps(propNames, logName = '') {
-  return mapProps(ownerProps => {
+  return mapProps((ownerProps) => {
     console.log(
       `${logName} props:`,
       propNames ? pick(ownerProps, propNames) : ownerProps
@@ -182,7 +181,7 @@ export function logProps(propNames, logName = '') {
  * export const withRouter = createWithFromContext('router')
  */
 export function createWithFromContext(withVar) {
-  return WrappedComponent => {
+  return (WrappedComponent) => {
     class WithFromContext extends Component {
       render() {
         const props = { [withVar]: this.context[withVar] }
@@ -209,25 +208,3 @@ export function createWithFromContext(withVar) {
  * const Wrapped = withStore(SomeComponent)
  */
 export const withStore = createWithFromContext('store')
-
-/**
- * Create component which is loaded async, showing a loading spinner
- * in the meantime.
- * @param {Object} opts - Loading options
- * @param {Function} opts.loader - Loader function (should return import promise)
- */
-export function Loadable(opts) {
-  return LoadableComponent({
-    loading: props => {
-      if (props.error) {
-        return (
-          <div>
-            Error! <button onClick={props.retry}>Retry</button>
-          </div>
-        )
-      }
-      return <LoadingSpinner />
-    },
-    ...opts
-  })
-}

@@ -15,11 +15,11 @@ export default compose(
   firebaseConnect(['versionInfo']),
   connect(({ firebase: { data: { versionInfo } } }) => ({ versionInfo })),
   withHandlers({
-    setVersionToStorage: props => refreshVersion => {
+    setVersionToStorage: (props) => (refreshVersion) => {
       window.sessionStorage.setItem('fireadminVersion', refreshVersion)
     },
     // Call page reload page and set refreshed version to session storage
-    refreshPage: props => refreshVersion => {
+    refreshPage: (props) => (refreshVersion) => {
       window.location.reload(true)
     }
   }),

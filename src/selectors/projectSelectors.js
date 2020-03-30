@@ -63,7 +63,7 @@ export const getCurrentUserCreatedProject = createSelector(
  * @param  {object} state - redux state
  * @param  {object} props - component props
  */
-export const getRoles = createSelector(getProject, project =>
+export const getRoles = createSelector(getProject, (project) =>
   project === null ? null : get(project, 'roles')
 )
 
@@ -72,10 +72,10 @@ export const getRoles = createSelector(getProject, project =>
  * @param {object} state - redux state
  * @param {object} props - component props
  */
-export const getOrderedRoles = createSelector(getRoles, roles =>
+export const getOrderedRoles = createSelector(getRoles, (roles) =>
   orderBy(
     map(roles, (role, key) => ({ ...role, key })),
-    [role => size(get(role, 'permissions'))],
+    [(role) => size(get(role, 'permissions'))],
     ['desc']
   )
 )
@@ -85,7 +85,7 @@ export const getOrderedRoles = createSelector(getRoles, roles =>
  * @param {object} state - redux state
  * @param {object} props - component props
  */
-export const getProjectPermissions = createSelector(getProject, project =>
+export const getProjectPermissions = createSelector(getProject, (project) =>
   project === null ? null : get(project, 'permissions')
 )
 
@@ -117,7 +117,7 @@ export const getProjectEventsGroupedByDate = createSelector(
     if (!isLoaded(projectEvents)) {
       return projectEvents
     }
-    const events = map(projectEvents, event => {
+    const events = map(projectEvents, (event) => {
       const createdBy = get(event, 'createdBy')
       if (createdBy) {
         return {
@@ -127,7 +127,7 @@ export const getProjectEventsGroupedByDate = createSelector(
       }
       return event
     })
-    return groupBy(events, event => {
+    return groupBy(events, (event) => {
       const createdAt = get(event, 'createdAt')
       return formatDate(createdAt.toDate ? createdAt.toDate() : createdAt)
     })
@@ -167,6 +167,6 @@ export const currentUserProjectPermissions = createSelector(
  * @param {object} props - component props
  * @return {Array<string>} Role option strings
  */
-export const getRoleOptions = createSelector(getRoles, roles =>
+export const getRoleOptions = createSelector(getRoles, (roles) =>
   map(roles, ({ name }, value) => ({ value, name }))
 )

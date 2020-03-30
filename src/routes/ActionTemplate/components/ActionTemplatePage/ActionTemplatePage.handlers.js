@@ -10,7 +10,7 @@ import { triggerAnalyticsEvent } from 'utils/analytics'
  * @param {String} props.templateId - Id of template to delete
  */
 export function updateTemplate(props) {
-  return async updateVals => {
+  return async (updateVals) => {
     const { templateId } = props
     const updatePath = `${ACTION_TEMPLATES_PATH}/${templateId}`
     const updatesWithMeta = {

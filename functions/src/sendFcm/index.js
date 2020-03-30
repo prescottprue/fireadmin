@@ -28,11 +28,7 @@ async function sendFcmEvent(snap, context) {
 
   // Get user profile
   const [getProfileErr, userProfileSnap] = await to(
-    admin
-      .firestore()
-      .collection('users')
-      .doc(userId)
-      .get()
+    admin.firestore().collection('users').doc(userId).get()
   )
 
   // Handle errors getting user profile

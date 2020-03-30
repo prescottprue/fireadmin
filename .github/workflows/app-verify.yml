@@ -49,8 +49,7 @@ jobs:
         run: yarn build:config
 
       - name: Verify
-        run: |
-          yarn lint
+        run: yarn lint
 
       - name: Run Unit Tests
         run: |
@@ -71,17 +70,16 @@ jobs:
           name: build
           path: build
 
-      - name: Archive Build Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: functions-build
-          path: functions/dist
-
   ui-tests:
     name: UI Test Emulated App
     needs: verify-build
     runs-on: ubuntu-16.04
     strategy:
+      # Keep all in-progress jobs running if any matrix job fails. Needed to prevent
+      # the Cypress Dashboard from being stuck in "in progress" state since not all tests run.
+      # See the following for more details:
+      # * Cypress Action Issue: https://github.com/cypress-io/github-action/issues/48
+      # * Docs for fail-fast: https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
       fail-fast: false
       matrix:
         # Run multiple copies of the current job in parallel
@@ -95,47 +93,16 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache npm dependencies
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-
       - name: Get Library Versions For Binary Caching
         id: dep-versions
         run: |
-          echo "::set-output name=cypress::$(cat package.json | jq -r .devDependencies.cypress)"
-          echo "::set-output name=firebase-tools::$(cat package.json | jq -r '.devDependencies.\"firebase-tools\"')"
-      
-      - name: Cache Cypress Binary
-        uses: actions/cache@v1
-        with:
-          path: ~/.cache/Cypress
-          key: ${{ runner.os }}-cypress-${{ steps.dep-versions.outputs.cypress }}
+          echo "::set-output name=firebase-tools::$(yarn info firebase-tools version --silent)"
 
       - name: Cache Firebase Emulator Binaries
         uses: actions/cache@v1
         with:
           path: ~/.cache/firebase/emulators
           key: ${{ runner.os }}-firebase-${{ steps.dep-versions.outputs.firebase-tools }}
-
-      # Install is run separately from test so that dependencies are available
-      # for other steps like Get Project Info and build test environment config
-      - name: Install Dependencies
-        run: |
-          yarn install --frozen-lockfile
-          $(yarn bin)/cypress verify
-
-      - name: Archive Error Logs
-        uses: actions/upload-artifact@v1
-        if: failure()
-        with:
-          name: test-error-logs
-          path: yarn-error.log
 
       - name: Set Test Environment Settings
         id: emulator-settings
@@ -168,8 +135,6 @@ jobs:
       - name: Cypress Run
         uses: cypress-io/github-action@v1
         with:
-          # we have already installed all dependencies above
-          install: false
           browser: chrome
           parallel: true
           record: true
@@ -178,13 +143,10 @@ jobs:
           tag: emulated
           start: yarn emulate:all --project fireadmin-stage
           wait-on: 'http://localhost:3000'
-          # wait for 4 minutes for the server to respond
-          wait-on-timeout: 240
+          wait-on-timeout: 120
         env:
-          # TODO: Look into if this can be moved to an npm script
           TZ: America/Los_Angeles
           CI: true
-          # Pass the Dashboard record key as an environment variable
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_KEY }}
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_REF: ${{ github.ref }}

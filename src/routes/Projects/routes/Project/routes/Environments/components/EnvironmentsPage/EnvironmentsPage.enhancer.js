@@ -44,7 +44,7 @@ export default compose(
       toggleNewDialog: ({ newDialogOpen }) => () => ({
         newDialogOpen: !newDialogOpen
       }),
-      toggleDeleteDialog: ({ deleteDialogOpen }) => key => ({
+      toggleDeleteDialog: ({ deleteDialogOpen }) => (key) => ({
         deleteDialogOpen: !deleteDialogOpen,
         selectedDeleteKey: deleteDialogOpen ? null : key
       }),
@@ -53,7 +53,9 @@ export default compose(
         selectedInstance: editDialogOpen ? null : action,
         selectedKey: editDialogOpen ? null : key
       }),
-      selectServiceAccount: ({ selectedServiceAccount }) => pickedAccount => ({
+      selectServiceAccount: ({ selectedServiceAccount }) => (
+        pickedAccount
+      ) => ({
         selectedServiceAccount:
           selectedServiceAccount === pickedAccount ? null : pickedAccount
       }),

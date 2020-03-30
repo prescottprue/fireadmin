@@ -27,7 +27,7 @@ export default compose(
       currentConfig: null
     }),
     {
-      setConfig: () => currentConfig => ({ currentConfig })
+      setConfig: () => (currentConfig) => ({ currentConfig })
     }
   ),
   // map redux state to props
@@ -51,7 +51,7 @@ export default compose(
       projectEnvironmentsById,
       project,
       projectId
-    }) => async bucketConfig => {
+    }) => async (bucketConfig) => {
       try {
         const databaseURL = get(
           projectEnvironmentsById,
@@ -102,8 +102,9 @@ export default compose(
             }
           )
           showSuccess(
-            `Storage Bucket ${bucketConfig.method ||
-              'UPDATE'} completed Successfully`
+            `Storage Bucket ${
+              bucketConfig.method || 'UPDATE'
+            } completed Successfully`
           )
         }
       } catch (err) {

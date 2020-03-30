@@ -27,7 +27,7 @@ export function isDocPath(slashPath) {
 export function slashPathToFirestoreRef(firestoreInstance, slashPath) {
   let ref = firestoreInstance
   const srcPathArr = slashPath.split('/')
-  srcPathArr.forEach(pathSegment => {
+  srcPathArr.forEach((pathSegment) => {
     if (ref.collection) {
       ref = ref.collection(pathSegment)
     } else if (ref.doc) {
@@ -50,7 +50,7 @@ export function dataArrayFromSnap(snap) {
   if (snap.data && snap.exists) {
     data.push({ id: snap.id, data: snap.data() })
   } else if (snap.forEach) {
-    snap.forEach(doc => {
+    snap.forEach((doc) => {
       data.push({ id: doc.id, data: doc.data() || doc })
     })
   }
@@ -68,7 +68,7 @@ export function dataByIdSnapshot(snap) {
   if (snap.data && snap.exists) {
     data[snap.id] = snap.data()
   } else if (snap.forEach) {
-    snap.forEach(doc => {
+    snap.forEach((doc) => {
       data[doc.id] = doc.data() || doc
     })
   }
@@ -197,10 +197,7 @@ export async function mapEachItemInCollection(
   opts = {}
 ) {
   const queryPromise = opts.onlyFirst
-    ? firestoreInstance
-        .collection(collectionName)
-        .limit(1)
-        .get()
+    ? firestoreInstance.collection(collectionName).limit(1).get()
     : firestoreInstance.collection(collectionName).get()
   const [getErr, collectionSnap] = await to(queryPromise)
   if (getErr) {

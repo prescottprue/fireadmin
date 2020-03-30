@@ -28,7 +28,7 @@ export function waitForValue(ref) {
     let requestListener
     requestListener = ref.on(
       EVENT_TYPE,
-      responseSnap => {
+      (responseSnap) => {
         if (responseSnap.val()) {
           const requestVal = responseSnap.val()
           // reject if watching request errors out
@@ -41,7 +41,7 @@ export function waitForValue(ref) {
           }
         }
       },
-      err => {
+      (err) => {
         console.error(`Error waiting for value at path: ${ref.path}`, err)
         reject(err)
       }
@@ -88,8 +88,9 @@ export async function shallowRtdbGet(opts, rtdbPath = '') {
 
   const client = await authClientFromServiceAccount(serviceAccount)
 
-  const apiUrl = `https://${databaseName ||
-    serviceAccount.project_id}.firebaseio.com/${rtdbPath}.json?access_token=${
+  const apiUrl = `https://${
+    databaseName || serviceAccount.project_id
+  }.firebaseio.com/${rtdbPath}.json?access_token=${
     client.credentials.access_token
   }&shallow=true`
 

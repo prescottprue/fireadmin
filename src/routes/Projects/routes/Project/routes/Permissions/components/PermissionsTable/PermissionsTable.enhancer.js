@@ -41,13 +41,13 @@ export default compose(
       deleteDialogOpen: false
     }),
     {
-      handleMenuClick: () => e => ({
+      handleMenuClick: () => (e) => ({
         anchorEl: e.target
       }),
       handleMenuClose: () => () => ({
         anchorEl: null
       }),
-      startDelete: () => selectedMemberId => ({
+      startDelete: () => (selectedMemberId) => ({
         deleteDialogOpen: true,
         selectedMemberId: selectedMemberId
       }),

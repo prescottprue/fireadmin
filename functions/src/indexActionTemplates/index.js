@@ -9,6 +9,6 @@ export default functions.firestore
     createIndexFunc({
       indexName: 'actionTemplates',
       idParam: 'templateId',
-      indexCondition: template => template.public
+      indexCondition: (template) => template.public
     })
   )

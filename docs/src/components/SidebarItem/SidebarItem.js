@@ -1,5 +1,6 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import PropTypes from 'prop-types'
+import { get, filter } from 'lodash'
 import { Link, withPrefix } from 'gatsby'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -27,15 +28,25 @@ function slugToIcon(slug) {
   return ICONS_BY_SLUG[slug] || ICONS_BY_SLUG.default
 }
 
-function SidebarItem({
-  frontmatter,
-  childChapters,
-  open,
-  parentProps,
-  toggleOpen,
-  parentMatchesPath,
-  trimmedPath
-}) {
+function getChildChapters(pages) {
+  return filter(pages, (page) => {
+    const slug = get(page, 'node.frontmatter.slug') || ''
+    return slug.split('/').length > 1
+  })
+}
+
+function SidebarItem({ frontmatter, trimmedPath, childPages }) {
+  const childChapters = getChildChapters(childPages)
+  const parentMatchesPath = slugIsInCurrentPath(frontmatter.slug)
+  const [sidebarOpen, changeOpenState] = useState(false)
+  function toggleOpen() {
+    changeOpenState(!sidebarOpen)
+  }
+  const parentProps =
+    childChapters && childChapters.length
+      ? { onClick: toggleOpen }
+      : { component: Link, to: frontmatter.slug }
+
   return (
     <Fragment>
       <ListItem button {...parentProps}>
@@ -43,7 +54,7 @@ function SidebarItem({
           <ListItemIcon>{slugToIcon(frontmatter.slug)}</ListItemIcon>
           <ListItemText primary={frontmatter.title} />
           {childChapters.length ? (
-            parentMatchesPath || open ? (
+            parentMatchesPath || sidebarOpen ? (
               <ExpandLess />
             ) : (
               <ExpandMore />
@@ -52,7 +63,7 @@ function SidebarItem({
         </Fragment>
       </ListItem>
       {childChapters.length ? (
-        <Collapse in={parentMatchesPath || open} timeout="auto">
+        <Collapse in={parentMatchesPath || sidebarOpen} timeout="auto">
           <List
             component="div"
             disablePadding

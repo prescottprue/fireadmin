@@ -22,7 +22,7 @@ export function submitActionRunner({ dispatch }) {
  * runner with the same settings as a previous run
  */
 export function rerunAction(props) {
-  return action => {
+  return (action) => {
     const templateWithValues = {
       ...action.eventData,
       ...action.eventData.template,
@@ -45,7 +45,7 @@ export function rerunAction(props) {
  * config
  */
 export function runAction(props) {
-  return formValues => {
+  return (formValues) => {
     if (props.lockedEnvInUse) {
       const errMsg = 'Action Runner Disabled. Locked environment selected.'
       props.showError(errMsg)
@@ -74,7 +74,7 @@ export function runAction(props) {
     }
     // Convert selected environment keys into their associated environment objects
     if (environmentValues) {
-      actionRequest.environments = environmentValues.map(envId => {
+      actionRequest.environments = environmentValues.map((envId) => {
         const environmentById = props.environmentsById[envId]
         if (environmentById) {
           return { ...environmentById, id: envId }
@@ -117,7 +117,7 @@ export function runAction(props) {
         // Notify user that action run has started
         props.showMessage('Action Run Started!')
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Error: ', err.message || err) // eslint-disable-line no-console
         return props.showError('Error staring action request')
       })

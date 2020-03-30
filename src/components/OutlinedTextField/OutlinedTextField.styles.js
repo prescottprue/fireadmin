@@ -1,4 +1,4 @@
-export default theme => ({
+export default (theme) => ({
   root: {
     marginLeft: theme.spacing(),
     marginRight: theme.spacing(),
