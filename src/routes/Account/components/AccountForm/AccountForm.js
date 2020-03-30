@@ -1,32 +1,58 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Field } from 'redux-form'
+import { useForm } from 'react-hook-form'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
-import TextField from 'components/FormTextField'
+import TextField from '@material-ui/core/TextField'
 import ProviderDataForm from '../ProviderDataForm'
 import styles from './AccountForm.styles'
 
 const useStyles = makeStyles(styles)
 
-function AccountForm({ account, handleSubmit, submitting, pristine }) {
+function AccountForm({ account, onSubmit }) {
   const classes = useStyles()
 
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState: { isSubmitting, isValid }
+  } = useForm({
+    mode: 'onChange',
+    nativeValidation: false,
+    defaultValues: account
+  })
+
+  console.log('account', account)
   return (
-    <form className={classes.root} onSubmit={handleSubmit}>
+    <form className={classes.root} onSubmit={handleSubmit(onSubmit)}>
       <div className={classes.fields}>
-        <Field
-          fullWidth
+        <TextField
           name="displayName"
-          component={TextField}
           label="Display Name"
+          margin="normal"
+          inputRef={register}
+          fullWidth
         />
-        <Field name="email" label="Email" component={TextField} fullWidth />
-        <Field
+        <TextField
+          type="email"
+          name="email"
+          placeholder="email"
+          margin="normal"
+          fullWidth
+          inputRef={register({
+            required: true
+            // validate: validateEmail
+          })}
+          error={!!errors.email}
+          helperText={errors.email && 'Email must be valid'}
+        />
+        <TextField
           name="avatarUrl"
           label="Avatar Url"
-          component={TextField}
+          inputRef={register}
+          margin="normal"
           fullWidth
         />
       </div>
@@ -36,18 +62,19 @@ function AccountForm({ account, handleSubmit, submitting, pristine }) {
           <ProviderDataForm providerData={account.providerData} />
         </div>
       )}
-      <Button color="primary" type="submit" disabled={pristine || submitting}>
-        {submitting ? 'Saving' : 'Save'}
+      <Button
+        color="primary"
+        type="submit"
+        variant="contained"
+        disabled={isSubmitting || !isValid}>
+        {isSubmitting ? 'Saving' : 'Save'}
       </Button>
     </form>
   )
 }
 
 AccountForm.propTypes = {
-  account: PropTypes.object,
-  handleSubmit: PropTypes.func.isRequired, // from enhancer (reduxForm)
-  pristine: PropTypes.bool.isRequired, // from enhancer (reduxForm)
-  submitting: PropTypes.bool.isRequired // from enhancer (reduxForm)
+  account: PropTypes.object
 }
 
 export default AccountForm

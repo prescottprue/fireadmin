@@ -12364,6 +12364,11 @@ react-google-button@^0.7.0:
   dependencies:
     prop-types "^15.7.2"
 
+react-hook-form@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-5.2.0.tgz#b5b654516ee03d55d78b7b9e194c7f4632885426"
+  integrity sha512-EqGCSl3DxSUBtL/9lFvrFQLJ7ICdVKrfjcMHay2SvmU4trR8aqrd7YuiLSojBKmZBRdBnCcxG+LzLWF9z474NA==
+
 react-instantsearch@^4.2.0:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/react-instantsearch/-/react-instantsearch-4.5.2.tgz#37c359eb0b1ab9d67690351970d6c59d0269f2c7"
@@ -12519,6 +12524,14 @@ react@^16.13.1:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
+
+reactfire@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/reactfire/-/reactfire-2.0.3.tgz#5e791d786768d0134dc416ac912a5134c00d90ff"
+  integrity sha512-9QH2iUUPo5QUe8NJtKotBCztxDB7vGWfa7ldsWc9XswZ24YfDcLDZRdjjzb44BLqjqopNxK1ysrsQ08fuDS21w==
+  dependencies:
+    rxfire "^3.6.3"
+    rxjs "^6.4.0"
 
 read-pkg-up@^2.0.0:
   version "2.0.0"
@@ -13171,6 +13184,13 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   integrity sha1-6Eg5bwV9Ij8kOGkkYY4laUFh7Ec=
   dependencies:
     aproba "^1.1.1"
+
+rxfire@^3.6.3:
+  version "3.11.1"
+  resolved "https://registry.yarnpkg.com/rxfire/-/rxfire-3.11.1.tgz#84e7874f71bba47930158591cb7b7375000517ab"
+  integrity sha512-5kxDE2nvnRt0dnIRp0NYqnUDaVuV4kV5lijAppbRwxQFTWq501sJ4Ijzxurfck/g6VwZO9YrzrKOZaqaMyByIA==
+  dependencies:
+    tslib "1.11.1"
 
 rxjs@^6.3.3, rxjs@^6.4.0, rxjs@^6.5.2, rxjs@^6.5.3:
   version "6.5.4"
