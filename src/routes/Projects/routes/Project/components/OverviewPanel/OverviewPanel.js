@@ -12,16 +12,17 @@ import styles from './OverviewPanel.styles'
 const useStyles = makeStyles(styles)
 
 function OverviewPanel({
-  name,
-  projectPath,
+  project,
+  projectId,
   environmentsEmpty,
   numberOfEnvironments
 }) {
   const classes = useStyles()
+  const projectPath = `${paths.list}/${projectId}`
 
   return (
     <Paper className={classes.root}>
-      <Typography className={classes.name}>{name}</Typography>
+      <Typography className={classes.name}>{project.name}</Typography>
       <Grid container spacing={8} justify="center" alignItems="stretch">
         <Grid item xs={12} md={6} className={classes.item}>
           <Typography variant="h6">Environments</Typography>
@@ -70,8 +71,8 @@ function OverviewPanel({
 }
 
 OverviewPanel.propTypes = {
-  name: PropTypes.string, // from enhancer (mapProps)
-  projectPath: PropTypes.string, // from enhancer (mapProps)
+  project: PropTypes.object,
+  projectId: PropTypes.string,
   numberOfEnvironments: PropTypes.number, // from enhancer (mapProps)
   environmentsEmpty: PropTypes.bool.isRequired // from enhancer (mapProps)
 }

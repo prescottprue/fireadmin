@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Field } from 'redux-form'
+import { useForm } from 'react-hook-form'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -12,121 +12,147 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Checkbox from '@material-ui/core/Checkbox'
 import { makeStyles } from '@material-ui/core/styles'
-import { required, validateDatabaseUrl } from 'utils/form'
-import TextField from 'components/FormTextField'
+import { validateDatabaseUrl } from 'utils/form'
+import TextField from '@material-ui/core/TextField'
 import FilesUploader from '../FilesUploader'
 import styles from './AddEnvironmentDialog.styles'
 
 const useStyles = makeStyles(styles)
 
 function AddEnvironmentDialog({
-  callSubmit,
-  handleSubmit,
+  onSubmit,
   submitting,
   projectId,
   pristine,
-  selectedServiceAccountInd,
-  selectServiceAccount,
   onRequestClose,
-  closeAndReset,
-  dropFiles,
-  droppedFiles,
   open
 }) {
   const classes = useStyles()
+  const [droppedFiles, updateDroppedFiles] = useState([])
+  const [selectedServiceAccountInd, changeSelectedServiceAccount] = useState(
+    null
+  )
+
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState: { isSubmitting, dirty }
+  } = useForm()
+
+  function callSubmit(formValues) {
+    return onSubmit({
+      ...formValues,
+      serviceAccount: droppedFiles[selectedServiceAccountInd]
+    })
+  }
+
+  function selectServiceAccount(pickInd) {
+    changeSelectedServiceAccount(
+      selectedServiceAccountInd === pickInd ? null : pickInd
+    )
+  }
+
+  function dropFiles(files) {
+    const newDroppedFiles = droppedFiles.concat(files)
+    updateDroppedFiles(newDroppedFiles)
+    changeSelectedServiceAccount(
+      selectedServiceAccountInd ||
+        (newDroppedFiles.length && newDroppedFiles.length - 1)
+    )
+  }
   return (
     <Dialog onClose={onRequestClose} open={open}>
       <DialogTitle id="dialog-title">Add Environment</DialogTitle>
-      <DialogContent className={classes.body}>
-        <form className={classes.inputs} onSubmit={handleSubmit}>
-          <Field
-            component={TextField}
-            className={classes.field}
+      <form className={classes.inputs} onSubmit={handleSubmit(callSubmit)}>
+        <DialogContent className={classes.body}>
+          <TextField
             name="name"
-            validate={required}
-            fullWidth
             label="Environment Name"
+            margin="normal"
+            inputRef={register({
+              required: true
+            })}
+            error={!!errors.name}
+            helperText={errors.name && 'Name is required'}
+            fullWidth
             data-test="new-environment-name"
           />
-          <Field
-            component={TextField}
-            className={classes.field}
+          <TextField
             name="databaseURL"
+            inputRef={register({
+              required: true,
+              validate: validateDatabaseUrl
+            })}
+            error={!!errors.databaseURL}
+            helperText={errors.databaseURL && 'Database URL must be valid'}
+            margin="normal"
             fullWidth
-            validate={[required, validateDatabaseUrl]}
             label="Database URL"
             data-test="new-environment-db-url"
           />
-          <Field
-            component={TextField}
-            className={classes.field}
-            fullWidth
+          <TextField
             name="description"
             label="Instance Description"
+            inputRef={register}
+            margin="normal"
+            fullWidth
           />
-        </form>
-        <div className={classes.serviceAccounts}>
-          <Typography style={{ fontSize: '1.1rem' }}>
-            Service Account
-          </Typography>
-          <FilesUploader
-            onFilesDrop={dropFiles}
-            label="to upload service account"
-          />
-          <List>
-            {droppedFiles && droppedFiles.length
-              ? droppedFiles.map((file, i) => (
-                  <ListItem
-                    key={`${i}-${file.name}`}
-                    role={undefined}
-                    dense
-                    button
-                    onClick={() => selectServiceAccount(i)}>
-                    <Checkbox
-                      checked={selectedServiceAccountInd === i}
-                      tabIndex={-1}
-                      disableRipple
-                    />
-                    <ListItemText primary={file.name} />
-                  </ListItem>
-                ))
-              : null}
-          </List>
-        </div>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          color="secondary"
-          disabled={submitting}
-          onClick={closeAndReset}
-          data-test="new-environment-cancel-button">
-          Cancel
-        </Button>
-        <Button
-          color="primary"
-          disabled={pristine || submitting}
-          onClick={callSubmit}
-          data-test="new-environment-create-button">
-          Create
-        </Button>
-      </DialogActions>
+          <div className={classes.serviceAccounts}>
+            <Typography style={{ fontSize: '1.1rem' }}>
+              Service Account
+            </Typography>
+            <FilesUploader
+              onFilesDrop={dropFiles}
+              label="to upload service account"
+            />
+            <List>
+              {droppedFiles && droppedFiles.length
+                ? droppedFiles.map((file, i) => (
+                    <ListItem
+                      key={`${i}-${file.name}`}
+                      role={undefined}
+                      dense
+                      button
+                      onClick={() => selectServiceAccount(i)}>
+                      <Checkbox
+                        checked={selectedServiceAccountInd === i}
+                        tabIndex={-1}
+                        disableRipple
+                      />
+                      <ListItemText primary={file.name} />
+                    </ListItem>
+                  ))
+                : null}
+            </List>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="secondary"
+            disabled={isSubmitting}
+            onClick={onRequestClose}
+            data-test="new-environment-cancel-button">
+            Cancel
+          </Button>
+          <Button
+            color="primary"
+            type="submit"
+            disabled={!dirty || isSubmitting}
+            data-test="new-environment-create-button">
+            Create
+          </Button>
+        </DialogActions>
+      </form>
     </Dialog>
   )
 }
 
 AddEnvironmentDialog.propTypes = {
-  selectedServiceAccountInd: PropTypes.number,
   onRequestClose: PropTypes.func,
-  handleSubmit: PropTypes.func.isRequired,
-  callSubmit: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
   projectId: PropTypes.string,
-  droppedFiles: PropTypes.array,
-  open: PropTypes.bool.isRequired, // captured in other
-  selectServiceAccount: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  closeAndReset: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  dropFiles: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  submitting: PropTypes.bool.isRequired, // from reduxForm
-  pristine: PropTypes.bool.isRequired // from reduxForm
+  open: PropTypes.bool.isRequired
 }
 
 export default AddEnvironmentDialog

@@ -9,12 +9,15 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
+import { makeStyles } from '@material-ui/core/styles'
 import TextField from 'components/FormTextField'
 import CheckboxField from 'components/FormCheckboxField'
 import { required, validateDatabaseUrl } from 'utils/form'
+import styles from './EditEnvironmentDialog.styles'
+
+const useStyles = makeStyles(styles)
 
 function EditEnvironmentDialog({
-  classes,
   submit,
   closeAndReset,
   submitting,
@@ -26,6 +29,8 @@ function EditEnvironmentDialog({
   writeOnlyDisabled,
   readOnlyDisabled
 }) {
+  const classes = useStyles()
+
   return (
     <Dialog onClose={onRequestClose} open={open}>
       <DialogTitle id="dialog-title">Edit Environment</DialogTitle>
@@ -117,7 +122,6 @@ function EditEnvironmentDialog({
 }
 
 EditEnvironmentDialog.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   lockedDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
   readOnlyDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
   writeOnlyDisabled: PropTypes.bool.isRequired, // from enhancer (connect)

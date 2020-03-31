@@ -5,8 +5,6 @@ import { withHandlers, setPropTypes } from 'recompose'
 import { connect } from 'react-redux'
 import { reduxForm, formValueSelector } from 'redux-form'
 import { currentUserProjectPermissions } from 'selectors'
-import { withStyles } from '@material-ui/core'
-import styles from './EditEnvironmentDialog.styles'
 
 const formName = 'editEnvironment'
 
@@ -43,7 +41,5 @@ export default compose(
       reset()
       onRequestClose && onRequestClose()
     }
-  }),
-  // Styles as props.classes
-  withStyles(styles)
+  })
 )

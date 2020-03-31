@@ -18,13 +18,16 @@ function AccountEditor() {
   const profile = profileSnap.data()
 
   function updateAccount(newAccount) {
-    return auth
-      .updateProfile(newAccount)
-      .then(() => accountRef.set(newAccount, { merge: true }))
-      .catch((error) => {
-        console.error('Error updating profile', error.message || error) // eslint-disable-line no-console
-        return Promise.reject(error)
-      })
+    return (
+      auth
+        .updateProfile(newAccount)
+        .then(() => accountRef.set(newAccount, { merge: true }))
+        // TODO: Add back notification after notifications with context setup
+        .catch((error) => {
+          console.error('Error updating profile', error.message || error) // eslint-disable-line no-console
+          return Promise.reject(error)
+        })
+    )
   }
   // Show loading spinner if email has not yet loaded (messagingToken loaded from cache sometimes)
   if (!profile.email) {

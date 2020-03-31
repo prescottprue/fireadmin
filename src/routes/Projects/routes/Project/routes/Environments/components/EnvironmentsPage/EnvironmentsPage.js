@@ -3,13 +3,16 @@ import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
+import { makeStyles } from '@material-ui/core/styles'
 import Instance from '../Instance'
 import AddEnvironmentDialog from '../AddEnvironmentDialog'
 import EditEnvironmentDialog from '../EditEnvironmentDialog'
 import DeleteEnvironmentDialog from '../DeleteEnvironmentDialog'
+import styles from './EnvironmentsPage.styles'
+
+const useStyles = makeStyles(styles)
 
 function EnvironmentsPage({
-  classes,
   projectId,
   toggleNewDialog,
   toggleDeleteDialog,
@@ -25,6 +28,8 @@ function EnvironmentsPage({
   updateEnvironment,
   removeEnvironment
 }) {
+  const classes = useStyles()
+
   return (
     <div>
       <Typography className={classes.pageHeader}>Environments</Typography>
@@ -96,7 +101,6 @@ function EnvironmentsPage({
 }
 
 EnvironmentsPage.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   selectedInstance: PropTypes.object, // from enhancer
   selectedServiceAccountInd: PropTypes.number, // from enhancer
   addEnvironment: PropTypes.func.isRequired, // from enhancer (withHandlers)

@@ -5,9 +5,15 @@ import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import DeleteIcon from '@material-ui/icons/Delete'
+import { makeStyles } from '@material-ui/core/styles'
 import TextField from 'components/FormTextField'
+import styles from './CorsOriginList.styles'
 
-function CorsOriginList({ classes, fields, meta: { error, submitFailed } }) {
+const useStyles = makeStyles(styles)
+
+function CorsOriginList({ fields, meta: { error, submitFailed } }) {
+  const classes = useStyles()
+
   return (
     <div style={{ marginBottom: '1rem' }}>
       <Typography variant="h5">Origins</Typography>
@@ -39,7 +45,6 @@ function CorsOriginList({ classes, fields, meta: { error, submitFailed } }) {
 }
 
 CorsOriginList.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
   fields: PropTypes.object.isRequired,
   meta: PropTypes.object.isRequired
 }

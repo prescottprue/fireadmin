@@ -1,5 +1,5 @@
 import { compose } from 'redux'
-import { withProps, withHandlers, withStateHandlers } from 'recompose'
+import { withHandlers, withStateHandlers } from 'recompose'
 import { connect } from 'react-redux'
 import { get, pick } from 'lodash'
 import withFirestore from 'react-redux-firebase/lib/withFirestore'
@@ -10,8 +10,6 @@ import { waitForCompleted } from 'utils/firebaseFunctions'
 import { withNotifications } from 'modules/notification'
 import { spinnerWhile } from 'utils/components'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
-import { withStyles } from '@material-ui/core/styles'
-import styles from './BucketConfigForm.styles'
 
 const formName = 'bucketConfig'
 
@@ -89,7 +87,7 @@ export default compose(
           showSuccess('Storage Bucket Config Get Successful')
           triggerAnalyticsEvent('bucketAction', {
             method: bucketConfig.method || 'GET',
-            resouce: 'CORS'
+            resource: 'CORS'
           })
           await createProjectEvent(
             { firestore, projectId },
@@ -127,19 +125,6 @@ export default compose(
   formValues('environment'),
   formValues('body'),
   formValues('method'),
-  // Add more props
-  withProps(({ projectEnvironmentsById, environment }) => {
-    const databaseURL = get(
-      projectEnvironmentsById,
-      `${environment}.databaseURL`
-    )
-    const databaseName = databaseURL && databaseURLToProjectName(databaseURL)
-    return {
-      databaseName,
-      storageBucket: databaseName && `${databaseName}.appspot.com`
-    }
-  }),
   // Show a loading spinner while submitting
-  spinnerWhile(({ submitting }) => submitting),
-  withStyles(styles)
+  spinnerWhile(({ submitting }) => submitting)
 )

@@ -8,13 +8,19 @@ import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
 import DeleteIcon from '@material-ui/icons/Delete'
+import { makeStyles } from '@material-ui/core/styles'
 import TextField from 'components/FormTextField'
 import Select from 'components/FormSelectField'
 import CorsOriginList from '../CorsOriginList'
+import styles from './CorsList.styles'
+
+const useStyles = makeStyles(styles)
 
 const methods = ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS']
 
-function CorsList({ classes, fields, meta: { error, submitFailed } }) {
+function CorsList({ fields, meta: { error, submitFailed } }) {
+  const classes = useStyles()
+
   return (
     <div>
       {fields.map((member, index) => (
@@ -71,7 +77,6 @@ function CorsList({ classes, fields, meta: { error, submitFailed } }) {
 }
 
 CorsList.propTypes = {
-  classes: PropTypes.object.isRequired,
   fields: PropTypes.object.isRequired,
   meta: PropTypes.object.isRequired
 }

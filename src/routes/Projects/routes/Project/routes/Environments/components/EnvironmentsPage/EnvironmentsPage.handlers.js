@@ -1,6 +1,4 @@
 import { get } from 'lodash'
-import { reset } from 'redux-form'
-import { NEW_ENVIRONMENT_FORM_NAME } from 'constants/formNames'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 import { to } from 'utils/async'
 
@@ -49,8 +47,6 @@ export const addEnvironment = (props) => async (newProjectData) => {
     createdBy: uid,
     createdAt: firestore.FieldValue.serverTimestamp()
   }
-  // Reset form for future use
-  props.dispatch(reset(NEW_ENVIRONMENT_FORM_NAME))
   // Unselect selected service account
   props.clearServiceAccount()
   // Close AddEnvironmentDialog

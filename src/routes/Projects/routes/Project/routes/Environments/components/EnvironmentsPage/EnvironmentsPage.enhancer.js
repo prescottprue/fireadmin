@@ -1,20 +1,12 @@
-import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import withFirestore from 'react-redux-firebase/lib/withFirestore'
 import withFirebase from 'react-redux-firebase/lib/withFirebase'
-import {
-  withHandlers,
-  withStateHandlers,
-  setPropTypes,
-  setDisplayName
-} from 'recompose'
-import { withStyles } from '@material-ui/core/styles'
+import { withHandlers, withStateHandlers } from 'recompose'
 import { spinnerWhileLoading } from 'utils/components'
 import { withNotifications } from 'modules/notification'
 import * as handlers from './EnvironmentsPage.handlers'
-import styles from './EnvironmentsPage.styles'
 
 export default compose(
   // Map redux state to props
@@ -64,17 +56,5 @@ export default compose(
       })
     }
   ),
-  // Set proptypes used in handlers
-  setPropTypes({
-    uid: PropTypes.string.isRequired,
-    firebase: PropTypes.shape({
-      uploadFiles: PropTypes.func.isRequired
-    }).isRequired,
-    firestore: PropTypes.shape({
-      add: PropTypes.func.isRequired
-    }).isRequired
-  }),
-  setDisplayName('EnvironmentsPage'),
-  withHandlers(handlers),
-  withStyles(styles)
+  withHandlers(handlers)
 )
