@@ -5,7 +5,6 @@ import withFirestore from 'react-redux-firebase/lib/withFirestore'
 import withFirebase from 'react-redux-firebase/lib/withFirebase'
 import { withHandlers, withStateHandlers } from 'recompose'
 import { spinnerWhileLoading } from 'utils/components'
-import { withNotifications } from 'modules/notification'
 import * as handlers from './EnvironmentsPage.handlers'
 
 export default compose(
@@ -21,8 +20,6 @@ export default compose(
   withFirebase,
   // Add props.firestore (used in handlers)
   withFirestore,
-  // Add props.showSuccess and props.showError
-  withNotifications,
   withStateHandlers(
     () => ({
       selectedServiceAccount: null,

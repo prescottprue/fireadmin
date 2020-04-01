@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
-import { Field } from 'redux-form'
+import { useFormContext, useFieldArray } from 'react-hook-form'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
@@ -14,17 +15,22 @@ import IconButton from '@material-ui/core/IconButton'
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import DeleteIcon from '@material-ui/icons/Delete'
-import TextField from 'components/FormTextField'
-import Switch from 'components/FormSwitchField'
+import TextField from '@material-ui/core/TextField'
+import Switch from '@material-ui/core/Switch'
 import styles from './ActionTemplateInputs.styles'
 
 const useStyles = makeStyles(styles)
 
-function ActionTemplateInputs({ fields, inputs }) {
+function ActionTemplateInputs({ inputs }) {
   const classes = useStyles()
+  const { control, register } = useFormContext()
+  const { fields, remove, append } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: 'inputs' // unique name for your Field Array
+  })
 
   function addNewInput() {
-    return fields.push({ required: false })
+    append({ required: false })
   }
 
   return (
@@ -36,9 +42,9 @@ function ActionTemplateInputs({ fields, inputs }) {
         variant="contained">
         Add Input
       </Button>
-      {fields.map((member, index, field) => {
+      {fields.map((field, index) => {
         function removeInput() {
-          return fields.remove(index)
+          return remove(index)
         }
         return (
           <ExpansionPanel key={index}>
@@ -55,22 +61,28 @@ function ActionTemplateInputs({ fields, inputs }) {
             <ExpansionPanelDetails>
               <Grid container spacing={8} style={{ flexGrow: 1 }}>
                 <Grid item xs={10} md={6} lg={4}>
-                  <Field
-                    name={`${member}.name`}
-                    component={TextField}
+                  <TextField
+                    name={`inputs[${index}].name`}
                     label="Name"
                     className={classes.field}
+                    fullWidth
+                    inputRef={register}
                   />
-                  <Field
-                    name={`${member}.description`}
-                    component={TextField}
+                  <TextField
+                    name={`inputs[${index}].description`}
                     label="Description"
                     className={classes.field}
+                    fullWidth
+                    inputRef={register}
                   />
                   <div className={classes.required}>
-                    <Field
-                      name={`${member}.required`}
-                      component={Switch}
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          name={`inputs[${index}].required`}
+                          inputRef={register}
+                        />
+                      }
                       label="Required"
                     />
                   </div>
@@ -89,11 +101,12 @@ function ActionTemplateInputs({ fields, inputs }) {
                 </Grid>
                 <Grid item xs={6} lg={2}>
                   {get(inputs, `${index}.type`) === 'userInput' && (
-                    <Field
-                      name={`${member}.variableName`}
-                      component={TextField}
+                    <TextField
+                      name={`inputs[${index}].variableName`}
                       label="Variable Name"
                       className={classes.field}
+                      fullWidth
+                      inputRef={register}
                     />
                   )}
                 </Grid>
@@ -108,7 +121,6 @@ function ActionTemplateInputs({ fields, inputs }) {
 }
 
 ActionTemplateInputs.propTypes = {
-  fields: PropTypes.object.isRequired,
   inputs: PropTypes.array
 }
 

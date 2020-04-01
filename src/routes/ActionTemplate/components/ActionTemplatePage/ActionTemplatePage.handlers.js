@@ -39,7 +39,7 @@ export function updateTemplate(props) {
  * Handler for deleting an action template
  * @param {Object} props - Component props
  * @param {Object} props.history - History object from react-router-dom
- * @param {Function} props.history.push - Function which naviagtes to a route
+ * @param {Function} props.history.push - Function which navigates to a route
  * @param {Object} props.firestore - Firestore instance from firestoreConnect
  * @param {String} props.templateId - Id of template to delete
  */

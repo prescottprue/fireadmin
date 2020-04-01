@@ -1,11 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { connect } from 'react-redux'
 import Snackbar from '@material-ui/core/Snackbar'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
-import * as actions from '../actions'
 import { makeStyles } from '@material-ui/core/styles'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import ErrorIcon from '@material-ui/icons/Error'
@@ -14,6 +12,7 @@ import green from '@material-ui/core/colors/green'
 import amber from '@material-ui/core/colors/amber'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
 import WarningIcon from '@material-ui/icons/Warning'
+import useNotifications from './useNotifications'
 
 const variantIcon = {
   success: CheckCircleIcon,
@@ -46,15 +45,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function Notifications({
-  className,
-  allIds,
-  byId,
-  variant = 'info',
-  dismissNotification
-}) {
+function Notifications({ className }) {
   const classes = useStyles()
-
+  const { allIds, byId, dismissNotification } = useNotifications()
   // Only render if notifications exist
   if (!allIds || !Object.keys(allIds).length) {
     return null
@@ -63,7 +56,7 @@ function Notifications({
   return (
     <div>
       {allIds.map((id) => {
-        const Icon = variantIcon[byId[id].type] || variantIcon[variant]
+        const Icon = variantIcon[byId[id].type] || variantIcon.info
         function dismissNotificationById() {
           return dismissNotification(id)
         }
@@ -75,7 +68,7 @@ function Notifications({
             className={classes.snackbar}>
             <SnackbarContent
               className={classNames(
-                classes[byId[id].type] || classes[variant],
+                classes[byId[id].type] || classes.info,
                 className
               )}
               aria-describedby="client-snackbar"
@@ -107,14 +100,7 @@ function Notifications({
 }
 
 Notifications.propTypes = {
-  allIds: PropTypes.array.isRequired,
-  byId: PropTypes.object.isRequired,
-  variant: PropTypes.string,
-  className: PropTypes.string,
-  dismissNotification: PropTypes.func.isRequired
+  className: PropTypes.string
 }
 
-export default connect(
-  ({ notifications: { allIds, byId } }) => ({ allIds, byId }),
-  actions
-)(Notifications)
+export default Notifications

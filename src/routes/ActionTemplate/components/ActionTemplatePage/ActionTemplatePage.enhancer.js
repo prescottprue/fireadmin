@@ -10,7 +10,6 @@ import {
   setPropTypes
 } from 'recompose'
 import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
-import { withNotifications } from 'modules/notification'
 import {
   spinnerWhileLoading,
   renderWhile,
@@ -22,7 +21,6 @@ import TemplateNotFound from './TemplateNotFound'
 import * as handlers from './ActionTemplatePage.handlers'
 
 export default compose(
-  withNotifications,
   withRouter,
   setPropTypes({
     match: PropTypes.shape({

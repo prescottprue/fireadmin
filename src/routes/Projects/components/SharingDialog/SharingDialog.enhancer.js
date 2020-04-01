@@ -1,33 +1,15 @@
-import { get, findIndex, map } from 'lodash'
-import PropTypes from 'prop-types'
+import { findIndex } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import withFirestore from 'react-redux-firebase/lib/withFirestore'
 import firebaseConnect from 'react-redux-firebase/lib/firebaseConnect'
-import {
-  withHandlers,
-  withStateHandlers,
-  withProps,
-  setPropTypes
-} from 'recompose'
-import { withNotifications } from 'modules/notification'
-import * as handlers from './SharingDialog.handlers'
+import { withStateHandlers } from 'recompose'
 
 export default compose(
   // Add props.firestore
   withFirestore,
-  // Add props.showSuccess and props.showError
-  withNotifications,
   // Attach/Detach RTDB listeners on mount/unmount
   firebaseConnect(['displayNames']),
-  // Set proptypes used in HOCs
-  setPropTypes({
-    firestore: PropTypes.shape({
-      doc: PropTypes.func.isRequired // used in handlers
-    }).isRequired,
-    showSuccess: PropTypes.func.isRequired, // used in handlers
-    showError: PropTypes.func.isRequired // used in handlers
-  }),
   connect(({ firebase: { data: { displayNames } } }) => ({
     displayNames
   })),
@@ -71,20 +53,5 @@ export default compose(
         value: ''
       })
     }
-  ),
-  // Handlers as props
-  withHandlers(handlers),
-  withProps(({ project, displayNames }) => {
-    const collaborators = get(project, 'collaborators')
-    if (collaborators) {
-      return {
-        projectCollaborators: map(collaborators, (collaborator, collabId) => {
-          return {
-            displayName: get(displayNames, collabId, 'User'),
-            ...collaborator
-          }
-        })
-      }
-    }
-  })
+  )
 )

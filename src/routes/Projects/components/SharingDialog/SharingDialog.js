@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { map } from 'lodash'
+import { map, invoke, get } from 'lodash'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -12,8 +12,11 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { makeStyles } from '@material-ui/core/styles'
+import { useFirestore } from 'reactfire'
 import UsersSearch from 'components/UsersSearch'
 import UsersList from 'components/UsersList'
+import { triggerAnalyticsEvent } from 'utils/analytics'
+import useNotifications from 'modules/notification/useNotifications'
 import styles from './SharingDialog.styles'
 
 const useStyles = makeStyles(styles)
@@ -22,13 +25,50 @@ function SharingDialog({
   open,
   onRequestClose,
   project,
-  projectCollaborators,
   users,
+  displayNames,
   selectedCollaborators,
-  selectCollaborator,
-  saveCollaborators
+  selectCollaborator
 }) {
   const classes = useStyles()
+  const { showSuccess, showError } = useNotifications()
+  const firestore = useFirestore()
+  const collaborators = get(project, 'collaborators')
+  const projectCollaborators = map(collaborators, (collaborator, collabId) => {
+    return {
+      displayName: get(displayNames, collabId, 'User'),
+      ...collaborator
+    }
+  })
+
+  async function saveCollaborators(newInstance) {
+    const currentProject = await firestore.get(`projects/${project.id}`)
+    const projectData = invoke(currentProject, 'data')
+    const collaborators = get(projectData, 'collaborators', {})
+    const permissions = get(projectData, 'permissions', {})
+    selectedCollaborators.forEach((currentCollaborator) => {
+      if (!get(projectData, `collaborators.${currentCollaborator.objectID}`)) {
+        collaborators[currentCollaborator.objectID] = true
+        permissions[currentCollaborator.objectID] = {
+          permission: 'viewer',
+          role: 'viewer',
+          sharedAt: firestore.FieldValue.serverTimestamp()
+        }
+      }
+    })
+    try {
+      await firestore
+        .doc(`projects/${project.id}`)
+        .update({ collaborators, permissions })
+      onRequestClose()
+      showSuccess('Collaborator added successfully')
+      triggerAnalyticsEvent('addCollaborator', { projectId: project.id })
+    } catch (err) {
+      showError('Collaborator could not be added')
+      throw err
+    }
+  }
+
   return (
     <Dialog open={open} onClose={onRequestClose}>
       <DialogTitle>Sharing</DialogTitle>

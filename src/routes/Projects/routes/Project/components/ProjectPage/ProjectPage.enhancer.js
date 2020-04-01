@@ -10,7 +10,6 @@ import {
 } from 'utils/components'
 import ProjectNotFoundPage from './ProjectNotFoundPage'
 import ProjectErrorPage from './ProjectErrorPage'
-import { withNotifications } from 'modules/notification'
 
 export default compose(
   // Map auth uid from state to props
@@ -60,7 +59,6 @@ export default compose(
     ],
     ProjectErrorPage
   ),
-  withNotifications,
   withStateHandlers(
     ({ initialActions = [] }) => ({
       selectedActions: initialActions,

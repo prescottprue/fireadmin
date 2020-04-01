@@ -4,12 +4,10 @@ import { get, map, findIndex } from 'lodash'
 import withFirestore from 'react-redux-firebase/lib/withFirestore'
 import { compose } from 'redux'
 import { withHandlers, setPropTypes, withStateHandlers } from 'recompose'
-import { withNotifications } from 'modules/notification'
 import { withStyles } from '@material-ui/core/styles'
 import styles from './NewMemberModal.styles'
 
 export default compose(
-  withNotifications,
   withFirestore,
   withStateHandlers(
     ({ initialDialogOpen = false }) => ({

@@ -1,7 +1,6 @@
 import React from 'react'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import ActionRunnerForm from '../ActionRunnerForm'
@@ -37,28 +36,6 @@ function ActionsPage({
       <Typography className={classes.pageHeader}>Actions</Typography>
       <Typography variant="h5">Action Runner</Typography>
       <div className={classes.container}>
-        <div className={classes.buttons}>
-          <Button
-            disabled={!selectedTemplate || lockedEnvInUse}
-            color="primary"
-            variant="contained"
-            aria-label="Run Action"
-            onClick={submitActionRunner}
-            data-test="run-action-button">
-            Run Action
-          </Button>
-          {selectedTemplate && (
-            <Button
-              color="secondary"
-              variant="contained"
-              aria-label="Clear"
-              onClick={clearRunner}
-              className={classes.button}
-              data-test="clear-action-button">
-              Clear
-            </Button>
-          )}
-        </div>
         <ActionRunnerForm
           projectId={projectId}
           selectedTemplate={selectedTemplate}

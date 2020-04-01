@@ -10,10 +10,8 @@ import {
   withStateHandlers,
   withHandlers,
   withProps,
-  setDisplayName,
   setPropTypes
 } from 'recompose'
-import { withNotifications } from 'modules/notification'
 import * as handlers from './ActionsPage.handlers'
 
 function instanceTypeInUse(environments, type = 'src') {
@@ -40,8 +38,6 @@ function getLockedEnvInUse(environments) {
 }
 
 export default compose(
-  setDisplayName('EnhancedActionsPage'),
-  withNotifications,
   withFirestore,
   withFirebase,
   // Proptypes for props used in HOCs

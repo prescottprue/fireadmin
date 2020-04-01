@@ -1,8 +1,6 @@
-import { get } from 'lodash'
 import firebase from 'firebase/app'
-import messageActions from 'modules/notification'
-import { publicVapidKey } from '../config'
 import 'firebase/messaging'
+import { publicVapidKey } from '../config'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 
 /**
@@ -102,13 +100,14 @@ export function initializeMessaging(dispatch) {
   // - the user clicks on an app notification created by a service worker
   //   `messaging.setBackgroundMessageHandler` handler.
   messaging.onMessage((payload) => {
-    const DEFAULT_MESSAGE = 'Message!'
-    const message = get(payload, 'notification.body', DEFAULT_MESSAGE)
-    const messageMethod = message.toLowerCase().includes('success')
-      ? 'showSuccess'
-      : 'showMessage'
+    // const DEFAULT_MESSAGE = 'Message!'
+    // const message = get(payload, 'notification.body', DEFAULT_MESSAGE)
+    // const messageMethod = message.toLowerCase().includes('success')
+    //   ? 'showSuccess'
+    //   : 'showMessage'
     // Dispatch showSuccess action
-    messageActions[messageMethod](message)(dispatch)
+    // TODO: Move this into the NotificationsProvider
+    // messageActions[messageMethod](message)(dispatch)
   })
 
   // Request permission to setup browser notifications

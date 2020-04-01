@@ -5,11 +5,9 @@ import { ACTION_TEMPLATES_PATH } from 'constants/firebasePaths'
 import firestoreConnect from 'react-redux-firebase/lib/firestoreConnect'
 import { withRouter } from 'react-router-dom'
 import { spinnerWhileLoading } from 'utils/components'
-import { withNotifications } from 'modules/notification'
 import * as handlers from './ActionTemplatesList.handlers'
 
 export default compose(
-  withNotifications,
   withRouter,
   // Map auth uid from state to props
   connect(({ firebase: { auth: { uid } } }) => ({ uid })),

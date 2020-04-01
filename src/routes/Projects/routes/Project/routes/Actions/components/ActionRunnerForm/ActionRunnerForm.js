@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { get, map } from 'lodash'
 import Button from '@material-ui/core/Button'
-import { Field } from 'redux-form'
+import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Grid from '@material-ui/core/Grid'
@@ -42,166 +42,205 @@ function ActionRunnerForm({
   project,
   environments,
   environmentsExpanded,
-  toggleEnvironments,
-  selectTab,
-  selectedTab
+  toggleEnvironments
 }) {
   const classes = useStyles()
+  const { reset } = useForm()
+  const [selectedTab, selectTab] = useState(0)
+  const lockedEnvInUse = false // TODO: Load this from Firestore data
 
   return (
     <div>
-      <ExpansionPanel
-        expanded={templateEditExpanded}
-        onChange={toggleTemplateEdit}>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.sectionHeader}>
-            {templateName}
-          </Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails className="flex-column">
-          <Grid container spacing={8} justify="center">
-            <Grid item xs={12} sm={8} md={8} style={{ textAlign: 'center' }}>
-              <Typography paragraph>
-                Run an action by selecting a template, filling in the template's
-                configuation options, then clicking <strong>run action</strong>.
-              </Typography>
-              <Button
-                color="primary"
-                component={Link}
-                to={ACTION_TEMPLATES_PATH}
-                className={classes.button}>
-                Create New Action Template
-              </Button>
-              <Typography className={classes.orFont}>
-                or select existing
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={8}>
-              <AppBar position="static">
-                <Tabs
-                  value={selectedTab}
-                  onChange={selectTab}
-                  variant="fullWidth">
-                  <Tab label="Public" />
-                  <Tab label="Private" />
-                </Tabs>
-              </AppBar>
-            </Grid>
-            {selectedTab === 0 && (
-              <Grid item xs={12} sm={6} md={6} style={{ textAlign: 'center' }}>
-                <TabContainer>
-                  <div className={classes.search}>
-                    <CollectionSearch
-                      indexName="actionTemplates"
-                      onSuggestionClick={selectActionTemplate}
-                    />
-                  </div>
-                </TabContainer>
-              </Grid>
-            )}
-            {selectedTab === 1 && (
-              <Grid item xs={12} sm={6} md={6} style={{ textAlign: 'center' }}>
-                <TabContainer>
-                  <PrivateActionTemplates
-                    onTemplateClick={selectActionTemplate}
-                  />
-                </TabContainer>
-              </Grid>
-            )}
-          </Grid>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-      {selectedTemplate ? (
+      <div className={classes.buttons}>
+        <Button
+          disabled={!selectedTemplate || lockedEnvInUse}
+          color="primary"
+          variant="contained"
+          aria-label="Run Action"
+          type="submit"
+          data-test="run-action-button">
+          Run Action
+        </Button>
+        {selectedTemplate && (
+          <Button
+            color="secondary"
+            variant="contained"
+            aria-label="Clear"
+            onClick={reset}
+            className={classes.button}
+            data-test="clear-action-button">
+            Clear
+          </Button>
+        )}
+      </div>
+      <div>
         <ExpansionPanel
-          expanded={environmentsExpanded}
-          onChange={toggleEnvironments}>
+          expanded={templateEditExpanded}
+          onChange={toggleTemplateEdit}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography className={classes.heading}>Environments</Typography>
+            <Typography className={classes.sectionHeader}>
+              {templateName}
+            </Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={classes.inputs}>
-            <Grid container spacing={8}>
-              {selectedTemplate.environments ? (
-                selectedTemplate.environments.map((input, index) => (
-                  <Grid item xs={10} md={6} key={`Environment-${index}`}>
-                    <Field
-                      name={`environmentValues.${index}`}
-                      component={(props) => <OutlinedSelect {...props} />}
-                      fullWidth
-                      props={{
-                        label: get(input, `name`) || `Environment ${index + 1}`
-                      }}
-                      inputProps={{
-                        name: 'environment',
-                        id: 'environment',
-                        'data-test': 'environment-select'
-                      }}>
-                      {map(environments, (environment, envIndex) => (
-                        <MenuItem
-                          key={`Environment-Option-${environment.id}-${envIndex}`}
-                          value={environment.id}
-                          button
-                          disabled={
-                            environment.locked ||
-                            (environment.readOnly && index === 1) ||
-                            (environment.writeOnly && index === 0)
-                          }
-                          data-test={`environment-option-${environment.id}`}>
-                          <ListItemText
-                            primary={environment.name || environment.id}
-                            secondary={`${databaseURLToProjectName(
-                              environment.databaseURL
-                            )}${environment.locked ? ' - Locked' : ''}${
-                              environment.readOnly ? ' - Read Only' : ''
-                            }${environment.writeOnly ? ' - Write Only' : ''}`}
-                          />
-                        </MenuItem>
-                      ))}
-                    </Field>
-                  </Grid>
-                ))
-              ) : (
-                <div className="flex-row-center">No Environments</div>
+          <ExpansionPanelDetails className="flex-column">
+            <Grid container spacing={8} justify="center">
+              <Grid item xs={12} sm={8} md={8} style={{ textAlign: 'center' }}>
+                <Typography paragraph>
+                  Run an action by selecting a template, filling in the
+                  template's configuration options, then clicking{' '}
+                  <strong>run action</strong>.
+                </Typography>
+                <Button
+                  color="primary"
+                  component={Link}
+                  to={ACTION_TEMPLATES_PATH}
+                  className={classes.button}>
+                  Create New Action Template
+                </Button>
+                <Typography className={classes.orFont}>
+                  or select existing
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={8}>
+                <AppBar position="static">
+                  <Tabs
+                    value={selectedTab}
+                    onChange={selectTab}
+                    variant="fullWidth">
+                    <Tab label="Public" />
+                    <Tab label="Private" />
+                  </Tabs>
+                </AppBar>
+              </Grid>
+              {selectedTab === 0 && (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={6}
+                  style={{ textAlign: 'center' }}>
+                  <TabContainer>
+                    <div className={classes.search}>
+                      <CollectionSearch
+                        indexName="actionTemplates"
+                        onSuggestionClick={selectActionTemplate}
+                      />
+                    </div>
+                  </TabContainer>
+                </Grid>
+              )}
+              {selectedTab === 1 && (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={6}
+                  style={{ textAlign: 'center' }}>
+                  <TabContainer>
+                    <PrivateActionTemplates
+                      onTemplateClick={selectActionTemplate}
+                    />
+                  </TabContainer>
+                </Grid>
               )}
             </Grid>
           </ExpansionPanelDetails>
         </ExpansionPanel>
-      ) : null}
-      {selectedTemplate ? (
-        <ExpansionPanel expanded={inputsExpanded} onChange={toggleInputs}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography className={classes.heading}>Inputs</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={classes.inputs}>
-            {selectedTemplate.inputs
-              ? selectedTemplate.inputs.map((input, index) => (
-                  <ActionInput
-                    key={`Input-${index}`}
-                    name={`inputValues.${index}`}
-                    inputs={selectedTemplate.inputs}
-                    inputMeta={get(selectedTemplate.inputs, index)}
-                    {...{ index, environments, projectId }}
-                  />
-                ))
-              : null}
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      ) : null}
-      {selectedTemplate ? (
-        <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography className={classes.heading}>Steps</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <Grid container spacing={8} style={{ flexGrow: 1 }}>
-              <Grid item xs={12} lg={6}>
-                {selectedTemplate && selectedTemplate.steps ? (
-                  <StepsViewer steps={selectedTemplate.steps} activeStep={0} />
-                ) : null}
+        {selectedTemplate ? (
+          <ExpansionPanel
+            expanded={environmentsExpanded}
+            onChange={toggleEnvironments}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={classes.heading}>Environments</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails className={classes.inputs}>
+              <Grid container spacing={8}>
+                {selectedTemplate.environments ? (
+                  selectedTemplate.environments.map((input, index) => (
+                    <Grid item xs={10} md={6} key={`Environment-${index}`}>
+                      <OutlinedSelect
+                        name={`environmentValues.${index}`}
+                        fullWidth
+                        props={{
+                          label:
+                            get(input, `name`) || `Environment ${index + 1}`
+                        }}
+                        inputProps={{
+                          name: 'environment',
+                          id: 'environment',
+                          'data-test': 'environment-select'
+                        }}>
+                        {map(environments, (environment, envIndex) => (
+                          <MenuItem
+                            key={`Environment-Option-${environment.id}-${envIndex}`}
+                            value={environment.id}
+                            button
+                            disabled={
+                              environment.locked ||
+                              (environment.readOnly && index === 1) ||
+                              (environment.writeOnly && index === 0)
+                            }
+                            data-test={`environment-option-${environment.id}`}>
+                            <ListItemText
+                              primary={environment.name || environment.id}
+                              secondary={`${databaseURLToProjectName(
+                                environment.databaseURL
+                              )}${environment.locked ? ' - Locked' : ''}${
+                                environment.readOnly ? ' - Read Only' : ''
+                              }${environment.writeOnly ? ' - Write Only' : ''}`}
+                            />
+                          </MenuItem>
+                        ))}
+                      </OutlinedSelect>
+                    </Grid>
+                  ))
+                ) : (
+                  <div className="flex-row-center">No Environments</div>
+                )}
               </Grid>
-            </Grid>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      ) : null}
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        ) : null}
+        {selectedTemplate ? (
+          <ExpansionPanel expanded={inputsExpanded} onChange={toggleInputs}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={classes.heading}>Inputs</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails className={classes.inputs}>
+              {selectedTemplate.inputs
+                ? selectedTemplate.inputs.map((input, index) => (
+                    <ActionInput
+                      key={`Input-${index}`}
+                      name={`inputValues.${index}`}
+                      inputs={selectedTemplate.inputs}
+                      inputMeta={get(selectedTemplate.inputs, index)}
+                      {...{ index, environments, projectId }}
+                    />
+                  ))
+                : null}
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        ) : null}
+        {selectedTemplate ? (
+          <ExpansionPanel>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={classes.heading}>Steps</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Grid container spacing={8} style={{ flexGrow: 1 }}>
+                <Grid item xs={12} lg={6}>
+                  {selectedTemplate && selectedTemplate.steps ? (
+                    <StepsViewer
+                      steps={selectedTemplate.steps}
+                      activeStep={0}
+                    />
+                  ) : null}
+                </Grid>
+              </Grid>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        ) : null}
+      </div>
     </div>
   )
 }

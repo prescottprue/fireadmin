@@ -9,7 +9,6 @@ import {
 } from 'recompose'
 import withFirestore from 'react-redux-firebase/lib/withFirestore'
 import firebaseConnect from 'react-redux-firebase/lib/firebaseConnect'
-import { withNotifications } from 'modules/notification'
 import { withStyles } from '@material-ui/core/styles'
 import { spinnerWhileLoading, renderWhileEmpty } from 'utils/components'
 import {
@@ -23,7 +22,6 @@ import styles from './PermissionsTable.styles'
 
 export default compose(
   setDisplayName('EnhancedPermissionsTable'),
-  withNotifications,
   firebaseConnect(['displayNames']),
   withFirestore,
   // Map redux state to props

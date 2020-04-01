@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
-import { Field } from 'redux-form'
+import { useFormContext, useFieldArray } from 'react-hook-form'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
@@ -15,17 +15,21 @@ import IconButton from '@material-ui/core/IconButton'
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import DeleteIcon from '@material-ui/icons/Delete'
-import TextField from 'components/FormTextField'
+import TextField from '@material-ui/core/TextField'
+import Switch from '@material-ui/core/Switch'
 import styles from './ActionTemplateEnvs.styles'
-import FormSwitchField from 'components/FormSwitchField'
 
 const useStyles = makeStyles(styles)
 
-function ActionTemplateEnvs({ fields, environments }) {
+function ActionTemplateEnvs({ environments }) {
   const classes = useStyles()
-
+  const { control, register } = useFormContext()
+  const { fields, remove, append } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: 'environments' // unique name for your Field Array
+  })
   function addNewEnvironment() {
-    return fields.push({ required: false })
+    return append({ required: false })
   }
 
   return (
@@ -37,12 +41,12 @@ function ActionTemplateEnvs({ fields, environments }) {
         variant="contained">
         Add Environment
       </Button>
-      {fields.map((member, index, field) => {
+      {fields.map((field, index) => {
         function removeEnvironment() {
-          return fields.remove(index)
+          return remove(index)
         }
         return (
-          <ExpansionPanel key={index}>
+          <ExpansionPanel key={field.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
                 {get(environments, `${index}.name`) ||
@@ -57,24 +61,26 @@ function ActionTemplateEnvs({ fields, environments }) {
             <ExpansionPanelDetails>
               <Grid container spacing={8} style={{ flexGrow: 1 }}>
                 <Grid item xs={10} md={4} lg={4}>
-                  <Field
-                    name={`${member}.name`}
-                    component={TextField}
+                  <TextField
+                    name={`environments[${index}].name`}
                     label="Name"
                     className={classes.field}
+                    fullWidth
+                    inputRef={register}
                   />
-                  <Field
-                    name={`${member}.description`}
-                    component={TextField}
+                  <TextField
+                    name={`environments[${index}].description`}
                     label="Description"
                     className={classes.field}
+                    fullWidth
+                    inputRef={register}
                   />
                   <div className={classes.required}>
                     <FormControlLabel
                       control={
-                        <Field
-                          name={`${member}.required`}
-                          component={FormSwitchField}
+                        <Switch
+                          name={`environments[${index}].required`}
+                          inputRef={register}
                         />
                       }
                       label="Required"
@@ -103,7 +109,6 @@ function ActionTemplateEnvs({ fields, environments }) {
 }
 
 ActionTemplateEnvs.propTypes = {
-  fields: PropTypes.object.isRequired,
   environments: PropTypes.array
 }
 

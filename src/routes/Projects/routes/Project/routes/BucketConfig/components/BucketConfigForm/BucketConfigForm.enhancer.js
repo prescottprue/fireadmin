@@ -4,18 +4,12 @@ import { connect } from 'react-redux'
 import { get, pick } from 'lodash'
 import withFirestore from 'react-redux-firebase/lib/withFirestore'
 import withFirebase from 'react-redux-firebase/lib/withFirebase'
-import { formValues, reduxForm } from 'redux-form'
 import { databaseURLToProjectName } from 'utils'
 import { waitForCompleted } from 'utils/firebaseFunctions'
-import { withNotifications } from 'modules/notification'
 import { spinnerWhile } from 'utils/components'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 
-const formName = 'bucketConfig'
-
 export default compose(
-  // add props.showSuccess and props.showError
-  withNotifications,
   // Add props.firebase
   withFirebase,
   withFirestore,
@@ -115,16 +109,6 @@ export default compose(
       }
     }
   }),
-  // form capability including submit
-  reduxForm({
-    form: formName,
-    enableReinitialize: true,
-    keepDirtyOnReinitialize: true
-  }),
-  formValues('serviceAccount'),
-  formValues('environment'),
-  formValues('body'),
-  formValues('method'),
   // Show a loading spinner while submitting
   spinnerWhile(({ submitting }) => submitting)
 )
