@@ -52,7 +52,7 @@ function OverviewPanel({
         <Grid item xs={12} md={6} className={classes.item}>
           <Typography variant="h6">Actions</Typography>
           <p className={classes.description}>
-            Moving data is a nessesary part of any real world application.
+            Moving data is a necessary part of any real world application.
             Actions allow you to move data in a repeatable way with complete
             logging of everything.
           </p>

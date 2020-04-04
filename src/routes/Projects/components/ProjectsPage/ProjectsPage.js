@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { isEmpty } from 'react-redux-firebase/lib/helpers'
+import { useFirestore, useAuth, useFirestoreCollectionData } from 'reactfire'
 import { makeStyles } from '@material-ui/core/styles'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, useHistory } from 'react-router-dom'
 import ProjectRoute from 'routes/Projects/routes/Project'
 import { renderChildren } from 'utils/router'
+import useNotifications from 'modules/notification/useNotifications'
+import { LIST_PATH } from 'constants/paths'
+import { triggerAnalyticsEvent } from 'utils/analytics'
+import defaultRoles from 'constants/defaultRoles'
 import ProjectTile from '../ProjectTile'
 import NewProjectTile from '../NewProjectTile'
 import NewProjectDialog from '../NewProjectDialog'
@@ -12,23 +16,88 @@ import styles from './ProjectsPage.styles'
 
 const useStyles = makeStyles(styles)
 
-function ProjectsPage({
-  projects,
-  collabProjects,
-  auth,
-  newDialogOpen,
-  toggleDialog,
-  deleteProject,
-  addProject,
-  match,
-  goToProject
-}) {
+function ProjectsPage({ match }) {
   const classes = useStyles()
+  const history = useHistory()
+
+  const { showError, showSuccess } = useNotifications()
+  const [newDialogOpen, changeNewDialogOpen] = useState(false)
+  const toggleDialog = () => changeNewDialogOpen(!newDialogOpen)
+
+  const firestore = useFirestore()
+  const { FieldValue } = useFirestore
+  const auth = useAuth()
+  const projectsRef = firestore.collection('projects')
+  const currentUsersProjectsRef = projectsRef.where(
+    'createdBy',
+    '==',
+    auth.currentUser.uid
+  )
+  const collabProjectsRef = projectsRef.where(
+    `collaborators.${auth.currentUser.uid}`,
+    '==',
+    true
+  )
+
+  const currentUsersProjects = useFirestoreCollectionData(
+    currentUsersProjectsRef,
+    { idField: 'id' }
+  )
+  const collabProjects = useFirestoreCollectionData(collabProjectsRef, {
+    idField: 'id'
+  })
+  const projects = currentUsersProjects.concat(collabProjects)
+
+  /**
+   * Handler for adding a project
+   */
+  async function addProject(newInstance) {
+    if (!auth.currentUser.uid) {
+      return showError('You must be logged in to create a project')
+    }
+    try {
+      toggleDialog()
+      await firestore.collection('projects').add(
+        { collection: 'projects' },
+        {
+          ...newInstance,
+          createdBy: auth.currentUser.uid,
+          createdAt: FieldValue.serverTimestamp(),
+          permissions: {
+            [auth.currentUser.uid]: {
+              role: 'owner',
+              updatedAt: FieldValue.serverTimestamp()
+            }
+          },
+          roles: defaultRoles
+        }
+      )
+      showSuccess('Project added successfully')
+      triggerAnalyticsEvent('createProject')
+    } catch (err) {
+      showError(err.message || 'Could not add project')
+      throw err
+    }
+  }
+
+  /**
+   * Handler for deleting a project
+   */
+  async function deleteProject(projectId) {
+    try {
+      await firestore.collection('projects').delete()
+      showSuccess('Project deleted successfully')
+      triggerAnalyticsEvent('deleteProject', { projectId })
+    } catch (err) {
+      console.error('Error deleting project:', err) // eslint-disable-line no-console
+      showError(err.message || 'Error deleting project')
+    }
+  }
 
   return (
     <Switch>
       {/* Child routes */}
-      {renderChildren([ProjectRoute], match, { auth })}
+      {renderChildren([ProjectRoute])}
       {/* Main Route */}
       <Route
         exact
@@ -42,17 +111,20 @@ function ProjectsPage({
             />
             <div className={classes.tiles}>
               <NewProjectTile onClick={toggleDialog} />
-              {!isEmpty(projects) &&
-                projects.map((project, ind) => (
+              {projects.map((project, ind) => {
+                const goToProject = () =>
+                  history.push(`${LIST_PATH}/${project.id}`)
+                return (
                   <ProjectTile
                     key={`Project-${project.id}-${ind}`}
                     name={project.name}
                     project={project}
                     projectId={project.id}
-                    onSelect={() => goToProject(project.id)}
+                    onSelect={goToProject}
                     onDelete={() => deleteProject(project.id)}
                   />
-                ))}
+                )
+              })}
             </div>
           </div>
         )}
@@ -62,15 +134,7 @@ function ProjectsPage({
 }
 
 ProjectsPage.propTypes = {
-  match: PropTypes.object.isRequired, // from enhancer (withRouter)
-  auth: PropTypes.object, // from enhancer (connect + firebaseConnect - firebase)
-  projects: PropTypes.array, // from enhancer (connect + firebaseConnect - firebase)
-  newDialogOpen: PropTypes.bool, // from enhancer (withStateHandlers)
-  toggleDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  deleteProject: PropTypes.func.isRequired, // from enhancer (withHandlers - firebase)
-  collabProjects: PropTypes.object, // from enhancer (withHandlers - firebase)
-  addProject: PropTypes.func.isRequired, // from enhancer (withHandlers - firebase)
-  goToProject: PropTypes.func.isRequired // from enhancer (withHandlers - router)
+  match: PropTypes.object.isRequired // from enhancer (withRouter)
 }
 
 export default ProjectsPage

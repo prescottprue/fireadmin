@@ -1,12 +1,15 @@
-import { useState } from 'react'
 import { get, omit } from 'lodash'
 import { useDatabase, useAuth, useFirestore } from 'reactfire'
 import { ACTION_RUNNER_REQUESTS_PATH } from 'constants/firebasePaths'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 import useNotifications from 'modules/notification/useNotifications'
 
-export default function useActionsPage({ projectId }) {
-  const [selectedTemplate, changeSelectedTemplate] = useState()
+export default function useActionRunner({
+  projectId,
+  closeRunnerSections,
+  selectActionTemplate,
+  selectedTemplate
+}) {
   const { showError, showMessage } = useNotifications()
   const database = useDatabase()
   const firestore = useFirestore()
@@ -77,13 +80,13 @@ export default function useActionsPage({ projectId }) {
             },
             ['_highlightResult']
           ),
-          createdBy: auth.uid
+          createdBy: auth.currentUser.uid
         }
       )
     ])
       .then(() => {
         // Close sections used for action runner input
-        // props.closeRunnerSections()
+        closeRunnerSections()
         // Notify user that action run has started
         showMessage('Action Run Started!')
       })
@@ -107,13 +110,11 @@ export default function useActionsPage({ projectId }) {
       inputValues: action.eventData.inputValues,
       environmentValues: action.eventData.environmentValues
     }
-    changeSelectedTemplate(templateWithValues)
-    // props.dispatch(
-    //   initialize(ACTION_RUNNER_FORM_NAME, templateWithValues, false, {
-    //     keepValues: false
-    //   })
-    // )
+    selectActionTemplate(templateWithValues)
   }
 
-  return { runAction, rerunAction }
+  return {
+    runAction,
+    rerunAction
+  }
 }

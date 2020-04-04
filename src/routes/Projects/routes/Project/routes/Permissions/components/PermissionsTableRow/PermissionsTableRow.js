@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Field } from 'redux-form'
 import { capitalize } from 'lodash'
+import { useFirestore, useAuth } from 'reactfire'
+import { Controller } from 'react-hook-form'
 import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
@@ -15,43 +16,114 @@ import Divider from '@material-ui/core/Divider'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
+import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
-import Select from 'components/FormSelectField'
+import { makeStyles } from '@material-ui/core/styles'
+import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
+import useNotifications from 'modules/notification/useNotifications'
+import { useForm } from 'react-hook-form'
+import styles from './PermissionsTableRow.styles'
+import { useState } from 'react'
+
+const useStyles = makeStyles(styles)
 
 const editOptions = ['Delete']
-
 const ITEM_HEIGHT = 48
 
 function PermissionsTableRow({
-  pristine,
-  reset,
   displayName,
-  uid,
+  projectId,
+  roleKey,
   role,
-  roleOptions,
-  classes,
-  handleSubmit,
-  handleMenuClose,
-  handleMenuClick,
-  closeAndCallDelete,
-  anchorEl
+  roleOptions
 }) {
+  const classes = useStyles()
+  const [anchorEl, setAnchorEl] = useState(null)
+  const handleMenuClick = (e) => setAnchorEl(e.target)
+  const handleMenuClose = (e) => setAnchorEl(null)
+
+  const firestore = useFirestore()
+  const { FieldValue } = useFirestore
+  const {
+    reset,
+    control,
+    handleSubmit,
+    formState: { dirty, isSubmitting }
+  } = useForm({ defaultValues: role })
+  const { showSuccess } = useNotifications()
+  const auth = useAuth()
+
+  const projectRef = firestore.doc(`projects/${projectId}`)
+  async function updateRole(roleUpdates) {
+    await projectRef.set(
+      {
+        roles: {
+          [roleKey]: {
+            permissions: roleUpdates
+          }
+        }
+      },
+      { merge: true }
+    )
+    // Write event to project events
+    await createProjectEvent(
+      { projectId, firestore },
+      {
+        eventType: 'updateRole',
+        eventData: { roleKey },
+        createdBy: auth.currentUser.uid
+      }
+    )
+    showSuccess('Role updated successfully!')
+    triggerAnalyticsEvent('updateRole', {
+      projectId,
+      roleName: roleKey
+    })
+  }
+
+  async function deleteRole(roleKey) {
+    await projectRef.set(
+      {
+        roles: {
+          [roleKey]: FieldValue.delete()
+        }
+      },
+      { merge: true }
+    )
+    // Write event to project events
+    await createProjectEvent(
+      { projectId, firestore },
+      {
+        eventType: 'deleteRole',
+        eventData: { roleKey: roleKey },
+        createdBy: auth.currentUser.uid
+      }
+    )
+    showSuccess('Role deleted successfully!')
+    triggerAnalyticsEvent('deleteRole', { projectId, roleKey })
+  }
+
+  const closeAndCallDelete = (e) => {
+    handleMenuClose()
+    deleteRole()
+  }
+
   return (
     <ExpansionPanel className={classes.root}>
       <ExpansionPanelSummary
         expandIcon={<ExpandMoreIcon />}
         data-test="member-expand">
         <Typography className={classes.displayName}>
-          {displayName || uid}
+          {displayName || auth.currentUser.uid}
         </Typography>
         <Typography className={classes.permission}>
           {capitalize(role)}
         </Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails style={{ paddingTop: 0 }}>
-        <form className={classes.content} onSubmit={handleSubmit}>
+        <form className={classes.content} onSubmit={handleSubmit(updateRole)}>
           <Divider />
           <div className={classes.menu}>
             <IconButton
@@ -59,7 +131,7 @@ function PermissionsTableRow({
               aria-owns="long-menu"
               aria-haspopup="true"
               onClick={handleMenuClick}
-              data-test={`member-more-${uid}`}>
+              data-test={`member-more-${auth.currentUser.uid}`}>
               <MoreVertIcon />
             </IconButton>
             <Menu
@@ -93,33 +165,32 @@ function PermissionsTableRow({
             <div className={classes.roleSelect}>
               <FormControl className={classes.field}>
                 <InputLabel htmlFor="role">Role</InputLabel>
-                <Field
-                  name={`${uid}.role`}
-                  component={Select}
-                  fullWidth
-                  inputProps={{
-                    name: 'role',
-                    id: 'role'
-                  }}
-                  data-test="role-select">
-                  {roleOptions.map((option, idx) => (
-                    <MenuItem
-                      key={`Role-Option-${option.value}-${idx}`}
-                      value={option.value}
-                      disabled={option.disabled}
-                      data-test={`role-option-${option.value}`}>
-                      <ListItemText
-                        primary={option.name || capitalize(option.value)}
-                      />
-                    </MenuItem>
-                  ))}
-                </Field>
+                <Controller
+                  as={
+                    <Select fullWidth>
+                      {roleOptions.map((option, idx) => (
+                        <MenuItem
+                          key={`Role-Option-${option.value}-${idx}`}
+                          value={option.value}
+                          disabled={option.disabled}
+                          data-test={`role-option-${option.value}`}>
+                          <ListItemText
+                            primary={option.name || capitalize(option.value)}
+                          />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  }
+                  name="environment"
+                  control={control}
+                  defaultValue=""
+                />
               </FormControl>
             </div>
           </div>
           <div className={classes.buttons}>
             <Button
-              disabled={pristine}
+              disabled={!dirty || isSubmitting}
               color="secondary"
               aria-label="Cancel"
               onClick={reset}
@@ -127,13 +198,13 @@ function PermissionsTableRow({
               Cancel
             </Button>
             <Button
-              disabled={pristine}
+              disabled={!dirty || isSubmitting}
               color="primary"
               variant="contained"
               aria-label="Update Member"
               type="submit"
               data-test="update-member-button">
-              Update Member
+              {isSubmitting ? 'Updating...' : 'Update Member'}
             </Button>
           </div>
         </form>

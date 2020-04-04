@@ -1,7 +1,6 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
-import { get, map } from 'lodash'
+import { get, map, pick } from 'lodash'
 import MenuItem from '@material-ui/core/MenuItem'
 import {
   useFormContext,
@@ -19,17 +18,25 @@ import { makeStyles } from '@material-ui/core/styles'
 import { databaseURLToProjectName } from 'utils'
 // import CorsList from '../CorsList'
 import styles from './BucketConfigForm.styles'
+import {
+  useFirestore,
+  useDatabase,
+  useFirestoreCollectionData,
+  useAuth
+} from 'reactfire'
+import useNotifications from 'modules/notification/useNotifications'
+import { waitForCompleted } from 'utils/firebaseFunctions'
+import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 
 const useStyles = makeStyles(styles)
 
-function BucketConfigForm({
-  onSubmit,
-  projectEnvironmentsById,
-  projectEnvironments,
-  currentConfig
-}) {
+function BucketConfigForm({ projectId }) {
   const classes = useStyles()
-  const methods = useForm({ defaultValues: currentConfig })
+  const methods = useForm({ defaultValues: { method: 'GET' } })
+  const database = useDatabase()
+  const firestore = useFirestore()
+  const auth = useAuth()
+  const { showError, showSuccess } = useNotifications()
   const {
     control,
     watch,
@@ -39,14 +46,89 @@ function BucketConfigForm({
   const environment = watch('environment')
   const body = watch('body')
   const method = watch('method')
-
+  const environmentsRef = firestore.collection(
+    `projects/${projectId}/environments`
+  )
+  const projectEnvironments = useFirestoreCollectionData(environmentsRef)
+  const projectEnvironmentsById = projectEnvironments.reduce(
+    (acc, projectEnvironment) => {
+      return {
+        ...acc,
+        [projectEnvironments.id]: projectEnvironment
+      }
+    },
+    {}
+  )
   const databaseURL = get(projectEnvironmentsById, `${environment}.databaseURL`)
   const databaseName = databaseURL && databaseURLToProjectName(databaseURL)
   const storageBucket = databaseName && `${databaseName}.appspot.com`
+
+  async function sendBucketConfigRequest(bucketConfig) {
+    try {
+      const databaseURL = get(
+        projectEnvironmentsById,
+        `${bucketConfig.environment}.databaseURL`
+      )
+      // Push request to callGoogleApi cloud function
+      const pushRef = await database.ref('requests/callGoogleApi').push({
+        api: 'storage',
+        ...pick(bucketConfig, ['method', 'cors', 'environment']),
+        projectId,
+        databaseName,
+        databaseURL,
+        storageBucket: `${databaseName}.appspot.com`
+      })
+      const pushKey = pushRef.key
+      // wait for response (written by cloud function)
+      const results = await waitForCompleted(
+        database.ref(`responses/callGoogleApi/${pushKey}`)
+      )
+      // Handle error calling google api (written to response)
+      if (results.error) {
+        showError(`Error calling Google api: ${results.error}`)
+        throw new Error(results.error)
+      }
+      if (bucketConfig.method === 'GET' && !get(results, 'responseData.cors')) {
+        showSuccess('No CORS config currently exists for this bucket')
+      } else {
+        // Set config
+        const { cors } = results.responseData
+        methods.setValue([cors])
+        showSuccess('Storage Bucket Config Get Successful')
+        triggerAnalyticsEvent('bucketAction', {
+          method: bucketConfig.method || 'GET',
+          resource: 'CORS'
+        })
+        await createProjectEvent(
+          { firestore, projectId },
+          {
+            eventType: `${
+              bucketConfig.method ? bucketConfig.method.toLowerCase() : 'get'
+            }BucketConfig`,
+            eventData: { bucketConfig },
+            createdBy: auth.currentUser.uid
+          }
+        )
+        showSuccess(
+          `Storage Bucket ${
+            bucketConfig.method || 'UPDATE'
+          } completed Successfully`
+        )
+      }
+    } catch (err) {
+      if (err.message.indexOf('access to') !== -1) {
+        showError('Error: Service Account Does Not Have Access')
+        throw new Error('Service Account does not have Access')
+      }
+      showError('Error Updating Storage Bucket Config')
+      throw err
+    }
+  }
+
   return (
     <FormContext {...methods}>
       <form
-        onSubmit={methods.handleSubmit(onSubmit)}
+        onSubmit={methods.handleSubmit(sendBucketConfigRequest)}
         className={classes.container}>
         <div className={classes.buttons}>
           <Button
@@ -134,13 +216,6 @@ function BucketConfigForm({
       </form>
     </FormContext>
   )
-}
-
-BucketConfigForm.propTypes = {
-  projectEnvironments: PropTypes.array,
-  currentConfig: PropTypes.object,
-  storageBucket: PropTypes.string,
-  onSubmit: PropTypes.func.isRequired
 }
 
 export default BucketConfigForm

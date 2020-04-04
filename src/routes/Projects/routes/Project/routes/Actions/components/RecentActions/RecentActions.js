@@ -1,6 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Paper from '@material-ui/core/Paper'
+import {
+  useFirestore,
+  useFirestoreCollectionData,
+  useDatabase,
+  useDatabaseObjectData
+} from 'reactfire'
 import { get, map, startCase, invoke } from 'lodash'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -10,9 +16,56 @@ import TableRow from '@material-ui/core/TableRow'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
 import RedoIcon from '@material-ui/icons/Redo'
+import { makeStyles } from '@material-ui/core/styles'
 import { formatDateTime } from 'utils/formatters'
+import { databaseURLToProjectName } from 'utils'
+import NoRecentActions from './NoRecentActions'
+import styles from './RecentActions.styles'
 
-function RecentActions({ classes, orderedActions, rerunAction }) {
+const useStyles = makeStyles(styles)
+
+function RecentActions({ projectId, rerunAction }) {
+  const classes = useStyles()
+  const firestore = useFirestore()
+  const database = useDatabase()
+  const displayNamesRef = database.ref('displayNames')
+  const environmentsRef = firestore.collection(
+    `projects/${projectId}/environments`
+  )
+  const recentActionsQuery = firestore
+    .collection(`projects/${projectId}/events`)
+    .where('eventType', '==', 'requestActionRun')
+    .orderBy('createdAt', 'desc')
+    .limit(3)
+  const displayNames = useDatabaseObjectData(displayNamesRef)
+  const environments = useFirestoreCollectionData(environmentsRef)
+  const recentActions = useFirestoreCollectionData(recentActionsQuery)
+  const orderedActions = map(recentActions, (event) => {
+    const createdBy = get(event, 'createdBy')
+    const envLabelFromEnvironmentValIndex = (envIndex = 0) => {
+      const envKey = get(event, `eventData.environmentValues.${envIndex}`)
+      const envName = get(environments, `${envKey}.name`)
+      const envUrl =
+        get(environments, `${envKey}.databaseURL`) ||
+        get(event, `eventData.inputValues.${envIndex}.databaseURL`, '')
+      const firebaseProjectName = databaseURLToProjectName(envUrl)
+      return `${envName} (${firebaseProjectName})`
+    }
+    if (createdBy) {
+      return {
+        ...event,
+        src: envLabelFromEnvironmentValIndex(0),
+        dest: envLabelFromEnvironmentValIndex(1),
+        createdBy: get(displayNames, createdBy, createdBy)
+      }
+    }
+    return event
+  })
+
+  if (!recentActions) {
+    return <NoRecentActions />
+  }
+
   return (
     <Paper className={classes.root}>
       <Table className={classes.table}>
@@ -83,8 +136,6 @@ function RecentActions({ classes, orderedActions, rerunAction }) {
 }
 
 RecentActions.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
-  orderedActions: PropTypes.array,
   rerunAction: PropTypes.func.isRequired
 }
 

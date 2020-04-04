@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react'
-import { Route } from 'react-router-dom'
+import { Route, useRouteMatch } from 'react-router-dom'
 import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 import { createBrowserHistory } from 'history'
@@ -71,13 +71,14 @@ export const UserIsNotAuthenticated = connectedRouterRedirect({
  * @param {Object} match - Routes settings array
  * @param {Object} parentProps - Props to pass to children from parent
  */
-export function renderChildren(routes, match, parentProps) {
+export function renderChildren(routes) {
   return routes.map((route) => {
+    const match = useRouteMatch()
     return (
       <Route
         key={`${match.url}-${route.path}`}
         path={`${match.url}/${route.path}`}
-        render={(props) => <route.component {...parentProps} {...props} />}
+        render={route.component}
       />
     )
   })

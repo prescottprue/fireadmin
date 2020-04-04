@@ -6,12 +6,7 @@ import withFirestore from 'react-redux-firebase/lib/withFirestore'
 import withFirebase from 'react-redux-firebase/lib/withFirebase'
 import { formValueSelector } from 'redux-form'
 import { ACTION_RUNNER_FORM_NAME } from 'constants/formNames'
-import {
-  withStateHandlers,
-  withHandlers,
-  withProps,
-  setPropTypes
-} from 'recompose'
+import { withHandlers, withProps, setPropTypes } from 'recompose'
 import * as handlers from './ActionsPage.handlers'
 
 function instanceTypeInUse(environments, type = 'src') {
@@ -72,52 +67,6 @@ export default compose(
       lockedEnvInUse: getLockedEnvInUse(selectedEnvironments)
     }
   }),
-  // State handlers as props
-  withStateHandlers(
-    () => ({
-      templateEditExpanded: true,
-      // Values for ActionRunnerForm at this level so they can be cleared
-      // during actionRunner submission
-      inputsExpanded: true,
-      stepsExpanded: true,
-      environmentsExpanded: true
-    }),
-    {
-      toggleTemplateEdit: ({ templateEditExpanded }) => () => ({
-        templateEditExpanded: !templateEditExpanded
-      }),
-      closeTemplateEdit: () => () => ({
-        templateEditExpanded: false
-      }),
-      selectActionTemplate: () => (newSelectedTemplate) => ({
-        selectedTemplate: newSelectedTemplate,
-        templateEditExpanded: false,
-        inputsExpanded: true,
-        stepsExpanded: true,
-        environmentsExpanded: true
-      }),
-      clearRunner: () => () => ({
-        selectedTemplate: null,
-        templateEditExpanded: true
-      }),
-      // Sections of ActionRunnerForm at this level so that they can be cleared
-      // during actionRunner submission
-      toggleInputs: ({ inputsExpanded }) => () => ({
-        inputsExpanded: !inputsExpanded
-      }),
-      toggleEnvironments: ({ environmentsExpanded }) => () => ({
-        environmentsExpanded: !environmentsExpanded
-      }),
-      toggleSteps: ({ stepsExpanded }) => () => ({
-        stepsExpanded: !stepsExpanded
-      }),
-      closeRunnerSections: () => () => ({
-        stepsExpanded: false,
-        inputsExpanded: false,
-        environmentsExpanded: false
-      })
-    }
-  ),
   // Custom props
   withProps(({ selectedTemplate, lockedEnvInUse }) => ({
     templateName: selectedTemplate

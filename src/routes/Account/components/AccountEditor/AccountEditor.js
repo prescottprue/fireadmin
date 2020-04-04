@@ -13,7 +13,7 @@ function AccountEditor() {
   const classes = useStyles()
   const firestore = useFirestore()
   const auth = useUser()
-  const accountRef = firestore.doc(`users/${auth.uid}`)
+  const accountRef = firestore.doc(`users/${auth.currentUser.uid}`)
   const profileSnap = useFirestoreDoc(accountRef)
   const profile = profileSnap.data()
 

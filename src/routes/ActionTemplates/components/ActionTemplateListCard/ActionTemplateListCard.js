@@ -20,7 +20,7 @@ import styles from './ActionTemplateListCard.styles'
 
 const useStyles = makeStyles(styles)
 
-function ActionTemplateListCard({ name, id, steps, onClick, description }) {
+function ActionTemplateListCard({ name, id, steps, description, onClick }) {
   const classes = useStyles()
   const [anchorEl, changeMenuState] = useState(null)
 

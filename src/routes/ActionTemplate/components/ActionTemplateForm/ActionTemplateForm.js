@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useForm, FormContext } from 'react-hook-form'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
@@ -26,19 +26,20 @@ import styles from './ActionTemplateForm.styles'
 const useStyles = makeStyles(styles)
 
 function ActionTemplateForm({
-  reset,
   onSubmit,
   templateId,
+  defaultValues,
   editable,
-  startTemplateDelete,
-  history
+  startTemplateDelete
 }) {
   const classes = useStyles()
-  const methods = useForm()
+  const methods = useForm({ defaultValues })
+  const history = useHistory()
   const {
     register,
     handleSubmit,
     errors,
+    reset,
     formState: { isSubmitting, dirty }
   } = methods
 

@@ -55,7 +55,7 @@
     "react-instantsearch": "^4.2.0",
     "react-redux": "^5.0.7",
     "react-redux-firebase": "^2.5.0",
-    "react-router-dom": "^4.3.1",
+    "react-router-dom": "^5.1.2",
     "reactfire": "^2.0.3",
     "recompose": "^0.30.0",
     "redux": "^4.0.0",

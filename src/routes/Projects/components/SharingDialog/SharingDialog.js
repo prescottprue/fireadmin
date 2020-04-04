@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { map, invoke, get } from 'lodash'
+import { map, invoke, get, findIndex } from 'lodash'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -12,25 +12,38 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { makeStyles } from '@material-ui/core/styles'
-import { useFirestore } from 'reactfire'
+import { useFirestore, useDatabase, useDatabaseObjectData } from 'reactfire'
 import UsersSearch from 'components/UsersSearch'
 import UsersList from 'components/UsersList'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 import useNotifications from 'modules/notification/useNotifications'
 import styles from './SharingDialog.styles'
+import { useState } from 'react'
 
 const useStyles = makeStyles(styles)
 
-function SharingDialog({
-  open,
-  onRequestClose,
-  project,
-  users,
-  displayNames,
-  selectedCollaborators,
-  selectCollaborator
-}) {
+function SharingDialog({ open, onRequestClose, project }) {
   const classes = useStyles()
+  const database = useDatabase()
+  const [selectedCollaborators, changeSelectedCollaborators] = useState([])
+
+  const displayNamesRef = database.ref('displayNames')
+  const displayNames = useDatabaseObjectData(displayNamesRef)
+
+  function selectCollaborator(newCollaborator) {
+    const currentIndex = findIndex(selectedCollaborators, {
+      objectID: newCollaborator.id || newCollaborator.objectID
+    })
+    const newSelected = [...selectedCollaborators]
+
+    if (currentIndex === -1) {
+      newSelected.push(newCollaborator)
+    } else {
+      newSelected.splice(currentIndex, 1)
+    }
+
+    changeSelectedCollaborators(newSelected)
+  }
   const { showSuccess, showError } = useNotifications()
   const firestore = useFirestore()
   const collaborators = get(project, 'collaborators')
@@ -121,14 +134,9 @@ function SharingDialog({
 }
 
 SharingDialog.propTypes = {
-  onRequestClose: PropTypes.func, // from enhancer (withStateHandlers)
-  selectedCollaborators: PropTypes.array.isRequired, // from enhancer (withStateHandlers)
-  selectCollaborator: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  saveCollaborators: PropTypes.func.isRequired, // from enhancer (withHandlers)
+  onRequestClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  project: PropTypes.object,
-  users: PropTypes.object,
-  projectCollaborators: PropTypes.array
+  project: PropTypes.object.isRequired
 }
 
 export default SharingDialog

@@ -34,17 +34,21 @@ const typeOptions = [
   { value: 'custom', disabled: true }
 ]
 
-function ActionTemplateStep({ mainEditorPath, addStepClick, inputs }) {
+function ActionTemplateStep({ mainEditorPath }) {
   const classes = useStyles()
   const { control, register, watch } = useFormContext()
   const name = 'step'
-  const { fields, remove } = useFieldArray({ control, name })
+  const { fields, append, remove } = useFieldArray({ control, name })
   const steps = watch(name)
+
+  function addStep() {
+    append({ type: 'copy' })
+  }
 
   return (
     <div>
       <Button
-        onClick={addStepClick}
+        onClick={addStep}
         color="primary"
         variant="contained"
         className={classes.addAction}>
@@ -197,10 +201,6 @@ function ActionTemplateStep({ mainEditorPath, addStepClick, inputs }) {
 }
 
 ActionTemplateStep.propTypes = {
-  fields: PropTypes.object.isRequired,
-  addStepClick: PropTypes.func.isRequired,
-  steps: PropTypes.array,
-  inputs: PropTypes.array,
   mainEditorPath: PropTypes.string.isRequired
 }
 

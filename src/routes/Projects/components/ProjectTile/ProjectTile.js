@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { invoke } from 'lodash'
 import Paper from '@material-ui/core/Paper'
@@ -20,20 +20,15 @@ import styles from './ProjectTile.styles'
 
 const useStyles = makeStyles(styles)
 
-function ProjectTile({
-  open,
-  project,
-  handleEditClick,
-  onDelete,
-  menuClick,
-  closeMenu,
-  anchorEl,
-  projectId,
-  sharingDialogOpen,
-  toggleSharingDialog
-}) {
+function ProjectTile({ open, project, onDelete, onSelect, projectId }) {
   const classes = useStyles()
-
+  const [anchorEl, changeAnchorEl] = useState(null)
+  const [sharingDialogOpen, changeSharingDialogOpen] = useState(false)
+  const closeMenu = () => changeAnchorEl(null)
+  const menuClick = (e) => changeAnchorEl(e.target)
+  const toggleSharingDialog = () => changeSharingDialogOpen(!sharingDialogOpen)
+  const handleEditClick = () => onSelect && onSelect(project)
+  console.log('project', project)
   return (
     <Paper
       className={classes.container}
@@ -91,14 +86,8 @@ function ProjectTile({
 }
 
 ProjectTile.propTypes = {
-  projectId: PropTypes.string.isRequired,
   project: PropTypes.object.isRequired,
-  handleEditClick: PropTypes.func.isRequired,
-  menuClick: PropTypes.func.isRequired,
-  closeMenu: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
-  anchorEl: PropTypes.object,
-  toggleSharingDialog: PropTypes.func,
   sharingDialogOpen: PropTypes.bool,
   open: PropTypes.bool
 }
