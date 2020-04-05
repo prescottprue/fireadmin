@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { get, map } from 'lodash'
-import Button from '@material-ui/core/Button'
-import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import Button from '@material-ui/core/Button'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Grid from '@material-ui/core/Grid'
 import AppBar from '@material-ui/core/AppBar'
@@ -23,16 +23,14 @@ import OutlinedSelect from 'components/OutlinedSelect'
 import ActionInput from '../ActionInput'
 import StepsViewer from '../StepsViewer'
 import PrivateActionTemplates from '../PrivateActionTemplates'
-import { useParams } from 'react-router-dom'
 import RecentActions from '../RecentActions'
 import styles from './ActionPage.styles'
 import useActionsPage from './useActionsPage'
 
 const useStyles = makeStyles(styles)
 
-function ActionsPage() {
+function ActionsPage({ projectId }) {
   const classes = useStyles()
-  const { projectId } = useParams()
   const { reset, register, watch, handleSubmit } = useForm({})
   const [selectedTab, selectTab] = useState(0)
   const environments = watch('environments')

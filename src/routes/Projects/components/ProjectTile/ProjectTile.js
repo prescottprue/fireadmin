@@ -28,7 +28,7 @@ function ProjectTile({ open, project, onDelete, onSelect, projectId }) {
   const menuClick = (e) => changeAnchorEl(e.target)
   const toggleSharingDialog = () => changeSharingDialogOpen(!sharingDialogOpen)
   const handleEditClick = () => onSelect && onSelect(project)
-  console.log('project', project)
+
   return (
     <Paper
       className={classes.container}

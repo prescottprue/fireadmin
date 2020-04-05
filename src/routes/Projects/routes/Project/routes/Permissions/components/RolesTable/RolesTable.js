@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { get, some, map, orderBy, size } from 'lodash'
+import { useFirestore, useAuth, useFirestoreDocData } from 'reactfire'
 import Button from '@material-ui/core/Button'
 import Collapse from '@material-ui/core/Collapse'
 import Typography from '@material-ui/core/Typography'
 import DownArrow from '@material-ui/icons/ArrowDownward'
 import { makeStyles } from '@material-ui/core/styles'
+import useNotifications from 'modules/notification/useNotifications'
+import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 import RolesTableRow from '../RolesTableRow'
 import NewRoleCard from '../NewRoleCard'
 import NoRolesFound from './NoRolesFound'
 import styles from './RolesTable.styles'
-import { useFirestore, useAuth, useFirestoreDocData } from 'reactfire'
-import useNotifications from 'modules/notification/useNotifications'
-import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 
 const useStyles = makeStyles(styles)
 

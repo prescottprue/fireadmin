@@ -37,6 +37,7 @@ function RecentActions({ projectId, rerunAction }) {
     .where('eventType', '==', 'requestActionRun')
     .orderBy('createdAt', 'desc')
     .limit(3)
+  // const displayNames = useDatabaseObjectData(displayNamesRef)
   const displayNames = useDatabaseObjectData(displayNamesRef)
   const environments = useFirestoreCollectionData(environmentsRef)
   const recentActions = useFirestoreCollectionData(recentActionsQuery)

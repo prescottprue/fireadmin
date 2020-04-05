@@ -1,18 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
 import PermissionsTable from '../PermissionsTable'
 import RolesTable from '../RolesTable'
 import NewMemberModal from '../NewMemberModal'
+import styles from './Permissions.styles'
 
-function Permissions({
-  classes,
-  projectId,
-  toggleNewMemberModal,
-  addMemberDisabled,
-  newMemberModalOpen
-}) {
+const useStyles = makeStyles(styles)
+
+function Permissions({ projectId, addMemberDisabled }) {
+  const classes = useStyles()
+  const [newMemberModalOpen, changeNewMemberModalOpen] = useState(false)
+  const toggleNewMemberModal = () => changeNewMemberModalOpen(false)
   return (
     <div className={classes.root}>
       <Typography variant="h4" className={classes.pageHeader}>
@@ -41,9 +42,7 @@ function Permissions({
 
 Permissions.propTypes = {
   projectId: PropTypes.string.isRequired,
-  addMemberDisabled: PropTypes.bool.isRequired,
-  toggleNewMemberModal: PropTypes.func.isRequired,
-  newMemberModalOpen: PropTypes.bool.isRequired
+  addMemberDisabled: PropTypes.bool.isRequired
 }
 
 export default Permissions

@@ -67,13 +67,6 @@ export default compose(
       lockedEnvInUse: getLockedEnvInUse(selectedEnvironments)
     }
   }),
-  // Custom props
-  withProps(({ selectedTemplate, lockedEnvInUse }) => ({
-    templateName: selectedTemplate
-      ? `Template: ${get(selectedTemplate, 'name', '')}`
-      : 'Template',
-    runActionDisabled: !selectedTemplate || lockedEnvInUse
-  })),
   // Handlers as props
   withHandlers(handlers)
 )

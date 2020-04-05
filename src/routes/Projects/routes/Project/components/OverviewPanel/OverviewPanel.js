@@ -8,17 +8,18 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import { paths } from 'constants/paths'
 import styles from './OverviewPanel.styles'
+import { useFirestoreCollectionData, useFirestore } from 'reactfire'
 
 const useStyles = makeStyles(styles)
 
-function OverviewPanel({
-  project,
-  projectId,
-  environmentsEmpty,
-  numberOfEnvironments
-}) {
+function OverviewPanel({ project, projectId }) {
   const classes = useStyles()
   const projectPath = `${paths.list}/${projectId}`
+  const firestore = useFirestore()
+  const projectEnvironmentsRef = firestore.collection(
+    `projects/${projectId}/environments`
+  )
+  const projectEnvironments = useFirestoreCollectionData(projectEnvironmentsRef)
 
   return (
     <Paper className={classes.root}>
@@ -26,7 +27,7 @@ function OverviewPanel({
       <Grid container spacing={8} justify="center" alignItems="stretch">
         <Grid item xs={12} md={6} className={classes.item}>
           <Typography variant="h6">Environments</Typography>
-          {environmentsEmpty ? (
+          {!projectEnvironments.length ? (
             <p className={classes.description}>
               Managing different phases of a project is simplified by creating
               "Environments". Bigger projects commonly run a production
@@ -39,7 +40,7 @@ function OverviewPanel({
                 Current Environments:
               </Typography>
               <Typography className={classes.environmentsNumber}>
-                {numberOfEnvironments}
+                {projectEnvironments.length}
               </Typography>
             </div>
           )}
@@ -61,7 +62,7 @@ function OverviewPanel({
             color="primary"
             component={Link}
             to={`${projectPath}/${paths.projectActions}`}
-            disabled={environmentsEmpty}>
+            disabled={!projectEnvironments.length}>
             Go To Actions
           </Button>
         </Grid>
@@ -71,10 +72,8 @@ function OverviewPanel({
 }
 
 OverviewPanel.propTypes = {
-  project: PropTypes.object,
-  projectId: PropTypes.string,
-  numberOfEnvironments: PropTypes.number, // from enhancer (mapProps)
-  environmentsEmpty: PropTypes.bool.isRequired // from enhancer (mapProps)
+  project: PropTypes.object.isRequired,
+  projectId: PropTypes.string.isRequired
 }
 
 export default OverviewPanel
