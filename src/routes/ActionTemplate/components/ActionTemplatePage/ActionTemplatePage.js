@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
-import { useFirestore, useFirestoreDocData, useAuth } from 'reactfire'
+import { useFirestore, useFirestoreDocData, useUser } from 'reactfire'
 import { useHistory, useParams } from 'react-router-dom'
 import * as Sentry from '@sentry/browser'
 import Typography from '@material-ui/core/Typography'
@@ -89,7 +89,7 @@ function ActionTemplatePage() {
     deleteTemplate
   } = useActionTemplatePage({ templateId })
   const template = useFirestoreDocData(templateRef)
-  const auth = useAuth()
+  const user = useUser()
   const [deleteDialogOpen, changeDeleteDialogOpen] = useState(false)
   const toggleDeleteDialog = () => changeDeleteDialogOpen(!deleteDialogOpen)
   const startTemplateDelete = () => changeDeleteDialogOpen(true)
@@ -106,8 +106,8 @@ function ActionTemplatePage() {
         templateId={templateId}
         startTemplateDelete={startTemplateDelete}
         editable={
-          template.createdBy === auth.currentUser.uid ||
-          get(template, `collaborators.${auth.currentUser.uid}`, false)
+          template.createdBy === user.uid ||
+          get(template, `collaborators.${user.uid}`, false)
         }
         defaultValues={template}
       />

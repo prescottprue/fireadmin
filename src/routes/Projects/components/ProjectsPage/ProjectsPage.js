@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { useFirestore, useAuth, useFirestoreCollectionData } from 'reactfire'
+import { useFirestore, useUser, useFirestoreCollectionData } from 'reactfire'
 import { makeStyles } from '@material-ui/core/styles'
-import { Route, Switch, useHistory } from 'react-router-dom'
+import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom'
 import ProjectRoute from 'routes/Projects/routes/Project'
 import { renderChildren } from 'utils/router'
 import useNotifications from 'modules/notification/useNotifications'
@@ -16,25 +16,21 @@ import styles from './ProjectsPage.styles'
 
 const useStyles = makeStyles(styles)
 
-function ProjectsPage({ match }) {
+function ProjectsPage() {
   const classes = useStyles()
   const history = useHistory()
-
+  const match = useRouteMatch()
   const { showError, showSuccess } = useNotifications()
   const [newDialogOpen, changeNewDialogOpen] = useState(false)
   const toggleDialog = () => changeNewDialogOpen(!newDialogOpen)
 
   const firestore = useFirestore()
   const { FieldValue } = useFirestore
-  const auth = useAuth()
+  const user = useUser()
   const projectsRef = firestore.collection('projects')
-  const currentUsersProjectsRef = projectsRef.where(
-    'createdBy',
-    '==',
-    auth.currentUser.uid
-  )
+  const currentUsersProjectsRef = projectsRef.where('createdBy', '==', user.uid)
   const collabProjectsRef = projectsRef.where(
-    `collaborators.${auth.currentUser.uid}`,
+    `collaborators.${user.uid}`,
     '==',
     true
   )
@@ -52,7 +48,7 @@ function ProjectsPage({ match }) {
    * Handler for adding a project
    */
   async function addProject(newInstance) {
-    if (!auth.currentUser.uid) {
+    if (!user.uid) {
       return showError('You must be logged in to create a project')
     }
     try {
@@ -61,10 +57,10 @@ function ProjectsPage({ match }) {
         { collection: 'projects' },
         {
           ...newInstance,
-          createdBy: auth.currentUser.uid,
+          createdBy: user.uid,
           createdAt: FieldValue.serverTimestamp(),
           permissions: {
-            [auth.currentUser.uid]: {
+            [user.uid]: {
               role: 'owner',
               updatedAt: FieldValue.serverTimestamp()
             }

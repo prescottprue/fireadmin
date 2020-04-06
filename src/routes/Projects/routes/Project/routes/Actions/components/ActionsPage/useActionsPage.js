@@ -1,7 +1,7 @@
 import { get, omit, map, some, findIndex } from 'lodash'
 import {
   useDatabase,
-  useAuth,
+  useUser,
   useFirestore,
   useFirestoreCollectionData
 } from 'reactfire'
@@ -42,7 +42,7 @@ export default function useActionRunner({
   const { showError, showMessage } = useNotifications()
   const database = useDatabase()
   const firestore = useFirestore()
-  const auth = useAuth()
+  const user = useUser()
   const { FieldValue } = useFirestore
   const environmentValues = watch('environmentValues')
   const environmentsRef = firestore.collection(
@@ -125,7 +125,7 @@ export default function useActionRunner({
             },
             ['_highlightResult']
           ),
-          createdBy: auth.currentUser.uid
+          createdBy: user.uid
         }
       )
     ])

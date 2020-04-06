@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { get, some, map, orderBy, size } from 'lodash'
-import { useFirestore, useAuth, useFirestoreDocData } from 'reactfire'
+import { useFirestore, useUser, useFirestoreDocData } from 'reactfire'
 import Button from '@material-ui/core/Button'
 import Collapse from '@material-ui/core/Collapse'
 import Typography from '@material-ui/core/Typography'
@@ -21,7 +21,7 @@ function RolesTable({ projectId }) {
   const [newRoleOpen, changeRoleOpen] = useState()
   const firestore = useFirestore()
   const { FieldValue } = useFirestore
-  const auth = useAuth()
+  const user = useUser()
   const { showError, showSuccess } = useNotifications()
   const projectRef = firestore.doc(`projects/${projectId}`)
   const project = useFirestoreDocData(projectRef)
@@ -57,7 +57,7 @@ function RolesTable({ projectId }) {
       {
         eventType: 'addRole',
         eventData: { roleKey: newRole.name },
-        createdBy: auth.currentUser.uid
+        createdBy: user.uid
       }
     )
     showSuccess('New Role added successfully!')

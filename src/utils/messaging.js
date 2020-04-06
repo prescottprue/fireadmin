@@ -85,9 +85,8 @@ function requestPermission() {
  * user to show browser notifications. If the user approves or if they have
  * approved in the passed, then a Cloud Messaging Token is written to the
  * user's profile.
- * @param {Function} dispatch - redux action dispatching function
  */
-export function initializeMessaging(dispatch) {
+export function initializeMessaging() {
   const messaging = firebase.messaging()
 
   // Handle Instance ID token updates

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { map } from 'lodash'
 import { useHistory } from 'react-router-dom'
-import { useFirestore, useAuth, useFirestoreCollectionData } from 'reactfire'
+import { useFirestore, useUser, useFirestoreCollectionData } from 'reactfire'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
@@ -24,7 +24,7 @@ function ActionTemplatesList() {
   const { showSuccess, showError } = useNotifications()
   const firestore = useFirestore()
   const { FieldValue } = useFirestore
-  const auth = useAuth()
+  const user = useUser()
   const templatesRef = firestore.collection(ACTION_TEMPLATES_PATH)
   const publicActionTemplatesRef = firestore
     .collection(ACTION_TEMPLATES_PATH)
@@ -32,7 +32,7 @@ function ActionTemplatesList() {
     .limit(30)
   const currentUserTemplatesRef = firestore
     .collection(ACTION_TEMPLATES_PATH)
-    .where('createdBy', '==', auth.currentUser.uid)
+    .where('createdBy', '==', user.uid)
     .where('public', '==', false)
   const actionTemplates = useFirestoreCollectionData(publicActionTemplatesRef)
   const myTemplates = useFirestoreCollectionData(currentUserTemplatesRef)
@@ -44,7 +44,7 @@ function ActionTemplatesList() {
       const newTemplateWithMeta = {
         public: false,
         ...newTemplate,
-        createdBy: auth.currentUser.uid,
+        createdBy: user.uid,
         createdAt: FieldValue.serverTimestamp()
       }
       const addResponse = await templatesRef.add(

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { FirebaseAppProvider } from 'reactfire'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-import { Provider } from 'react-redux'
 import { NotificationsProvider } from 'modules/notification'
 import ThemeSettings from 'theme'
 import * as config from 'config'
@@ -15,9 +14,7 @@ function App({ routes, store }) {
     <MuiThemeProvider theme={theme}>
       <FirebaseAppProvider firebaseConfig={config.firebase} initPerformance>
         <NotificationsProvider>
-          <Provider store={store}>
-            <Router>{routes}</Router>
-          </Provider>
+          <Router>{routes}</Router>
         </NotificationsProvider>
       </FirebaseAppProvider>
     </MuiThemeProvider>
@@ -25,8 +22,7 @@ function App({ routes, store }) {
 }
 
 App.propTypes = {
-  routes: PropTypes.object.isRequired,
-  store: PropTypes.object.isRequired
+  routes: PropTypes.object.isRequired
 }
 
 export default App

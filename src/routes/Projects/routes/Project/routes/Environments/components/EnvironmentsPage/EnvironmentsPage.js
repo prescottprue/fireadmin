@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   useFirestore,
-  useAuth,
+  useUser,
   useFirestoreCollectionData,
   useStorage
 } from 'reactfire'
@@ -50,7 +50,7 @@ function useEnvironmentsPage({ projectId }) {
   const firestore = useFirestore()
   const storage = useStorage()
   const { FieldValue } = useFirestore
-  const auth = useAuth()
+  const user = useUser()
   const environmentsRef = firestore.collection(
     `projects/${projectId}/environments`
   )
@@ -74,9 +74,7 @@ function useEnvironmentsPage({ projectId }) {
     // Upload service account
     const [uploadErr, serviceAccountRes] = await to(
       storage
-        .ref(
-          `serviceAccounts/${auth.currentUser.uid}/${projectId}/${Date.now()}`
-        )
+        .ref(`serviceAccounts/${user.uid}/${projectId}/${Date.now()}`)
         .put(newProjectData.serviceAccount)
     )
     if (uploadErr) {
@@ -95,7 +93,7 @@ function useEnvironmentsPage({ projectId }) {
         fullPath: ref.fullPath
       },
       projectId,
-      createdBy: auth.currentUser.uid,
+      createdBy: user.uid,
       createdAt: FieldValue.serverTimestamp()
     }
     // Unselect selected service account
@@ -122,7 +120,7 @@ function useEnvironmentsPage({ projectId }) {
       {
         eventType: 'createEnvironment',
         eventData: { newEnvironmentId: newEnvironmentRes.id },
-        createdBy: auth.currentUser.uid
+        createdBy: user.uid
       }
     )
     // Write event to Analytics
@@ -148,7 +146,7 @@ function useEnvironmentsPage({ projectId }) {
         {
           eventType: 'deleteEnvironment',
           eventData: { environmentId: selectedDeleteKey },
-          createdBy: auth.currentUser.uid
+          createdBy: user.uid
         }
       )
       triggerAnalyticsEvent('deleteEnvironment', {
@@ -182,12 +180,12 @@ function useEnvironmentsPage({ projectId }) {
         {
           eventType: 'updateEnvironment',
           eventData: { newValues },
-          createdBy: auth.currentUser.uid
+          createdBy: user.uid
         }
       )
       triggerAnalyticsEvent('updateEnvironment', {
         projectId,
-        uid: auth.currentUser.uid,
+        uid: user.uid,
         environmentId: selectedKey
       })
     } catch (err) {

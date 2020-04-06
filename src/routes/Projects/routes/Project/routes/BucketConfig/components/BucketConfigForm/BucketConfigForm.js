@@ -8,25 +8,25 @@ import {
   Controller,
   FormContext
 } from 'react-hook-form'
-import Typography from '@material-ui/core/Typography'
-import InputLabel from '@material-ui/core/InputLabel'
-import FormControl from '@material-ui/core/FormControl'
-import Select from 'components/FormSelectField'
-import Paper from '@material-ui/core/Paper'
-import Grid from '@material-ui/core/Grid'
-import { makeStyles } from '@material-ui/core/styles'
-import { databaseURLToProjectName } from 'utils'
-import CorsList from '../CorsList'
-import styles from './BucketConfigForm.styles'
 import {
   useFirestore,
   useDatabase,
   useFirestoreCollectionData,
-  useAuth
+  useUser
 } from 'reactfire'
+import Typography from '@material-ui/core/Typography'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import Paper from '@material-ui/core/Paper'
+import Grid from '@material-ui/core/Grid'
+import { makeStyles } from '@material-ui/core/styles'
+import { databaseURLToProjectName } from 'utils'
 import useNotifications from 'modules/notification/useNotifications'
 import { waitForCompleted } from 'utils/firebaseFunctions'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
+import CorsList from '../CorsList'
+import styles from './BucketConfigForm.styles'
 
 const useStyles = makeStyles(styles)
 
@@ -36,7 +36,7 @@ function BucketConfigForm({ projectId }) {
   const database = useDatabase()
   const firestore = useFirestore()
   const { FieldValue } = useFirestore
-  const auth = useAuth()
+  const user = useUser()
   const { showError, showSuccess } = useNotifications()
   const {
     control,
@@ -107,7 +107,7 @@ function BucketConfigForm({ projectId }) {
               bucketConfig.method ? bucketConfig.method.toLowerCase() : 'get'
             }BucketConfig`,
             eventData: { bucketConfig },
-            createdBy: auth.currentUser.uid
+            createdBy: user.uid
           }
         )
         showSuccess(
