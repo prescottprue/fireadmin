@@ -16,7 +16,7 @@ import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import { databaseURLToProjectName } from 'utils'
-// import CorsList from '../CorsList'
+import CorsList from '../CorsList'
 import styles from './BucketConfigForm.styles'
 import {
   useFirestore,
@@ -35,6 +35,7 @@ function BucketConfigForm({ projectId }) {
   const methods = useForm({ defaultValues: { method: 'GET' } })
   const database = useDatabase()
   const firestore = useFirestore()
+  const { FieldValue } = useFirestore
   const auth = useAuth()
   const { showError, showSuccess } = useNotifications()
   const {
@@ -100,7 +101,7 @@ function BucketConfigForm({ projectId }) {
           resource: 'CORS'
         })
         await createProjectEvent(
-          { firestore, projectId },
+          { firestore, projectId, FieldValue },
           {
             eventType: `${
               bucketConfig.method ? bucketConfig.method.toLowerCase() : 'get'
@@ -208,10 +209,7 @@ function BucketConfigForm({ projectId }) {
           <Typography className={classes.subHeader} variant="h5">
             CORS Configuration
           </Typography>
-          {/* <FieldArray
-          name="body.cors"
-          component={(props) => <CorsList {...props} />}
-        /> */}
+          <CorsList name="body.cors" />
         </Paper>
       </form>
     </FormContext>

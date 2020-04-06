@@ -76,11 +76,14 @@ export function triggerAnalyticsEvent(eventNameKey, eventData) {
  * @param  {Object} pushObject - data to push with event
  * @return {Promise} Resolves with results of firestore.add call
  */
-export function createProjectEvent({ firestore, projectId }, pushObject) {
-  return firestore.doc(`projects/${projectId}/events`).add({
+export function createProjectEvent(
+  { firestore, projectId, FieldValue },
+  pushObject
+) {
+  return firestore.collection(`projects/${projectId}/events`).add({
     ...pushObject,
     createdByType: 'user',
-    createdAt: firestore.FieldValue.serverTimestamp()
+    createdAt: FieldValue.serverTimestamp()
   })
 }
 

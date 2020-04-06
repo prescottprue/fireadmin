@@ -44,13 +44,13 @@ function RolesTableRow({
   name,
   onSubmit,
   roleKey,
-  updateRolesDisabled,
   onDeleteClick,
   initialValues
 }) {
   const classes = useStyles()
   const user = useUser()
   const firestore = useFirestore()
+  const { FieldValue } = useFirestore
   const { showSuccess } = useNotifications()
   const [anchorEl, changeAnchorEl] = useState(null)
   const [deleteDialogOpen, changeDeleteDialogOpen] = useState(false)
@@ -67,6 +67,8 @@ function RolesTableRow({
     handleSubmit,
     formState: { dirty, isSubmitting }
   } = useForm({ defaultValues: initialValues })
+  // TODO: Load this from project in firestore if user's role has permission for update.roles
+  const updateRolesDisabled = false
 
   async function deleteRole() {
     await firestore.doc(`projects/${projectId}`).update({
@@ -74,7 +76,7 @@ function RolesTableRow({
     })
     // Write event to project events
     await createProjectEvent(
-      { projectId, firestore },
+      { projectId, firestore, FieldValue },
       {
         eventType: 'deleteRole',
         eventData: { roleKey },
@@ -98,10 +100,10 @@ function RolesTableRow({
     })
     // Write event to project events
     await createProjectEvent(
-      { projectId, firestore },
+      { projectId, firestore, FieldValue },
       {
         eventType: 'updateRole',
-        eventData: { roleKey: roleKey },
+        eventData: { roleKey },
         createdBy: user.uid
       }
     )
@@ -283,7 +285,6 @@ RolesTableRow.propTypes = {
     roles: PropTypes.object
   }),
   name: PropTypes.string,
-  updateRolesDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
   roleKey: PropTypes.string.isRequired
 }
 

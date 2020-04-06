@@ -8,7 +8,6 @@ import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import { makeStyles } from '@material-ui/core/styles'
 import SidebarList from './SidebarList'
-import sidebarOptions from './sidebarOptions'
 import styles from './SidebarLayout.styles'
 
 const useStyles = makeStyles(styles)
@@ -48,11 +47,7 @@ function SidebarLayout({ title, children }) {
           </IconButton> */}
           </div>
           <Divider />
-          <SidebarList
-            optionsConfig={sidebarOptions}
-            toggleDrawer={toggleDrawer}
-            drawerOpen={drawerOpen}
-          />
+          <SidebarList toggleDrawer={toggleDrawer} drawerOpen={drawerOpen} />
         </div>
       </Drawer>
       <main className={classes.content}>

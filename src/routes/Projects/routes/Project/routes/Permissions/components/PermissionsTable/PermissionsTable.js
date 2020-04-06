@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { get, map, omit, reduce } from 'lodash'
+import { get, map, omit } from 'lodash'
 import {
   useFirestore,
   useDatabase,
@@ -12,7 +12,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import { to } from 'utils/async'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 import useNotifications from 'modules/notification/useNotifications'
-import { PROJECT_PERMISSIONS_FORM_NAME } from 'constants/formNames'
 import PermissionsTableRow from '../PermissionsTableRow'
 import DeleteMemberModal from '../DeleteMemberModal'
 import styles from './PermissionsTable.styles'
@@ -23,7 +22,7 @@ function PermissionsTable({ projectId }) {
   const classes = useStyles()
   const { showError, showSuccess } = useNotifications()
   const [deleteDialogOpen, changeDeleteDialogOpen] = useState(false)
-  const [selectedMemberId, changeSelectedMemberId] = useState(false)
+  const [selectedMemberId, changeSelectedMemberId] = useState('')
   const handleDeleteClose = () => changeDeleteDialogOpen(false)
   const startDelete = (selectedId) => {
     changeDeleteDialogOpen(true)
@@ -34,18 +33,15 @@ function PermissionsTable({ projectId }) {
   const displayNames = useDatabaseObjectData(displayNamesRef)
 
   const firestore = useFirestore()
-  const environmentsRef = firestore.collection(
-    `projects/${projectId}/environments`
-  )
-  const project = useFirestoreDocData(environmentsRef)
+  const projectRef = firestore.doc(`projects/${projectId}`)
+  const project = useFirestoreDocData(projectRef)
 
   const selectedMemberName = get(
     displayNames,
     selectedMemberId,
     selectedMemberId
   )
-  const unpopulatedPermissions = get(project, 'permissions')
-  const roles = get(project, 'roles')
+  const { roles, permissions: unpopulatedPermissions } = project || {}
   const permissions = map(unpopulatedPermissions, (permission, uid) => ({
     ...permission,
     uid,
@@ -76,39 +72,6 @@ function PermissionsTable({ projectId }) {
     showSuccess('Member removed successfully')
   }
 
-  async function updatePermissions(values) {
-    const currentPermissions = get(project, `permissions`)
-    const permissions = reduce(
-      currentPermissions,
-      (acc, userPermissionSetting, settingUid) => {
-        return {
-          ...acc,
-          [settingUid]: values[settingUid]
-            ? {
-                ...userPermissionSetting,
-                ...values[settingUid],
-                updatedAt: firestore.FieldValue.serverTimestamp()
-              }
-            : userPermissionSetting
-        }
-      },
-      {}
-    )
-    const [err] = await to(
-      firestore.doc(`projects/${projectId}`).update({
-        permissions
-      })
-    )
-    if (err) {
-      showError(
-        `Error updating permissions: ${err.message || 'Internal Error'}`
-      )
-      console.error(`Error updating permissions: ${err.message}`, err) // eslint-disable-line no-console
-      throw err
-    }
-    triggerAnalyticsEvent('updateRole', { projectId })
-    showSuccess('Permissions updated successfully')
-  }
   return (
     <div>
       <Paper square className={classes.headingPaper}>
@@ -126,12 +89,10 @@ function PermissionsTable({ projectId }) {
         <PermissionsTableRow
           key={`${uid}-${role}`}
           uid={uid}
-          role={role}
+          roleKey={role}
           displayName={displayName}
-          onSubmit={updatePermissions}
           projectId={projectId}
-          form={`${PROJECT_PERMISSIONS_FORM_NAME}.${uid}`}
-          initialValues={{ [uid]: { role } }}
+          initialValues={{ role }}
           onDeleteClick={startDelete}
         />
       ))}

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { get } from 'lodash'
+import { useFirestore, useFirestoreDocData, useUser } from 'reactfire'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
@@ -10,10 +12,22 @@ import styles from './Permissions.styles'
 
 const useStyles = makeStyles(styles)
 
-function Permissions({ projectId, addMemberDisabled }) {
+function Permissions({ projectId }) {
   const classes = useStyles()
   const [newMemberModalOpen, changeNewMemberModalOpen] = useState(false)
-  const toggleNewMemberModal = () => changeNewMemberModalOpen(false)
+  const toggleNewMemberModal = () =>
+    changeNewMemberModalOpen(!newMemberModalOpen)
+  const firestore = useFirestore()
+  const user = useUser()
+  const projectRef = firestore.doc(`projects/${projectId}`)
+  const project = useFirestoreDocData(projectRef)
+  const currentUserOwnsProject = project && project.createdBy === user.uid
+  const currentUserRole = get(project, `permissions.${user.uid}.role`)
+  const permissionsByType = get(project, `roles.${currentUserRole}.permissions`)
+  const hasUpdatePermission =
+    get(permissionsByType, 'update.permissions') === true
+  const addMemberDisabled = !currentUserOwnsProject && !hasUpdatePermission
+
   return (
     <div className={classes.root}>
       <Typography variant="h4" className={classes.pageHeader}>
@@ -41,8 +55,7 @@ function Permissions({ projectId, addMemberDisabled }) {
 }
 
 Permissions.propTypes = {
-  projectId: PropTypes.string.isRequired,
-  addMemberDisabled: PropTypes.bool.isRequired
+  projectId: PropTypes.string.isRequired
 }
 
 export default Permissions

@@ -20,6 +20,7 @@ function RolesTable({ projectId }) {
   const classes = useStyles()
   const [newRoleOpen, changeRoleOpen] = useState()
   const firestore = useFirestore()
+  const { FieldValue } = useFirestore
   const auth = useAuth()
   const { showError, showSuccess } = useNotifications()
   const projectRef = firestore.doc(`projects/${projectId}`)
@@ -52,7 +53,7 @@ function RolesTable({ projectId }) {
     )
     // Write event to project events
     await createProjectEvent(
-      { projectId, firestore },
+      { projectId, firestore, FieldValue },
       {
         eventType: 'addRole',
         eventData: { roleKey: newRole.name },

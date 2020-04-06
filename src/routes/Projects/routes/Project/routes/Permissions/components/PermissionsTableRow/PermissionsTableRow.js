@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { capitalize } from 'lodash'
-import { useFirestore, useAuth } from 'reactfire'
+import { map, capitalize } from 'lodash'
+import { useFirestore, useUser, useFirestoreDocData } from 'reactfire'
 import { Controller } from 'react-hook-form'
 import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -36,8 +36,8 @@ function PermissionsTableRow({
   displayName,
   projectId,
   roleKey,
-  role,
-  roleOptions
+  uid,
+  initialValues
 }) {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState(null)
@@ -51,63 +51,68 @@ function PermissionsTableRow({
     control,
     handleSubmit,
     formState: { dirty, isSubmitting }
-  } = useForm({ defaultValues: role })
+  } = useForm({ defaultValues: initialValues })
   const { showSuccess } = useNotifications()
-  const auth = useAuth()
+  const user = useUser()
 
   const projectRef = firestore.doc(`projects/${projectId}`)
-  async function updateRole(roleUpdates) {
+  const project = useFirestoreDocData(projectRef)
+  const roleOptions = map(project.roles, ({ name }, value) => ({ value, name }))
+
+  async function updatePermission(roleUpdates) {
     await projectRef.set(
       {
-        roles: {
-          [roleKey]: {
-            permissions: roleUpdates
+        permissions: {
+          [uid]: {
+            ...roleUpdates,
+            updatedAt: FieldValue.serverTimestamp()
           }
         }
       },
       { merge: true }
     )
-    // Write event to project events
+    // // Write event to project events
     await createProjectEvent(
-      { projectId, firestore },
+      { projectId, firestore, FieldValue },
       {
-        eventType: 'updateRole',
-        eventData: { roleKey },
-        createdBy: auth.currentUser.uid
+        eventType: 'updatePermission',
+        eventData: { ...roleUpdates, userUpdated: uid },
+        createdBy: user.uid
       }
     )
-    showSuccess('Role updated successfully!')
-    triggerAnalyticsEvent('updateRole', {
+    showSuccess('Member updated successfully!')
+    triggerAnalyticsEvent('updatePermission', {
       projectId,
-      roleName: roleKey
+      newRole: roleUpdates.role,
+      userUpdated: uid
     })
   }
 
-  async function deleteRole(roleKey) {
+  async function deletePermission() {
     await projectRef.set(
       {
-        roles: {
-          [roleKey]: FieldValue.delete()
+        permissions: {
+          [uid]: FieldValue.delete()
         }
       },
       { merge: true }
     )
     // Write event to project events
     await createProjectEvent(
-      { projectId, firestore },
+      { projectId, firestore, FieldValue },
       {
-        eventType: 'deleteRole',
-        eventData: { roleKey: roleKey },
-        createdBy: auth.currentUser.uid
+        eventType: 'deletePermission',
+        eventData: { removedMember: uid },
+        createdBy: user.uid
       }
     )
-    showSuccess('Role deleted successfully!')
-    triggerAnalyticsEvent('deleteRole', { projectId, roleKey })
+    showSuccess('Member deleted successfully!')
+    triggerAnalyticsEvent('deletePermission', { projectId, removedMember: uid })
   }
 
   const closeAndCallDelete = (e) => {
     handleMenuClose()
-    deleteRole()
+    deletePermission(e.target)
   }
 
   return (
@@ -116,14 +121,16 @@ function PermissionsTableRow({
         expandIcon={<ExpandMoreIcon />}
         data-test="member-expand">
         <Typography className={classes.displayName}>
-          {displayName || auth.currentUser.uid}
+          {displayName || uid}
         </Typography>
         <Typography className={classes.permission}>
-          {capitalize(role)}
+          {capitalize(roleKey)}
         </Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails style={{ paddingTop: 0 }}>
-        <form className={classes.content} onSubmit={handleSubmit(updateRole)}>
+        <form
+          className={classes.content}
+          onSubmit={handleSubmit(updatePermission)}>
           <Divider />
           <div className={classes.menu}>
             <IconButton
@@ -131,7 +138,7 @@ function PermissionsTableRow({
               aria-owns="long-menu"
               aria-haspopup="true"
               onClick={handleMenuClick}
-              data-test={`member-more-${auth.currentUser.uid}`}>
+              data-test={`member-more-${user.uid}`}>
               <MoreVertIcon />
             </IconButton>
             <Menu
@@ -181,9 +188,9 @@ function PermissionsTableRow({
                       ))}
                     </Select>
                   }
-                  name="environment"
+                  name="role"
                   control={control}
-                  defaultValue=""
+                  defaultValue={initialValues.role || ''}
                 />
               </FormControl>
             </div>
@@ -214,18 +221,10 @@ function PermissionsTableRow({
 }
 
 PermissionsTableRow.propTypes = {
-  displayName: PropTypes.string,
-  uid: PropTypes.string.isRequired,
-  role: PropTypes.string,
-  roleOptions: PropTypes.array,
-  closeAndCallDelete: PropTypes.func.isRequired,
-  anchorEl: PropTypes.object, // from enhancer (withStateHandlers)
-  handleMenuClick: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  handleMenuClose: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
-  pristine: PropTypes.bool.isRequired, // from enhancer (reduxForm)
-  handleSubmit: PropTypes.func.isRequired, // from enhancer (reduxForm)
-  reset: PropTypes.func.isRequired // from enhancer (reduxForm)
+  projectId: PropTypes.string.isRequired,
+  displayName: PropTypes.string.isRequired,
+  roleKey: PropTypes.string,
+  uid: PropTypes.string.isRequired
 }
 
 export default PermissionsTableRow

@@ -1,22 +1,67 @@
-import { get, omit } from 'lodash'
-import { useDatabase, useAuth, useFirestore } from 'reactfire'
+import { get, omit, map, some, findIndex } from 'lodash'
+import {
+  useDatabase,
+  useAuth,
+  useFirestore,
+  useFirestoreCollectionData
+} from 'reactfire'
 import { ACTION_RUNNER_REQUESTS_PATH } from 'constants/firebasePaths'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 import useNotifications from 'modules/notification/useNotifications'
+
+function instanceTypeInUse(environments, type = 'src') {
+  const lockedEnvIndex = findIndex(environments, {
+    [`${type}Only`]: true
+  })
+  if (lockedEnvIndex === -1) {
+    return false
+  }
+  // TODO: Make this aware of if the position is actually src/dest based on template instead of using index
+  return type === 'src' ? lockedEnvIndex === 0 : lockedEnvIndex === 1
+}
+
+function getLockedEnvInUse(environments) {
+  if (!environments.length) {
+    return false
+  }
+  // TODO: Make this aware of if the action template is a copy or not
+  return (
+    some(environments, 'locked') ||
+    instanceTypeInUse(environments, 'read') ||
+    instanceTypeInUse(environments, 'write')
+  )
+}
 
 export default function useActionRunner({
   projectId,
   closeRunnerSections,
   selectActionTemplate,
-  selectedTemplate
+  selectedTemplate,
+  watch
 }) {
   const { showError, showMessage } = useNotifications()
   const database = useDatabase()
   const firestore = useFirestore()
   const auth = useAuth()
-  const lockedEnvInUse = false // TODO: Load this from Firestore data
-  const environmentsById = {} // TODO: Load this from Firestore data
-  const environments = {} // TODO: Load this from Firestore data
+  const { FieldValue } = useFirestore
+  const environmentValues = watch('environmentValues')
+  const environmentsRef = firestore.collection(
+    `projects/${projectId}/environments`
+  )
+  const environments = useFirestoreCollectionData(environmentsRef, {
+    idField: 'id'
+  })
+  const environmentsById = environments.reduce((acc, environment) => {
+    return {
+      ...acc,
+      [environment.id]: environment
+    }
+  }, {})
+  const selectedEnvironments = map(
+    environmentValues,
+    (envKey) => environmentsById[envKey]
+  )
+  const lockedEnvInUse = getLockedEnvInUse(selectedEnvironments)
 
   function runAction(formValues) {
     if (lockedEnvInUse) {
@@ -67,7 +112,7 @@ export default function useActionRunner({
     return Promise.all([
       database.push(ACTION_RUNNER_REQUESTS_PATH, actionRequest),
       createProjectEvent(
-        { firestore, projectId },
+        { firestore, projectId, FieldValue },
         {
           eventType: 'requestActionRun',
           eventData: omit(

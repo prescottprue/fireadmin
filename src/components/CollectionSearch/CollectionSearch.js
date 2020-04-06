@@ -10,25 +10,21 @@ import { makeStyles } from '@material-ui/core/styles'
 import styles from './CollectionSearch.styles'
 import SearchResults from './SearchResults'
 import { algolia } from '../../config'
+import { useUser } from 'reactfire'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 
 const useStyles = makeStyles(styles)
 
-function CollectionSearch({
-  onSuggestionClick,
-  ignoreSuggestions,
-  uid,
-  indexName
-}) {
+function CollectionSearch({ onSuggestionClick, ignoreSuggestions, indexName }) {
   const classes = useStyles()
-
+  const user = useUser()
   // Map ignore suggestions list to get ids
   const ignoreIds = !ignoreSuggestions
-    ? [uid] // ignore just logged in user if no ignoreSuggestions provided
-    : [uid].concat(
+    ? [user.uid] // ignore just logged in user if no ignoreSuggestions provided
+    : [user.uid].concat(
         // ignore logged in user and ignoreSuggestions
         ignoreSuggestions.map(
-          (suggestion) => suggestion.id || suggestion.objectID
+          (suggestion) => suggestion.id || suggestion.objectID || suggestion
         )
       )
 
@@ -58,7 +54,6 @@ function CollectionSearch({
 
 CollectionSearch.propTypes = {
   indexName: PropTypes.string.isRequired,
-  uid: PropTypes.string.isRequired,
   ignoreSuggestions: PropTypes.array,
   onSuggestionClick: PropTypes.func
 }

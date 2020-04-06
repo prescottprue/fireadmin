@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize } from 'lodash'
+import { useHistory, useParams, useLocation } from 'react-router-dom'
 import Divider from '@material-ui/core/Divider'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -10,7 +11,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import { makeStyles } from '@material-ui/core/styles'
 import LayersIcon from '@material-ui/icons/Layers'
-import enhance from './SidebarList.enhnacer'
+import { LIST_PATH } from 'constants/paths'
+import sidebarOptions from './sidebarOptions'
 import styles from './SidebarLayout.styles'
 
 // Fix issue with padding
@@ -20,18 +22,22 @@ const listItemStyle = {
 
 const useStyles = makeStyles(styles)
 
-function SidebarList({
-  itemIsActive,
-  optionsConfig,
-  goTo,
-  drawerOpen,
-  toggleDrawer
-}) {
+function SidebarList({ drawerOpen, toggleDrawer }) {
   const classes = useStyles()
-
+  const history = useHistory()
+  const location = useLocation()
+  const { projectId } = useParams()
+  const goTo = (value) => history.push(`${LIST_PATH}/${projectId}/${value}`)
+  const itemIsActive = (value) => {
+    const currentParentRoute = `${LIST_PATH}/${projectId}/`
+    return value === ''
+      ? `${location.pathname}/` === currentParentRoute ||
+          location.pathname === currentParentRoute
+      : location.pathname.endsWith(value)
+  }
   return (
     <List className={classes.list}>
-      {optionsConfig.map(({ value, iconElement, label }, i) => (
+      {sidebarOptions.map(({ value, iconElement, label }, i) => (
         <ListItem
           button
           key={`SidebarItem-${i}-${value}`}
@@ -56,10 +62,7 @@ function SidebarList({
 
 SidebarList.propTypes = {
   toggleDrawer: PropTypes.func.isRequired,
-  itemIsActive: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  goTo: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  optionsConfig: PropTypes.array,
-  drawerOpen: PropTypes.bool
+  drawerOpen: PropTypes.bool.isRequired
 }
 
-export default enhance(SidebarList)
+export default SidebarList

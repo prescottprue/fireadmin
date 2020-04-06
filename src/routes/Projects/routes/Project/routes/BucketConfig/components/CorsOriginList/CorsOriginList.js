@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Field } from 'redux-form'
+import { useFormContext, useFieldArray } from 'react-hook-form'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
@@ -11,29 +11,32 @@ import styles from './CorsOriginList.styles'
 
 const useStyles = makeStyles(styles)
 
-function CorsOriginList({ fields, meta: { error, submitFailed } }) {
+function CorsOriginList({ name, meta: { error, submitFailed } }) {
   const classes = useStyles()
+  const { control, register } = useFormContext()
+  const { fields, remove, append } = useFieldArray({ control, name })
 
   return (
     <div style={{ marginBottom: '1rem' }}>
       <Typography variant="h5">Origins</Typography>
       <div className={classes.add}>
-        <Button color="primary" onClick={() => fields.push()}>
+        <Button color="primary" onClick={() => append({})}>
           Add Origin
         </Button>
         {submitFailed && error && <span>{error}</span>}
       </div>
       {fields.map((member, index) => (
         <div className="flex-row" key={`Origin-${index}`}>
-          <Field
+          <TextField
             name={member}
-            type="text"
-            component={TextField}
             label="Origin"
+            margin="normal"
+            inputRef={register}
+            fullWidth
           />
           {index !== 0 && (
             <IconButton
-              onClick={() => fields.remove(index)}
+              onClick={() => remove(index)}
               style={{ marginTop: '1.5rem' }}>
               <DeleteIcon />
             </IconButton>

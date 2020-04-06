@@ -1,25 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import IconButton from '@material-ui/core/IconButton'
-import { Field, FieldArray } from 'redux-form'
 import Button from '@material-ui/core/Button'
 import MenuItem from '@material-ui/core/MenuItem'
 import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
+import TextField from '@material-ui/core/TextField'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { makeStyles } from '@material-ui/core/styles'
-import TextField from 'components/FormTextField'
 import Select from 'components/FormSelectField'
 import CorsOriginList from '../CorsOriginList'
 import styles from './CorsList.styles'
+import { useFormContext, useFieldArray, Controller } from 'react-hook-form'
 
 const useStyles = makeStyles(styles)
 
 const methods = ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS']
 
-function CorsList({ fields, meta: { error, submitFailed } }) {
+function CorsList({ name, meta: { error, submitFailed } }) {
   const classes = useStyles()
+  const { control, register } = useFormContext()
+  const { fields, remove, append } = useFieldArray({ control, name })
 
   return (
     <div>
@@ -29,45 +31,42 @@ function CorsList({ fields, meta: { error, submitFailed } }) {
             <Typography className={classes.subHeader} variant="h5">
               CORS Config #{index + 1}
             </Typography>
-            <IconButton onClick={() => fields.remove(index)}>
+            <IconButton onClick={() => remove(index)}>
               <DeleteIcon />
             </IconButton>
           </div>
           <div className="flex-column">
-            <FieldArray
-              name={`${member}.origin`}
-              component={(props) => <CorsOriginList {...props} />}
-            />
+            <CorsOriginList name={`${member}.origin`} />
             <FormControl className={classes.field}>
               <InputLabel htmlFor="method">HTTP Methods To Include</InputLabel>
-              <Field
+              <Controller
+                as={
+                  <Select fullWidth multiple>
+                    {methods.map((name) => (
+                      <MenuItem key={name} value={name}>
+                        {name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                }
                 name={`${member}.method`}
-                component={Select}
-                format={(value) => (Array.isArray(value) ? value : [])}
-                fullWidth
-                multiple
-                inputProps={{
-                  name: 'method',
-                  id: 'method'
-                }}>
-                {methods.map((name) => (
-                  <MenuItem key={name} value={name}>
-                    {name}
-                  </MenuItem>
-                ))}
-              </Field>
+                control={control}
+                defaultValue=""
+              />
             </FormControl>
-            <Field
+            <TextField
               name={`${member}.maxAgeSeconds`}
-              type="number"
-              component={TextField}
               label="Max Age (in seconds)"
+              type="number"
+              margin="normal"
+              inputRef={register}
+              fullWidth
             />
           </div>
         </div>
       ))}
       <div className={classes.add}>
-        <Button color="primary" onClick={() => fields.push({ origin: [''] })}>
+        <Button color="primary" onClick={() => append({ origin: [''] })}>
           Add CORS Config
         </Button>
         {submitFailed && error && <span>{error}</span>}

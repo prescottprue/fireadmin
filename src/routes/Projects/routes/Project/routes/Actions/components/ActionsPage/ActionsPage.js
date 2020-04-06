@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { get, map } from 'lodash'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
+import { useFirestore, useFirestoreCollectionData } from 'reactfire'
 import Button from '@material-ui/core/Button'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Grid from '@material-ui/core/Grid'
@@ -14,13 +15,13 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
 import CollectionSearch from 'components/CollectionSearch'
 import TabContainer from 'components/TabContainer'
 import { databaseURLToProjectName } from 'utils'
 import { ACTION_TEMPLATES_PATH } from 'constants/paths'
 import OutlinedSelect from 'components/OutlinedSelect'
-import ActionInput from '../ActionInput'
 import StepsViewer from '../StepsViewer'
 import PrivateActionTemplates from '../PrivateActionTemplates'
 import RecentActions from '../RecentActions'
@@ -33,12 +34,16 @@ function ActionsPage({ projectId }) {
   const classes = useStyles()
   const { reset, register, watch, handleSubmit } = useForm({})
   const [selectedTab, selectTab] = useState(0)
-  const environments = watch('environments')
   const lockedEnvInUse = false // TODO: Load this from Firestore data
   const [selectedTemplate, changeSelectedTemplate] = useState()
   const [templateEditExpanded, changeTemplateEdit] = useState(true)
   const [inputsExpanded, changeInputExpanded] = useState(true)
   const [environmentsExpanded, changeEnvironmentsExpanded] = useState(true)
+  const firestore = useFirestore()
+  const environmentsRef = firestore.collection(
+    `projects/${projectId}/environments`
+  )
+  const environments = useFirestoreCollectionData(environmentsRef)
   const toggleTemplateEdit = () => changeTemplateEdit(!templateEditExpanded)
   const toggleEnvironments = () =>
     changeEnvironmentsExpanded(!environmentsExpanded)
@@ -55,6 +60,7 @@ function ActionsPage({ projectId }) {
   }
   const { runAction, rerunAction } = useActionsPage({
     projectId,
+    watch,
     closeRunnerSections,
     selectActionTemplate,
     selectedTemplate
@@ -237,12 +243,16 @@ function ActionsPage({ projectId }) {
                 <ExpansionPanelDetails className={classes.inputs}>
                   {selectedTemplate.inputs
                     ? selectedTemplate.inputs.map((input, index) => (
-                        <ActionInput
+                        <TextField
                           key={`Input-${index}`}
                           name={`inputValues.${index}`}
-                          inputs={selectedTemplate.inputs}
-                          inputMeta={get(selectedTemplate.inputs, index)}
-                          {...{ index, environments, projectId }}
+                          label={
+                            get(selectedTemplate.inputs, `${index}.name`) ||
+                            `Input ${index + 1}`
+                          }
+                          margin="normal"
+                          inputRef={register}
+                          fullWidth
                         />
                       ))
                     : null}
@@ -261,6 +271,7 @@ function ActionsPage({ projectId }) {
                         <StepsViewer
                           steps={selectedTemplate.steps}
                           activeStep={0}
+                          watch={watch}
                         />
                       ) : null}
                     </Grid>

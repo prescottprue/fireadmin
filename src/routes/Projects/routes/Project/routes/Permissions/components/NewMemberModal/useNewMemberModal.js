@@ -55,7 +55,7 @@ export default function useNewMemberModal({ projectId, onRequestClose, open }) {
       if (!get(project, `collaborators.${currentCollaborator.objectID}`)) {
         collaborators[currentCollaborator.objectID] = true
         permissions[currentCollaborator.objectID] = {
-          permission: 'viewer',
+          role: 'viewer',
           sharedAt: FieldValue.serverTimestamp()
         }
       }

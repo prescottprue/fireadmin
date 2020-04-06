@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useForm } from 'react-hook-form'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormLabel from '@material-ui/core/FormLabel'
 import Dialog from '@material-ui/core/Dialog'
@@ -13,7 +14,6 @@ import Checkbox from '@material-ui/core/Checkbox'
 import { makeStyles } from '@material-ui/core/styles'
 import { validateDatabaseUrl } from 'utils/form'
 import styles from './EditEnvironmentDialog.styles'
-import { useForm } from 'react-hook-form'
 
 const useStyles = makeStyles(styles)
 
