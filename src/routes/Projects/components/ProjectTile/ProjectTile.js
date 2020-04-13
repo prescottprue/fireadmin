@@ -15,6 +15,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import EditIcon from '@material-ui/icons/Edit'
 import { makeStyles } from '@material-ui/core/styles'
 import { formatDate } from 'utils/formatters'
+import { LIST_PATH } from 'constants/paths'
+import { useHistory } from 'react-router-dom'
 import SharingDialog from '../SharingDialog'
 import styles from './ProjectTile.styles'
 
@@ -22,12 +24,14 @@ const useStyles = makeStyles(styles)
 
 function ProjectTile({ open, project, onDelete, onSelect, projectId }) {
   const classes = useStyles()
+  const history = useHistory()
+
   const [anchorEl, changeAnchorEl] = useState(null)
   const [sharingDialogOpen, changeSharingDialogOpen] = useState(false)
   const closeMenu = () => changeAnchorEl(null)
   const menuClick = (e) => changeAnchorEl(e.target)
   const toggleSharingDialog = () => changeSharingDialogOpen(!sharingDialogOpen)
-  const handleEditClick = () => onSelect && onSelect(project)
+  const handleEditClick = () => history.push(`${LIST_PATH}/${projectId}`)
 
   return (
     <Paper

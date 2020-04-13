@@ -1,6 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
 import Snackbar from '@material-ui/core/Snackbar'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
@@ -45,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function Notifications({ className }) {
+export default function Notifications() {
   const classes = useStyles()
   const { allIds, byId, dismissNotification } = useNotifications()
   // Only render if notifications exist
@@ -67,10 +65,7 @@ function Notifications({ className }) {
             open
             className={classes.snackbar}>
             <SnackbarContent
-              className={classNames(
-                classes[byId[id].type] || classes.info,
-                className
-              )}
+              className={classes[byId[id].type] || classes.info}
               aria-describedby="client-snackbar"
               message={
                 <span
@@ -98,9 +93,3 @@ function Notifications({ className }) {
     </div>
   )
 }
-
-Notifications.propTypes = {
-  className: PropTypes.string
-}
-
-export default Notifications

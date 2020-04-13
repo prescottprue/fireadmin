@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useFirestore, useUser, useFirestoreCollectionData } from 'reactfire'
 import { makeStyles } from '@material-ui/core/styles'
-import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom'
+import { Route, Switch, useRouteMatch } from 'react-router-dom'
 import ProjectRoute from 'routes/Projects/routes/Project'
 import { renderChildren } from 'utils/router'
 import useNotifications from 'modules/notification/useNotifications'
-import { LIST_PATH } from 'constants/paths'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 import defaultRoles from 'constants/defaultRoles'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 import ProjectTile from '../ProjectTile'
 import NewProjectTile from '../NewProjectTile'
 import NewProjectDialog from '../NewProjectDialog'
@@ -18,7 +18,6 @@ const useStyles = makeStyles(styles)
 
 function ProjectsPage() {
   const classes = useStyles()
-  const history = useHistory()
   const match = useRouteMatch()
   const { showError, showSuccess } = useNotifications()
   const [newDialogOpen, changeNewDialogOpen] = useState(false)
@@ -27,7 +26,7 @@ function ProjectsPage() {
   const firestore = useFirestore()
   const { FieldValue } = useFirestore
   const user = useUser()
-  const projectsRef = firestore.collection('projects')
+  const projectsRef = firestore.collection(PROJECTS_COLLECTION)
   const currentUsersProjectsRef = projectsRef.where('createdBy', '==', user.uid)
   const collabProjectsRef = projectsRef.where(
     `collaborators.${user.uid}`,
@@ -53,21 +52,18 @@ function ProjectsPage() {
     }
     try {
       toggleDialog()
-      await firestore.collection('projects').add(
-        { collection: 'projects' },
-        {
-          ...newInstance,
-          createdBy: user.uid,
-          createdAt: FieldValue.serverTimestamp(),
-          permissions: {
-            [user.uid]: {
-              role: 'owner',
-              updatedAt: FieldValue.serverTimestamp()
-            }
-          },
-          roles: defaultRoles
-        }
-      )
+      await firestore.collection(PROJECTS_COLLECTION).add({
+        ...newInstance,
+        createdBy: user.uid,
+        createdAt: FieldValue.serverTimestamp(),
+        permissions: {
+          [user.uid]: {
+            role: 'owner',
+            updatedAt: FieldValue.serverTimestamp()
+          }
+        },
+        roles: defaultRoles
+      })
       showSuccess('Project added successfully')
       triggerAnalyticsEvent('createProject')
     } catch (err) {
@@ -81,7 +77,7 @@ function ProjectsPage() {
    */
   async function deleteProject(projectId) {
     try {
-      await firestore.collection('projects').delete()
+      await firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`).delete()
       showSuccess('Project deleted successfully')
       triggerAnalyticsEvent('deleteProject', { projectId })
     } catch (err) {
@@ -108,15 +104,12 @@ function ProjectsPage() {
             <div className={classes.tiles}>
               <NewProjectTile onClick={toggleDialog} />
               {projects.map((project, ind) => {
-                const goToProject = () =>
-                  history.push(`${LIST_PATH}/${project.id}`)
                 return (
                   <ProjectTile
                     key={`Project-${project.id}-${ind}`}
                     name={project.name}
                     project={project}
                     projectId={project.id}
-                    onSelect={goToProject}
                     onDelete={() => deleteProject(project.id)}
                   />
                 )

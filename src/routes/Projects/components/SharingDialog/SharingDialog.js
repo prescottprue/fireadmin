@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { map, invoke, get, findIndex } from 'lodash'
+import { map, get, findIndex } from 'lodash'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -24,11 +24,22 @@ const useStyles = makeStyles(styles)
 
 function SharingDialog({ open, onRequestClose, project }) {
   const classes = useStyles()
-  const database = useDatabase()
+  const { showSuccess, showError } = useNotifications()
   const [selectedCollaborators, changeSelectedCollaborators] = useState([])
 
+  const database = useDatabase()
   const displayNamesRef = database.ref('displayNames')
   const displayNames = useDatabaseObjectData(displayNamesRef)
+
+  const firestore = useFirestore()
+  const { FieldValue } = useFirestore
+  const { collaborators = {}, permissions = {} } = project
+  const projectCollaborators = map(collaborators, (collaborator, collabId) => {
+    return {
+      displayName: get(displayNames, collabId, 'User'),
+      ...collaborator
+    }
+  })
 
   function selectCollaborator(newCollaborator) {
     const currentIndex = findIndex(selectedCollaborators, {
@@ -44,38 +55,28 @@ function SharingDialog({ open, onRequestClose, project }) {
 
     changeSelectedCollaborators(newSelected)
   }
-  const { showSuccess, showError } = useNotifications()
-  const firestore = useFirestore()
-  const collaborators = get(project, 'collaborators')
-  const projectCollaborators = map(collaborators, (collaborator, collabId) => {
-    return {
-      displayName: get(displayNames, collabId, 'User'),
-      ...collaborator
-    }
-  })
 
   async function saveCollaborators(newInstance) {
-    const currentProject = await firestore.get(`projects/${project.id}`)
-    const projectData = invoke(currentProject, 'data')
-    const collaborators = get(projectData, 'collaborators', {})
-    const permissions = get(projectData, 'permissions', {})
     selectedCollaborators.forEach((currentCollaborator) => {
-      if (!get(projectData, `collaborators.${currentCollaborator.objectID}`)) {
+      if (!project[currentCollaborator.objectID]) {
         collaborators[currentCollaborator.objectID] = true
         permissions[currentCollaborator.objectID] = {
           permission: 'viewer',
           role: 'viewer',
-          sharedAt: firestore.FieldValue.serverTimestamp()
+          sharedAt: FieldValue.serverTimestamp()
         }
       }
     })
     try {
       await firestore
         .doc(`projects/${project.id}`)
-        .update({ collaborators, permissions })
+        .set({ collaborators, permissions }, { merge: true })
+      changeSelectedCollaborators([])
       onRequestClose()
       showSuccess('Collaborator added successfully')
-      triggerAnalyticsEvent('addCollaborator', { projectId: project.id })
+      triggerAnalyticsEvent('addCollaborator', {
+        projectId: project.id
+      })
     } catch (err) {
       showError('Collaborator could not be added')
       throw err

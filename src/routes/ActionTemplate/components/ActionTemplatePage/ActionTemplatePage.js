@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { useFirestore, useFirestoreDocData, useUser } from 'reactfire'
 import { useHistory, useParams } from 'react-router-dom'
@@ -14,6 +13,7 @@ import DeleteTemplateDialog from '../DeleteTemplateDialog'
 import ActionTemplateForm from '../ActionTemplateForm'
 import styles from './ActionTemplatePage.styles'
 import TemplateNotFound from './TemplateNotFound'
+import { withErrorBoundary } from 'utils/components'
 
 const useStyles = makeStyles(styles)
 
@@ -94,10 +94,6 @@ function ActionTemplatePage() {
   const toggleDeleteDialog = () => changeDeleteDialogOpen(!deleteDialogOpen)
   const startTemplateDelete = () => changeDeleteDialogOpen(true)
 
-  if (!template) {
-    return <TemplateNotFound />
-  }
-
   return (
     <div className={classes.root}>
       <Typography className={classes.header}>Action Template</Typography>
@@ -121,22 +117,4 @@ function ActionTemplatePage() {
   )
 }
 
-ActionTemplatePage.propTypes = {
-  template: PropTypes.object,
-  deleteTemplate: PropTypes.func.isRequired,
-  startTemplateDelete: PropTypes.func.isRequired,
-  deleteDialogOpen: PropTypes.bool.isRequired,
-  updateTemplate: PropTypes.func.isRequired,
-  toggleDeleteDialog: PropTypes.func.isRequired,
-  /* eslint-disable react/no-unused-prop-types */
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired // used in enhancer (withHandlers)
-  }),
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      templateId: PropTypes.string.isRequired
-    }).isRequired
-  }).isRequired
-}
-
-export default ActionTemplatePage
+export default withErrorBoundary(<TemplateNotFound />)(ActionTemplatePage)

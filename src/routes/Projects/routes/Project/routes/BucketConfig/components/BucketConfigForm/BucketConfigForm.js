@@ -2,12 +2,7 @@ import React from 'react'
 import Button from '@material-ui/core/Button'
 import { get, map, pick } from 'lodash'
 import MenuItem from '@material-ui/core/MenuItem'
-import {
-  useFormContext,
-  useForm,
-  Controller,
-  FormContext
-} from 'react-hook-form'
+import { useForm, Controller, FormContext } from 'react-hook-form'
 import {
   useFirestore,
   useDatabase,
@@ -32,7 +27,7 @@ const useStyles = makeStyles(styles)
 
 function BucketConfigForm({ projectId }) {
   const classes = useStyles()
-  const methods = useForm({ defaultValues: { method: 'GET' } })
+  const methods = useForm()
   const database = useDatabase()
   const firestore = useFirestore()
   const { FieldValue } = useFirestore
@@ -43,41 +38,41 @@ function BucketConfigForm({ projectId }) {
     watch,
     reset,
     formState: { isSubmitting, dirty }
-  } = useFormContext()
-  const environment = watch('environment')
+  } = methods
+  const environmentId = watch('environment')
   const body = watch('body')
   const method = watch('method')
   const environmentsRef = firestore.collection(
     `projects/${projectId}/environments`
   )
-  const projectEnvironments = useFirestoreCollectionData(environmentsRef)
+  const projectEnvironments = useFirestoreCollectionData(environmentsRef, {
+    idField: 'id'
+  })
   const projectEnvironmentsById = projectEnvironments.reduce(
     (acc, projectEnvironment) => {
       return {
         ...acc,
-        [projectEnvironments.id]: projectEnvironment
+        [projectEnvironment.id]: projectEnvironment
       }
     },
     {}
   )
-  const databaseURL = get(projectEnvironmentsById, `${environment}.databaseURL`)
+  const environment = projectEnvironmentsById[environmentId]
+  const databaseURL = get(environment, 'databaseURL')
   const databaseName = databaseURL && databaseURLToProjectName(databaseURL)
   const storageBucket = databaseName && `${databaseName}.appspot.com`
 
   async function sendBucketConfigRequest(bucketConfig) {
     try {
-      const databaseURL = get(
-        projectEnvironmentsById,
-        `${bucketConfig.environment}.databaseURL`
-      )
       // Push request to callGoogleApi cloud function
       const pushRef = await database.ref('requests/callGoogleApi').push({
         api: 'storage',
         ...pick(bucketConfig, ['method', 'cors', 'environment']),
+        createdBy: user.uid,
         projectId,
         databaseName,
         databaseURL,
-        storageBucket: `${databaseName}.appspot.com`
+        storageBucket
       })
       const pushKey = pushRef.key
       // wait for response (written by cloud function)
@@ -89,33 +84,37 @@ function BucketConfigForm({ projectId }) {
         showError(`Error calling Google api: ${results.error}`)
         throw new Error(results.error)
       }
-      if (bucketConfig.method === 'GET' && !get(results, 'responseData.cors')) {
-        showSuccess('No CORS config currently exists for this bucket')
+      if (bucketConfig.method === 'GET') {
+        if (!get(results, 'responseData.cors')) {
+          showSuccess('No CORS config currently exists for this bucket')
+        } else {
+          // Set config
+          const { cors } = results.responseData
+          methods.setValue('body.cors', cors)
+          showSuccess('Storage Bucket Config Get Successful')
+        }
       } else {
-        // Set config
-        const { cors } = results.responseData
-        methods.setValue([cors])
-        showSuccess('Storage Bucket Config Get Successful')
-        triggerAnalyticsEvent('bucketAction', {
-          method: bucketConfig.method || 'GET',
-          resource: 'CORS'
-        })
-        await createProjectEvent(
-          { firestore, projectId, FieldValue },
-          {
-            eventType: `${
-              bucketConfig.method ? bucketConfig.method.toLowerCase() : 'get'
-            }BucketConfig`,
-            eventData: { bucketConfig },
-            createdBy: user.uid
-          }
-        )
         showSuccess(
           `Storage Bucket ${
             bucketConfig.method || 'UPDATE'
           } completed Successfully`
         )
       }
+      // Set config
+      triggerAnalyticsEvent('bucketAction', {
+        method: bucketConfig.method || 'GET',
+        resource: 'CORS'
+      })
+      await createProjectEvent(
+        { firestore, projectId, FieldValue },
+        {
+          eventType: `${
+            bucketConfig.method ? bucketConfig.method.toLowerCase() : 'get'
+          }BucketConfig`,
+          eventData: { bucketConfig },
+          createdBy: user.uid
+        }
+      )
     } catch (err) {
       if (err.message.indexOf('access to') !== -1) {
         showError('Error: Service Account Does Not Have Access')
@@ -182,27 +181,16 @@ function BucketConfigForm({ projectId }) {
                   name="method"
                   placeholder="Action"
                   control={control}
-                  defaultValue=""
+                  defaultValue={'GET'}
                 />
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={8}>
-              <FormControl disabled className={classes.formItem}>
-                <InputLabel htmlFor="bucket">
-                  {storageBucket || 'Storage Bucket (defaults to app bucket)'}
-                </InputLabel>
-                <Controller
-                  as={
-                    <Select fullWidth>
-                      <MenuItem value="empty">empty</MenuItem>
-                    </Select>
-                  }
-                  name="bucket"
-                  control={control}
-                  defaultValue=""
-                />
-              </FormControl>
-            </Grid>
+            {storageBucket ? (
+              <Grid item xs={12} md={8}>
+                <Typography variant="h6">Storage Bucket</Typography>
+                <Typography>{storageBucket}</Typography>
+              </Grid>
+            ) : null}
           </Grid>
         </Paper>
         <Paper className={classes.paper}>

@@ -1,4 +1,5 @@
 import React, { useReducer, useCallback } from 'react'
+import PropTypes from 'prop-types'
 import reducer from './reducer'
 import {
   NOTIFICATION_SHOW,
@@ -13,6 +14,7 @@ export const NotificationsContext = React.createContext({
   byId: {},
   showError: () => {},
   showMessage: () => {},
+  showSuccess: () => {},
   dismissNotification: () => {},
   clearNotifications: () => {}
 })
@@ -23,7 +25,7 @@ export default function NotificationsProvider({ children }) {
 
   const showNotification = useCallback(
     (notif) => {
-      const payload = Object.assign({}, notif)
+      const payload = { ...notif }
       // Set default id to now if none provided
       if (!payload.id) {
         payload.id = Date.now()
@@ -65,7 +67,7 @@ export default function NotificationsProvider({ children }) {
       [dispatch]
     ),
     clearNotifications: useCallback(
-      (payload) => dispatch({ type: NOTIFICATION_CLEAR }),
+      () => dispatch({ type: NOTIFICATION_CLEAR }),
       [dispatch]
     )
   }
@@ -75,4 +77,8 @@ export default function NotificationsProvider({ children }) {
       {children}
     </NotificationsContext.Provider>
   )
+}
+
+NotificationsProvider.propTypes = {
+  children: PropTypes.element
 }

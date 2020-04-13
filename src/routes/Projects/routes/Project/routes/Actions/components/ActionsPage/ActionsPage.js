@@ -71,110 +71,110 @@ function ActionsPage({ projectId }) {
 
   return (
     <div className={classes.container}>
-      <form onSubmit={handleSubmit(runAction)}>
-        <Typography className={classes.pageHeader}>Actions</Typography>
-        <Typography variant="h5">Action Runner</Typography>
-        <div className={classes.container}>
-          <div className={classes.buttons}>
+      <Typography className={classes.pageHeader}>Actions</Typography>
+      <Typography variant="h5">Action Runner</Typography>
+      <div className={classes.container}>
+        <div className={classes.buttons}>
+          <Button
+            disabled={!selectedTemplate || lockedEnvInUse}
+            color="primary"
+            variant="contained"
+            aria-label="Run Action"
+            onClick={handleSubmit(runAction)}
+            data-test="run-action-button">
+            Run Action
+          </Button>
+          {selectedTemplate && (
             <Button
-              disabled={!selectedTemplate || lockedEnvInUse}
-              color="primary"
+              color="secondary"
               variant="contained"
-              aria-label="Run Action"
-              type="submit"
-              data-test="run-action-button">
-              Run Action
+              aria-label="Clear"
+              onClick={reset}
+              className={classes.button}
+              data-test="clear-action-button">
+              Clear
             </Button>
-            {selectedTemplate && (
-              <Button
-                color="secondary"
-                variant="contained"
-                aria-label="Clear"
-                onClick={reset}
-                className={classes.button}
-                data-test="clear-action-button">
-                Clear
-              </Button>
-            )}
-          </div>
-          <div>
-            <ExpansionPanel
-              expanded={templateEditExpanded}
-              onChange={toggleTemplateEdit}>
-              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.sectionHeader}>
-                  {templateName}
-                </Typography>
-              </ExpansionPanelSummary>
-              <TabContainer className="flex-column">
-                <Grid container spacing={8} justify="center">
+          )}
+        </div>
+        <div>
+          <ExpansionPanel
+            expanded={templateEditExpanded}
+            onChange={toggleTemplateEdit}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography className={classes.sectionHeader}>
+                {templateName}
+              </Typography>
+            </ExpansionPanelSummary>
+            <TabContainer className="flex-column">
+              <Grid container spacing={8} justify="center">
+                <Grid
+                  item
+                  xs={12}
+                  sm={8}
+                  md={8}
+                  style={{ textAlign: 'center' }}>
+                  <Typography paragraph>
+                    Run an action by selecting a template, filling in the
+                    template's configuration options, then clicking{' '}
+                    <strong>run action</strong>.
+                  </Typography>
+                  <Button
+                    color="primary"
+                    component={Link}
+                    to={ACTION_TEMPLATES_PATH}
+                    className={classes.button}>
+                    Create New Action Template
+                  </Button>
+                  <Typography className={classes.orFont}>
+                    or select existing
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <AppBar position="static">
+                    <Tabs
+                      value={selectedTab}
+                      onChange={selectTab}
+                      variant="fullWidth">
+                      <Tab label="Public" />
+                      <Tab label="Private" />
+                    </Tabs>
+                  </AppBar>
+                </Grid>
+                {selectedTab === 0 && (
                   <Grid
                     item
                     xs={12}
-                    sm={8}
-                    md={8}
+                    sm={6}
+                    md={6}
                     style={{ textAlign: 'center' }}>
-                    <Typography paragraph>
-                      Run an action by selecting a template, filling in the
-                      template's configuration options, then clicking{' '}
-                      <strong>run action</strong>.
-                    </Typography>
-                    <Button
-                      color="primary"
-                      component={Link}
-                      to={ACTION_TEMPLATES_PATH}
-                      className={classes.button}>
-                      Create New Action Template
-                    </Button>
-                    <Typography className={classes.orFont}>
-                      or select existing
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} md={8}>
-                    <AppBar position="static">
-                      <Tabs
-                        value={selectedTab}
-                        onChange={selectTab}
-                        variant="fullWidth">
-                        <Tab label="Public" />
-                        <Tab label="Private" />
-                      </Tabs>
-                    </AppBar>
-                  </Grid>
-                  {selectedTab === 0 && (
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={6}
-                      style={{ textAlign: 'center' }}>
-                      <TabContainer>
-                        <div className={classes.search}>
-                          <CollectionSearch
-                            indexName="actionTemplates"
-                            onSuggestionClick={selectActionTemplate}
-                          />
-                        </div>
-                      </TabContainer>
-                    </Grid>
-                  )}
-                  {selectedTab === 1 && (
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={6}
-                      style={{ textAlign: 'center' }}>
-                      <TabContainer>
-                        <PrivateActionTemplates
-                          onTemplateClick={selectActionTemplate}
+                    <TabContainer>
+                      <div className={classes.search}>
+                        <CollectionSearch
+                          indexName="actionTemplates"
+                          onSuggestionClick={selectActionTemplate}
                         />
-                      </TabContainer>
-                    </Grid>
-                  )}
-                </Grid>
-              </TabContainer>
-            </ExpansionPanel>
+                      </div>
+                    </TabContainer>
+                  </Grid>
+                )}
+                {selectedTab === 1 && (
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    md={6}
+                    style={{ textAlign: 'center' }}>
+                    <TabContainer>
+                      <PrivateActionTemplates
+                        onTemplateClick={selectActionTemplate}
+                      />
+                    </TabContainer>
+                  </Grid>
+                )}
+              </Grid>
+            </TabContainer>
+          </ExpansionPanel>
+          <form onSubmit={handleSubmit(runAction)}>
             {selectedTemplate ? (
               <ExpansionPanel
                 expanded={environmentsExpanded}
@@ -279,11 +279,11 @@ function ActionsPage({ projectId }) {
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             ) : null}
-          </div>
+          </form>
         </div>
-        <Typography variant="h5">Recently Run Actions</Typography>
-        <RecentActions projectId={projectId} rerunAction={rerunAction} />
-      </form>
+      </div>
+      <Typography variant="h5">Recently Run Actions</Typography>
+      <RecentActions projectId={projectId} rerunAction={rerunAction} />
     </div>
   )
 }

@@ -107,7 +107,10 @@ function PermissionsTableRow({
       }
     )
     showSuccess('Member deleted successfully!')
-    triggerAnalyticsEvent('deletePermission', { projectId, removedMember: uid })
+    triggerAnalyticsEvent('removeCollaborator', {
+      projectId,
+      removedMember: uid
+    })
   }
 
   const closeAndCallDelete = (e) => {
@@ -222,7 +225,7 @@ function PermissionsTableRow({
 
 PermissionsTableRow.propTypes = {
   projectId: PropTypes.string.isRequired,
-  displayName: PropTypes.string.isRequired,
+  displayName: PropTypes.string,
   roleKey: PropTypes.string,
   uid: PropTypes.string.isRequired
 }

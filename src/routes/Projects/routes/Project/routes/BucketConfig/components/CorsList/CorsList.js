@@ -18,66 +18,68 @@ const useStyles = makeStyles(styles)
 
 const methods = ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS']
 
-function CorsList({ name, meta: { error, submitFailed } }) {
+function CorsList({ name }) {
   const classes = useStyles()
   const { control, register } = useFormContext()
   const { fields, remove, append } = useFieldArray({ control, name })
 
   return (
     <div>
-      {fields.map((member, index) => (
-        <div key={index} className={classes.item}>
-          <div className="flex-row">
-            <Typography className={classes.subHeader} variant="h5">
-              CORS Config #{index + 1}
-            </Typography>
-            <IconButton onClick={() => remove(index)}>
-              <DeleteIcon />
-            </IconButton>
-          </div>
-          <div className="flex-column">
-            <CorsOriginList name={`${member}.origin`} />
-            <FormControl className={classes.field}>
-              <InputLabel htmlFor="method">HTTP Methods To Include</InputLabel>
-              <Controller
-                as={
-                  <Select fullWidth multiple>
-                    {methods.map((name) => (
-                      <MenuItem key={name} value={name}>
-                        {name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                }
-                name={`${member}.method`}
-                control={control}
-                defaultValue=""
+      {fields.map((item, index) => {
+        return (
+          <div key={index} className={classes.item}>
+            <div className="flex-row">
+              <Typography className={classes.subHeader} variant="h5">
+                CORS Config #{index + 1}
+              </Typography>
+              <IconButton onClick={() => remove(index)}>
+                <DeleteIcon />
+              </IconButton>
+            </div>
+            <div className="flex-column">
+              <CorsOriginList name={`${name}[${index}].origin`} />
+              <FormControl className={classes.field} fullWidth>
+                <InputLabel htmlFor="method">
+                  HTTP Methods To Include
+                </InputLabel>
+                <Controller
+                  as={
+                    <Select fullWidth multiple>
+                      {methods.map((name) => (
+                        <MenuItem key={name} value={name}>
+                          {name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  }
+                  name={`${name}[${index}].method`}
+                  control={control}
+                  defaultValue={[]}
+                />
+              </FormControl>
+              <TextField
+                name={`${name}[${index}].maxAgeSeconds`}
+                label="Max Age (in seconds)"
+                type="number"
+                margin="normal"
+                fullWidth
+                inputRef={register}
               />
-            </FormControl>
-            <TextField
-              name={`${member}.maxAgeSeconds`}
-              label="Max Age (in seconds)"
-              type="number"
-              margin="normal"
-              inputRef={register}
-              fullWidth
-            />
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
       <div className={classes.add}>
         <Button color="primary" onClick={() => append({ origin: [''] })}>
           Add CORS Config
         </Button>
-        {submitFailed && error && <span>{error}</span>}
       </div>
     </div>
   )
 }
 
 CorsList.propTypes = {
-  fields: PropTypes.object.isRequired,
-  meta: PropTypes.object.isRequired
+  name: PropTypes.string.isRequired
 }
 
 export default CorsList
