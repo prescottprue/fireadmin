@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { get, map } from 'lodash'
 import { Link } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { useFirestore, useFirestoreCollectionData } from 'reactfire'
 import Button from '@material-ui/core/Button'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -16,12 +16,14 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import TextField from '@material-ui/core/TextField'
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+import Select from '@material-ui/core/Select'
 import { makeStyles } from '@material-ui/core/styles'
 import CollectionSearch from 'components/CollectionSearch'
 import TabContainer from 'components/TabContainer'
 import { databaseURLToProjectName } from 'utils'
 import { ACTION_TEMPLATES_PATH } from 'constants/paths'
-import OutlinedSelect from 'components/OutlinedSelect'
 import StepsViewer from '../StepsViewer'
 import PrivateActionTemplates from '../PrivateActionTemplates'
 import RecentActions from '../RecentActions'
@@ -32,7 +34,7 @@ const useStyles = makeStyles(styles)
 
 function ActionsPage({ projectId }) {
   const classes = useStyles()
-  const { reset, register, watch, handleSubmit } = useForm({})
+  const { reset, register, watch, control, handleSubmit } = useForm()
   const [selectedTab, selectTab] = useState(0)
   const lockedEnvInUse = false // TODO: Load this from Firestore data
   const [selectedTemplate, changeSelectedTemplate] = useState()
@@ -43,7 +45,9 @@ function ActionsPage({ projectId }) {
   const environmentsRef = firestore.collection(
     `projects/${projectId}/environments`
   )
-  const environments = useFirestoreCollectionData(environmentsRef)
+  const environments = useFirestoreCollectionData(environmentsRef, {
+    idField: 'id'
+  })
   const toggleTemplateEdit = () => changeTemplateEdit(!templateEditExpanded)
   const toggleEnvironments = () =>
     changeEnvironmentsExpanded(!environmentsExpanded)
@@ -189,43 +193,64 @@ function ActionsPage({ projectId }) {
                     {selectedTemplate.environments ? (
                       selectedTemplate.environments.map((input, index) => (
                         <Grid item xs={10} md={6} key={`Environment-${index}`}>
-                          <OutlinedSelect
-                            name={`environmentValues.${index}`}
-                            fullWidth
-                            props={{
-                              label:
-                                get(input, `name`) || `Environment ${index + 1}`
-                            }}
-                            inputProps={{
-                              name: 'environment',
-                              id: 'environment',
-                              'data-test': 'environment-select'
-                            }}
-                            inputRef={register}>
-                            {map(environments, (environment, envIndex) => (
-                              <MenuItem
-                                key={`Environment-Option-${environment.id}-${envIndex}`}
-                                value={environment.id}
-                                button
-                                disabled={
-                                  environment.locked ||
-                                  (environment.readOnly && index === 1) ||
-                                  (environment.writeOnly && index === 0)
-                                }
-                                data-test={`environment-option-${environment.id}`}>
-                                <ListItemText
-                                  primary={environment.name || environment.id}
-                                  secondary={`${databaseURLToProjectName(
-                                    environment.databaseURL
-                                  )}${environment.locked ? ' - Locked' : ''}${
-                                    environment.readOnly ? ' - Read Only' : ''
-                                  }${
-                                    environment.writeOnly ? ' - Write Only' : ''
-                                  }`}
-                                />
-                              </MenuItem>
-                            ))}
-                          </OutlinedSelect>
+                          <FormControl variant="outlined" fullWidth>
+                            <InputLabel id="demo-simple-select-outlined-label">
+                              {(input && input.name) ||
+                                `Environment ${index + 1}`}
+                            </InputLabel>
+                            <Controller
+                              as={
+                                <Select
+                                  fullWidth
+                                  inputProps={{
+                                    name: 'environment',
+                                    id: 'environment',
+                                    'data-test': 'environment-select'
+                                  }}>
+                                  {map(
+                                    environments,
+                                    (environment, envIndex) => (
+                                      <MenuItem
+                                        key={`Environment-Option-${environment.id}-${envIndex}`}
+                                        value={environment.id}
+                                        button
+                                        disabled={
+                                          environment.locked ||
+                                          (environment.readOnly &&
+                                            index === 1) ||
+                                          (environment.writeOnly && index === 0)
+                                        }
+                                        data-test={`environment-option-${environment.id}`}>
+                                        <ListItemText
+                                          primary={
+                                            environment.name || environment.id
+                                          }
+                                          secondary={`${databaseURLToProjectName(
+                                            environment.databaseURL
+                                          )}${
+                                            environment.locked
+                                              ? ' - Locked'
+                                              : ''
+                                          }${
+                                            environment.readOnly
+                                              ? ' - Read Only'
+                                              : ''
+                                          }${
+                                            environment.writeOnly
+                                              ? ' - Write Only'
+                                              : ''
+                                          }`}
+                                        />
+                                      </MenuItem>
+                                    )
+                                  )}
+                                </Select>
+                              }
+                              name={`environmentValues.${index}`}
+                              defaultValue=""
+                              control={control}
+                            />
+                          </FormControl>
                         </Grid>
                       ))
                     ) : (

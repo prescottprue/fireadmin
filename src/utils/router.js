@@ -31,7 +31,7 @@ export function renderChildren(routes, parentProps) {
  * @param {React.Component} props.component - Path of route
  * @returns {React.Component}
  */
-export function PrivateRoute({ children, path, ...rest }) {
+export function PrivateRoute({ path, ...rest }) {
   return (
     <AuthCheck
       key={path}
@@ -49,7 +49,6 @@ export function PrivateRoute({ children, path, ...rest }) {
 }
 
 PrivateRoute.propTypes = {
-  children: PropTypes.element,
   path: PropTypes.string.isRequired,
   component: PropTypes.oneOfType([PropTypes.func, PropTypes.element])
 }

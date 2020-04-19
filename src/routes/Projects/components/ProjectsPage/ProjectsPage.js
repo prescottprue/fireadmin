@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { useFirestore, useUser, useFirestoreCollectionData } from 'reactfire'
+import { useFirestore, useUser, SuspenseWithPerf, AuthCheck } from 'reactfire'
 import { makeStyles } from '@material-ui/core/styles'
-import { Route, Switch, useRouteMatch } from 'react-router-dom'
+import { Route, Switch, Redirect, useRouteMatch } from 'react-router-dom'
 import ProjectRoute from 'routes/Projects/routes/Project'
 import { renderChildren } from 'utils/router'
 import useNotifications from 'modules/notification/useNotifications'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 import defaultRoles from 'constants/defaultRoles'
 import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
-import ProjectTile from '../ProjectTile'
+import { LOGIN_PATH } from 'constants/paths'
 import NewProjectTile from '../NewProjectTile'
 import NewProjectDialog from '../NewProjectDialog'
 import styles from './ProjectsPage.styles'
+import ProjectsList from '../ProjectsList'
 
 const useStyles = makeStyles(styles)
 
@@ -26,22 +26,6 @@ function ProjectsPage() {
   const firestore = useFirestore()
   const { FieldValue } = useFirestore
   const user = useUser()
-  const projectsRef = firestore.collection(PROJECTS_COLLECTION)
-  const currentUsersProjectsRef = projectsRef.where('createdBy', '==', user.uid)
-  const collabProjectsRef = projectsRef.where(
-    `collaborators.${user.uid}`,
-    '==',
-    true
-  )
-
-  const currentUsersProjects = useFirestoreCollectionData(
-    currentUsersProjectsRef,
-    { idField: 'id' }
-  )
-  const collabProjects = useFirestoreCollectionData(collabProjectsRef, {
-    idField: 'id'
-  })
-  const projects = currentUsersProjects.concat(collabProjects)
 
   /**
    * Handler for adding a project
@@ -72,18 +56,8 @@ function ProjectsPage() {
     }
   }
 
-  /**
-   * Handler for deleting a project
-   */
-  async function deleteProject(projectId) {
-    try {
-      await firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`).delete()
-      showSuccess('Project deleted successfully')
-      triggerAnalyticsEvent('deleteProject', { projectId })
-    } catch (err) {
-      console.error('Error deleting project:', err) // eslint-disable-line no-console
-      showError(err.message || 'Error deleting project')
-    }
+  if (!user || !user.uid) {
+    return <Redirect to={{ pathname: LOGIN_PATH }} />
   }
 
   return (
@@ -103,27 +77,25 @@ function ProjectsPage() {
             />
             <div className={classes.tiles}>
               <NewProjectTile onClick={toggleDialog} />
-              {projects.map((project, ind) => {
-                return (
-                  <ProjectTile
-                    key={`Project-${project.id}-${ind}`}
-                    name={project.name}
-                    project={project}
-                    projectId={project.id}
-                    onDelete={() => deleteProject(project.id)}
-                  />
-                )
-              })}
+              <SuspenseWithPerf>
+                <AuthCheck
+                  fallback={
+                    <Redirect
+                      to={{
+                        pathname: LOGIN_PATH,
+                        state: { from: '/projects' }
+                      }}
+                    />
+                  }>
+                  <ProjectsList />
+                </AuthCheck>
+              </SuspenseWithPerf>
             </div>
           </div>
         )}
       />
     </Switch>
   )
-}
-
-ProjectsPage.propTypes = {
-  match: PropTypes.object.isRequired // from enhancer (withRouter)
 }
 
 export default ProjectsPage

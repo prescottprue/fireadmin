@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
@@ -8,13 +7,13 @@ import StepContent from '@material-ui/core/StepContent'
 import Typography from '@material-ui/core/Typography'
 
 function StepsViewer({ steps, activeStep, disabled, watch }) {
-  const convertEnv = (step, name) => {
-    const { pathType } = get(step, `${name}`, {})
+  function convertEnv(step, name) {
+    const { pathType, path: stepPath } = (step && step[name]) || {}
     if (pathType === 'input') {
       const inputValues = watch('inputValues')
-      return get(inputValues, get(step, `${name}.path`))
+      return inputValues && inputValues[stepPath]
     }
-    return get(step, `${name}.path`)
+    return stepPath
   }
   return (
     <Stepper activeStep={activeStep} orientation="vertical" disabled={disabled}>
@@ -38,7 +37,6 @@ function StepsViewer({ steps, activeStep, disabled, watch }) {
 StepsViewer.propTypes = {
   steps: PropTypes.array.isRequired,
   activeStep: PropTypes.number.isRequired,
-  convertEnv: PropTypes.func.isRequired,
   disabled: PropTypes.bool
 }
 
