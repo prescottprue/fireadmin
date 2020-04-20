@@ -1,7 +1,3 @@
-const path = require('path')
-
-const rootDir = path.resolve(__dirname, '..')
-
 module.exports = {
   /** resolves from test to snapshot path */
   resolveSnapshotPath: (testPath, snapshotExtension) => {

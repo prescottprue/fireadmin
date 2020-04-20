@@ -1,6 +1,6 @@
 import React from 'react'
-import { Route, Switch, useParams } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { Route, Switch, useParams } from 'react-router-dom'
 import { useFirestore, useFirestoreDocData } from 'reactfire'
 import Typography from '@material-ui/core/Typography'
 import SidebarLayout from 'layouts/SidebarLayout'
@@ -58,10 +58,6 @@ function ProjectPage({ children }) {
 }
 
 ProjectPage.propTypes = {
-  project: PropTypes.object,
-  projectId: PropTypes.string,
-  uid: PropTypes.string,
-  match: PropTypes.object,
   children: PropTypes.object
 }
 

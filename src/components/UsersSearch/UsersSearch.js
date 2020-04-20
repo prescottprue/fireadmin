@@ -64,6 +64,7 @@ function UsersSearch({
 UsersSearch.propTypes = {
   ignoreSuggestions: PropTypes.array,
   onSuggestionClick: PropTypes.func,
+  uid: PropTypes.string,
   resultsTitle: PropTypes.string
 }
 

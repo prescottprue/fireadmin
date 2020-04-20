@@ -166,13 +166,8 @@ ActionTemplateForm.propTypes = {
   templateId: PropTypes.string.isRequired,
   startTemplateDelete: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired
-  }),
-  editable: PropTypes.bool.isRequired, // from enhancer (connect)
-  submitTooltip: PropTypes.string, // from enhancer (withProps)
-  deleteTooltip: PropTypes.string, // from enhancer (withProps)
-  cancelTooltip: PropTypes.string // from enhancer (withProps)
+  defaultValues: PropTypes.object,
+  editable: PropTypes.bool.isRequired
 }
 
 export default ActionTemplateForm

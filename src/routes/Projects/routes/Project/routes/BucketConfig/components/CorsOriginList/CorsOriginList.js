@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { useFormContext, useFieldArray } from 'react-hook-form'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
@@ -40,6 +41,10 @@ function CorsOriginList({ name }) {
       </div>
     </div>
   )
+}
+
+CorsOriginList.propTypes = {
+  name: PropTypes.string
 }
 
 export default CorsOriginList

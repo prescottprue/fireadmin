@@ -45,8 +45,7 @@ function PrivateActionTemplates({ onTemplateClick }) {
 }
 
 PrivateActionTemplates.propTypes = {
-  templates: PropTypes.array, // from enhancer (firestoreConnect + connect)
-  itemClickHandler: PropTypes.func.isRequired // from enhancer (withHandlers)
+  onTemplateClick: PropTypes.func.isRequired
 }
 
 export default PrivateActionTemplates

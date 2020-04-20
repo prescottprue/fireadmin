@@ -56,7 +56,7 @@ function ActionEditor(props) {
 }
 
 ActionEditor.propTypes = {
-  setupEditor: PropTypes.func.isRequired // from enhancer (withHandlers)
+  rtdbPath: PropTypes.string
 }
 
 export default ActionEditor

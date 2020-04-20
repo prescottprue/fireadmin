@@ -19,14 +19,7 @@ import styles from './AddEnvironmentDialog.styles'
 
 const useStyles = makeStyles(styles)
 
-function AddEnvironmentDialog({
-  onSubmit,
-  submitting,
-  projectId,
-  pristine,
-  onRequestClose,
-  open
-}) {
+function AddEnvironmentDialog({ onSubmit, projectId, onRequestClose, open }) {
   const classes = useStyles()
   const [droppedFiles, updateDroppedFiles] = useState([])
   const [selectedServiceAccountInd, changeSelectedServiceAccount] = useState(

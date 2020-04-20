@@ -46,10 +46,12 @@ export function decrypt(text, options = {}) {
     return
   }
   const str = !isString(text) ? JSON.stringify(text) : text
+  /* eslint-disable node/no-deprecated-api */
   const decipher = crypto.createDecipher(
     algorithm,
     password || functions.config().encryption.password
   )
+  /* eslint-enable node/no-deprecated-api */
   let dec = decipher.update(str, 'hex', 'utf8')
   dec += decipher.final('utf8')
   return dec

@@ -16,8 +16,11 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import { makeStyles } from '@material-ui/core/styles'
-import { paths } from 'constants/paths'
-import { ACTION_TEMPLATES_PATH as ACTION_TEMPLATES_ROUTE } from 'constants/paths'
+import {
+  paths,
+  ACTION_TEMPLATES_PATH as ACTION_TEMPLATES_ROUTE
+} from 'constants/paths'
+
 import styles from './ActionTemplateListCard.styles'
 
 const useStyles = makeStyles(styles)
@@ -100,8 +103,9 @@ ActionTemplateListCard.propTypes = {
   onClick: PropTypes.func,
   onDeleteClick: PropTypes.func,
   id: PropTypes.string.isRequired,
-  name: PropTypes.string, // from enhancer (flattenProp - template)
-  steps: PropTypes.array // from enhancer (flattenProp - template)
+  description: PropTypes.string,
+  name: PropTypes.string,
+  steps: PropTypes.array
 }
 
 export default ActionTemplateListCard

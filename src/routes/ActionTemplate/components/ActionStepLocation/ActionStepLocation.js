@@ -122,8 +122,6 @@ function ActionStepLocation({ name, indexName, title }) {
 }
 
 ActionStepLocation.propTypes = {
-  steps: PropTypes.array,
-  inputs: PropTypes.array,
   name: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   indexName: PropTypes.string.isRequired

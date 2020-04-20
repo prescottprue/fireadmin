@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize, get } from 'lodash'
 import { useFormContext, useFieldArray, Controller } from 'react-hook-form'
@@ -145,7 +145,7 @@ function ActionTemplateStep({ mainEditorPath }) {
                     />
                   ) : null}
                   {get(steps, `${index}.type`) === 'copy' ? (
-                    <Fragment>
+                    <>
                       <FormControlLabel
                         control={
                           <Checkbox
@@ -166,7 +166,7 @@ function ActionTemplateStep({ mainEditorPath }) {
                         All collections will by copied by default. Specific
                         subcollection support coming soon.
                       </Typography>
-                    </Fragment>
+                    </>
                   ) : null}
                 </Grid>
                 {get(steps, `${index}.type`) !== 'custom' ? (

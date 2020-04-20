@@ -1,7 +1,6 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { get, omit } from 'lodash'
-import { startCase } from 'lodash'
+import { get, omit, startCase } from 'lodash'
 import { useForm } from 'react-hook-form'
 import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -38,15 +37,7 @@ const editOptions = ['Delete']
 const ITEM_HEIGHT = 48
 const useStyles = makeStyles(styles)
 
-function RolesTableRow({
-  projectId,
-  project,
-  name,
-  onSubmit,
-  roleKey,
-  onDeleteClick,
-  initialValues
-}) {
+function RolesTableRow({ projectId, project, name, roleKey, initialValues }) {
   const classes = useStyles()
   const user = useUser()
   const firestore = useFirestore()
@@ -115,7 +106,7 @@ function RolesTableRow({
   }
 
   return (
-    <Fragment>
+    <>
       <DeleteMemberModal
         open={deleteDialogOpen}
         name={roleKey}
@@ -275,7 +266,7 @@ function RolesTableRow({
           </form>
         </ExpansionPanelDetails>
       </ExpansionPanel>
-    </Fragment>
+    </>
   )
 }
 
@@ -284,6 +275,7 @@ RolesTableRow.propTypes = {
   project: PropTypes.shape({
     roles: PropTypes.object
   }),
+  initialValues: PropTypes.object,
   name: PropTypes.string,
   roleKey: PropTypes.string.isRequired
 }

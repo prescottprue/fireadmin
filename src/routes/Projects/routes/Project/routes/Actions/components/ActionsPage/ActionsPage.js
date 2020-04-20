@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import { get, map } from 'lodash'
 import { Link } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
@@ -27,8 +28,8 @@ import { ACTION_TEMPLATES_PATH } from 'constants/paths'
 import StepsViewer from '../StepsViewer'
 import PrivateActionTemplates from '../PrivateActionTemplates'
 import RecentActions from '../RecentActions'
-import styles from './ActionPage.styles'
 import useActionsPage from './useActionsPage'
+import styles from './ActionPage.styles'
 
 const useStyles = makeStyles(styles)
 
@@ -48,7 +49,6 @@ function ActionsPage({ projectId }) {
   const environments = useFirestoreCollectionData(environmentsRef, {
     idField: 'id'
   })
-  console.log('environments', environments)
   const toggleTemplateEdit = () => changeTemplateEdit(!templateEditExpanded)
   const toggleEnvironments = () =>
     changeEnvironmentsExpanded(!environmentsExpanded)
@@ -309,6 +309,10 @@ function ActionsPage({ projectId }) {
       <RecentActions projectId={projectId} rerunAction={rerunAction} />
     </div>
   )
+}
+
+ActionsPage.propTypes = {
+  projectId: PropTypes.string.isRequired
 }
 
 export default ActionsPage

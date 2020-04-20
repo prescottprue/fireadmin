@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin'
 import fauxJax from 'faux-jax'
-import { createCipher } from 'crypto'
+import { createCipher } from 'crypto' // eslint-disable-line node/no-deprecated-api
 import { to } from 'utils/async'
 
 describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {

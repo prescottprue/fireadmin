@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { get, capitalize } from 'lodash'
 import { useFormContext, useFieldArray, Controller } from 'react-hook-form'
 import FormControl from '@material-ui/core/FormControl'
@@ -134,10 +133,6 @@ function ActionTemplateBackups() {
       })}
     </div>
   )
-}
-
-ActionTemplateBackups.propTypes = {
-  steps: PropTypes.array
 }
 
 export default ActionTemplateBackups

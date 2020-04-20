@@ -78,6 +78,7 @@ function NewActionTemplateDialog({ onRequestClose, onSubmit, open }) {
 
 NewActionTemplateDialog.propTypes = {
   open: PropTypes.bool.isRequired,
+  onSubmit: PropTypes.func.isRequired,
   onRequestClose: PropTypes.func.isRequired
 }
 

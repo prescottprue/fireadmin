@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { map, capitalize } from 'lodash'
 import { useFirestore, useUser, useFirestoreDocData } from 'reactfire'
-import { Controller } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
@@ -23,9 +23,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import { makeStyles } from '@material-ui/core/styles'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 import useNotifications from 'modules/notification/useNotifications'
-import { useForm } from 'react-hook-form'
 import styles from './PermissionsTableRow.styles'
-import { useState } from 'react'
 
 const useStyles = makeStyles(styles)
 
@@ -225,6 +223,7 @@ function PermissionsTableRow({
 
 PermissionsTableRow.propTypes = {
   projectId: PropTypes.string.isRequired,
+  initialValues: PropTypes.object,
   displayName: PropTypes.string,
   roleKey: PropTypes.string,
   uid: PropTypes.string.isRequired

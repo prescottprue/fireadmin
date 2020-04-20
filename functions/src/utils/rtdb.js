@@ -25,8 +25,7 @@ export function rtdbRef(refPath) {
 export function waitForValue(ref) {
   return new Promise((resolve, reject) => {
     const EVENT_TYPE = 'value'
-    let requestListener
-    requestListener = ref.on(
+    const requestListener = ref.on(
       EVENT_TYPE,
       (responseSnap) => {
         if (responseSnap.val()) {

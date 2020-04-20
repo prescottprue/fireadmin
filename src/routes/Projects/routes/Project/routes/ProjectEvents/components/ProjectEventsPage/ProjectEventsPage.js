@@ -14,9 +14,9 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import { makeStyles } from '@material-ui/core/styles'
-import { formatTime } from 'utils/formatters'
+import { formatTime, formatDate } from 'utils/formatters'
 import Typography from '@material-ui/core/Typography'
-import { formatDate } from 'utils/formatters'
+
 import styles from './ProjectEventsPage.styles'
 
 const useStyles = makeStyles(styles)

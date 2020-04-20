@@ -22,7 +22,7 @@ import styles from './ProjectTile.styles'
 
 const useStyles = makeStyles(styles)
 
-function ProjectTile({ open, project, onDelete, onSelect, projectId }) {
+function ProjectTile({ open, project, onDelete, projectId }) {
   const classes = useStyles()
   const history = useHistory()
 
@@ -91,8 +91,8 @@ function ProjectTile({ open, project, onDelete, onSelect, projectId }) {
 
 ProjectTile.propTypes = {
   project: PropTypes.object.isRequired,
+  projectId: PropTypes.string,
   onDelete: PropTypes.func,
-  sharingDialogOpen: PropTypes.bool,
   open: PropTypes.bool
 }
 

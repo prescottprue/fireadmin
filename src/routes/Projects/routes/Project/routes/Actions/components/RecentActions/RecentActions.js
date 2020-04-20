@@ -137,6 +137,7 @@ function RecentActions({ projectId, rerunAction }) {
 }
 
 RecentActions.propTypes = {
+  projectId: PropTypes.string.isRequired,
   rerunAction: PropTypes.func.isRequired
 }
 

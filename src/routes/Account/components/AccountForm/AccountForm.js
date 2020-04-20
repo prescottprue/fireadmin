@@ -73,7 +73,8 @@ function AccountForm({ account, onSubmit }) {
 }
 
 AccountForm.propTypes = {
-  account: PropTypes.object
+  account: PropTypes.object,
+  onSubmit: PropTypes.func.isRequired
 }
 
 export default AccountForm

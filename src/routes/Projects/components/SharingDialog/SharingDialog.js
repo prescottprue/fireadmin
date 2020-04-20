@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { map, get, findIndex } from 'lodash'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -18,7 +18,6 @@ import UsersList from 'components/UsersList'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 import useNotifications from 'modules/notification/useNotifications'
 import styles from './SharingDialog.styles'
-import { useState } from 'react'
 
 const useStyles = makeStyles(styles)
 

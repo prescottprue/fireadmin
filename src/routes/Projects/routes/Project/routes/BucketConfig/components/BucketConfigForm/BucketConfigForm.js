@@ -1,7 +1,6 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
+import PropTypes from 'prop-types'
 import { get, map, pick } from 'lodash'
-import MenuItem from '@material-ui/core/MenuItem'
 import { useForm, Controller, FormContext } from 'react-hook-form'
 import {
   useFirestore,
@@ -9,6 +8,8 @@ import {
   useFirestoreCollectionData,
   useUser
 } from 'reactfire'
+import MenuItem from '@material-ui/core/MenuItem'
+import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
@@ -181,7 +182,7 @@ function BucketConfigForm({ projectId }) {
                   name="method"
                   placeholder="Action"
                   control={control}
-                  defaultValue={'GET'}
+                  defaultValue="GET"
                 />
               </FormControl>
             </Grid>
@@ -202,6 +203,10 @@ function BucketConfigForm({ projectId }) {
       </form>
     </FormContext>
   )
+}
+
+BucketConfigForm.propTypes = {
+  projectId: PropTypes.string.isRequired
 }
 
 export default BucketConfigForm

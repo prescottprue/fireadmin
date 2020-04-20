@@ -36,6 +36,7 @@ function StepsViewer({ steps, activeStep, disabled, watch }) {
 
 StepsViewer.propTypes = {
   steps: PropTypes.array.isRequired,
+  watch: PropTypes.func.isRequired,
   activeStep: PropTypes.number.isRequired,
   disabled: PropTypes.bool
 }

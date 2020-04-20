@@ -54,6 +54,7 @@ DeleteMemberModal.propTypes = {
   onRequestClose: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   name: PropTypes.string,
+  uid: PropTypes.string,
   open: PropTypes.bool.isRequired
 }
 

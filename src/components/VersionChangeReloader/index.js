@@ -11,7 +11,7 @@ export default function VersionChangeReloader() {
   function refreshPage() {
     window.location.reload(true)
   }
-  //Hooks
+  // Hooks
   useEffect(() => {
     const currentRemoteVersion = versionInfo.current
     const currentClientVersion = window.version
