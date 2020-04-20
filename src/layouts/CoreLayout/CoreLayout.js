@@ -8,6 +8,7 @@ import { Notifications } from 'modules/notification'
 import VersionChangeReloader from 'components/VersionChangeReloader'
 import styles from './CoreLayout.styles'
 import LoadingSpinner from 'components/LoadingSpinner'
+import SetupFirestore from 'components/SetupFirestore'
 
 const useStyles = makeStyles(styles)
 
@@ -16,6 +17,9 @@ function CoreLayout({ children }) {
 
   return (
     <div className={classes.root}>
+      <SuspenseWithPerf traceId="setup-firestore">
+        <SetupFirestore />
+      </SuspenseWithPerf>
       <SuspenseWithPerf fallback={<NavbarWithoutAuth />} traceId="load-navbar">
         <Navbar />
       </SuspenseWithPerf>

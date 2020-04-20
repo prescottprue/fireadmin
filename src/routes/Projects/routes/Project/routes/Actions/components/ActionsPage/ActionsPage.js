@@ -48,6 +48,7 @@ function ActionsPage({ projectId }) {
   const environments = useFirestoreCollectionData(environmentsRef, {
     idField: 'id'
   })
+  console.log('environments', environments)
   const toggleTemplateEdit = () => changeTemplateEdit(!templateEditExpanded)
   const toggleEnvironments = () =>
     changeEnvironmentsExpanded(!environmentsExpanded)
@@ -202,11 +203,7 @@ function ActionsPage({ projectId }) {
                               as={
                                 <Select
                                   fullWidth
-                                  inputProps={{
-                                    name: 'environment',
-                                    id: 'environment',
-                                    'data-test': 'environment-select'
-                                  }}>
+                                  data-test="environment-select">
                                   {map(
                                     environments,
                                     (environment, envIndex) => (
@@ -226,7 +223,8 @@ function ActionsPage({ projectId }) {
                                             environment.name || environment.id
                                           }
                                           secondary={`${databaseURLToProjectName(
-                                            environment.databaseURL
+                                            environment &&
+                                              environment.databaseURL
                                           )}${
                                             environment.locked
                                               ? ' - Locked'

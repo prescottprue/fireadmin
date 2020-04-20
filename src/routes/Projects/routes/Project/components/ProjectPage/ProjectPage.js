@@ -27,6 +27,7 @@ function ProjectPage({ children }) {
   if (!project) {
     return <ProjectNotFoundPage />
   }
+
   return (
     <SidebarLayout title={project.name}>
       <Switch>
