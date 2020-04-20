@@ -16,7 +16,13 @@ describe('Project - Environments Page', () => {
 
   beforeEach(() => {
     // Go to environments page
-    cy.visit('projects/test-project/environments')
+    cy.visit('projects/test-project/environments', {
+      onBeforeLoad(win) {
+        // https://on.cypress.io/stub
+        cy.stub(win.Notification, 'permission', 'granted')
+        cy.stub(win, 'Notification').as('Notification')
+      }
+    })
   })
 
   after(() => {

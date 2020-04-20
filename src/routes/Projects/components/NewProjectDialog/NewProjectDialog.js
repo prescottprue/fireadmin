@@ -34,6 +34,7 @@ function NewProjectDialog({ onSubmit, open, onRequestClose }) {
             inputRef={register({
               required: true
             })}
+            data-test="new-project-name"
             margin="normal"
             fullWidth
           />

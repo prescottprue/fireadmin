@@ -24,7 +24,11 @@ function NewMemberModal({ projectId, onRequestClose, open }) {
         <div>
           <UsersSearch
             onSuggestionClick={selectCollaborator}
-            ignoreSuggestions={project && Object.keys(project.collaborators)}
+            ignoreSuggestions={
+              project &&
+              project.collaborators &&
+              Object.keys(project.collaborators)
+            }
             resultsTitle="New Collaborators"
           />
         </div>

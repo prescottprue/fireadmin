@@ -35,7 +35,7 @@ function AccountEditor() {
   }
 
   // Show loading spinner if email has not yet loaded (messagingToken loaded from cache sometimes)
-  if (!profile.email) {
+  if (profile && !profile.email) {
     return <LoadingSpinner />
   }
 
