@@ -74,29 +74,10 @@ describe('Project - Events Page', () => {
           }
         },
         { merge: true }
-      ).then(() => {
-        cy.get(createSelector(`role-panel-${roleId}`)).click()
-        cy.get(createSelector('role-update')).first().should('be.disabled')
-      })
+      )
+      cy.get(createSelector(`role-panel-${roleId}`)).click()
+      cy.get(createSelector('role-update')).first().should('be.disabled')
     })
-
-    it('enables updates button if user is owner', () => {
-      cy.callFirestore(
-        'set',
-        'projects/test-project',
-        {
-          createdBy: Cypress.env('TEST_UID'),
-          roles: {
-            editor: { permissions: { update: { roles: true } } }
-          }
-        },
-        { merge: true }
-      ).then(() => {
-        cy.get(createSelector(`role-panel-${roleId}`)).click()
-        cy.get(createSelector('role-update')).first().should('not.be.disabled')
-      })
-    })
-
     it('enables updates button if user has permission', () => {
       cy.callFirestore(
         'set',
@@ -114,13 +95,26 @@ describe('Project - Events Page', () => {
           }
         },
         { merge: true }
-      ).then(() => {
-        cy.get(createSelector(`role-panel-owner`)).click()
-        cy.get(createSelector('role-update')).first().should('not.be.disabled')
-      })
+      )
+      cy.get(createSelector(`role-panel-owner`)).click()
+      cy.get(createSelector('role-update')).first().should('not.be.disabled')
     })
 
     it('updates project with role permissions', () => {
+      cy.callFirestore(
+        'set',
+        'projects/test-project',
+        {
+          createdBy: Cypress.env('TEST_UID'),
+          permissions: {
+            [Cypress.env('TEST_UID')]: { role: 'owner' }
+          },
+          roles: {
+            editor: { permissions: { update: { roles: true } } }
+          }
+        },
+        { merge: true }
+      )
       cy.get(createSelector(`role-panel-${roleId}`)).click()
       cy.get(createSelector('delete-option-members')).first().click()
       cy.get(createSelector('delete-option-environments')).first().click()
