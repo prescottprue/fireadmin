@@ -9,11 +9,11 @@ import {
 } from 'reactfire'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
-import { to } from 'utils/async'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 import useNotifications from 'modules/notification/useNotifications'
 import PermissionsTableRow from '../PermissionsTableRow'
 import DeleteMemberModal from '../DeleteMemberModal'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 import styles from './PermissionsTable.styles'
 
 const useStyles = makeStyles(styles)
@@ -33,7 +33,7 @@ function PermissionsTable({ projectId }) {
   const displayNames = useDatabaseObjectData(displayNamesRef)
 
   const firestore = useFirestore()
-  const projectRef = firestore.doc(`projects/${projectId}`)
+  const projectRef = firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`)
   const project = useFirestoreDocData(projectRef)
 
   const selectedMemberName = get(
@@ -42,34 +42,41 @@ function PermissionsTable({ projectId }) {
     selectedMemberId
   )
   const { roles, permissions: unpopulatedPermissions } = project || {}
-  const permissions = map(unpopulatedPermissions, (permission, uid) => ({
-    ...permission,
-    uid,
-    displayName: get(displayNames, uid),
-    roleName: get(roles, permission.role)
-  }))
+  const populatedPermissions = map(
+    unpopulatedPermissions,
+    (permission, uid) => ({
+      ...permission,
+      uid,
+      displayName: get(displayNames, uid),
+      roleName: get(roles, permission.role)
+    })
+  )
 
   async function removeMember(uid) {
-    const currentPermissions = get(project, 'permissions')
+    const {
+      permissions: currentPermissions,
+      collaborators: currentCollaborators
+    } = project.permissions
     const permissions = omit(currentPermissions, [uid])
-    const currentCollaborators = get(project, 'collaborators')
     const collaborators = omit(currentCollaborators, [uid])
-    const [err] = await to(
-      firestore.docs(`projects/${projectId}`).update({
-        permissions,
-        collaborators
+    try {
+      await firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`).set(
+        {
+          permissions,
+          collaborators
+        },
+        { merge: true }
+      )
+      triggerAnalyticsEvent('removeCollaborator', {
+        projectId,
+        removedCollaboratorUid: uid
       })
-    )
-    if (err) {
+      showSuccess('Member removed successfully')
+    } catch (err) {
       showError(`Error removing member: ${err.message || 'Internal Error'}`)
       console.error(`Error removing member: ${err.message}`, err) // eslint-disable-line no-console
       throw err
     }
-    triggerAnalyticsEvent('removeCollaborator', {
-      projectId,
-      removedCollaboratorUid: uid
-    })
-    showSuccess('Member removed successfully')
   }
 
   return (
@@ -85,7 +92,7 @@ function PermissionsTable({ projectId }) {
         onRequestClose={handleDeleteClose}
         onDeleteClick={removeMember}
       />
-      {map(permissions, ({ role, uid, displayName }, index) => (
+      {map(populatedPermissions, ({ role, uid, displayName }, index) => (
         <PermissionsTableRow
           key={`${uid}-${role}`}
           uid={uid}

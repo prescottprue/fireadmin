@@ -16,7 +16,7 @@ import TableRow from '@material-ui/core/TableRow'
 import { makeStyles } from '@material-ui/core/styles'
 import { formatTime, formatDate } from 'utils/formatters'
 import Typography from '@material-ui/core/Typography'
-
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 import styles from './ProjectEventsPage.styles'
 
 const useStyles = makeStyles(styles)
@@ -27,7 +27,7 @@ function ProjectEventsPage({ projectId }) {
   const database = useDatabase()
   const displayNamesRef = database.ref('displayNames')
   const projectEventsRef = firestore
-    .collection(`projects/${projectId}/events`)
+    .collection(`${PROJECTS_COLLECTION}/${projectId}/events`)
     .orderBy('createdAt', 'desc')
     .limit(200)
   const projectEvents = useFirestoreCollectionData(projectEventsRef)

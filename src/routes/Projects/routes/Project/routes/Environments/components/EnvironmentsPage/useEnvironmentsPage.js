@@ -8,6 +8,7 @@ import {
 import useNotifications from 'modules/notification/useNotifications'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 import { to } from 'utils/async'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 
 export default function useEnvironmentsPage({ projectId }) {
   const { showError, showSuccess } = useNotifications()
@@ -40,7 +41,7 @@ export default function useEnvironmentsPage({ projectId }) {
   const { FieldValue } = useFirestore
   const user = useUser()
   const environmentsRef = firestore.collection(
-    `projects/${projectId}/environments`
+    `${PROJECTS_COLLECTION}/${projectId}/environments`
   )
   const projectEnvironments = useFirestoreCollectionData(environmentsRef, {
     idField: 'id'
@@ -73,7 +74,7 @@ export default function useEnvironmentsPage({ projectId }) {
       )
       throw uploadErr
     }
-    const { ref } = serviceAccountRes && serviceAccountRes.uploadTaskSnapshot
+    const { ref } = serviceAccountRes
     // Build new environment object
     const newEnv = {
       ...newProjectData,
@@ -93,7 +94,9 @@ export default function useEnvironmentsPage({ projectId }) {
 
     // Write new environment to project
     const [newEnvErr, newEnvironmentRes] = await to(
-      firestore.doc(`projects/${projectId}/environments`).add(newEnv)
+      firestore
+        .collection(`${PROJECTS_COLLECTION}/${projectId}/environments`)
+        .add(newEnv)
     )
 
     // Handle errors creating environment
@@ -104,7 +107,7 @@ export default function useEnvironmentsPage({ projectId }) {
     }
     // Write event to project events
     await createProjectEvent(
-      { projectId, firestore },
+      { projectId, firestore, FieldValue },
       {
         eventType: 'createEnvironment',
         eventData: { newEnvironmentId: newEnvironmentRes.id },
@@ -127,10 +130,12 @@ export default function useEnvironmentsPage({ projectId }) {
   async function removeEnvironment() {
     try {
       await firestore
-        .doc(`projects/${projectId}/environments/${selectedDeleteKey}`)
+        .doc(
+          `${PROJECTS_COLLECTION}/${projectId}/environments/${selectedDeleteKey}`
+        )
         .delete()
       await createProjectEvent(
-        { firestore, projectId },
+        { firestore, projectId, FieldValue },
         {
           eventType: 'deleteEnvironment',
           eventData: { environmentId: selectedDeleteKey },
@@ -159,12 +164,14 @@ export default function useEnvironmentsPage({ projectId }) {
   async function updateEnvironment(newValues) {
     try {
       await firestore
-        .doc(`projects/${projectId}/environments/${selectedDeleteKey}`)
+        .doc(
+          `${PROJECTS_COLLECTION}/${projectId}/environments/${selectedDeleteKey}`
+        )
         .update(newValues)
       toggleEditDialog()
       showSuccess('Environment updated successfully')
       await createProjectEvent(
-        { firestore, projectId },
+        { firestore, projectId, FieldValue },
         {
           eventType: 'updateEnvironment',
           eventData: { newValues },
@@ -177,7 +184,7 @@ export default function useEnvironmentsPage({ projectId }) {
         environmentId: selectedKey
       })
     } catch (err) {
-      console.error('error', err) // eslint-disable-line no-console
+      console.error('Error updating environment:', err.message) // eslint-disable-line no-console
       showError('Error: ', err.message || 'Could not update environment')
     }
   }

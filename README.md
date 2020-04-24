@@ -9,40 +9,41 @@
 > Application for Managing Firebase Applications. Includes support for multiple environments and data migrations
 
 ## Table of Contents
+
 1. [Features](#features)
 1. [Getting Started](#getting-started)
 1. [NPM Scripts](#npm-scripts)
 1. [Application Structure](#application-structure)
 1. [Run Your Own](#run-your-own)
-  1. [Requirements](#requirements)
-  1. [Before Starting](#before-starting)
+1. [Requirements](#requirements)
+1. [Before Starting](#before-starting)
 1. [Testing](#testing)
-  1. [Cloud Functions Unit](#cloud-functions-unit-tests)
-  1. [App E2E](#app-e2e-tests)
+1. [Cloud Functions Unit](#cloud-functions-unit-tests)
+1. [App E2E](#app-e2e-tests)
 1. [Deployment](#deployment)
 1. [FAQ](#faq)
 
 ## Features
 
-* Manage multiple environments as a single project
-* Project Sharing (invite by email coming soon)
-* "Action Runner" for common project actions such as data migrations, and generating reports
-* Action Features include support for:
-  * Multiple steps allowing many actions in one run
-  * Backup phase (for easy backing up data before running your actions)
-  * Custom logic (JS written in the browser with ESNext features like `async/await`)
-* Project level tracking of actions which have been run through Action Runner
-* Get/Set CORS Config of Storage Buckets
-* Testing for React App (Cypress) and Cloud Functions (Mocha)
+- Manage multiple environments as a single project
+- Project Sharing (invite by email coming soon)
+- "Action Runner" for common project actions such as data migrations, and generating reports
+- Action Features include support for:
+  - Multiple steps allowing many actions in one run
+  - Backup phase (for easy backing up data before running your actions)
+  - Custom logic (JS written in the browser with ESNext features like `async/await`)
+- Project level tracking of actions which have been run through Action Runner
+- Get/Set CORS Config of Storage Buckets
+- Testing for React App (Cypress) and Cloud Functions (Mocha)
 
-*coming soon*
+_coming soon_
 
-* Support for copying Single Firestore Document in Copy Action
-* Map action - for mapping each item in a collection both on RTDB and Firestore
-* Authorized Google API Request Panel
-* Invite new users by email
-* User manager (including role assignment)
-* Data Viewer
+- Support for copying Single Firestore Document in Copy Action
+- Map action - for mapping each item in a collection both on RTDB and Firestore
+- Authorized Google API Request Panel
+- Invite new users by email
+- User manager (including role assignment)
+- Data Viewer
 
 Interested in adding a feature or contributing? Open an issue or [reach out over gitter](https://gitter.im/firebase-admin/Lobby).
 
@@ -54,73 +55,71 @@ Since this is source code, a great place to start is checking the [hosted versio
 
 While developing, you will probably rely mostly on `npm start`; however, there are additional scripts at your disposal:
 
-|`npm run <script>`    |Description|
-|-------------------|-----------|
-|`start`            |Serves your app at `localhost:3000` and displays [Webpack Dashboard](https://github.com/FormidableLabs/webpack-dashboard)|
-|`start:simple`     |Serves your app at `localhost:3000` without [Webpack Dashboard](https://github.com/FormidableLabs/webpack-dashboard)|
-|`start:dist`       |Builds the application to ./dist and Serves it at `localhost:3000` using `firebase serve`|
-|`functions:start`  |Runs Functions locally using `firebase functions:shell`|
-|`functions:build`  |Builds Cloud Functions to ./functions/dist|
-|`functions:test`   |Runs Functions Unit Tests with Mocha|
-|`build`            |Builds the application to ./dist|
-|`test`             |Runs E2E Tests with Cypress. See [testing](#testing)|
-|`lint`             |[Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors|
-|`lint:fix`         |Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix)|
+| `npm run <script>` | Description                                                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `start`            | Serves your app at `localhost:3000` and displays [Webpack Dashboard](https://github.com/FormidableLabs/webpack-dashboard) |
+| `start:simple`     | Serves your app at `localhost:3000` without [Webpack Dashboard](https://github.com/FormidableLabs/webpack-dashboard)      |
+| `start:dist`       | Builds the application to ./dist and Serves it at `localhost:3000` using `firebase serve`                                 |
+| `functions:start`  | Runs Functions locally using `firebase functions:shell`                                                                   |
+| `functions:build`  | Builds Cloud Functions to ./functions/dist                                                                                |
+| `functions:test`   | Runs Functions Unit Tests with Mocha                                                                                      |
+| `build`            | Builds the application to ./dist                                                                                          |
+| `test`             | Runs E2E Tests with Cypress. See [testing](#testing)                                                                      |
+| `lint`             | [Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors                      |
+| `lint:fix`         | Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix)   |
 
 [Husky](https://github.com/typicode/husky) is used to enable `prepush` hook capability. The `prepush` script currently runs `eslint`, which will keep you from pushing if there is any lint within your code. If you would like to disable this, remove the `prepush` script from the `package.json`.
 
 ## Application Structure
 
 ```
-├── build                    # All build-related configuration
-│   └── webpack.config.js    # Environment-specific configuration files for webpack
-├── cypress                  # App End To End tests
-├── docs                     # Docs application (built with Gatsby)
-│   ├── content              # Content of docs (written in markdown)
-│   ├── components           # React components used in docs app
-│   ├── gatsby-config.js     # Gatsby plugin settings
-│   ├── gatsby-node.js       # Gatsby node definitions (how templates are combined with content)
-│   └── package.json         # Docs package file (docs specific dependencies)
-├── functions                # Cloud Functions (uses Cloud Functions for Firebase)
-│   └── index.js             # Functions entry point
-├── server                   # Express application that provides webpack middleware
-│   └── main.js              # Server application entry point
-├── src                      # Application source code
-│   ├── index.html           # Main HTML page container for app
-│   ├── main.js              # Application bootstrap and rendering
-│   ├── normalize.js         # Browser normalization and polyfills
-│   ├── components           # Global Reusable Presentational Components
-│   ├── containers           # Global Reusable Container Components
-│   ├── layouts              # Components that dictate major page structure
-│   │   └── CoreLayout       # Global application layout in which to render routes
-│   ├── routes               # Main route definitions and async split points
-│   │   ├── index.js         # Bootstrap main application routes with store
-│   │   └── Home             # Fractal route
-│   │       ├── index.js     # Route definitions and async split points
-│   │       ├── assets       # Assets required to render components
-│   │       ├── components   # Presentational React Components
-│   │       ├── container    # Connect components to actions and store
-│   │       ├── modules      # Collections of reducers/constants/actions
-│   │       └── routes **    # Fractal sub-routes (** optional)
-│   ├── static               # Static assets
-│   ├── store                # Redux-specific pieces
-│   │   ├── createStore.js   # Create and instrument redux store
-│   │   └── reducers.js      # Reducer registry and injection
-│   └── styles               # Application-wide styles (generally settings)
-├── .firebaserc              # Firebase project settings (including settings for CI deployment)
-├── cypress.json             # Cypress E2E Testing settings
-├── database.rules.json      # Firebase Real Time Database Rules
-├── firebase.json            # Firebase resource settings (including which folders are deployed)
-├── firestore.indexes.json   # Firestore Indexes
-├── firestore.rules          # Firestore Database Rules
-└── storage.rules            # Cloud Storage Rules
+├── .github                      # Github Settings + Github Actions Workflows
+│   ├── deploy.yml               # Deploy workflow (called on merges to "master" and "production" branches)
+│   └── verify.yml               # Verify workflow (run when PR is created)
+├── cypress                      # UI Integration Tests
+│   └── index.html               # Main HTML page container for app
+├── docs                         # Docs application (built with Gatsby)
+│   ├── content                  # Content of docs (written in markdown)
+│   ├── components               # React components used in docs app
+│   ├── gatsby-config.js         # Gatsby plugin settings
+│   ├── gatsby-node.js           # Gatsby node definitions (how templates are combined with content)
+│   └── package.json             # Docs package file (docs specific dependencies)
+├── functions                    # Cloud Functions (uses Cloud Functions for Firebase)
+│   └── index.js                 # Functions entry point
+├── public                       # Public assets
+│   ├── favicon.ico              # Favicon
+│   ├── firebase-messaging.sw.js # Messaging Service worker (loaded by Firebase SDK)
+│   └── index.html               # Main HTML page container for app
+├── src                          # Application source code
+│   ├── components               # Global Reusable Presentational Components
+│   ├── containers               # Global Reusable Container Components
+│   ├── layouts                  # Components that dictate major page structure
+│   │   └── CoreLayout           # Global application layout in which to render routes
+│   ├── routes                   # Main route definitions and async split points
+│   │   ├── index.js             # Bootstrap main application routes with store
+│   │   └── Home                 # Fractal route
+│   │       ├── index.js         # Route definitions and async split points
+│   │       ├── assets           # Assets required to render components
+│   │       ├── components       # Presentational React Components
+│   │       ├── container        # Connect components to actions and store
+│   │       ├── modules          # Collections of reducers/constants/actions
+│   │       └── routes **        # Fractal sub-routes (** optional)
+│   ├── static                   # Static assets
+│   └── utils                    # Application-wide utils (form validation etc)
+├── .firebaserc                  # Firebase project settings (including settings for CI deployment)
+├── cypress.json                 # Cypress Integration Test settings
+├── database.rules.json          # Firebase Real Time Database Rules
+├── firebase.json                # Firebase resource settings (including which folders are deployed)
+├── firestore.indexes.json       # Firestore Indexes
+├── firestore.rules              # Firestore Database Rules
+└── storage.rules                # Cloud Storage Rules
 ```
 
 ## Run Your Own
 
 ### Requirements
 
-* node `^10.18.0` (node 10 suggested in order to match newest [Cloud Functions Runtime][functions-runtime-url])
+- node `^10.18.0` (node 10 suggested in order to match newest [Cloud Functions Runtime][functions-runtime-url])
 
 ### Before Starting
 
@@ -133,86 +132,91 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 1. Install dependencies: `npm install`
 1. Look for a `src/config.js` file. If one doesn't exist, create it to look like so (this is generated using [`firebase-ci`](https://www.npmjs.com/package/firebase-ci) in CI environments):
 
-    ```js
-    export const version = "0.*.*"; // matches package.json when using firebase-ci in CI environment
+   ```js
+   export const version = "0.*.*"; // matches package.json when using firebase-ci in CI environment
 
-    export const env = "local"; // matches branch/project alias when using firebase-ci in CI environment
+   export const env = "local"; // matches branch/project alias when using firebase-ci in CI environment
 
-    // Get from Auth Tab with Firebase's Console
-    // matches branch/project settings when using firebase-ci in CI environment
-    export const firebase = {
-      apiKey: "<- api key ->",
-      authDomain: "<- auth domain ->",
-      databaseURL: "<- database URL ->",
-      projectId: "<- project ID ->",
-      storageBucket: "<- storageBucket ->",
-      messagingSenderId: "<- message sender ID ->",
-    };
+   // Get from Auth Tab with Firebase's Console
+   // matches branch/project settings when using firebase-ci in CI environment
+   export const firebase = {
+     apiKey: "<- api key ->",
+     authDomain: "<- auth domain ->",
+     databaseURL: "<- database URL ->",
+     projectId: "<- project ID ->",
+     storageBucket: "<- storageBucket ->",
+     messagingSenderId: "<- message sender ID ->",
+   };
 
-    export const reduxFirebase = {
-      userProfile: "users",
-      enableLogging: false,
-      updateProfileOnLogin: true,
-      useFirestoreForProfile: true,
-    };
+   export const reduxFirebase = {
+     userProfile: "users",
+     enableLogging: false,
+     updateProfileOnLogin: true,
+     useFirestoreForProfile: true,
+   };
 
-    // Google Analytics Tracking ID (leave blank for no analytics)
-    export const analyticsTrackingId = "<- your analytics tracking id ->";
+   // Google Analytics Tracking ID (leave blank for no analytics)
+   export const analyticsTrackingId = "<- your analytics tracking id ->";
 
-    // Stackdriver client side error reporting (leave blank for no client side error reporting)
-    export const googleApis = {
-      apiKey: "<- your API Key for Google APIs ->",
-    };
+   // Stackdriver client side error reporting (leave blank for no client side error reporting)
+   export const googleApis = {
+     apiKey: "<- your API Key for Google APIs ->",
+   };
 
-    // Algolia project info (for searching of User's Public Info and Public Templates)
-    export const algolia = {
-      appId: "<- your algolia app id ->",
-      apiKey: "<- your algolia apiKey ->",
-    };
+   // Algolia project info (for searching of User's Public Info and Public Templates)
+   export const algolia = {
+     appId: "<- your algolia app id ->",
+     apiKey: "<- your algolia apiKey ->",
+   };
 
-    export default {
-      version,
-      env,
-      firebase,
-      reduxFirebase,
-      analyticsTrackingId,
-      googleApis,
-      algolia
-    }
-    ```
+   export default {
+     version,
+     env,
+     firebase,
+     reduxFirebase,
+     analyticsTrackingId,
+     googleApis,
+     algolia,
+   };
+   ```
+
 1. Create `functions/.runtimeconfig.json` file that looks like so:
 
-    ```json
-    {
-      "algolia": {
-        "api_key": "<- your API KEY ->",
-        "app_id": "<- your Algolia APP ID ->"
-      },
-      "gmail": {
-        "email": "<- gmail account for sending invite emails ->",
-        "password": "<- password for ^ email ->"
-      },
-      "encryption": {
-        "password": "<- your own made up encryption password for service accounts -> "
-      }
-    }
-    ```
+   ```json
+   {
+     "algolia": {
+       "api_key": "<- your API KEY ->",
+       "app_id": "<- your Algolia APP ID ->"
+     },
+     "gmail": {
+       "email": "<- gmail account for sending invite emails ->",
+       "password": "<- password for ^ email ->"
+     },
+     "encryption": {
+       "password": "<- your own made up encryption password for service accounts -> "
+     }
+   }
+   ```
+
 1. Set Functions config variables to match the file you just made (for the deployed version of your functions):
 
-    __Required Variables__
-    ```bash
-    firebase functions:config:set algolia.api_key="<- your algolia api key ->" algolia.api_key="<- your algolia api key ->"\
-    encryption.password="somePassword"
-    ```
+   **Required Variables**
 
-    __Optional__
-    ```bash
-    firebase functions:config:set gmail.email="<- inviter gmail account ->" gmail.password="<- password of inviter account ->"
-    ```
+   ```bash
+   firebase functions:config:set algolia.api_key="<- your algolia api key ->" algolia.api_key="<- your algolia api key ->"\
+   encryption.password="somePassword"
+   ```
+
+   **Optional**
+
+   ```bash
+   firebase functions:config:set gmail.email="<- inviter gmail account ->" gmail.password="<- password of inviter account ->"
+   ```
+
 1. Build Project: `npm run build`
 1. Deploy to Firebase: `firebase deploy` (deploys, Cloud Functions, Rules, and Hosting)
 1. Start Development server: `npm start`
-    **NOTE:** You can also use `npm run start:dist` to test how your application will work when deployed to Firebase
+   **NOTE:** You can also use `npm run start:dist` to test how your application will work when deployed to Firebase
 1. View the deployed version of the site by running `firebase open hosting:site`
 
 ### Deployment
@@ -227,11 +231,11 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 1. Set `FIREBASE_TOKEN` environment variable within Github Actions secrets
 1. Add the following environment variables to Github Actions's variables (within `/settings/ci_cd`):
 
-    ```js
-    FIREBASE_TOKEN // Used to deploy to Firebase (token generated in last step)
-    CYPRESS_RECORD_KEY // Record key for Cypress Dashboard
-    SERVICE_ACCOUNT // Used to authenticate with database to run hosted tests
-    ```
+   ```js
+   FIREBASE_TOKEN; // Used to deploy to Firebase (token generated in last step)
+   CYPRESS_RECORD_KEY; // Record key for Cypress Dashboard
+   SERVICE_ACCOUNT; // Used to authenticate with database to run hosted tests
+   ```
 
 1. Run a build on Github Actions by pushing code to your Git remote (most likely Github)
 
@@ -242,15 +246,15 @@ For more options on CI settings checkout the [firebase-ci docs](https://github.c
 1. Make sure you have created a `src/config.js` file as mentioned above
 1. Initialize project with `firebase init` then answer:
 
-  * What file should be used for Database Rules?  -> `database.rules.json`
-  * What do you want to use as your public directory? -> `build`
-  * Configure as a single-page app (rewrite all urls to /index.html)? -> `Yes`
-  * What Firebase project do you want to associate as default?  -> **your Firebase project name**
+- What file should be used for Database Rules? -> `database.rules.json`
+- What do you want to use as your public directory? -> `build`
+- Configure as a single-page app (rewrite all urls to /index.html)? -> `Yes`
+- What Firebase project do you want to associate as default? -> **your Firebase project name**
 
 1. Build Project: `npm run build`
 1. Confirm Firebase config by running locally: `firebase serve`
 1. Deploy to firebase: `firebase deploy`
-**NOTE:** You can use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
+   **NOTE:** You can use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
 
 ### Docs
 
@@ -286,18 +290,18 @@ End to End tests are done using [Cypress](https://cypress.io) and they live with
 1. Get the UID of the user that you want to use while testing from the Authentication tab of the Firebase console to
 1. Create `cyress.env.json` with the following format:
 
-    ```json
-    {
-      "TEST_UID": "<- user account's UID ->"
-    }
-    ```
+   ```json
+   {
+     "TEST_UID": "<- user account's UID ->"
+   }
+   ```
 
 1. Run `npm run start:dist`. This will:
-    1. Build the React app to the `dist` folder
-    1. Host the build app on a local server using `firebase serve`
+   1. Build the React app to the `dist` folder
+   1. Host the build app on a local server using `firebase serve`
 1. In a different terminal tab, run `npm run test:ui`. This will:
-    1. Create test environment configuration (includes JWT created using service account)
-    1. Run Cypress tests locally through cli
+   1. Create test environment configuration (includes JWT created using service account)
+   1. Run Cypress tests locally through cli
 
 To Open Cypress's local test runner UI where you can run single tests or all tests use `npm run test:ui:open`.
 
@@ -306,9 +310,9 @@ NOTE: `npm run start:dist` is used to start the local server in the example abov
 ## FAQ
 
 1. Why node `10.18.0` instead of a newer version?
-    [Cloud Functions runtime supports `8` or `10`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
+   [Cloud Functions runtime supports `8` or `10`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
 1. Uploading service accounts? Where do they go and how are my service accounts stored?
-    When uploading a service account, it first goes to a Google Cloud Storage Bucket which [has security rules](/storage.rules) and does not have CORS access. The [copyServiceAccountToFirestore Cloud Function](/functions/src/copyServiceAccountToFirestore) converts it into an encrypted string, stores it within Firestore, then removes the original file from Cloud Storage. Firestore rules keep anyone that is not a collaborator on your project using or reading the service account. Since it is associated with a specific environment, you can then limit access to what can be done with it right in the Users/Permissions tab of Fireadmin.
+   When uploading a service account, it first goes to a Google Cloud Storage Bucket which [has security rules](/storage.rules) and does not have CORS access. The [copyServiceAccountToFirestore Cloud Function](/functions/src/copyServiceAccountToFirestore) converts it into an encrypted string, stores it within Firestore, then removes the original file from Cloud Storage. Firestore rules keep anyone that is not a collaborator on your project using or reading the service account. Since it is associated with a specific environment, you can then limit access to what can be done with it right in the Users/Permissions tab of Fireadmin.
 
 [functions-runtime-url]: https://cloud.google.com/functions/docs/concepts/exec
 [build-status-url]: https://github.com/prescottprue/fireadmin/actions

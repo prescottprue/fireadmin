@@ -7,6 +7,7 @@ import NotificationsProvider from 'modules/notification/NotificationsProvider'
 import SetupMessaging from 'components/SetupMessaging'
 import ThemeSettings from 'theme'
 import * as config from 'config'
+import { ErrorBoundary } from 'utils/components'
 
 const theme = createMuiTheme(ThemeSettings)
 const firebaseConfig = { ...config.firebase }
@@ -23,7 +24,9 @@ function App({ routes }) {
       <FirebaseAppProvider firebaseConfig={firebaseConfig} initPerformance>
         <NotificationsProvider>
           <>
-            <Router>{routes}</Router>
+            <ErrorBoundary>
+              <Router>{routes}</Router>
+            </ErrorBoundary>
             <SuspenseWithPerf traceId="load-messaging">
               <SetupMessaging />
             </SuspenseWithPerf>

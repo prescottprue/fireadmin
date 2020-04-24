@@ -13,6 +13,7 @@ import RolesTableRow from '../RolesTableRow'
 import NewRoleCard from '../NewRoleCard'
 import NoRolesFound from './NoRolesFound'
 import styles from './RolesTable.styles'
+import { createPermissionGetter } from 'utils/data'
 
 const useStyles = makeStyles(styles)
 
@@ -65,7 +66,7 @@ function RolesTable({ projectId }) {
     closeNewRole()
   }
   const roleOptions = map(project.roles, ({ name }, value) => ({ value, name }))
-
+  const userHasPermission = createPermissionGetter(project, user.uid)
   return (
     <div className={classes.root}>
       <Typography className={classes.heading}>Roles</Typography>
@@ -75,7 +76,7 @@ function RolesTable({ projectId }) {
           variant="contained"
           aria-label="Add Role"
           onClick={openNewRole}
-          disabled={newRoleOpen}>
+          disabled={!userHasPermission('create.roles')}>
           Add Role
         </Button>
       </div>
@@ -94,7 +95,9 @@ function RolesTable({ projectId }) {
               roleKey={key}
               name={name}
               projectId={projectId}
+              currentRoles={project.roles}
               roleOptions={roleOptions}
+              updateRolesDisabled={!userHasPermission('update.roles')}
               initialValues={permissions}
             />
           ))

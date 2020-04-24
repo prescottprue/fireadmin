@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { get, omit, startCase } from 'lodash'
+import { startCase } from 'lodash'
 import { useForm } from 'react-hook-form'
 import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -25,6 +25,7 @@ import DeleteMemberModal from '../DeleteMemberModal'
 import styles from './RolesTableRow.styles'
 import { useUser, useFirestore } from 'reactfire'
 import useNotifications from 'modules/notification/useNotifications'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 
 const resourcesOptions = [
   { value: 'members' },
@@ -37,7 +38,14 @@ const editOptions = ['Delete']
 const ITEM_HEIGHT = 48
 const useStyles = makeStyles(styles)
 
-function RolesTableRow({ projectId, project, name, roleKey, initialValues }) {
+function RolesTableRow({
+  projectId,
+  currentRoles,
+  name,
+  roleKey,
+  initialValues,
+  updateRolesDisabled
+}) {
   const classes = useStyles()
   const user = useUser()
   const firestore = useFirestore()
@@ -58,13 +66,16 @@ function RolesTableRow({ projectId, project, name, roleKey, initialValues }) {
     handleSubmit,
     formState: { dirty, isSubmitting }
   } = useForm({ defaultValues: initialValues })
-  // TODO: Load this from project in firestore if user's role has permission for update.roles
-  const updateRolesDisabled = false
 
-  async function deleteRole() {
-    await firestore.doc(`projects/${projectId}`).update({
-      roles: omit(project.roles, [roleKey])
-    })
+  async function deleteRole(item) {
+    await firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`).set(
+      {
+        roles: {
+          [roleKey]: FieldValue.delete()
+        }
+      },
+      { merge: true }
+    )
     // Write event to project events
     await createProjectEvent(
       { projectId, firestore, FieldValue },
@@ -79,16 +90,16 @@ function RolesTableRow({ projectId, project, name, roleKey, initialValues }) {
   }
 
   async function updateRole(roleUpdates) {
-    const currentRoles = get(project, 'roles', {})
-    await firestore.update(`projects/${projectId}`, {
-      roles: {
-        ...currentRoles,
-        [roleKey]: {
-          ...get(currentRoles, roleKey, {}),
-          permissions: roleUpdates
+    await firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`).set(
+      {
+        roles: {
+          [roleKey]: {
+            permissions: roleUpdates
+          }
         }
-      }
-    })
+      },
+      { merge: true }
+    )
     // Write event to project events
     await createProjectEvent(
       { projectId, firestore, FieldValue },
@@ -272,11 +283,10 @@ function RolesTableRow({ projectId, project, name, roleKey, initialValues }) {
 
 RolesTableRow.propTypes = {
   projectId: PropTypes.string.isRequired,
-  project: PropTypes.shape({
-    roles: PropTypes.object
-  }),
+  currentRoles: PropTypes.object,
   initialValues: PropTypes.object,
   name: PropTypes.string,
+  updateRolesDisabled: PropTypes.bool,
   roleKey: PropTypes.string.isRequired
 }
 

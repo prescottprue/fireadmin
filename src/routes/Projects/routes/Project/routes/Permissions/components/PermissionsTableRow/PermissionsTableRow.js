@@ -35,6 +35,7 @@ function PermissionsTableRow({
   projectId,
   roleKey,
   uid,
+  onDeleteClick,
   initialValues
 }) {
   const classes = useStyles()
@@ -69,7 +70,7 @@ function PermissionsTableRow({
       },
       { merge: true }
     )
-    // // Write event to project events
+    // Write event to project events
     await createProjectEvent(
       { projectId, firestore, FieldValue },
       {
@@ -86,34 +87,9 @@ function PermissionsTableRow({
     })
   }
 
-  async function deletePermission() {
-    await projectRef.set(
-      {
-        permissions: {
-          [uid]: FieldValue.delete()
-        }
-      },
-      { merge: true }
-    )
-    // Write event to project events
-    await createProjectEvent(
-      { projectId, firestore, FieldValue },
-      {
-        eventType: 'deletePermission',
-        eventData: { removedMember: uid },
-        createdBy: user.uid
-      }
-    )
-    showSuccess('Member deleted successfully!')
-    triggerAnalyticsEvent('removeCollaborator', {
-      projectId,
-      removedMember: uid
-    })
-  }
-
-  const closeAndCallDelete = (e) => {
+  function closeAndCallDelete() {
     handleMenuClose()
-    deletePermission(e.target)
+    onDeleteClick(uid)
   }
 
   return (
@@ -139,7 +115,7 @@ function PermissionsTableRow({
               aria-owns="long-menu"
               aria-haspopup="true"
               onClick={handleMenuClick}
-              data-test={`member-more-${user.uid}`}>
+              data-test={`member-more-${uid}`}>
               <MoreVertIcon />
             </IconButton>
             <Menu
@@ -175,7 +151,7 @@ function PermissionsTableRow({
                 <InputLabel htmlFor="role">Role</InputLabel>
                 <Controller
                   as={
-                    <Select fullWidth>
+                    <Select fullWidth data-test="role-select">
                       {roleOptions.map((option, idx) => (
                         <MenuItem
                           key={`Role-Option-${option.value}-${idx}`}
@@ -224,6 +200,7 @@ function PermissionsTableRow({
 PermissionsTableRow.propTypes = {
   projectId: PropTypes.string.isRequired,
   initialValues: PropTypes.object,
+  onDeleteClick: PropTypes.func.isRequired,
   displayName: PropTypes.string,
   roleKey: PropTypes.string,
   uid: PropTypes.string.isRequired
