@@ -26,7 +26,10 @@ export function to(promise) {
  */
 export function promiseWaterfall(callbacks) {
   return callbacks.reduce(
-    (accumulator, callback) => accumulator.then(callback),
+    (accumulator, callback) =>
+      accumulator.then(
+        typeof callback === 'function' ? callback : () => callback
+      ),
     Promise.resolve()
   )
 }
