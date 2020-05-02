@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types'
 import { useFirestore } from 'reactfire'
 
-function SetupFirestore() {
+export default function SetupFirestore() {
   const firestore = useFirestore()
   if (process.env.REACT_APP_FIRESTORE_EMULATOR_HOST) {
     const firestoreSettings = {
@@ -21,9 +20,3 @@ function SetupFirestore() {
   }
   return null
 }
-
-SetupFirestore.propTypes = {
-  setupFirestore: PropTypes.object
-}
-
-export default SetupFirestore

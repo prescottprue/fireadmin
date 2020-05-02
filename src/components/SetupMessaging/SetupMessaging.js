@@ -8,17 +8,25 @@ function LoadMessaging() {
   return null
 }
 
-function SetupMessaging() {
+function LoadIfAuthed() {
   const user = useUser()
-  const { isSupported } = useMessaging
 
   // Render nothing if user is not logged in or if messaging is not supported
-  if (!user || !user.uid || !isSupported()) {
+  if (!user || !user.uid) {
+    return null
+  }
+
+  return <LoadMessaging />
+}
+
+export default function SetupMessaging() {
+  const { isSupported } = useMessaging
+
+  // Render nothing if not supported or run UI tests
+  if (!isSupported() || window.Cypress) {
     return null
   }
 
   // Load messaging if user is logged in
-  return <LoadMessaging />
+  return <LoadIfAuthed />
 }
-
-export default SetupMessaging

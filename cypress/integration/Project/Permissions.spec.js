@@ -38,11 +38,18 @@ describe('Project - Events Page', () => {
       cy.get(createSelector('role-select')).click()
       cy.get(createSelector(`role-option-${newRole}`)).click()
       cy.get(createSelector('update-member-button')).click()
-      cy.callFirestore('get', 'projects/test-project').then((project) => {
-        expect(project).to.have.nested.property(
-          `permissions.${userUid}.role`,
-          newRole
-        )
+      //  Wait for user to be updated (prevents racing)
+      cy.waitUntil(() => {
+        return cy
+          .callFirestore('get', 'projects/test-project')
+          .then((project) => {
+            return (
+              project &&
+              project.permissions &&
+              project.permissions[userUid] &&
+              project.permissions[userUid].role === newRole
+            )
+          })
       })
     })
 
@@ -51,9 +58,16 @@ describe('Project - Events Page', () => {
       cy.get(createSelector(`member-more-${userUid}`)).click()
       cy.get(createSelector('member-delete')).click()
       cy.get(createSelector('delete-submit')).click()
-      cy.callFirestore('get', 'projects/test-project').then((project) => {
-        expect(project).to.not.have.nested.property(`permissions.${userUid}`)
-      })
+      cy.waitUntil(() =>
+        cy.callFirestore('get', 'projects/test-project').then((project) => {
+          return (
+            project &&
+            project.permissions &&
+            !Object.keys(project.permissions).includes(userUid)
+          )
+          // expect(project).to.not.have.nested.property(`permissions.${userUid}`)
+        })
+      )
     })
   })
 
@@ -146,9 +160,16 @@ describe('Project - Events Page', () => {
       cy.get(createSelector(`role-more-${roleId}`)).click()
       cy.get(createSelector('role-delete')).click()
       cy.get(createSelector('delete-submit')).click()
-      cy.callFirestore('get', 'projects/test-project').then((project) => {
-        expect(project).to.not.have.nested.property(`roles.${roleId}`)
-      })
+      cy.waitUntil(() =>
+        cy.callFirestore('get', 'projects/test-project').then((project) => {
+          return (
+            project &&
+            project.roles &&
+            !Object.keys(project.roles).includes(roleId)
+          )
+          // expect(project).to.not.have.nested.property(`roles.${roleId}`)
+        })
+      )
     })
   })
 })

@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useUser } from 'reactfire'
 import {
   InstantSearch,
   PoweredBy,
@@ -10,7 +11,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import styles from './CollectionSearch.styles'
 import SearchResults from './SearchResults'
 import { algolia } from '../../config'
-import { useUser } from 'reactfire'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 
 const useStyles = makeStyles(styles)
