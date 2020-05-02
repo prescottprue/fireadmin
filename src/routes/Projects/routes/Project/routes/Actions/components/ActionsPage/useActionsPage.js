@@ -87,6 +87,7 @@ export default function useActionRunner({
       projectId: projectId,
       serviceAccountType: 'firestore',
       templateId,
+      createdBy: user.uid,
       template: omit(selectedTemplate, ['_highlightResult']),
       ...omit(formValues, ['_highlightResult', 'updatedAt'])
     }
@@ -110,7 +111,7 @@ export default function useActionRunner({
     })
 
     return Promise.all([
-      database.push(ACTION_RUNNER_REQUESTS_PATH, actionRequest),
+      database.ref(ACTION_RUNNER_REQUESTS_PATH).push(actionRequest),
       createProjectEvent(
         { firestore, projectId, FieldValue },
         {
@@ -137,7 +138,7 @@ export default function useActionRunner({
       })
       .catch((err) => {
         console.error('Error: ', err.message || err) // eslint-disable-line no-console
-        showError('Error staring action request')
+        showError('Error starting action request')
       })
   }
 

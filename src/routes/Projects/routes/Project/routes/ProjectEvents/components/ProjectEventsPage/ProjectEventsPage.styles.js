@@ -22,5 +22,9 @@ export default (theme) => ({
     borderTop: '1px solid rgba(0,0,0,0.12)',
     fontSize: '1.1rem',
     fontWeight: 'bold'
+  },
+  empty: {
+    textAlign: 'center',
+    padding: '3rem'
   }
 })

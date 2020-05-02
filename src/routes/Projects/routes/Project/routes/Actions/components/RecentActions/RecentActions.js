@@ -7,7 +7,7 @@ import {
   useDatabase,
   useDatabaseObjectData
 } from 'reactfire'
-import { get, map, startCase, invoke } from 'lodash'
+import { get, startCase, invoke } from 'lodash'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -21,6 +21,10 @@ import { formatDateTime } from 'utils/formatters'
 import { databaseURLToProjectName } from 'utils'
 import NoRecentActions from './NoRecentActions'
 import styles from './RecentActions.styles'
+import {
+  PROJECTS_COLLECTION,
+  DISPLAY_NAMES_PATH
+} from 'constants/firebasePaths'
 
 const useStyles = makeStyles(styles)
 
@@ -28,29 +32,24 @@ function RecentActions({ projectId, rerunAction }) {
   const classes = useStyles()
   const firestore = useFirestore()
   const database = useDatabase()
-  const displayNamesRef = database.ref('displayNames')
-  const environmentsRef = firestore.collection(
-    `projects/${projectId}/environments`
-  )
+  const displayNamesRef = database.ref(DISPLAY_NAMES_PATH)
   const recentActionsQuery = firestore
-    .collection(`projects/${projectId}/events`)
+    .collection(`${PROJECTS_COLLECTION}/${projectId}/events`)
     .where('eventType', '==', 'requestActionRun')
     .orderBy('createdAt', 'desc')
     .limit(3)
-  // const displayNames = useDatabaseObjectData(displayNamesRef)
   const displayNames = useDatabaseObjectData(displayNamesRef)
-  const environments = useFirestoreCollectionData(environmentsRef)
-  const recentActions = useFirestoreCollectionData(recentActionsQuery)
-  const orderedActions = map(recentActions, (event) => {
-    const createdBy = get(event, 'createdBy')
+  const recentActions = useFirestoreCollectionData(recentActionsQuery, {
+    idField: 'id'
+  })
+  const orderedActions = recentActions.map((event) => {
+    const { createdBy } = event
     const envLabelFromEnvironmentValIndex = (envIndex = 0) => {
-      const envKey = get(event, `eventData.environmentValues.${envIndex}`)
-      const envName = get(environments, `${envKey}.name`)
-      const envUrl =
-        get(environments, `${envKey}.databaseURL`) ||
-        get(event, `eventData.inputValues.${envIndex}.databaseURL`, '')
-      const firebaseProjectName = databaseURLToProjectName(envUrl)
-      return `${envName} (${firebaseProjectName})`
+      const environment = get(event, `eventData.environments.${envIndex}`)
+      const firebaseProjectName = databaseURLToProjectName(
+        environment.databaseURL
+      )
+      return `${environment.name} (${firebaseProjectName})`
     }
     if (createdBy) {
       return {
@@ -63,7 +62,7 @@ function RecentActions({ projectId, rerunAction }) {
     return event
   })
 
-  if (!recentActions) {
+  if (!recentActions.length) {
     return <NoRecentActions />
   }
 
@@ -81,7 +80,7 @@ function RecentActions({ projectId, rerunAction }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {map(orderedActions, (action, groupName) => [
+          {orderedActions.map((action, groupName) => [
             <TableRow key={groupName} className={classes.tableRowDivider}>
               <TableCell>
                 {formatDateTime(invoke(action, 'createdAt.toDate'))}
