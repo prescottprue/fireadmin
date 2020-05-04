@@ -3,7 +3,7 @@
   "description": "Cloud Functions for Fireadmin application.",
   "scripts": {
     "test": "mocha ./test/unit/**",
-    "test:watch": "mocha ./test/unit/** --watch",
+    "test:watch": "yarn test --watch",
     "test:cov": "nyc --reporter=lcov npm test",
     "test:cov:watch": "npm run test:cov -- --watch",
     "lint": "eslint -c .eslintrc.js src test",
