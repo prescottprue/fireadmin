@@ -11,8 +11,10 @@ export default functions.database
   .onUpdate(onUserOnlineStatusChangeEvent)
 
 /**
- * @param  {functions.Event} event - Function event
- * @return {Promise}
+ * Copy online status to Firestore from RTDB
+ * @param {functions.Change} change - Change event
+ * @param {functions.EventContext} context - Functions context
+ * @returns {Promise} Resolves with results of setting to Firestore
  */
 async function onUserOnlineStatusChangeEvent(change, context) {
   // Get the data written to Realtime Database

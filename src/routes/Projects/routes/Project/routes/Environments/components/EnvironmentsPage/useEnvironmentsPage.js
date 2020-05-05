@@ -12,6 +12,8 @@ import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 
 export default function useEnvironmentsPage({ projectId }) {
   const { showError, showSuccess } = useNotifications()
+
+  // State
   const [newDialogOpen, changeNewDialogOpen] = useState(false)
   const [editDialogOpen, changeEditDialogOpen] = useState(false)
   const [deleteDialogOpen, changeDeleteDialogOpen] = useState(false)
@@ -36,6 +38,7 @@ export default function useEnvironmentsPage({ projectId }) {
   }
   const clearServiceAccount = () => changeSelectedServiceAccount(null)
 
+  // Data
   const firestore = useFirestore()
   const storage = useStorage()
   const { FieldValue } = useFirestore
@@ -47,6 +50,7 @@ export default function useEnvironmentsPage({ projectId }) {
     idField: 'id'
   })
 
+  // Handlers
   /**
    * Handler for adding an environment to a project. Called clicking create
    * within AddEnvironmentDialog.
@@ -162,11 +166,10 @@ export default function useEnvironmentsPage({ projectId }) {
    * success message has been displayed to user
    */
   async function updateEnvironment(newValues) {
+    console.log('values', newValues)
     try {
       await firestore
-        .doc(
-          `${PROJECTS_COLLECTION}/${projectId}/environments/${selectedDeleteKey}`
-        )
+        .doc(`${PROJECTS_COLLECTION}/${projectId}/environments/${selectedKey}`)
         .update(newValues)
       toggleEditDialog()
       showSuccess('Environment updated successfully')

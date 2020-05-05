@@ -23,9 +23,8 @@ export default functions.firestore
  * Download service account from Cloud Storage and store it as an encrypted
  * string within Firestore. Could be a storage function, but it
  * would require more code due to being triggered for all storage files.
- * @param  {functions.Event} event - Function event triggered when adding a new
- * service account to a project
- * @return {Promise} Resolves with filePath
+ * @param {functions.firestore.DocumentSnapshot} snap - Event snapshot
+ * @returns {Promise} Resolves with filePath
  */
 export async function handleServiceAccountCreate(snap) {
   const eventData = snap.data()

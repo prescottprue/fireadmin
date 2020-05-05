@@ -88,15 +88,17 @@ function EnvironmentsPage({ projectId }) {
         selectedServiceAccount={selectedServiceAccount}
         onAccountClick={selectServiceAccount}
       />
-      <EditEnvironmentDialog
-        selectedInstance={selectedInstance}
-        open={editDialogOpen}
-        projectId={projectId}
-        initialValues={selectedInstance}
-        onSubmit={updateEnvironment}
-        onRequestClose={toggleEditDialog}
-        onAccountClick={selectServiceAccount}
-      />
+      {selectedInstance ? (
+        <EditEnvironmentDialog
+          selectedInstance={selectedInstance}
+          projectEnvironments={projectEnvironments}
+          open={editDialogOpen}
+          projectId={projectId}
+          onSubmit={updateEnvironment}
+          onRequestClose={toggleEditDialog}
+          onAccountClick={selectServiceAccount}
+        />
+      ) : null}
     </div>
   )
 }

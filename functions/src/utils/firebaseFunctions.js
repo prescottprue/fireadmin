@@ -3,8 +3,8 @@ import * as functions from 'firebase-functions'
 /**
  * Convert function context to the currently logged in user's uid falling back
  * to "Unknown". If admin user is logged in uid will be 'admin'.
- * @param  {Object} functionContext - function's context
- * @return {String} Function request's
+ * @param  {object} functionContext - function's context
+ * @returns {string} Function request's
  */
 export function contextToAuthUid(functionContext = {}) {
   if (functionContext.authType === 'ADMIN') {
@@ -19,7 +19,7 @@ export function contextToAuthUid(functionContext = {}) {
 /**
  * Get service account from functions config. Throws if service account
  * functions variable does not exist
- * @return {Object} Service account
+ * @returns {object} Service account
  * @example Basic
  * const serviceAccount = getLocalServiceAccount()
  * Object.keys(serviceAccount)
@@ -40,7 +40,9 @@ export function getLocalServiceAccount() {
 
 /**
  * Get the firebase config of the current functions environment
- * @return {Object} Service account
+ * @param {string} getPath - Path of config
+ * @param {Any} defaultVal - Default value
+ * @returns {object} Service account
  * @example Basic
  * getFirebaseConfig()
  * // => {

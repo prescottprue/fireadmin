@@ -11,8 +11,9 @@ import {
 
 /**
  * Add authentication to a google request using serviceAccount
- * @param  {Object}  requestWithoutAuth - Request object without auth
- * @return {Promise} Resolves with request that has auth attached
+ * @param {object} serviceAccount - Service account object
+ * @param {object} requestSettings - Request object without auth
+ * @returns {Promise} Resolves with request that has auth attached
  */
 async function addServiceAccountAuthToRequest(serviceAccount, requestSettings) {
   const client = await authClientFromServiceAccount(serviceAccount)
@@ -26,10 +27,9 @@ async function addServiceAccountAuthToRequest(serviceAccount, requestSettings) {
 
 /**
  * Request google APIs with auth attached
- * @param  {Function}  method - Google APIs method to call
- * @param  {String}  name - Name of the method (used in console messaging)
- * @param  {Object}  requestSettings - Settings for request
- * @return {Promise} Resolves with results of Goggle API request
+ * @param {object} serviceAccount - Service account object
+ * @param {object} requestSettings - Settings for request
+ * @returns {Promise} Resolves with results of Goggle API request
  */
 export async function googleApisRequest(serviceAccount, requestSettings) {
   const requestSettingsWithAuth = await addServiceAccountAuthToRequest(
@@ -52,8 +52,9 @@ export async function googleApisRequest(serviceAccount, requestSettings) {
 
 /**
  * Call a Google API with a Service Account
- * @param  {[type]} event - Functions event
- * @return {Promise} Resolves with results of calling Google API
+ * @param {functions.database.DataSnapshot} snap - Snapshot of the event
+ * @param {functions.EventContext} context - Context of the event
+ * @returns {Promise} Resolves with results of calling Google API
  */
 export default async function callGoogleApi(snap, context) {
   const eventVal = snap.val()
@@ -143,7 +144,7 @@ export default async function callGoogleApi(snap, context) {
     throw new Error(errorMessage)
   }
 
-  console.log('Google API responsed successfully. Writing response to RTDB...')
+  console.log('Google API responded successfully. Writing response to RTDB...')
   await responseRef.set({
     completed: true,
     responseData: response,

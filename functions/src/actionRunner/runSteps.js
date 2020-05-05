@@ -25,8 +25,8 @@ import {
  * Data action using Service account stored on Firestore
  * @param  {functions.database.DataSnapshot} snap - Data snapshot from cloud function
  * @param  {functions.EventContext} context - The context in which an event occurred
- * @param  {Object} context.params - Parameters from event
- * @return {Promise}
+ * @param  {object} context.params - Parameters from event
+ * @returns {Promise} Resolves with results
  */
 export async function runStepsFromEvent(snap, context) {
   const eventData = snap.val()
@@ -107,10 +107,10 @@ export async function runStepsFromEvent(snap, context) {
 
 /**
  * Data action using Service account stored on Firestore
- * @param  {functions.database.DataSnapshot} snap - Data snapshot from cloud function
- * @param  {functions.EventContext} context - The context in which an event occurred
- * @param  {Object} context.params - Parameters from event
- * @return {Promise}
+ * @param {functions.database.DataSnapshot} snap - Data snapshot from cloud function
+ * @param {functions.EventContext} context - The context in which an event occurred
+ * @param {object} context.params - Parameters from event
+ * @returns {Promise} Resolves with results
  */
 export async function runBackupsFromEvent(snap, context) {
   const eventData = snap.val()
@@ -171,8 +171,10 @@ export async function runBackupsFromEvent(snap, context) {
 /**
  * Validate and convert list of inputs to relevant types (i.e. serviceAccount
  * data replaced with app)
- * @param  {Array} inputs - List of inputs to convert
- * @return {Promise} Resolves with an array of results of converting inputs
+ * @param {object} eventData - Data from event
+ * @param {Array} envsMetas - Meta data for environments
+ * @param {object} event - Function event
+ * @returns {Promise} Resolves with an array of results of converting inputs
  */
 function validateAndConvertEnvironments(eventData, envsMetas, event) {
   if (!eventData.environments) {
@@ -188,9 +190,10 @@ function validateAndConvertEnvironments(eventData, envsMetas, event) {
 /**
  * Validate and convert a single input to relevant type
  * (i.e. serviceAccount data replaced with app)
- * @param  {Object} original - Original input value
- * @return {Promise} Resolves with firebase app if service account type,
- * otherwise an dobject
+ * @param {object} eventData - Data from event
+ * @param {object} inputMeta - Metadat for input
+ * @param {object} inputValue - Value of input
+ * @returns {Promise} Resolves with firebase app if service account type
  */
 async function validateAndConvertEnvironment(eventData, inputMeta, inputValue) {
   // Throw if input is required and is missing serviceAccountPath or databaseURL
@@ -212,8 +215,11 @@ async function validateAndConvertEnvironment(eventData, inputMeta, inputValue) {
 /**
  * Validate and convert list of inputs to relevant types (i.e. serviceAccount
  * data replaced with app)
- * @param  {Array} inputs - List of inputs to convert
- * @return {Promise} Resolves with an array of results of converting inputs
+ *
+ * @param {object} eventData - Data from event
+ * @param {Array} inputsMetas - Metadata for inputs
+ * @param {object} event - Metadata for inputs
+ * @returns {Promise} Resolves with an array of results of converting inputs
  */
 function validateAndConvertInputs(eventData, inputsMetas, event) {
   return eventData.inputValues.map((inputValue, inputIdx) =>
@@ -224,9 +230,9 @@ function validateAndConvertInputs(eventData, inputsMetas, event) {
 /**
  * Validate and convert a single input to relevant type
  * (i.e. serviceAccount data replaced with app)
- * @param  {Object} original - Original input value
- * @return {Promise} Resolves with firebase app if service account type,
- * otherwise an dobject
+ * @param {object} inputMeta - Metadat for input
+ * @param {object} inputValue - Value for input
+ * @returns {Promise} Resolves with input value
  */
 function validateAndConvertInputValues(inputMeta, inputValue) {
   // Handle no longer supported input type "serviceAccount"
@@ -250,12 +256,13 @@ function validateAndConvertInputValues(inputMeta, inputValue) {
  * Builds an action runner function which accepts an action config object
  * and the stepIdx. Action runner function runs action then updates
  * response with progress and/or error.
- * @param  {Object} eventData - Data from event (contains settings for
- * @param  {Array} inputs - List of inputs
- * @param  {Array} convertedInputValues - List of inputs converted to relevant types
- * @param  {Object} event - Event object from Cloud Trigger
- * @param  {Integer} totalNumSteps - Total number of actions
- * @return {Function} Accepts action and stepIdx (used in Promise.all map)
+ * @param {object} params - Params object
+ * @param {object} params.eventData - Data from event (contains settings for
+ * @param {Array} params.inputs - List of inputs
+ * @param {Array} params.convertedInputValues - List of inputs converted to relevant types
+ * @param {object} params.event - Event object from Cloud Trigger
+ * @param {Integer} params.totalNumSteps - Total number of actions
+ * @returns {Function} Which accepts action and stepIdx (used in Promise.all map)
  */
 function createStepRunner({
   inputs,
@@ -268,15 +275,15 @@ function createStepRunner({
 }) {
   /**
    * Run action based on provided settings and update response with progress
-   * @param  {Object} action - Action object containing settings for action
-   * @param  {Number} stepIdx - Index of the action (from actions array)
-   * @return {Promise} Resolves with results of progress update call
+   * @param {object} step - Step object
+   * @param {number} stepIdx - Index of the action (from actions array)
+   * @returns {Promise} Resolves with results of progress update call
    */
   return function runStepAndUpdateProgress(step, stepIdx) {
     /**
-     * Recieves results of previous action and calls next action
+     * Receives results of previous action and calls next action
      * @param  {Any} previousStepResult - result of previous action
-     * @return {Function} Accepts action and stepIdx (used in Promise.all map)
+     * @returns {Function} Accepts action and stepIdx (used in Promise.all map)
      */
     return async function runNextStep(previousStepResult) {
       const [err, stepResponse] = await to(
@@ -313,14 +320,15 @@ function createStepRunner({
 
 /**
  * Data action using Service account stored on Firestore
- * @param  {Object} step - Object containing settings for step
- * @param  {Array} inputs - Inputs provided to the action
- * @param  {Array} convertedInputValues - Inputs provided to the action converted
+ * @param {object} params - Params object
+ * @param {object} params.step - Object containing settings for step
+ * @param {Array} params.inputs - Inputs provided to the action
+ * @param {Array} params.convertedInputValues - Inputs provided to the action converted
  * to relevant data (i.e. service accounts)
- * @param  {Number} stepIdx - Index of the action (from actions array)
- * @param  {Object} eventData - Data from event (contains settings for
+ * @param {number} params.stepIdx - Index of the action (from actions array)
+ * @param {object} params.eventData - Data from event (contains settings for
  * action request)
- * @return {Promise} Resolves with results of running the provided action
+ * @returns {Promise} Resolves with results of running the provided action
  */
 export async function runStep({
   inputs,

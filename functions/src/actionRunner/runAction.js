@@ -12,13 +12,13 @@ import { rtdbRef } from '../utils/rtdb'
 /**
  * Run action based on action template. Multiple Service Account Types
  * supported (i.e. stored on Firestore or cloud storage)
- * @param  {functions.database.DataSnapshot} snap - Data snapshot from cloud function
- * @param  {functions.EventContext} context - The context in which an event occurred
- * @param  {Object} context.params - Parameters from event
+ * @param {functions.database.DataSnapshot} snap - Data snapshot from cloud function
+ * @param {functions.EventContext} context - The context in which an event occurred
+ * @param {object} context.params - Parameters from event
  */
 export default async function runAction(snap, context) {
   const eventData = snap.val() || {}
-  console.log('Action run request recieved. Sending start event...')
+  console.log('Action run request received. Sending start event...')
 
   // Running an action not supported without projectId
   if (!eventData.projectId) {
@@ -117,6 +117,13 @@ export default async function runAction(snap, context) {
   return null
 }
 
+/**
+ * Send FCM message to user
+ * @param {object} params - Params object
+ * @param {string} params.message - Message to send to user
+ * @param {string} params.userId - UID of user to send FCM to
+ * @returns {Promise} Resolves with results of pushing message to RTDB
+ */
 function sendFcmMessageToUser({ message, userId }) {
   return rtdbRef('requests/sendFcm').push({
     userId,

@@ -10,12 +10,13 @@ const client = algoliasearch(
 
 /**
  * Creates a function indexs item within Algolia from a function event.
- * @param  {String} indexName - name of Algolia index under which to place item
- * @param  {String} idParam - Parameter which contains id
- * @param  {Function} indexCondition - Function that decides conditions under
+ * @param {string} options - Options object
+ * @param {string} options.indexName - name of Algolia index under which to place item
+ * @param {string} options.idParam - Parameter which contains id
+ * @param {Function} options.indexCondition - Function that decides conditions under
  * which item is index. If provided, it must return truthy in order for item
  * to be indexed.
- * @return {Function} Cloud Function event handler function
+ * @returns {Function} Cloud Function event handler function
  */
 export function createIndexFunc({
   indexName,

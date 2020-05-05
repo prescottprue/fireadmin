@@ -3,8 +3,8 @@ import { to } from '../utils/async'
 
 /**
  * Remove collection provided the snap (handles removing subcollections)
- * @param  {Object} collectionSnap - Snapshot of collection to remove
- * @return {Promise}
+ * @param  {object} collectionSnap - Snapshot of collection to remove
+ * @returns {Promise} Results of removing collection
  */
 async function removeCollection(collectionSnap) {
   const [getErr, collectionQueryResult] = await to(collectionSnap.get())
@@ -40,7 +40,7 @@ async function removeCollection(collectionSnap) {
           `Error deleting doc: "${collectionSnap.id}/${docSnap.id}"`,
           deleteSubcollectionsErr
         )
-        // Continue on to deleting docment anyway
+        // Continue on to deleting document anyway
       }
       // Delete document
       const [deleteErr] = await to(docSnap.ref.delete())
@@ -58,9 +58,9 @@ async function removeCollection(collectionSnap) {
 
 /**
  * Remove all collections from a Firestore document
- * @param  {Object} docRef - Reference of document for which all collections
+ * @param  {object} docRef - Reference of document for which all collections
  * will be deleted
- * @return {Promise}
+ * @returns {Promise} Resolves with results of removing all collections
  */
 async function removeAllCollections(docRef) {
   if (!docRef.getCollections) {
@@ -90,8 +90,9 @@ async function removeAllCollections(docRef) {
 }
 
 /**
- * @param  {functions.Event} event - Function event
- * @return {Promise}
+ * @param {functions.firestore.DocumentSnapshot} snap - Snapshot of event
+ * @param {functions.EventContext} context - Function's context
+ * @returns {Promise} Resolves with null
  */
 async function cleanupProjectEvent(snap, context) {
   const [removeErr] = await to(removeAllCollections(snap.ref))

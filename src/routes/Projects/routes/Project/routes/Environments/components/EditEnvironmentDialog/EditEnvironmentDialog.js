@@ -14,26 +14,64 @@ import Checkbox from '@material-ui/core/Checkbox'
 import { makeStyles } from '@material-ui/core/styles'
 import { validateDatabaseUrl } from 'utils/form'
 import styles from './EditEnvironmentDialog.styles'
+import { useFirestore, useFirestoreDocData, useUser } from 'reactfire'
+import { createPermissionGetter } from 'utils/data'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 
 const useStyles = makeStyles(styles)
 
-function EditEnvironmentDialog({ onSubmit, projectId, onRequestClose, open }) {
+function EditEnvironmentDialog({
+  onSubmit,
+  projectId,
+  onRequestClose,
+  open,
+  selectedInstance,
+  projectEnvironments
+}) {
   const classes = useStyles()
+  // Data
+  const firestore = useFirestore()
+  const user = useUser()
+  const projectRef = firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`)
+  const project = useFirestoreDocData(projectRef)
+  const userHasPermission = createPermissionGetter(project, user?.uid)
+  const hasUpdatePermission = userHasPermission('update.environments')
+
+  // Form
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { dirty, isSubmitting }
-  } = useForm()
+  } = useForm({ defaultValues: selectedInstance })
 
-  // TODO: Build from data
-  const lockedDisabled = false
-  const readOnlyDisabled = false
-  const writeOnlyDisabled = false
+  // Disabled states
+  const lockedDisabled =
+    !hasUpdatePermission ||
+    // Form is clean and the environment is currently read only or write only
+    (!dirty && (selectedInstance.readOnly || selectedInstance.writeOnly)) ||
+    watch('readOnly') ||
+    watch('writeOnly')
+  const readOnlyDisabled =
+    !hasUpdatePermission ||
+    // Form is clean and the environment is currently locked or write only
+    (!dirty && (selectedInstance.locked || selectedInstance.writeOnly)) ||
+    watch('locked') ||
+    watch('writeOnly')
+  const writeOnlyDisabled =
+    !hasUpdatePermission ||
+    // Form is clean and the environment is currently locked or read only
+    (!dirty && (selectedInstance.locked || selectedInstance.readOnly)) ||
+    watch('locked') ||
+    watch('readOnly')
+
+  // Handlers
   function closeAndReset() {
     reset()
     onRequestClose()
   }
+
   return (
     <Dialog onClose={onRequestClose} open={open}>
       <DialogTitle id="dialog-title">Edit Environment</DialogTitle>
@@ -75,6 +113,7 @@ function EditEnvironmentDialog({ onSubmit, projectId, onRequestClose, open }) {
                           name="locked"
                           disabled={lockedDisabled}
                           inputRef={register}
+                          defaultChecked={selectedInstance.locked}
                         />
                       }
                       label="Locked (prevents all actions)"
@@ -89,6 +128,7 @@ function EditEnvironmentDialog({ onSubmit, projectId, onRequestClose, open }) {
                           name="readOnly"
                           disabled={readOnlyDisabled}
                           inputRef={register}
+                          defaultChecked={selectedInstance.readOnly}
                         />
                       }
                       label="Read Only"
@@ -101,6 +141,7 @@ function EditEnvironmentDialog({ onSubmit, projectId, onRequestClose, open }) {
                           name="writeOnly"
                           disabled={writeOnlyDisabled}
                           inputRef={register}
+                          defaultChecked={selectedInstance.writeOnly}
                         />
                       }
                       label="Write Only"
@@ -133,6 +174,8 @@ function EditEnvironmentDialog({ onSubmit, projectId, onRequestClose, open }) {
 EditEnvironmentDialog.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onRequestClose: PropTypes.func.isRequired,
+  selectedInstance: PropTypes.object.isRequired,
+  projectEnvironments: PropTypes.array.isRequired,
   projectId: PropTypes.string.isRequired,
   open: PropTypes.bool.isRequired
 }

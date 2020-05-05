@@ -11,9 +11,10 @@ import {
 /**
  * Write response object with status "success" or "error". If
  * status is "error", message is also included.
- * @param  {Object} snap - Functions snapshot object
- * @param  {Object} context - Functions context object
- * @return {Promise} Resolves with results of database write promise
+ * @param {object} snap - Functions snapshot object
+ * @param {object} context - Functions context object
+ * @param {Error} error - Error object
+ * @returns {Promise} Resolves with results of database write promise
  */
 export function updateResponseOnRTDB(snap, context, error) {
   const response = {
@@ -34,8 +35,8 @@ export function updateResponseOnRTDB(snap, context, error) {
 
 /**
  * Update request with status "started"
- * @param  {Object} snap - Functions snapshot object
- * @return {Promise} Resolves with results of database update promise
+ * @param {object} snap - Functions snapshot object
+ * @returns {Promise} Resolves with results of database update promise
  */
 export async function updateRequestAsStarted(snap) {
   const response = {
@@ -55,9 +56,9 @@ export async function updateRequestAsStarted(snap) {
 
 /**
  * Write event to project events subcollection
- * @param  {Object} eventData - Functions snapshot object
- * @param  {String} eventData.projectId - Functions snapshot object
- * @return {Promise} Resolves with results of firstore add promise
+ * @param {object} eventData - Functions snapshot object
+ * @param {string} eventData.projectId - Functions snapshot object
+ * @returns {Promise} Resolves with results of firstore add promise
  */
 export async function emitProjectEvent(eventData) {
   const { projectId } = eventData
@@ -84,11 +85,12 @@ export async function emitProjectEvent(eventData) {
 /**
  * Update response object within Real Time Database with progress information
  * about an action.
- * @param  {Object} event - Functions event object
- * @param  {Object} actionInfo - Info about action
- * @param  {Number} actionInfo.stepIdx - Index of current step
- * @param  {Number} acitonInfo.totalNumSteps - Total number of steps in action
- * @return {Promise} Resolves with results of database write promise
+ * @param {functions.firestore.DocumentSnapshot} snap - Snapshot
+ * @param {functions.EventContext} context - event context
+ * @param {object} actionInfo - Info about action
+ * @param {number} actionInfo.stepIdx - Index of current step
+ * @param {number} actionInfo.totalNumSteps - Total number of steps in action
+ * @returns {Promise} Resolves with results of database write promise
  */
 export function updateResponseWithProgress(
   snap,
@@ -113,9 +115,9 @@ export function updateResponseWithProgress(
 
 /**
  * Write error to response object within Database
- * @param  {Object} snap - Functions snapshot object
- * @param  {Object} context - Functions context object
- * @return {Promise} Resolves with results of database write promise
+ * @param  {object} snap - Functions snapshot object
+ * @param  {object} context - Functions context object
+ * @returns {Promise} Resolves with results of database write promise
  */
 export function updateResponseWithError(snap, context) {
   const response = {
@@ -132,11 +134,13 @@ export function updateResponseWithError(snap, context) {
 /**
  * Update response object within Real Time Database with error information about
  * an action
- * @param  {Object} snap - Functions snapshot object
- * @param  {Object} actionInfo - Info about action
- * @param  {Number} actionInfo.stepIdx - Index of current step
- * @param  {Number} acitonInfo.totalNumSteps - Total number of steps in action
- * @return {Promise} Resolves with results of database write promise
+ *
+ * @param {object} snap - Functions snapshot object
+ * @param {functions.EventContext} context - Context of event
+ * @param {object} actionInfo - Info about action
+ * @param {number} actionInfo.stepIdx - Index of current step
+ * @param {number} actionInfo.totalNumSteps - Total number of steps in action
+ * @returns {Promise} Resolves with results of database write promise
  */
 export function updateResponseWithActionError(
   snap,
@@ -164,9 +168,9 @@ export function updateResponseWithActionError(
 
 /**
  * Write an event to a project's "events" subcollection
- * @param  {String} projectId - id of project in which event should be placed
- * @param  {Object} extraEventAttributes - Data to attach to the event
- * @return {Promise} Resolves with results of pushing event object
+ * @param {string} projectId - id of project in which event should be placed
+ * @param {object} extraEventAttributes - Data to attach to the event
+ * @returns {Promise} Resolves with results of pushing event object
  */
 export async function writeProjectEvent(projectId, extraEventAttributes = {}) {
   const eventObject = {
@@ -193,8 +197,8 @@ export async function writeProjectEvent(projectId, extraEventAttributes = {}) {
 
 /**
  * Convert a collection snapshot into an array (uses forEach).
- * @param  {Object} collectionsSnap - Collection snap object with forEach
- * @return {Array} List of collection snapshot ids
+ * @param {object} collectionsSnap - Collection snap object with forEach
+ * @returns {Array} List of collection snapshot ids
  */
 export function collectionsSnapToArray(collectionsSnap) {
   const collectionsIds = []
@@ -209,9 +213,9 @@ export function collectionsSnapToArray(collectionsSnap) {
 /**
  * Get collection names from provided settings falling back to getting all
  * collection names for the provided Firestore ref using getCollections.
- * @param  {Array|Boolean} subcollectionSetting [description]
- * @param  {Object} ref - Firestore reference
- * @return {Promise} Resolves with an array of collection names
+ * @param {Array|boolean} subcollectionSetting [description]
+ * @param {object} ref - Firestore reference
+ * @returns {Promise} Resolves with an array of collection names
  */
 async function getSubcollectionNames(subcollectionSetting, ref) {
   // Return if the provided setting is an array (assuming it is an array of names)
@@ -233,13 +237,11 @@ async function getSubcollectionNames(subcollectionSetting, ref) {
 
 /**
  * Write document updates in a batch process.
- * @param  {firestore.Firestore} firestoreInstance - Instance on which to
- * create ref
- * @param  {String} destPath - Destination path under which data should be
- * written
- * @param  {Array} docData - List of docs to be written
- * @param  {Object} opts - Options object (can contain merge)
- * @return {Promise} Resolves with results of batch commit
+ * @param {object} params - Params object
+ * @param {firestore.Firestore} params.srcRef - Instance on which to create ref
+ * @param {object} params.destRef - Destination path under which data should be written
+ * @param {object} params.opts - Options object (can contain merge)
+ * @returns {Promise} Resolves with results of batch commit
  */
 export async function batchCopyBetweenFirestoreRefs({
   srcRef,

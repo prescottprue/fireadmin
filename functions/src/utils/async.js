@@ -1,7 +1,7 @@
 /**
  * Async await wrapper for easy error handling
  * @param  {Promise} promise - Promise to wrap responses of
- * @return {Promise} Resolves and rejects with an array
+ * @returns {Promise} Resolves and rejects with an array
  * @example
  * async function asyncFunctionWithThrow() {
  *  const [err, snap] = await to(
@@ -22,7 +22,7 @@ export function to(promise) {
 /**
  * Run promises in a waterfall instead of all the same time (Promise.all)
  * @param  {Array} callbacks - List of promises to run in order
- * @return {Promise} Resolves when all promises have completed in order
+ * @returns {Promise} Resolves when all promises have completed in order
  */
 export function promiseWaterfall(callbacks) {
   return callbacks.reduce(
@@ -33,8 +33,8 @@ export function promiseWaterfall(callbacks) {
 
 /**
  * Wait for a certain number of milliseconds (uses setTimeout)
- * @param {Number} timeToWait - How long to wait
- * @return {Promise} Resolves when wait has completed
+ * @param {number} timeToWait - How long to wait
+ * @returns {Promise} Resolves when wait has completed
  */
 export function wait(timeToWait = 10) {
   // Wait 10ms before next stage

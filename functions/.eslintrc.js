@@ -1,9 +1,6 @@
 module.exports = {
-  'extends': '../.eslintrc.js',
-  rules: {
-    'no-console': 0
-  },
-  plugins: ['node'],
+  'extends': ['../.eslintrc.js', 'plugin:jsdoc/recommended'],
+  plugins: ['node', 'jsdoc'],
   settings: {
     'import/resolver': {
       node: {
@@ -11,17 +8,29 @@ module.exports = {
       }
     }
   },
+  rules: {
+    'no-console': 0,
+    'no-return-await': 2,
+    'jsdoc/newline-after-description': 0,
+    'jsdoc/no-undefined-types': 0
+  },
   overrides: [
     {
-      files: ['src/**/*.spec.js'],
+      files: ['./test/unit/**/*.spec.js'],
       env: {
         mocha: true
       },
       globals: {
+        sinon: true,
+        expect: true,
+        should: true,
         functionsTest: true,
-        sinon: true
+        mockFunctionsConfig: true
       },
       rules: {
+        'jsdoc/require-returns': 0,
+        'jsdoc/require-param-description': 0,
+        'jsdoc/require-param-type': 0,
         'no-console': 0,
         'import/no-dynamic-require': 0,
         'no-unused-expressions': 0,
