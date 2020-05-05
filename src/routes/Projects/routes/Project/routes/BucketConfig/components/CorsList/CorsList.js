@@ -16,19 +16,18 @@ import { useFormContext, useFieldArray, Controller } from 'react-hook-form'
 
 const useStyles = makeStyles(styles)
 
-const methods = ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS']
+const methods = ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS', 'HEAD']
 
 function CorsList({ name }) {
   const classes = useStyles()
   const { control, register } = useFormContext()
   const { fields, remove, append } = useFieldArray({ control, name })
-
   return (
     <div>
       {fields.map((item, index) => {
         return (
           <div key={index} className={classes.item}>
-            <div className="flex-row">
+            <div className={classes.header}>
               <Typography className={classes.subHeader} variant="h5">
                 CORS Config #{index + 1}
               </Typography>
@@ -45,9 +44,9 @@ function CorsList({ name }) {
                 <Controller
                   as={
                     <Select fullWidth multiple>
-                      {methods.map((name) => (
-                        <MenuItem key={name} value={name}>
-                          {name}
+                      {methods.map((methodName) => (
+                        <MenuItem key={methodName} value={methodName}>
+                          {methodName}
                         </MenuItem>
                       ))}
                     </Select>
@@ -64,6 +63,7 @@ function CorsList({ name }) {
                 margin="normal"
                 fullWidth
                 inputRef={register}
+                defaultValue={0}
               />
             </div>
           </div>

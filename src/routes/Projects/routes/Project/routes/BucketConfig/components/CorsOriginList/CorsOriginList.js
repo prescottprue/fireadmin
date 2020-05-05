@@ -17,12 +17,12 @@ function CorsOriginList({ name }) {
   return (
     <div style={{ marginBottom: '1rem' }}>
       {fields.map((item, index) => (
-        <div className="flex-row" key={`Origin-${name}[${index}]`}>
+        <div className={classes.originItem} key={`Origin-${name}[${index}]`}>
           <TextField
             name={`${name}[${index}]`}
             label="Origin"
             margin="normal"
-            inputRef={register}
+            inputRef={register({})}
             fullWidth
           />
           {index !== 0 && (

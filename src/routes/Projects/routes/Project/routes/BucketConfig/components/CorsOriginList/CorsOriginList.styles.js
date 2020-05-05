@@ -1,8 +1,9 @@
 export default (theme) => ({
   add: {
-    ...theme.flexRow,
-    justifyContent: 'flex-end',
-    width: '40%'
+    ...theme.flexRowCenter
+  },
+  originItem: {
+    display: 'flex'
   },
   originHeader: {
     fontSize: '.9rem'

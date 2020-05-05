@@ -21,6 +21,7 @@ import { databaseURLToProjectName } from 'utils'
 import useNotifications from 'modules/notification/useNotifications'
 import { waitForCompleted } from 'utils/firebaseFunctions'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 import CorsList from '../CorsList'
 import styles from './BucketConfigForm.styles'
 
@@ -28,7 +29,9 @@ const useStyles = makeStyles(styles)
 
 function BucketConfigForm({ projectId }) {
   const classes = useStyles()
-  const methods = useForm()
+  const methods = useForm({
+    defaultValues: { body: { cors: [{ origin: ['*'] }] } }
+  })
   const database = useDatabase()
   const firestore = useFirestore()
   const { FieldValue } = useFirestore
@@ -38,13 +41,14 @@ function BucketConfigForm({ projectId }) {
     control,
     watch,
     reset,
+    setValue,
     formState: { isSubmitting, dirty }
   } = methods
   const environmentId = watch('environment')
   const body = watch('body')
   const method = watch('method')
   const environmentsRef = firestore.collection(
-    `projects/${projectId}/environments`
+    `${PROJECTS_COLLECTION}/${projectId}/environments`
   )
   const projectEnvironments = useFirestoreCollectionData(environmentsRef, {
     idField: 'id'
@@ -82,8 +86,9 @@ function BucketConfigForm({ projectId }) {
       )
       // Handle error calling google api (written to response)
       if (results.error) {
+        console.error('Error in results', results.error) // eslint-disable-line no-console
         showError(`Error calling Google api: ${results.error}`)
-        throw new Error(results.error)
+        return null
       }
       if (bucketConfig.method === 'GET') {
         if (!get(results, 'responseData.cors')) {
@@ -91,7 +96,7 @@ function BucketConfigForm({ projectId }) {
         } else {
           // Set config
           const { cors } = results.responseData
-          methods.setValue('body.cors', cors)
+          setValue('body.cors', cors)
           showSuccess('Storage Bucket Config Get Successful')
         }
       } else {
