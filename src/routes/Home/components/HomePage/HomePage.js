@@ -35,7 +35,7 @@ function HomePage() {
                 Build apps fast, without breaking things
               </Typography>
               <Typography variant="subtitle1">
-                Fireadmin allows you to connect multiple Firebase instances into
+                Fireadmin allows you to connect multiple Firebase Instances into
                 one Project for easier tracking as you move code into
                 production.
               </Typography>
@@ -52,12 +52,12 @@ function HomePage() {
             </Grid>
             <Grid item xs={12} sm={6} md={4} className={classes.section}>
               <Typography variant="h6" className={classes.sectionHeader}>
-                One console, were you can see what has been done
+                One console, where you can see what has been done
               </Typography>
               <Typography variant="subtitle1">
-                Firebase database work awesome indvidually, but sharing data
+                Firebase databases work great individually, but sharing data
                 between them can be a pain. Fireadmin makes it easy to move data
-                while allowing you to share who in the development team has made
+                while allowing you to share who in the development team made
                 which changes and when.
               </Typography>
             </Grid>
@@ -91,13 +91,13 @@ function HomePage() {
             <Grid item xs={12} sm={6} md={6}>
               <Typography variant="h6">Project Sharing</Typography>
               <Typography variant="subtitle1">
-                Share projects with everyone in your team. See who does what.
+                Share Projects with everyone in your team. See who does what.
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
               <Typography variant="h6">Operations Logs</Typography>
               <Typography variant="subtitle1">
-                Event tracking for all project based actions.
+                Event tracking for all Project based actions.
               </Typography>
             </Grid>
           </Grid>
