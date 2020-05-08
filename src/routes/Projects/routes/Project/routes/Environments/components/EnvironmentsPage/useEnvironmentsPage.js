@@ -166,7 +166,6 @@ export default function useEnvironmentsPage({ projectId }) {
    * success message has been displayed to user
    */
   async function updateEnvironment(newValues) {
-    console.log('values', newValues)
     try {
       await firestore
         .doc(`${PROJECTS_COLLECTION}/${projectId}/environments/${selectedKey}`)
