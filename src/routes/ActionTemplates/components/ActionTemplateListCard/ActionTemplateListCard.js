@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { size } from 'lodash'
-import { useAuth } from 'reactfire'
+import { useUser } from 'reactfire'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
@@ -16,10 +16,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import { makeStyles } from '@material-ui/core/styles'
-import {
-  paths,
-  ACTION_TEMPLATES_PATH as ACTION_TEMPLATES_ROUTE
-} from 'constants/paths'
+import { ACTION_TEMPLATES_PATH as ACTION_TEMPLATES_ROUTE } from 'constants/paths'
 
 import styles from './ActionTemplateListCard.styles'
 
@@ -29,17 +26,18 @@ function ActionTemplateListCard({
   name,
   id,
   steps,
+  public: isPublic,
+  createdBy,
   description,
   onClick,
   onDeleteClick
 }) {
   const classes = useStyles()
-  const user = useAuth()
-  const history = useHistory()
+  const user = useUser()
 
-  const deleteIsDisabled = user.createdBy !== user && user.uid
+  const actionsDisabled = createdBy !== user?.uid
+
   const [anchorEl, changeMenuState] = useState(null)
-  const goToTemplate = () => history.push(`${ACTION_TEMPLATES_ROUTE}/${id}`)
   function menuClick(e) {
     changeMenuState(e.target)
   }
@@ -48,18 +46,22 @@ function ActionTemplateListCard({
   }
   function deleteClick() {
     changeMenuState(null)
-    onDeleteClick(id)
+    onDeleteClick({ id, name })
   }
   const truncatedDescription =
     description &&
     `${description.substring(0, 85)}${description.length >= 85 ? '...' : ''}`
-
+  const isPublicKey = isPublic ? 'public' : 'private'
   return (
-    <Card className={classes.card}>
+    <Card
+      className={classes.card}
+      data-test={`action-template-card-${isPublicKey}`}>
       <CardHeader
         action={
-          <div>
-            <IconButton onClick={menuClick}>
+          <>
+            <IconButton
+              onClick={menuClick}
+              data-test={`action-template-card-${isPublicKey}-actions`}>
               <MoreVertIcon />
             </IconButton>
             <Menu
@@ -67,25 +69,33 @@ function ActionTemplateListCard({
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={closeMenu}>
-              <MenuItem onClick={goToTemplate}>
+              <MenuItem
+                to={`${ACTION_TEMPLATES_ROUTE}/${id}`}
+                component={Link}
+                disabled={actionsDisabled}
+                data-test="action-template-edit">
                 <ListItemIcon className={classes.icon}>
                   <EditIcon />
                 </ListItemIcon>
                 <ListItemText primary="Edit" />
               </MenuItem>
-              <MenuItem disabled={deleteIsDisabled} onClick={deleteClick}>
+              <MenuItem
+                disabled={actionsDisabled}
+                onClick={deleteClick}
+                data-test="action-template-delete">
                 <ListItemIcon className={classes.icon}>
                   <DeleteIcon />
                 </ListItemIcon>
                 <ListItemText primary="Remove" />
               </MenuItem>
             </Menu>
-          </div>
+          </>
         }
         title={
           <Link
-            to={`${paths.actionTemplates}/${id}`}
-            className={classes.cardTitle}>
+            to={`${ACTION_TEMPLATES_ROUTE}/${id}`}
+            className={classes.cardTitle}
+            data-test={`action-template-title-${id}`}>
             {name}
           </Link>
         }
@@ -101,7 +111,9 @@ function ActionTemplateListCard({
 
 ActionTemplateListCard.propTypes = {
   onClick: PropTypes.func,
+  public: PropTypes.bool,
   onDeleteClick: PropTypes.func,
+  createdBy: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   description: PropTypes.string,
   name: PropTypes.string,

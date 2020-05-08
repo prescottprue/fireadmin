@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useForm, FormContext } from 'react-hook-form'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
@@ -34,7 +34,6 @@ function ActionTemplateForm({
 }) {
   const classes = useStyles()
   const methods = useForm({ defaultValues })
-  const history = useHistory()
   const {
     register,
     handleSubmit,
@@ -50,7 +49,6 @@ function ActionTemplateForm({
     : 'Nothing to publish'
   const cancelTooltip = !dirty || isSubmitting ? 'Nothing to undo' : 'Undo'
   const deleteTooltip = editable ? 'Delete Template' : 'Must be owner'
-  const goBack = () => history.push(ACTION_TEMPLATES_PATH)
   return (
     <FormContext {...methods}>
       <form className={classes.root} onSubmit={handleSubmit(onSubmit)}>
@@ -61,7 +59,7 @@ function ActionTemplateForm({
                 className={classes.submit}
                 component={Link}
                 to={ACTION_TEMPLATES_PATH}
-                onClick={goBack}>
+                data-test="back-button">
                 <BackIcon />
               </IconButton>
             </Tooltip>
@@ -72,7 +70,8 @@ function ActionTemplateForm({
                 disabled={!dirty || isSubmitting}
                 onClick={reset}
                 color="secondary"
-                className={classes.button}>
+                className={classes.button}
+                data-test="undo-button">
                 <UndoIcon />
               </Fab>
             </div>
@@ -112,6 +111,10 @@ function ActionTemplateForm({
                 margin="normal"
                 inputRef={register}
                 fullWidth
+                className={classes.field}
+                inputProps={{
+                  'data-test': 'template-name'
+                }}
               />
             </Grid>
             <Grid item xs={10} md={6}>
@@ -119,6 +122,9 @@ function ActionTemplateForm({
                 name="description"
                 label="Description"
                 className={classes.field}
+                inputProps={{
+                  'data-test': 'template-description'
+                }}
                 fullWidth
                 inputRef={register({
                   maxLength: 500

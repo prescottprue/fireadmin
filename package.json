@@ -9,7 +9,7 @@
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "start:dist": "yarn build && yarn serve",
-    "emulate": "yarn emulate:dbs",
+    "emulators": "yarn emulate:dbs",
     "emulate:dbs": "firebase emulators:start --only firestore,database",
     "emulate:all": "firebase emulators:start --only firestore,database,hosting",
     "dev": "concurrently -c yellow,green npm:emulate:dbs \"sleep 7 && yarn dev\"",

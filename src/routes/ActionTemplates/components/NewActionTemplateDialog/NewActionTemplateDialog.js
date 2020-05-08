@@ -33,6 +33,7 @@ function NewActionTemplateDialog({ onRequestClose, onSubmit, open }) {
             label="Name"
             margin="normal"
             inputRef={register}
+            data-test="new-template-name"
             fullWidth
           />
           <FormControlLabel
@@ -48,11 +49,13 @@ function NewActionTemplateDialog({ onRequestClose, onSubmit, open }) {
             })}
             error={!!errors.description}
             helperText={errors.description && 'Email must be valid'}
+            data-test="new-template-description"
           />
           <TextField
             name="tags"
             label="Tags (seperated by commas)"
             fullWidth
+            data-test="new-template-tags"
             inputRef={register}
           />
         </DialogContent>
@@ -60,15 +63,17 @@ function NewActionTemplateDialog({ onRequestClose, onSubmit, open }) {
           <Button
             disabled={isSubmitting}
             color="secondary"
-            onClick={onRequestClose}>
+            onClick={onRequestClose}
+            data-test="new-template-cancel-button">
             Cancel
           </Button>
           <Button
             disabled={isSubmitting || !dirty}
             color="primary"
             type="submit"
-            className={classes.submit}>
-            Save
+            className={classes.submit}
+            data-test="new-template-submit-button">
+            Create
           </Button>
         </DialogActions>
       </form>

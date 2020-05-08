@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { get } from 'lodash'
 import { useFirestore, useFirestoreDocData, useUser } from 'reactfire'
 import { useHistory, useParams } from 'react-router-dom'
 import * as Sentry from '@sentry/browser'
@@ -26,9 +25,7 @@ function useActionTemplatePage({ templateId }) {
 
   /**
    * Handler for updating an action template
-   * @param {Object} props - Component props
-   * @param {Object} props.firestore - Firestore instance from firestoreConnect
-   * @param {String} props.templateId - Id of template to delete
+   * @param {String} updateVals - Values from submitting form
    */
   async function updateTemplate(updateVals) {
     const updatePath = `${ACTION_TEMPLATES_PATH}/${templateId}`
@@ -55,11 +52,6 @@ function useActionTemplatePage({ templateId }) {
 
   /**
    * Handler for deleting an action template
-   * @param {Object} props - Component props
-   * @param {Object} props.history - History object from react-router-dom
-   * @param {Function} props.history.push - Function which navigates to a route
-   * @param {Object} props.firestore - Firestore instance from firestoreConnect
-   * @param {String} props.templateId - Id of template to delete
    */
   async function deleteTemplate() {
     try {
@@ -94,6 +86,10 @@ function ActionTemplatePage() {
   const toggleDeleteDialog = () => changeDeleteDialogOpen(!deleteDialogOpen)
   const startTemplateDelete = () => changeDeleteDialogOpen(true)
 
+  if (!template?.createdBy) {
+    return <TemplateNotFound />
+  }
+
   return (
     <div className={classes.root}>
       <Typography className={classes.header}>Action Template</Typography>
@@ -102,8 +98,8 @@ function ActionTemplatePage() {
         templateId={templateId}
         startTemplateDelete={startTemplateDelete}
         editable={
-          template.createdBy === user.uid ||
-          get(template, `collaborators.${user.uid}`, false)
+          template?.createdBy === user?.uid ||
+          (!!template?.collaborators && !!template.collaborators[user.uid])
         }
         defaultValues={template}
       />
