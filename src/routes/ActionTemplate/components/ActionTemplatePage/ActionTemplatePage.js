@@ -86,10 +86,6 @@ function ActionTemplatePage() {
   const toggleDeleteDialog = () => changeDeleteDialogOpen(!deleteDialogOpen)
   const startTemplateDelete = () => changeDeleteDialogOpen(true)
 
-  if (!template?.createdBy) {
-    return <TemplateNotFound />
-  }
-
   return (
     <div className={classes.root}>
       <Typography className={classes.header}>Action Template</Typography>

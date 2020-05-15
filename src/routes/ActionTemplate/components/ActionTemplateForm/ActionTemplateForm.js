@@ -7,20 +7,20 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Fab from '@material-ui/core/Fab'
 import Tooltip from '@material-ui/core/Tooltip'
-import DeleteIcon from '@material-ui/icons/Delete'
-import PublishIcon from '@material-ui/icons/Publish'
-import BackIcon from '@material-ui/icons/ArrowBack'
-import UndoIcon from '@material-ui/icons/Undo'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import IconButton from '@material-ui/core/IconButton'
 import TextField from '@material-ui/core/TextField'
 import Switch from '@material-ui/core/Switch'
+import DeleteIcon from '@material-ui/icons/Delete'
+import PublishIcon from '@material-ui/icons/Publish'
+import BackIcon from '@material-ui/icons/ArrowBack'
+import UndoIcon from '@material-ui/icons/Undo'
 import { makeStyles } from '@material-ui/core/styles'
 import { ACTION_TEMPLATES_PATH } from 'constants/paths'
-// import ActionTemplateStep from '../ActionTemplateStep'
 import ActionTemplateInputs from '../ActionTemplateInputs'
 import ActionTemplateEnvs from '../ActionTemplateEnvs'
 import ActionTemplateBackups from '../ActionTemplateBackups'
+import ActionTemplateSteps from '../ActionTemplateSteps'
 import styles from './ActionTemplateForm.styles'
 
 const useStyles = makeStyles(styles)
@@ -130,13 +130,19 @@ function ActionTemplateForm({
                   maxLength: 500
                 })}
                 error={!!errors.description}
-                helperText={errors.description && 'Email must be valid'}
+                helperText={errors.description && 'Invalid description'}
               />
             </Grid>
             <Grid item xs={10} md={6}>
               <div className={classes.publicToggle}>
                 <FormControlLabel
-                  control={<Switch name="public" inputRef={register} />}
+                  control={
+                    <Switch
+                      name="public"
+                      inputRef={register}
+                      defaultChecked={defaultValues?.public || false}
+                    />
+                  }
                   label="Public"
                 />
               </div>
@@ -155,14 +161,10 @@ function ActionTemplateForm({
           <Typography className={classes.header}>Backups</Typography>
           <ActionTemplateBackups />
         </div>
-        {/* <div className={classes.actions}>
+        <div className={classes.actions}>
           <Typography className={classes.header}>Steps</Typography>
-          <FieldArray
-            name="steps"
-            mainEditorPath={`${ACTION_TEMPLATES_PATH}/${templateId}`}
-            component={ActionTemplateStep}
-          />
-        </div> */}
+          <ActionTemplateSteps />
+        </div>
       </form>
     </FormContext>
   )

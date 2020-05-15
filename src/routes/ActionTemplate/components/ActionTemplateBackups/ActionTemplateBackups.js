@@ -1,5 +1,5 @@
 import React from 'react'
-import { get, capitalize } from 'lodash'
+import { capitalize } from 'lodash'
 import { useFormContext, useFieldArray, Controller } from 'react-hook-form'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -32,11 +32,8 @@ const resourcesOptions = [
 function ActionTemplateBackups() {
   const classes = useStyles()
   const { control, register, watch } = useFormContext()
-  const { fields, remove, append } = useFieldArray({
-    control,
-    name: 'backups' // unique name for your Field Array
-  })
-  const backups = watch('backups')
+  const name = 'backups'
+  const { fields, remove, append } = useFieldArray({ control, name })
 
   function addBackup() {
     append({ dest: { resource: 'firestore' } })
@@ -55,25 +52,26 @@ function ActionTemplateBackups() {
         function removeBackup() {
           return remove(index)
         }
+        const backup = watch(`${name}[${index}]`)
         return (
           <ExpansionPanel key={index}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
-                {get(backups, `${index}.name`) || `Backup ${index + 1}`}
+                {backup?.name || `Backup ${index + 1}`}
               </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Grid container spacing={8} style={{ flexGrow: 1 }}>
                 <Grid item xs={10} md={6} lg={6}>
                   <TextField
-                    name={`backups[${index}].name`}
+                    name={`${name}[${index}].name`}
                     label="Name"
                     className={classes.field}
                     fullWidth
                     inputRef={register}
                   />
                   <TextField
-                    name={`backups[${index}].description`}
+                    name={`${name}[${index}].description`}
                     label="Description"
                     className={classes.field}
                     fullWidth
@@ -113,13 +111,13 @@ function ActionTemplateBackups() {
                           ))}
                         </Select>
                       }
-                      name={`backups[${index}].inputs.0.resource`}
+                      name={`${name}[${index}].inputs[0].resource`}
                       control={control}
                       defaultValue=""
                     />
                   </FormControl>
                   <TextField
-                    name={`backups[${index}].inputs.0.path`}
+                    name={`${name}[${index}].inputs[0].path`}
                     label="Path"
                     className={classes.field}
                     fullWidth

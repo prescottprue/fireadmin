@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { capitalize, get } from 'lodash'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, Controller } from 'react-hook-form'
 import FormLabel from '@material-ui/core/FormLabel'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -28,9 +28,9 @@ const resourcesOptions = [
 
 function ActionStepLocation({ name, indexName, title }) {
   const classes = useStyles()
-  const { register, watch } = useFormContext()
+  const { register, watch, control } = useFormContext()
   const inputs = watch('inputs')
-  const steps = watch('steps')
+  const step = watch(name)
 
   return (
     <Grid item xs={12} md={8} lg={6}>
@@ -39,24 +39,25 @@ function ActionStepLocation({ name, indexName, title }) {
         <Grid item xs={12} md={8}>
           <FormControl className={classes.field}>
             <InputLabel htmlFor="resource">Select A Resource</InputLabel>
-            <Select
+            <Controller
+              as={
+                <Select>
+                  {resourcesOptions.map((option, idx) => (
+                    <MenuItem
+                      key={`Option-${option.value}-${idx}`}
+                      value={option.value}
+                      disabled={option.disabled}>
+                      <ListItemText
+                        primary={option.label || capitalize(option.value)}
+                      />
+                    </MenuItem>
+                  ))}
+                </Select>
+              }
               name={`${name}.resource`}
-              fullWidth
-              inputProps={{
-                name: 'resource',
-                id: 'resource'
-              }}>
-              {resourcesOptions.map((option, idx) => (
-                <MenuItem
-                  key={`Option-${option.value}-${idx}`}
-                  value={option.value}
-                  disabled={option.disabled}>
-                  <ListItemText
-                    primary={option.label || capitalize(option.value)}
-                  />
-                </MenuItem>
-              ))}
-            </Select>
+              control={control}
+              defaultValue=""
+            />
           </FormControl>
         </Grid>
         <Grid item xs={12} md={8}>
@@ -65,46 +66,55 @@ function ActionStepLocation({ name, indexName, title }) {
             required
             style={{ marginTop: '2rem' }}>
             <FormLabel component="legend">Path Type</FormLabel>
-            <RadioGroup
-              aria-label="path type"
+            <Controller
+              as={
+                <RadioGroup aria-label="path type">
+                  <FormControlLabel
+                    value="constant"
+                    control={<Radio />}
+                    label="Constant (part of template)"
+                  />
+                  <FormControlLabel
+                    value="input"
+                    control={<Radio />}
+                    label="User Input"
+                  />
+                </RadioGroup>
+              }
               name={`${name}.pathType`}
-              inputRef={register}>
-              <FormControlLabel
-                value="constant"
-                control={<Radio />}
-                label="Constant (part of template)"
-              />
-              <FormControlLabel
-                value="input"
-                control={<Radio />}
-                label="User Input"
-              />
-            </RadioGroup>
+              control={control}
+              defaultValue=""
+            />
           </FormControl>
         </Grid>
-        {get(steps, `${indexName}.pathType`) === 'input' ? (
+        {step?.pathType === 'input' && inputs?.length ? (
           <Grid item xs={12} md={8}>
             <FormControl className={classes.field}>
               <InputLabel htmlFor="resource">Select An Input</InputLabel>
-              <Select
+              <Controller
+                as={
+                  <Select>
+                    {inputs.map((option, idx) => (
+                      <MenuItem
+                        key={`Option-${option.value}-${idx}`}
+                        value={idx}
+                        disabled={option.disabled}>
+                        <ListItemText
+                          primary={get(option, 'name', `Input ${idx}`)}
+                          secondary={get(
+                            option,
+                            'variableName',
+                            `Input ${idx}`
+                          )}
+                        />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                }
                 name={`${name}.path`}
-                fullWidth
-                inputProps={{
-                  name: 'pathType',
-                  id: 'pathType'
-                }}>
-                {inputs.map((option, idx) => (
-                  <MenuItem
-                    key={`Option-${option.value}-${idx}`}
-                    value={idx}
-                    disabled={option.disabled}>
-                    <ListItemText
-                      primary={get(option, 'name', `Input ${idx}`)}
-                      secondary={get(option, 'variableName', `Input ${idx}`)}
-                    />
-                  </MenuItem>
-                ))}
-              </Select>
+                control={control}
+                defaultValue=""
+              />
             </FormControl>
           </Grid>
         ) : (
@@ -113,6 +123,7 @@ function ActionStepLocation({ name, indexName, title }) {
               name={`${name}.path`}
               label="Path"
               className={classes.field}
+              inputRef={register}
             />
           </Grid>
         )}

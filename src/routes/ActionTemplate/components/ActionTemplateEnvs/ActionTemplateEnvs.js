@@ -1,6 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { get } from 'lodash'
 import { useFormContext, useFieldArray } from 'react-hook-form'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -21,13 +19,11 @@ import styles from './ActionTemplateEnvs.styles'
 
 const useStyles = makeStyles(styles)
 
-function ActionTemplateEnvs({ environments }) {
+function ActionTemplateEnvs() {
   const classes = useStyles()
-  const { control, register } = useFormContext()
-  const { fields, remove, append } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormContext)
-    name: 'environments' // unique name for your Field Array
-  })
+  const { control, register, watch } = useFormContext()
+  const name = 'environments'
+  const { fields, remove, append } = useFieldArray({ control, name })
   function addNewEnvironment() {
     return append({ required: false })
   }
@@ -45,16 +41,16 @@ function ActionTemplateEnvs({ environments }) {
         function removeEnvironment() {
           return remove(index)
         }
+        const environment = watch(`${name}[${index}]`)
         return (
           <ExpansionPanel key={field.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
-                {get(environments, `${index}.name`) ||
-                  `Environment ${index + 1}`}
+                {environment?.name || `Environment ${index + 1}`}
               </Typography>
-              {get(environments, `${index}.description`, null) && (
+              {environment?.description && (
                 <Typography className={classes.type}>
-                  {get(environments, `${index}.description`).substring(0, 100)}
+                  {environment?.description.substring(0, 100)}
                 </Typography>
               )}
             </ExpansionPanelSummary>
@@ -62,14 +58,14 @@ function ActionTemplateEnvs({ environments }) {
               <Grid container spacing={8} style={{ flexGrow: 1 }}>
                 <Grid item xs={10} md={4} lg={4}>
                   <TextField
-                    name={`environments[${index}].name`}
+                    name={`${name}[${index}].name`}
                     label="Name"
                     className={classes.field}
                     fullWidth
                     inputRef={register}
                   />
                   <TextField
-                    name={`environments[${index}].description`}
+                    name={`${name}[${index}].description`}
                     label="Description"
                     className={classes.field}
                     fullWidth
@@ -79,8 +75,9 @@ function ActionTemplateEnvs({ environments }) {
                     <FormControlLabel
                       control={
                         <Switch
-                          name={`environments[${index}].required`}
+                          name={`${name}[${index}].required`}
                           inputRef={register}
+                          defaultChecked={environment.required}
                         />
                       }
                       label="Required"
@@ -106,10 +103,6 @@ function ActionTemplateEnvs({ environments }) {
       })}
     </div>
   )
-}
-
-ActionTemplateEnvs.propTypes = {
-  environments: PropTypes.array
 }
 
 export default ActionTemplateEnvs

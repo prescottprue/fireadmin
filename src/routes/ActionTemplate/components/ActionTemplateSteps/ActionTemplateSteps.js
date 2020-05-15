@@ -1,6 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { capitalize, get } from 'lodash'
+import { capitalize } from 'lodash'
 import { useFormContext, useFieldArray, Controller } from 'react-hook-form'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormControl from '@material-ui/core/FormControl'
@@ -17,13 +16,12 @@ import Tooltip from '@material-ui/core/Tooltip'
 import Grid from '@material-ui/core/Grid'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Select from '@material-ui/core/Select'
 import Checkbox from '@material-ui/core/Checkbox'
-import ActionEditor from '../ActionEditor'
+import { makeStyles } from '@material-ui/core/styles'
 import ActionStepLocation from '../ActionStepLocation'
-import styles from './ActionTemplateStep.styles'
+import styles from './ActionTemplateSteps.styles'
 
 const useStyles = makeStyles(styles)
 
@@ -34,35 +32,38 @@ const typeOptions = [
   { value: 'custom', disabled: true }
 ]
 
-function ActionTemplateStep({ mainEditorPath }) {
+function ActionTemplateSteps() {
   const classes = useStyles()
   const { control, register, watch } = useFormContext()
-  const name = 'step'
-  const { fields, append, remove } = useFieldArray({ control, name })
-  const steps = watch(name)
+  const name = 'steps'
+  const { fields, remove, append } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name // unique name for your Field Array
+  })
 
-  function addStep() {
-    append({ type: 'copy' })
+  function addNewStep() {
+    append({ required: false })
   }
 
   return (
     <div>
       <Button
-        onClick={addStep}
+        onClick={addNewStep}
         color="primary"
-        variant="contained"
-        className={classes.addAction}>
+        className={classes.addAction}
+        variant="contained">
         Add Step
       </Button>
       {fields.map((field, index) => {
         function removeStep() {
           return remove(index)
         }
+        const step = watch(`${name}[${index}]`)
         return (
           <ExpansionPanel key={index}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
-                {get(steps, `${index}.name`) || `Backup ${index + 1}`}
+                {step?.name || `Step ${index + 1}`}
               </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
@@ -79,6 +80,7 @@ function ActionTemplateStep({ mainEditorPath }) {
                     className={classes.field}
                     fullWidth
                     inputRef={register}
+                    defaultValue=""
                   />
                   <br />
                   <FormControl
@@ -129,32 +131,29 @@ function ActionTemplateStep({ mainEditorPath }) {
                   </div>
                 </Grid>
                 <Grid item xs={12} lg={12}>
-                  {get(steps, `${index}.type`) === 'copy' ? (
+                  {step?.type === 'copy' ? (
                     <FormControlLabel
                       control={
                         <Checkbox
-                          name={`steps.${index}.disableBatching`}
-                          disabled={
-                            get(steps, `${index}.src.resource`) !== 'rtdb'
-                          }
+                          name={`${name}[${index}].disableBatching`}
+                          disabled={step?.src?.resource !== 'rtdb'}
                           inputRef={register}
+                          defaultChecked={step?.disableBatching || false}
                         />
                       }
                       label="Disable Batching (only RTDB)"
                       className={classes.subcollectionOption}
                     />
                   ) : null}
-                  {get(steps, `${index}.type`) === 'copy' ? (
+                  {step?.type === 'copy' ? (
                     <>
                       <FormControlLabel
                         control={
                           <Checkbox
                             name="subcollections"
-                            disabled={
-                              get(steps, `${index}.src.resource`) !==
-                              'firestore'
-                            }
+                            disabled={step?.src?.resource !== 'firestore'}
                             inputRef={register}
+                            defaultChecked={step?.subcollections || false}
                           />
                         }
                         label="Include subcollections (only Firestore)"
@@ -169,28 +168,24 @@ function ActionTemplateStep({ mainEditorPath }) {
                     </>
                   ) : null}
                 </Grid>
-                {get(steps, `${index}.type`) !== 'custom' ? (
-                  <Grid item xs={12} lg={12}>
-                    <Grid
-                      container
-                      spacing={8}
-                      style={{ flexGrow: 1 }}
-                      justify="center">
-                      <ActionStepLocation
-                        title="Source"
-                        name={`${name}[${index}].src`}
-                        indexName={`${index}.src`}
-                      />
-                      <ActionStepLocation
-                        title="Destination"
-                        name={`${name}[${index}].dest`}
-                        indexName={`${index}.dest`}
-                      />
-                    </Grid>
+                <Grid item xs={12} lg={12}>
+                  <Grid
+                    container
+                    spacing={8}
+                    style={{ flexGrow: 1 }}
+                    justify="center">
+                    <ActionStepLocation
+                      title="Source"
+                      name={`${name}[${index}].src`}
+                      indexName={`${index}.src`}
+                    />
+                    <ActionStepLocation
+                      title="Destination"
+                      name={`${name}[${index}].dest`}
+                      indexName={`${index}.dest`}
+                    />
                   </Grid>
-                ) : (
-                  <ActionEditor rtdbPath={`${mainEditorPath}/steps/${index}`} />
-                )}
+                </Grid>
               </Grid>
             </ExpansionPanelDetails>
           </ExpansionPanel>
@@ -200,8 +195,4 @@ function ActionTemplateStep({ mainEditorPath }) {
   )
 }
 
-ActionTemplateStep.propTypes = {
-  mainEditorPath: PropTypes.string.isRequired
-}
-
-export default ActionTemplateStep
+export default ActionTemplateSteps
