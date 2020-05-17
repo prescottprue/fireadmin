@@ -42,7 +42,7 @@
     "@sentry/browser": "^5.15.5",
     "classnames": "^2.2.6",
     "date-fns": "^1.29.0",
-    "firebase": "^7.14.2",
+    "firebase": "^7.14.4",
     "history": "^4.9.0",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",

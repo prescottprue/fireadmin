@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app' // imported for auth provider
 import { useAuth } from 'reactfire'
 import GoogleButton from 'react-google-button'
@@ -17,7 +16,6 @@ const useStyles = makeStyles(styles)
 function LoginPage() {
   const classes = useStyles()
   const auth = useAuth()
-  const history = useHistory()
   const { showError } = useNotifications()
   const [isLoading, changeLoadingState] = useState(false)
 
@@ -31,7 +29,9 @@ function LoginPage() {
 
     return auth[authMethod](provider)
       .then(() => {
-        history.push(LIST_PATH)
+        // NOTE: history.push sometimes does not trigger
+        // history.push(LIST_PATH)
+        window.location = LIST_PATH
       })
       .catch((err) => showError(err.message))
   }
@@ -48,7 +48,7 @@ function LoginPage() {
           <Typography className={classes.signupLabel}>
             Looking to Signup?
           </Typography>
-          <Typography variant="p">
+          <Typography variant="subtitle1">
             Your account will be automatically created on first login
           </Typography>
         </div>

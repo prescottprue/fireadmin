@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
+import { Route, Switch, Redirect, useRouteMatch } from 'react-router-dom'
 import { useFirestore, useUser } from 'reactfire'
 import { makeStyles } from '@material-ui/core/styles'
-import { Route, Switch, Redirect, useRouteMatch } from 'react-router-dom'
 import ProjectRoute from 'routes/Projects/routes/Project'
 import { renderChildren } from 'utils/router'
 import useNotifications from 'modules/notification/useNotifications'
