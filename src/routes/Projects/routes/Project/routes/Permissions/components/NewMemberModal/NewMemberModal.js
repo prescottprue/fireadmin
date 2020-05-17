@@ -7,18 +7,16 @@ import DialogContent from '@material-ui/core/DialogContent'
 import Button from '@material-ui/core/Button'
 import UsersSearch from 'components/UsersSearch'
 import UsersList from 'components/UsersList'
+import useNewMemberModal from './useNewMemberModal'
 
-function NewMemberModal({
-  classes,
-  callSubmit,
-  projectId,
-  onRequestClose,
-  closeAndReset,
-  selectCollaborator,
-  collaborators,
-  selectedCollaborators,
-  open
-}) {
+function NewMemberModal({ projectId, onRequestClose, open }) {
+  const {
+    selectCollaborator,
+    selectedCollaborators,
+    project,
+    closeAndReset,
+    updateCollaborators
+  } = useNewMemberModal({ projectId, onRequestClose, open })
   return (
     <Dialog onClose={onRequestClose} open={open}>
       <DialogTitle id="dialog-title">Add Member</DialogTitle>
@@ -26,7 +24,9 @@ function NewMemberModal({
         <div>
           <UsersSearch
             onSuggestionClick={selectCollaborator}
-            ignoreSuggestions={collaborators}
+            ignoreSuggestions={
+              project?.collaborators && Object.keys(project.collaborators)
+            }
             resultsTitle="New Collaborators"
           />
         </div>
@@ -47,7 +47,7 @@ function NewMemberModal({
         <Button
           color="primary"
           disabled={!selectedCollaborators}
-          onClick={callSubmit}>
+          onClick={updateCollaborators}>
           Add Member
         </Button>
       </DialogActions>
@@ -56,15 +56,9 @@ function NewMemberModal({
 }
 
 NewMemberModal.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
-  closeAndReset: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  selectCollaborator: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  collaborators: PropTypes.array.isRequired, // from enhancer (connect)
-  selectedCollaborators: PropTypes.array.isRequired, // from enhancer (withStateHandlers)
-  callSubmit: PropTypes.func.isRequired, // from enhancer (withHandlers)
   onRequestClose: PropTypes.func.isRequired,
   projectId: PropTypes.string,
-  open: PropTypes.bool.isRequired // captured in other
+  open: PropTypes.bool.isRequired
 }
 
 export default NewMemberModal

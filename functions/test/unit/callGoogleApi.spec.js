@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin'
 import fauxJax from 'faux-jax'
-import { createCipher } from 'crypto'
+import { createCipher } from 'crypto' // eslint-disable-line node/no-deprecated-api
 import { to } from 'utils/async'
 
 describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
@@ -250,10 +250,10 @@ const TEST_PASSWORD = 'asdf'
 /**
  * Encrypt a string using a password. encryption.password from
  * functions config is used by default if not passed.
- * @param {String} text - Text string to encrypt
- * @param {Object} [options={}]
- * @param {Object} [options.algorithm='aes-256-ctr']
- * @param {Object} options.password - Password to use while
+ * @param {string} text - Text string to encrypt
+ * @param {object} [options={}]
+ * @param {object} [options.algorithm='aes-256-ctr']
+ * @param {object} options.password - Password to use while
  * encrypting. encryption.password from functions config is used
  * by default if not passed.
  */

@@ -12,8 +12,8 @@ export default {
     primary1Color: orange[800],
     primary2Color: grey[400],
     primary3Color: orange[100],
-    accent1Color: pink['A200'],
-    accent2Color: teal['A100']
+    accent1Color: pink.A200,
+    accent2Color: teal.A100
   },
   field: {
     width: '100%',

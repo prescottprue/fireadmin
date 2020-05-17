@@ -6,7 +6,15 @@ import StepLabel from '@material-ui/core/StepLabel'
 import StepContent from '@material-ui/core/StepContent'
 import Typography from '@material-ui/core/Typography'
 
-function StepsViewer({ steps, convertEnv, activeStep, disabled }) {
+function StepsViewer({ steps, activeStep, disabled, watch }) {
+  function convertEnv(step, name) {
+    const { pathType, path: stepPath } = (step && step[name]) || {}
+    if (pathType === 'input') {
+      const inputValues = watch('inputValues')
+      return inputValues && inputValues[stepPath]
+    }
+    return stepPath
+  }
   return (
     <Stepper activeStep={activeStep} orientation="vertical" disabled={disabled}>
       {steps.map((step, index) => {
@@ -28,8 +36,8 @@ function StepsViewer({ steps, convertEnv, activeStep, disabled }) {
 
 StepsViewer.propTypes = {
   steps: PropTypes.array.isRequired,
+  watch: PropTypes.func.isRequired,
   activeStep: PropTypes.number.isRequired,
-  convertEnv: PropTypes.func.isRequired,
   disabled: PropTypes.bool
 }
 

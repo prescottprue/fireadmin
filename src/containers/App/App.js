@@ -1,25 +1,44 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { FirebaseAppProvider, SuspenseWithPerf } from 'reactfire'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-import { Provider } from 'react-redux'
+import NotificationsProvider from 'modules/notification/NotificationsProvider'
+import SetupMessaging from 'components/SetupMessaging'
 import ThemeSettings from 'theme'
+import * as config from 'config'
+import { ErrorBoundary } from 'utils/components'
 
 const theme = createMuiTheme(ThemeSettings)
+const firebaseConfig = { ...config.firebase }
 
-function App({ routes, store }) {
+// Enable Real Time Database emulator if environment variable is set
+if (process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST) {
+  firebaseConfig.databaseURL = `http://${process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST}?ns=${firebaseConfig.projectId}`
+  console.debug(`RTDB emulator enabled: ${firebaseConfig.databaseURL}`) // eslint-disable-line no-console
+}
+
+function App({ routes }) {
   return (
     <MuiThemeProvider theme={theme}>
-      <Provider store={store}>
-        <Router>{routes}</Router>
-      </Provider>
+      <FirebaseAppProvider firebaseConfig={firebaseConfig} initPerformance>
+        <NotificationsProvider>
+          <>
+            <ErrorBoundary>
+              <Router>{routes}</Router>
+            </ErrorBoundary>
+            <SuspenseWithPerf traceId="load-messaging">
+              <SetupMessaging />
+            </SuspenseWithPerf>
+          </>
+        </NotificationsProvider>
+      </FirebaseAppProvider>
     </MuiThemeProvider>
   )
 }
 
 App.propTypes = {
-  routes: PropTypes.object.isRequired,
-  store: PropTypes.object.isRequired
+  routes: PropTypes.object.isRequired
 }
 
 export default App

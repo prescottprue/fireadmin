@@ -13,6 +13,12 @@ global.sinon = sinon
 global.expect = chai.expect
 global.assert = chai.assert
 global.functionsTest = functionsTest
+
+/**
+ * Create default mock functions config
+ * @param {object} extraConfig - Extra config
+ * @returns {Any} Returns results of mock config
+ */
 function mockFunctionsConfig(extraConfig = {}) {
   return functionsTest.mockConfig({
     firebase: {

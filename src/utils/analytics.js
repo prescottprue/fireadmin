@@ -33,7 +33,7 @@ export function setAnalyticsUser(auth) {
 }
 
 /**
- * Initalize Segment Library when in production environment
+ * Initialize Segment Library when in production environment
  */
 export function initSegment() {
   // Only initialize if in production and segmentId exists
@@ -76,19 +76,15 @@ export function triggerAnalyticsEvent(eventNameKey, eventData) {
  * @param  {Object} pushObject - data to push with event
  * @return {Promise} Resolves with results of firestore.add call
  */
-export function createProjectEvent({ firestore, projectId }, pushObject) {
-  return firestore.add(
-    {
-      collection: 'projects',
-      doc: projectId,
-      subcollections: [{ collection: 'events' }]
-    },
-    {
-      ...pushObject,
-      createdByType: 'user',
-      createdAt: firestore.FieldValue.serverTimestamp()
-    }
-  )
+export function createProjectEvent(
+  { firestore, projectId, FieldValue },
+  pushObject
+) {
+  return firestore.collection(`projects/${projectId}/events`).add({
+    ...pushObject,
+    createdByType: 'user',
+    createdAt: FieldValue.serverTimestamp()
+  })
 }
 
 export default { triggerAnalyticsEvent }

@@ -10,8 +10,8 @@ import {
 /**
  * Create a reference to Real Time Database at a provided path. Uses credentials
  * of Cloud Functions.
- * @param  {String} refPath - path for database reference
- * @return {firebase.Database.Reference} Database reference for provided path
+ * @param {string} refPath - path for database reference
+ * @returns {firebase.Database.Reference} Database reference for provided path
  */
 export function rtdbRef(refPath) {
   return admin.database().ref(refPath)
@@ -19,14 +19,13 @@ export function rtdbRef(refPath) {
 
 /**
  * Watch a snapshot location for completed: true. Also handles errors.
- * @param  {Object} snap - Snapshot which to watch for completed flag
- * @return {Promise} Resolves with request snapshot after completed === true
+ * @param {object} ref - Snapshot which to watch for completed flag
+ * @returns {Promise} Resolves with request snapshot after completed === true
  */
 export function waitForValue(ref) {
   return new Promise((resolve, reject) => {
     const EVENT_TYPE = 'value'
-    let requestListener
-    requestListener = ref.on(
+    const requestListener = ref.on(
       EVENT_TYPE,
       (responseSnap) => {
         if (responseSnap.val()) {
@@ -51,12 +50,12 @@ export function waitForValue(ref) {
 
 /**
  * Request google APIs with auth attached
- * @param  {Object}  opts - Google APIs method to call
- * @param  {String}  opts.projectId - Id of fireadmin project
- * @param  {String}  opts.environmentId - Id of fireadmin environment
- * @param  {String}  opts.databaseName - Name of database on which to run (defaults to project base DB)
- * @param  {String}  rtdbPath - Path of RTDB data to get
- * @return {Promise} Resolves with results of RTDB shallow get
+ * @param {object} opts - Google APIs method to call
+ * @param {string} opts.projectId - Id of fireadmin project
+ * @param {string} opts.environmentId - Id of fireadmin environment
+ * @param {string} opts.databaseName - Name of database on which to run (defaults to project base DB)
+ * @param {string} rtdbPath - Path of RTDB data to get
+ * @returns {Promise} Resolves with results of RTDB shallow get
  */
 export async function shallowRtdbGet(opts, rtdbPath = '') {
   const { projectId, environmentId, databaseName } = opts

@@ -17,7 +17,8 @@ import {
 
 /**
  * Get Google APIs auth client. Auth comes from serviceAccount.
- * @return {Promise} Resolves with JWT Auth Client (for attaching to request)
+ * @param {object} serviceAccount - Service account object
+ * @returns {Promise} Resolves with JWT Auth Client (for attaching to request)
  */
 export async function authClientFromServiceAccount(serviceAccount) {
   if (!hasAll(serviceAccount, SERVICE_ACCOUNT_PARAMS)) {
@@ -46,11 +47,11 @@ export async function authClientFromServiceAccount(serviceAccount) {
 }
 
 /**
- * Get Firebase app from request evvent containing path information for
+ * Get Firebase app from request event containing path information for
  * service account
- * @param  {Object} opts - Options object
- * @param  {Object} eventData - Data from event request
- * @return {Promise} Resolves with Firebase app
+ * @param {object} opts - Options object
+ * @param {object} eventData - Data from event request
+ * @returns {Promise} Resolves with Firebase app
  */
 export async function getAppFromServiceAccount(opts, eventData) {
   const { databaseURL, storageBucket, environmentKey, id } = opts
@@ -100,10 +101,11 @@ export async function getAppFromServiceAccount(opts, eventData) {
 
 /**
  * Load service account data From Firestore
- * @param  {String} docPath - Path to Firestore document containing service
- * account
- * @param  {String} name - Name under which to store local service account file
- * @return {Promise}
+ * @param {string} docPath - Path to Firestore document containing service account
+ * @param {string} name - Name under which to store local service account file
+ * @param {object} options - Options object
+ * @param {boolean} options.returnData - Whether or not to return service account data
+ * @returns {Promise} Resolves with service account or path to service account
  */
 export async function serviceAccountFromFirestorePath(
   docPath,
@@ -178,9 +180,9 @@ export async function serviceAccountFromFirestorePath(
 
 /**
  * Load service account file from Cloud Storage, returning local storage path.
- * @param  {String} docPath - Path to Service Account File on Cloud Storage
- * @param  {String} name - Name under which to store local service account file
- * @return {Promise} Resolves with local path of file
+ * @param {string} docPath - Path to Service Account File on Cloud Storage
+ * @param {string} name - Name under which to store local service account file
+ * @returns {Promise} Resolves with local path of file
  */
 export async function serviceAccountFromStoragePath(docPath, name) {
   console.log('Getting service accounts stored in Cloud Storage')
@@ -199,11 +201,10 @@ export async function serviceAccountFromStoragePath(docPath, name) {
 }
 
 /**
- * Load service account data from Cloud storage file (returns file contents as
- * object)
- * @param  {String} docPath - Path to Service Account File on Cloud Storage
- * @param  {String} name - Name under which to store local service account file
- * @return {Promise} Resolves with JS object containg contents of service
+ * Load service account data from Cloud storage file (returns file contents as object)
+ * @param {string} docPath - Path to Service Account File on Cloud Storage
+ * @param {string} name - Name under which to store local service account file
+ * @returns {Promise} Resolves with JS object containing contents of service
  * account file
  */
 export async function serviceAccountFileFromStorage(docPath, name) {
@@ -211,6 +212,9 @@ export async function serviceAccountFileFromStorage(docPath, name) {
   return fsExtra.readJson(accountLocalPath)
 }
 
+/**
+ * @param {string} appName - Name of app
+ */
 export async function cleanupServiceAccounts(appName) {
   const tempLocalPath = path.join(os.tmpdir(), 'serviceAccounts')
   if (fs.existsSync(tempLocalPath)) {

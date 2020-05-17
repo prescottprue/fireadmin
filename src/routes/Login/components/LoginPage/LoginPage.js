@@ -1,39 +1,43 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import firebase from 'firebase/app' // imported for auth provider
+import { useAuth } from 'reactfire'
 import GoogleButton from 'react-google-button'
 import { makeStyles } from '@material-ui/core/styles'
+import Container from '@material-ui/core/Container'
 import Paper from '@material-ui/core/Paper'
-import Button from '@material-ui/core/Button'
-import { SIGNUP_PATH } from 'constants/paths'
-import LoadingSpinner from 'components/LoadingSpinner'
-import { triggerAnalyticsEvent } from 'utils/analytics'
+import useNotifications from 'modules/notification/useNotifications'
 import { LIST_PATH } from 'constants/paths'
-
+import LoadingSpinner from 'components/LoadingSpinner'
 import styles from './LoginPage.styles'
+import { Typography } from '@material-ui/core'
 
 const useStyles = makeStyles(styles)
 
-function LoginPage({ firebase, showError, history }) {
+function LoginPage() {
   const classes = useStyles()
+  const auth = useAuth()
+  const { showError } = useNotifications()
   const [isLoading, changeLoadingState] = useState(false)
 
   function googleLogin() {
-    triggerAnalyticsEvent('login', { category: 'Auth', action: 'Login' })
+    const provider = new firebase.auth.GoogleAuthProvider()
     changeLoadingState(true)
-    return firebase
-      .login({
-        provider: 'google',
-        type: window.isMobile && window.isMobile.any ? 'redirect' : 'popup'
-      })
+    const authMethod =
+      window.isMobile && window.isMobile.any
+        ? 'signInWithRedirect'
+        : 'signInWithPopup'
+
+    return auth[authMethod](provider)
       .then(() => {
-        history.push(LIST_PATH)
+        // NOTE: history.push sometimes does not trigger
+        // history.push(LIST_PATH)
+        window.location = LIST_PATH
       })
       .catch((err) => showError(err.message))
   }
 
   return (
-    <div className={classes.root}>
+    <Container className={classes.root}>
       <Paper className={classes.panel}>
         {isLoading ? (
           <LoadingSpinner />
@@ -41,21 +45,16 @@ function LoginPage({ firebase, showError, history }) {
           <GoogleButton onClick={googleLogin} data-test="google-auth-button" />
         )}
         <div className={classes.signup}>
-          <span className={classes.signupLabel}>Need an account?</span>
-          <Button component={Link} to={SIGNUP_PATH}>
-            Sign Up
-          </Button>
+          <Typography className={classes.signupLabel}>
+            Looking to Signup?
+          </Typography>
+          <Typography variant="subtitle1">
+            Your account will be automatically created on first login
+          </Typography>
         </div>
       </Paper>
-    </div>
+    </Container>
   )
-}
-
-LoginPage.propTypes = {
-  firebase: PropTypes.shape({
-    login: PropTypes.func.isRequired // used in handlers
-  }),
-  showError: PropTypes.func.isRequired // from enhancer (withNotifications)
 }
 
 export default LoginPage

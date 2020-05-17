@@ -47,7 +47,7 @@ describe('Project - Events Page', () => {
         cy.get(createSelector('project-events')).should('exist')
       })
 
-      it('seperates events into groups by date (most recent first)', () => {
+      it('separates events into groups by date (most recent first)', () => {
         cy.get(createSelector('event-date-divider')).should('exist')
         cy.get(createSelector('event-date-divider-value'))
           .first()

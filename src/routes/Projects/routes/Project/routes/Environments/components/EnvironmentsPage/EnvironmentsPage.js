@@ -3,28 +3,34 @@ import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
+import { makeStyles } from '@material-ui/core/styles'
 import Instance from '../Instance'
 import AddEnvironmentDialog from '../AddEnvironmentDialog'
 import EditEnvironmentDialog from '../EditEnvironmentDialog'
 import DeleteEnvironmentDialog from '../DeleteEnvironmentDialog'
+import styles from './EnvironmentsPage.styles'
+import useEnvironmentsPage from './useEnvironmentsPage'
 
-function EnvironmentsPage({
-  classes,
-  projectId,
-  toggleNewDialog,
-  toggleDeleteDialog,
-  toggleEditDialog,
-  selectServiceAccount,
-  selectedInstance,
-  projectEnvironments,
-  newDialogOpen,
-  deleteDialogOpen,
-  editDialogOpen,
-  addEnvironment,
-  selectedServiceAccountInd,
-  updateEnvironment,
-  removeEnvironment
-}) {
+const useStyles = makeStyles(styles)
+
+function EnvironmentsPage({ projectId }) {
+  const classes = useStyles()
+  const {
+    toggleNewDialog,
+    toggleDeleteDialog,
+    toggleEditDialog,
+    selectServiceAccount,
+    selectedInstance,
+    projectEnvironments,
+    newDialogOpen,
+    deleteDialogOpen,
+    editDialogOpen,
+    addEnvironment,
+    selectedServiceAccount,
+    updateEnvironment,
+    removeEnvironment
+  } = useEnvironmentsPage({ projectId })
+
   return (
     <div>
       <Typography className={classes.pageHeader}>Environments</Typography>
@@ -79,38 +85,26 @@ function EnvironmentsPage({
         projectId={projectId}
         onSubmit={addEnvironment}
         onRequestClose={toggleNewDialog}
-        selectedServiceAccount={selectedServiceAccountInd}
+        selectedServiceAccount={selectedServiceAccount}
         onAccountClick={selectServiceAccount}
       />
-      <EditEnvironmentDialog
-        selectedInstance={selectedInstance}
-        open={editDialogOpen}
-        projectId={projectId}
-        initialValues={selectedInstance}
-        onSubmit={updateEnvironment}
-        onRequestClose={toggleEditDialog}
-        onAccountClick={selectServiceAccount}
-      />
+      {selectedInstance ? (
+        <EditEnvironmentDialog
+          selectedInstance={selectedInstance}
+          projectEnvironments={projectEnvironments}
+          open={editDialogOpen}
+          projectId={projectId}
+          onSubmit={updateEnvironment}
+          onRequestClose={toggleEditDialog}
+          onAccountClick={selectServiceAccount}
+        />
+      ) : null}
     </div>
   )
 }
 
 EnvironmentsPage.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
-  selectedInstance: PropTypes.object, // from enhancer
-  selectedServiceAccountInd: PropTypes.number, // from enhancer
-  addEnvironment: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  updateEnvironment: PropTypes.func.isRequired, // from enhancer (withHandlers)
-  removeEnvironment: PropTypes.func.isRequired, // from enhancer  (withHandlers)
-  toggleDeleteDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  toggleNewDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  toggleEditDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  selectServiceAccount: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  projectEnvironments: PropTypes.array,
-  projectId: PropTypes.string.isRequired,
-  editDialogOpen: PropTypes.bool.isRequired,
-  newDialogOpen: PropTypes.bool.isRequired,
-  deleteDialogOpen: PropTypes.bool.isRequired
+  projectId: PropTypes.string.isRequired
 }
 
 export default EnvironmentsPage

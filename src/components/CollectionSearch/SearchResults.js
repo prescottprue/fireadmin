@@ -19,7 +19,6 @@ SearchResults.propTypes = {
     query: PropTypes.string
   }),
   onSuggestionClick: PropTypes.func.isRequired,
-  // hits: PropTypes.object, // from react-instantsearch
   searchResults: PropTypes.object // from connectStateResults
 }
 

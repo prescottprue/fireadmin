@@ -117,7 +117,8 @@ function Instance({ instanceId, onRemoveClick, onEditClick, instance }) {
 Instance.propTypes = {
   onRemoveClick: PropTypes.func.isRequired,
   onEditClick: PropTypes.func.isRequired,
-  instanceId: PropTypes.string.isRequired
+  instanceId: PropTypes.string.isRequired,
+  instance: PropTypes.object
 }
 
 export default Instance

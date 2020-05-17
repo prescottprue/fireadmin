@@ -1,7 +1,6 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { get } from 'lodash'
-import { Field } from 'redux-form'
+import { useFormContext, useFieldArray } from 'react-hook-form'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
@@ -14,17 +13,20 @@ import IconButton from '@material-ui/core/IconButton'
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import DeleteIcon from '@material-ui/icons/Delete'
-import TextField from 'components/FormTextField'
-import Switch from 'components/FormSwitchField'
+import TextField from '@material-ui/core/TextField'
+import Switch from '@material-ui/core/Switch'
 import styles from './ActionTemplateInputs.styles'
 
 const useStyles = makeStyles(styles)
 
-function ActionTemplateInputs({ fields, inputs }) {
+function ActionTemplateInputs() {
   const classes = useStyles()
+  const { control, register, watch } = useFormContext()
+  const name = 'inputs'
+  const { fields, remove, append } = useFieldArray({ control, name })
 
   function addNewInput() {
-    return fields.push({ required: false })
+    append({ required: false })
   }
 
   return (
@@ -36,41 +38,49 @@ function ActionTemplateInputs({ fields, inputs }) {
         variant="contained">
         Add Input
       </Button>
-      {fields.map((member, index, field) => {
+      {fields.map((field, index) => {
         function removeInput() {
-          return fields.remove(index)
+          return remove(index)
         }
+        const input = watch(`${name}[${index}]`)
         return (
-          <ExpansionPanel key={index}>
+          <ExpansionPanel key={index} data-test="action-template-input">
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
-                {get(inputs, `${index}.name`) || `Input ${index + 1}`}
+                {input?.name || `Input ${index + 1}`}
               </Typography>
-              {get(inputs, `${index}.description`, null) && (
+              {input?.description && (
                 <Typography className={classes.type}>
-                  {get(inputs, `${index}.description`).substring(0, 100)}
+                  {input.description.substring(0, 100)}
                 </Typography>
               )}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Grid container spacing={8} style={{ flexGrow: 1 }}>
                 <Grid item xs={10} md={6} lg={4}>
-                  <Field
-                    name={`${member}.name`}
-                    component={TextField}
+                  <TextField
+                    name={`${name}[${index}].name`}
                     label="Name"
                     className={classes.field}
+                    fullWidth
+                    inputRef={register}
                   />
-                  <Field
-                    name={`${member}.description`}
-                    component={TextField}
+                  <TextField
+                    name={`${name}[${index}].description`}
                     label="Description"
                     className={classes.field}
+                    fullWidth
+                    inputRef={register}
                   />
                   <div className={classes.required}>
-                    <Field
-                      name={`${member}.required`}
-                      component={Switch}
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          name={`${name}[${index}].required`}
+                          inputRef={register}
+                          defaultChecked={input?.required}
+                        />
+                      }
                       label="Required"
                     />
                   </div>
@@ -88,12 +98,13 @@ function ActionTemplateInputs({ fields, inputs }) {
                   </div>
                 </Grid>
                 <Grid item xs={6} lg={2}>
-                  {get(inputs, `${index}.type`) === 'userInput' && (
-                    <Field
-                      name={`${member}.variableName`}
-                      component={TextField}
+                  {input?.type === 'userInput' && (
+                    <TextField
+                      name={`${name}[${index}].variableName`}
                       label="Variable Name"
                       className={classes.field}
+                      fullWidth
+                      inputRef={register}
                     />
                   )}
                 </Grid>
@@ -105,11 +116,6 @@ function ActionTemplateInputs({ fields, inputs }) {
       })}
     </div>
   )
-}
-
-ActionTemplateInputs.propTypes = {
-  fields: PropTypes.object.isRequired,
-  inputs: PropTypes.array
 }
 
 export default ActionTemplateInputs

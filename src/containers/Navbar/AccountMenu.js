@@ -1,12 +1,12 @@
-import React, { Fragment, useState } from 'react'
-import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import { useFirebaseApp } from 'reactfire'
+import { useHistory } from 'react-router-dom'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import IconButton from '@material-ui/core/IconButton'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import { makeStyles } from '@material-ui/core/styles'
 import { ACCOUNT_PATH } from 'constants/paths'
-import enhancer from './Navbar.enhancer'
 
 const useStyles = makeStyles(() => ({
   buttonRoot: {
@@ -14,9 +14,11 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-function AccountMenu({ firebase, history }) {
+function AccountMenu() {
   const classes = useStyles()
   const [anchorEl, setMenu] = useState(null)
+  const history = useHistory()
+  const firebase = useFirebaseApp()
 
   function closeAccountMenu(e) {
     setMenu(null)
@@ -24,18 +26,18 @@ function AccountMenu({ firebase, history }) {
   function handleMenu(e) {
     setMenu(e.target)
   }
-  function handleLogout() {
-    return firebase.logout().then(() => {
-      history.push('/')
-    })
+  async function handleLogout() {
+    closeAccountMenu()
+    history.replace('/')
+    await firebase.auth().signOut()
   }
   function goToAccount() {
-    history.push(ACCOUNT_PATH)
     closeAccountMenu()
+    history.push(ACCOUNT_PATH)
   }
 
   return (
-    <Fragment>
+    <>
       <IconButton
         aria-owns={anchorEl ? 'menu-appbar' : null}
         aria-haspopup="true"
@@ -53,17 +55,8 @@ function AccountMenu({ firebase, history }) {
         <MenuItem onClick={goToAccount}>Account</MenuItem>
         <MenuItem onClick={handleLogout}>Sign Out</MenuItem>
       </Menu>
-    </Fragment>
+    </>
   )
 }
 
-AccountMenu.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired
-  }),
-  firebase: PropTypes.shape({
-    logout: PropTypes.func.isRequired
-  })
-}
-
-export default enhancer(AccountMenu)
+export default AccountMenu

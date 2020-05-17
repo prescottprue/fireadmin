@@ -18,11 +18,11 @@ jobs:
         with:
           node-version: 10
 
-      - name: Get yarn cache
+      - name: Get Yarn Cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - name: Cache npm dependencies
+      - name: Cache NPM Dependencies
         uses: actions/cache@v1
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
@@ -51,9 +51,15 @@ jobs:
       - name: Verify
         run: yarn lint
 
-      - name: Run Unit Tests
+      - name: Verify Functions
+        # NOTE: Project name is hardcoded since emulators are being used
         run: |
-          yarn --cwd functions test:cov
+          yarn functions:build
+          yarn --cwd functions test:cov --project fireadmin-stage
+
+      - name: Upload Functions Test Coverage
+        run: |
+          bash <(curl -s https://codecov.io/bash) -f functions/coverage/lcov.info || 'Test Coverage Upload Failed, continuing'
 
       - name: Build App
         run: |
@@ -65,7 +71,7 @@ jobs:
         run: yarn --cwd functions build
 
       - name: Archive Build Artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: build
           path: build
@@ -123,7 +129,7 @@ jobs:
           echo "::set-env name=GOOGLE_APPLICATION_CREDENTIALS::$HOME/serviceAccount.json"
 
       - name: Download Build Artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2
         with:
           name: build
           path: build
@@ -142,11 +148,10 @@ jobs:
           group: 'UI Integration Tests'
           tag: emulated
           start: yarn emulate:all --project fireadmin-stage
-          wait-on: 'http://localhost:3000'
+          wait-on: ${{ env.CYPRESS_BASE_URL }}
           wait-on-timeout: 120
         env:
           TZ: America/Los_Angeles
-          CI: true
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_KEY }}
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_REF: ${{ github.ref }}

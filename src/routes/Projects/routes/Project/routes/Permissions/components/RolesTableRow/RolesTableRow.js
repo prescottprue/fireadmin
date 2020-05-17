@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Field } from 'redux-form'
 import { startCase } from 'lodash'
+import { useForm } from 'react-hook-form'
 import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
@@ -16,10 +16,16 @@ import IconButton from '@material-ui/core/IconButton'
 import FormLabel from '@material-ui/core/FormLabel'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import Checkbox from '@material-ui/core/Checkbox'
+import { makeStyles } from '@material-ui/core/styles'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
+import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 import DeleteMemberModal from '../DeleteMemberModal'
-import Checkbox from 'components/FormCheckboxField'
+import styles from './RolesTableRow.styles'
+import { useUser, useFirestore } from 'reactfire'
+import useNotifications from 'modules/notification/useNotifications'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 
 const resourcesOptions = [
   { value: 'members' },
@@ -29,48 +35,114 @@ const resourcesOptions = [
 ]
 
 const editOptions = ['Delete']
-
 const ITEM_HEIGHT = 48
+const useStyles = makeStyles(styles)
 
 function RolesTableRow({
+  projectId,
+  currentRoles,
   name,
-  pristine,
-  reset,
-  handleSubmit,
   roleKey,
-  classes,
-  handleMenuClick,
-  startDelete,
-  handleMenuClose,
-  deleteDialogOpen,
-  handleDeleteClose,
-  updateRolesDisabled,
-  onDeleteClick,
-  anchorEl
+  initialValues,
+  updateRolesDisabled
 }) {
+  const classes = useStyles()
+  const user = useUser()
+  const firestore = useFirestore()
+  const { FieldValue } = useFirestore
+  const { showSuccess } = useNotifications()
+  const [anchorEl, changeAnchorEl] = useState(null)
+  const [deleteDialogOpen, changeDeleteDialogOpen] = useState(false)
+  const handleDeleteClose = () => changeDeleteDialogOpen(false)
+  const handleMenuClick = (e) => changeAnchorEl(e.target)
+  const handleMenuClose = () => changeAnchorEl(null)
+  const startDelete = () => {
+    changeAnchorEl(null)
+    changeDeleteDialogOpen(true)
+  }
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { dirty, isSubmitting }
+  } = useForm({ defaultValues: initialValues })
+
+  async function deleteRole(item) {
+    await firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`).set(
+      {
+        roles: {
+          [roleKey]: FieldValue.delete()
+        }
+      },
+      { merge: true }
+    )
+    // Write event to project events
+    await createProjectEvent(
+      { projectId, firestore, FieldValue },
+      {
+        eventType: 'deleteRole',
+        eventData: { roleKey },
+        createdBy: user.uid
+      }
+    )
+    showSuccess('Role deleted successfully!')
+    triggerAnalyticsEvent('deleteRole', { projectId, roleKey })
+  }
+
+  async function updateRole(roleUpdates) {
+    await firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`).set(
+      {
+        roles: {
+          [roleKey]: {
+            permissions: roleUpdates
+          }
+        }
+      },
+      { merge: true }
+    )
+    // Write event to project events
+    await createProjectEvent(
+      { projectId, firestore, FieldValue },
+      {
+        eventType: 'updateRole',
+        eventData: { roleKey },
+        createdBy: user.uid
+      }
+    )
+    showSuccess('Role updated successfully!')
+    triggerAnalyticsEvent('updateRole', {
+      projectId,
+      roleName: roleKey
+    })
+  }
+
   return (
-    <Fragment>
+    <>
       <DeleteMemberModal
         open={deleteDialogOpen}
         name={roleKey}
         onRequestClose={handleDeleteClose}
-        onDeleteClick={onDeleteClick}
+        onDeleteClick={deleteRole}
       />
-      <ExpansionPanel key={roleKey} className={classes.root}>
+      <ExpansionPanel
+        key={roleKey}
+        className={classes.root}
+        data-test={`role-panel-${roleKey}`}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>
             {name || startCase(roleKey)}
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <form className={classes.content} onSubmit={handleSubmit}>
+          <form className={classes.content} onSubmit={handleSubmit(updateRole)}>
             <Divider />
             <div className={classes.menu}>
               <IconButton
                 aria-label="More"
                 aria-owns="long-menu"
                 aria-haspopup="true"
-                onClick={handleMenuClick}>
+                onClick={handleMenuClick}
+                data-test={`role-more-${roleKey}`}>
                 <MoreVertIcon />
               </IconButton>
               <Menu
@@ -85,7 +157,10 @@ function RolesTableRow({
                   }
                 }}>
                 {editOptions.map((option) => (
-                  <MenuItem key={option} onClick={startDelete}>
+                  <MenuItem
+                    key={option}
+                    onClick={startDelete}
+                    data-test="role-delete">
                     <ListItemIcon className={classes.icon}>
                       <DeleteIcon />
                     </ListItemIcon>
@@ -117,10 +192,11 @@ function RolesTableRow({
                     key={`${option.value}-${idx}`}
                     className={classes.roleOption}
                     control={
-                      <Field
+                      <Checkbox
                         name={`create.${option.value}`}
                         disabled={updateRolesDisabled}
-                        component={Checkbox}
+                        data-test={`create-option-${option.value}`}
+                        inputRef={register}
                       />
                     }
                   />
@@ -133,10 +209,11 @@ function RolesTableRow({
                     key={`${option.value}-${idx}`}
                     className={classes.roleOption}
                     control={
-                      <Field
+                      <Checkbox
                         name={`read.${option.value}`}
                         disabled={updateRolesDisabled}
-                        component={Checkbox}
+                        data-test={`read-option-${option.value}`}
+                        inputRef={register}
                       />
                     }
                   />
@@ -149,10 +226,11 @@ function RolesTableRow({
                     key={`${option.value}-${idx}`}
                     className={classes.roleOption}
                     control={
-                      <Field
+                      <Checkbox
                         name={`update.${option.value}`}
                         disabled={updateRolesDisabled}
-                        component={Checkbox}
+                        data-test={`update-option-${option.value}`}
+                        inputRef={register}
                       />
                     }
                   />
@@ -165,10 +243,11 @@ function RolesTableRow({
                     key={`${option.value}-${idx}`}
                     className={classes.roleOption}
                     control={
-                      <Field
+                      <Checkbox
                         name={`delete.${option.value}`}
                         disabled={updateRolesDisabled}
-                        component={Checkbox}
+                        data-test={`delete-option-${option.value}`}
+                        inputRef={register}
                       />
                     }
                   />
@@ -177,44 +256,38 @@ function RolesTableRow({
             </div>
             <div className={classes.buttons}>
               <Button
-                disabled={pristine}
+                disabled={!dirty}
                 color="secondary"
-                aria-label="Run Action"
+                aria-label="Cancel Role Update"
                 onClick={reset}
-                style={{ marginRight: '2rem' }}>
+                style={{ marginRight: '2rem' }}
+                data-test="role-cancel">
                 Cancel
               </Button>
               <Button
-                disabled={pristine || updateRolesDisabled}
+                disabled={updateRolesDisabled || isSubmitting}
                 color="primary"
                 variant="contained"
-                aria-label="Run Action"
-                type="submit">
-                Update Member
+                aria-label="Update Role"
+                type="submit"
+                data-test="role-update">
+                Update Role
               </Button>
             </div>
           </form>
         </ExpansionPanelDetails>
       </ExpansionPanel>
-    </Fragment>
+    </>
   )
 }
 
 RolesTableRow.propTypes = {
+  projectId: PropTypes.string.isRequired,
+  currentRoles: PropTypes.object,
+  initialValues: PropTypes.object,
   name: PropTypes.string,
-  onDeleteClick: PropTypes.func.isRequired,
-  startDelete: PropTypes.func.isRequired,
-  updateRolesDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
-  anchorEl: PropTypes.object, // from enhancer (withStateHandlers)
-  handleMenuClick: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  handleMenuClose: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  deleteDialogOpen: PropTypes.bool.isRequired, // from enhancer (withStateHandlers)
-  handleDeleteClose: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
-  pristine: PropTypes.bool.isRequired, // from enhancer (reduxForm)
-  handleSubmit: PropTypes.func.isRequired, // from enhancer (reduxForm)
-  reset: PropTypes.func.isRequired, // from enhancer (reduxForm)
-  roleKey: PropTypes.string.isRequired // from enhancer (reduxForm)
+  updateRolesDisabled: PropTypes.bool,
+  roleKey: PropTypes.string.isRequired
 }
 
 export default RolesTableRow

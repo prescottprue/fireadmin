@@ -1,34 +1,71 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { isEmpty } from 'react-redux-firebase/lib/helpers'
+import React, { useState } from 'react'
+import { Route, Switch, Redirect, useRouteMatch } from 'react-router-dom'
+import { useFirestore, useUser } from 'reactfire'
 import { makeStyles } from '@material-ui/core/styles'
-import { Route, Switch } from 'react-router-dom'
 import ProjectRoute from 'routes/Projects/routes/Project'
 import { renderChildren } from 'utils/router'
-import ProjectTile from '../ProjectTile'
+import useNotifications from 'modules/notification/useNotifications'
+import { triggerAnalyticsEvent } from 'utils/analytics'
+import defaultRoles from 'constants/defaultRoles'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
+import { LOGIN_PATH, LIST_PATH } from 'constants/paths'
 import NewProjectTile from '../NewProjectTile'
 import NewProjectDialog from '../NewProjectDialog'
 import styles from './ProjectsPage.styles'
+import ProjectsList from '../ProjectsList'
 
 const useStyles = makeStyles(styles)
 
-function ProjectsPage({
-  projects,
-  collabProjects,
-  auth,
-  newDialogOpen,
-  toggleDialog,
-  deleteProject,
-  addProject,
-  match,
-  goToProject
-}) {
+function ProjectsPage() {
   const classes = useStyles()
+  const match = useRouteMatch()
+  const { showError, showSuccess } = useNotifications()
+  const [newDialogOpen, changeNewDialogOpen] = useState(false)
+  const toggleDialog = () => changeNewDialogOpen(!newDialogOpen)
+
+  const firestore = useFirestore()
+  const { FieldValue } = useFirestore
+  const user = useUser()
+
+  /**
+   * Handler for adding a project
+   */
+  async function addProject(newInstance) {
+    if (!user.uid) {
+      return showError('You must be logged in to create a project')
+    }
+    try {
+      toggleDialog()
+      await firestore.collection(PROJECTS_COLLECTION).add({
+        ...newInstance,
+        createdBy: user.uid,
+        createdAt: FieldValue.serverTimestamp(),
+        permissions: {
+          [user.uid]: {
+            role: 'owner',
+            updatedAt: FieldValue.serverTimestamp()
+          }
+        },
+        roles: defaultRoles
+      })
+      showSuccess('Project added successfully')
+      triggerAnalyticsEvent('createProject')
+    } catch (err) {
+      showError(err.message || 'Could not add project')
+      throw err
+    }
+  }
+
+  if (!user || !user.uid) {
+    return (
+      <Redirect to={{ pathname: LOGIN_PATH, state: { from: LIST_PATH } }} />
+    )
+  }
 
   return (
     <Switch>
       {/* Child routes */}
-      {renderChildren([ProjectRoute], match, { auth })}
+      {renderChildren([ProjectRoute])}
       {/* Main Route */}
       <Route
         exact
@@ -42,35 +79,13 @@ function ProjectsPage({
             />
             <div className={classes.tiles}>
               <NewProjectTile onClick={toggleDialog} />
-              {!isEmpty(projects) &&
-                projects.map((project, ind) => (
-                  <ProjectTile
-                    key={`Project-${project.id}-${ind}`}
-                    name={project.name}
-                    project={project}
-                    projectId={project.id}
-                    onSelect={() => goToProject(project.id)}
-                    onDelete={() => deleteProject(project.id)}
-                  />
-                ))}
+              <ProjectsList />
             </div>
           </div>
         )}
       />
     </Switch>
   )
-}
-
-ProjectsPage.propTypes = {
-  match: PropTypes.object.isRequired, // from enhancer (withRouter)
-  auth: PropTypes.object, // from enhancer (connect + firebaseConnect - firebase)
-  projects: PropTypes.array, // from enhancer (connect + firebaseConnect - firebase)
-  newDialogOpen: PropTypes.bool, // from enhancer (withStateHandlers)
-  toggleDialog: PropTypes.func.isRequired, // from enhancer (withStateHandlers)
-  deleteProject: PropTypes.func.isRequired, // from enhancer (withHandlers - firebase)
-  collabProjects: PropTypes.object, // from enhancer (withHandlers - firebase)
-  addProject: PropTypes.func.isRequired, // from enhancer (withHandlers - firebase)
-  goToProject: PropTypes.func.isRequired // from enhancer (withHandlers - router)
 }
 
 export default ProjectsPage

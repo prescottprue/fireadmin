@@ -14,7 +14,9 @@ function DeleteTemplateDialog({ onClose, onDeleteClick, open, templateName }) {
         <div>Are you sure you want to delete {templateName || 'Template'}?</div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onDeleteClick}>Delete Template</Button>
+        <Button onClick={onDeleteClick} data-test="submit-template-delete">
+          Delete Template
+        </Button>
       </DialogActions>
     </Dialog>
   )

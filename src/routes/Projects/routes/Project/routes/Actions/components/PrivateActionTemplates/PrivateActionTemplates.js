@@ -1,27 +1,40 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { flatMap } from 'lodash'
+import { map } from 'lodash'
 import Divider from '@material-ui/core/Divider'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { makeStyles } from '@material-ui/core/styles'
+import { useFirestore, useUser, useFirestoreCollectionData } from 'reactfire'
 import styles from './PrivateActionTemplates.styles'
+import NoTemplatesFound from './NoTemplatesFound'
 
 const useStyles = makeStyles(styles)
 
-function PrivateActionTemplates({ templates, itemClickHandler }) {
+function PrivateActionTemplates({ onTemplateClick }) {
   const classes = useStyles()
+  const firestore = useFirestore()
+  const user = useUser()
+  const actionTemplatesQuery = firestore
+    .collection('actionTemplates')
+    .where('createdBy', '==', user.uid)
+    .where('public', '==', false)
+  const templates = useFirestoreCollectionData(actionTemplatesQuery)
+
+  if (!templates.length) {
+    return <NoTemplatesFound />
+  }
 
   return (
     <div className={classes.root}>
       <List component="nav">
         <Divider />
-        {flatMap(templates, (item, idx) => [
+        {map(templates, (item, idx) => [
           <ListItem
             button
             key={`PrivateTemplate-${item.id}-${idx}`}
-            onClick={itemClickHandler(item)}>
+            onClick={() => onTemplateClick(item)}>
             <ListItemText primary={item.name} />
           </ListItem>,
           <Divider key={`PrivateTemplateDivider-${item.id}-${idx}`} />
@@ -32,8 +45,7 @@ function PrivateActionTemplates({ templates, itemClickHandler }) {
 }
 
 PrivateActionTemplates.propTypes = {
-  templates: PropTypes.array, // from enhancer (firestoreConnect + connect)
-  itemClickHandler: PropTypes.func.isRequired // from enhancer (withHandlers)
+  onTemplateClick: PropTypes.func.isRequired
 }
 
 export default PrivateActionTemplates

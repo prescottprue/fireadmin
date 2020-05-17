@@ -7,8 +7,8 @@ import * as admin from 'firebase-admin'
 /**
  * Download JSON File from Google Cloud Storage and return is contents
  * @param  {firebase.App} app - App from which the storage File should be downloaded
- * @param  {String} pathInStorage - Path of file within cloud storage bucket
- * @return {Promise} Resolves with JSON contents of the file
+ * @param  {string} pathInStorage - Path of file within cloud storage bucket
+ * @returns {Promise} Resolves with JSON contents of the file
  */
 export async function downloadFromStorage(app, pathInStorage) {
   if (app && !app.storage) {
@@ -44,9 +44,10 @@ export async function downloadFromStorage(app, pathInStorage) {
 
 /**
  * Upload JSON Object to Google Cloud Storage and return is contents
- * @param  {firebase.App} app - App from which the storage File should be downloaded
- * @param  {String} pathInStorage - Path of file within cloud storage bucket
- * @return {Promise} Resolves with JSON contents of the file
+ * @param {firebase.App} app - App from which the storage File should be downloaded
+ * @param {string} pathInStorage - Path of file within cloud storage bucket
+ * @param {object} jsonObject - Object to upload to storage
+ * @returns {Promise} Resolves with JSON contents of the file
  */
 export async function uploadToStorage(app, pathInStorage, jsonObject) {
   const localPath = `actions/storage/${Date.now()}/${pathInStorage}.json`
@@ -71,8 +72,8 @@ export async function uploadToStorage(app, pathInStorage, jsonObject) {
 
 /**
  * Get Google Cloud Storage reference from the file's path
- * @param  {String} storagePath - relative path of file on Cloud Storage
- * @return {Storage.Reference} Storage reference from firebase-admin library
+ * @param {string} storagePath - relative path of file on Cloud Storage
+ * @returns {Storage.Reference} Storage reference from firebase-admin library
  */
 export function slashPathToStorageRef(storagePath) {
   if (!admin.storage) {

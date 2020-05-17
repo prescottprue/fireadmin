@@ -32,9 +32,14 @@ describe('Project - Actions Page', () => {
 
   describe('Environment Locking', () => {
     const lockedEnvId = 'locked-env'
-    const lockedEnv = { name: 'locked env', locked: true }
+    const lockedEnv = {
+      name: 'locked env',
+      locked: true,
+      databaseURL: 'https://test.firebaseio.com'
+    }
     before(() => {
       cy.addProjectEnvironment('test-project', lockedEnvId, lockedEnv)
+      cy.log('after env add')
     })
 
     after(() => {
@@ -80,7 +85,11 @@ describe('Project - Actions Page', () => {
   describe('Environment with "Read Only" option', () => {
     const srcId = 'src-only'
     before(() => {
-      const lockedEnv = { name: 'only src env', readOnly: true }
+      const lockedEnv = {
+        name: 'only src env',
+        readOnly: true,
+        databaseURL: 'https://test.firebaseio.com'
+      }
       cy.addProjectEnvironment('test-project', srcId, lockedEnv)
     })
 
@@ -111,7 +120,11 @@ describe('Project - Actions Page', () => {
   describe('Environment with "Write Only" option', () => {
     const destId = 'dest-only'
     before(() => {
-      const lockedEnv = { name: 'only dest env', writeOnly: true }
+      const lockedEnv = {
+        name: 'only dest env',
+        writeOnly: true,
+        databaseURL: 'https://test.firebaseio.com'
+      }
       cy.addProjectEnvironment('test-project', destId, lockedEnv)
     })
 

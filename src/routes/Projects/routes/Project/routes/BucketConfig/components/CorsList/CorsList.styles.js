@@ -1,4 +1,8 @@
 export default (theme) => ({
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between'
+  },
   add: {
     ...theme.flexRowCenter,
     marginBottom: '2rem',

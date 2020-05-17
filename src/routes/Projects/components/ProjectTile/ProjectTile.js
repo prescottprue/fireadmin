@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { invoke } from 'lodash'
 import Paper from '@material-ui/core/Paper'
@@ -15,24 +15,23 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import EditIcon from '@material-ui/icons/Edit'
 import { makeStyles } from '@material-ui/core/styles'
 import { formatDate } from 'utils/formatters'
+import { LIST_PATH } from 'constants/paths'
+import { useHistory } from 'react-router-dom'
 import SharingDialog from '../SharingDialog'
 import styles from './ProjectTile.styles'
 
 const useStyles = makeStyles(styles)
 
-function ProjectTile({
-  open,
-  project,
-  handleEditClick,
-  onDelete,
-  menuClick,
-  closeMenu,
-  anchorEl,
-  projectId,
-  sharingDialogOpen,
-  toggleSharingDialog
-}) {
+function ProjectTile({ open, project, onDelete, projectId }) {
   const classes = useStyles()
+  const history = useHistory()
+
+  const [anchorEl, changeAnchorEl] = useState(null)
+  const [sharingDialogOpen, changeSharingDialogOpen] = useState(false)
+  const closeMenu = () => changeAnchorEl(null)
+  const menuClick = (e) => changeAnchorEl(e.target)
+  const toggleSharingDialog = () => changeSharingDialogOpen(!sharingDialogOpen)
+  const handleEditClick = () => history.push(`${LIST_PATH}/${projectId}`)
 
   return (
     <Paper
@@ -91,15 +90,9 @@ function ProjectTile({
 }
 
 ProjectTile.propTypes = {
-  projectId: PropTypes.string.isRequired,
   project: PropTypes.object.isRequired,
-  handleEditClick: PropTypes.func.isRequired,
-  menuClick: PropTypes.func.isRequired,
-  closeMenu: PropTypes.func.isRequired,
+  projectId: PropTypes.string,
   onDelete: PropTypes.func,
-  anchorEl: PropTypes.object,
-  toggleSharingDialog: PropTypes.func,
-  sharingDialogOpen: PropTypes.bool,
   open: PropTypes.bool
 }
 

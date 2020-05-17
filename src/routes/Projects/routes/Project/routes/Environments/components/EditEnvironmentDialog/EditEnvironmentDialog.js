@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Field } from 'redux-form'
+import { useForm } from 'react-hook-form'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormLabel from '@material-ui/core/FormLabel'
 import Dialog from '@material-ui/core/Dialog'
@@ -9,123 +9,173 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
-import TextField from 'components/FormTextField'
-import CheckboxField from 'components/FormCheckboxField'
-import { required, validateDatabaseUrl } from 'utils/form'
+import TextField from '@material-ui/core/TextField'
+import Checkbox from '@material-ui/core/Checkbox'
+import { makeStyles } from '@material-ui/core/styles'
+import { validateDatabaseUrl } from 'utils/form'
+import styles from './EditEnvironmentDialog.styles'
+import { useFirestore, useFirestoreDocData, useUser } from 'reactfire'
+import { createPermissionGetter } from 'utils/data'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
+
+const useStyles = makeStyles(styles)
 
 function EditEnvironmentDialog({
-  classes,
-  submit,
-  closeAndReset,
-  submitting,
+  onSubmit,
   projectId,
-  pristine,
   onRequestClose,
   open,
-  lockedDisabled,
-  writeOnlyDisabled,
-  readOnlyDisabled
+  selectedInstance,
+  projectEnvironments
 }) {
+  const classes = useStyles()
+  // Data
+  const firestore = useFirestore()
+  const user = useUser()
+  const projectRef = firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`)
+  const project = useFirestoreDocData(projectRef)
+  const userHasPermission = createPermissionGetter(project, user?.uid)
+  const hasUpdatePermission = userHasPermission('update.environments')
+
+  // Form
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { dirty, isSubmitting }
+  } = useForm({ defaultValues: selectedInstance })
+
+  // Disabled states
+  const lockedDisabled =
+    !hasUpdatePermission ||
+    // Form is clean and the environment is currently read only or write only
+    (!dirty && (selectedInstance.readOnly || selectedInstance.writeOnly)) ||
+    watch('readOnly') ||
+    watch('writeOnly')
+  const readOnlyDisabled =
+    !hasUpdatePermission ||
+    // Form is clean and the environment is currently locked or write only
+    (!dirty && (selectedInstance.locked || selectedInstance.writeOnly)) ||
+    watch('locked') ||
+    watch('writeOnly')
+  const writeOnlyDisabled =
+    !hasUpdatePermission ||
+    // Form is clean and the environment is currently locked or read only
+    (!dirty && (selectedInstance.locked || selectedInstance.readOnly)) ||
+    watch('locked') ||
+    watch('readOnly')
+
+  // Handlers
+  function closeAndReset() {
+    reset()
+    onRequestClose()
+  }
+
   return (
     <Dialog onClose={onRequestClose} open={open}>
       <DialogTitle id="dialog-title">Edit Environment</DialogTitle>
-      <DialogContent className={classes.body}>
-        <div className={classes.inputs}>
-          <Field
-            component={TextField}
-            className={classes.field}
-            name="name"
-            validate={required}
-            fullWidth
-            label="Environment Name"
-          />
-          <Field
-            component={TextField}
-            className={classes.field}
-            name="databaseURL"
-            fullWidth
-            validate={[required, validateDatabaseUrl]}
-            label="Database URL"
-          />
-          <Field
-            component={TextField}
-            className={classes.field}
-            fullWidth
-            name="description"
-            label="Instance Description"
-          />
-          <Grid container className={classes.settings} spacing={8}>
-            <Grid item xs={12}>
-              <FormLabel>Action Settings</FormLabel>
-              <Grid container>
-                <Grid item>
-                  <FormControlLabel
-                    control={
-                      <Field
-                        name="locked"
-                        component={CheckboxField}
-                        disabled={lockedDisabled}
-                      />
-                    }
-                    label="Locked (prevents all actions)"
-                  />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogContent className={classes.body}>
+          <div className={classes.inputs}>
+            <TextField
+              name="name"
+              label="Environment Name"
+              margin="normal"
+              inputRef={register}
+              fullWidth
+            />
+            <TextField
+              name="databaseURL"
+              label="Database URL"
+              margin="normal"
+              inputRef={register({
+                required: true,
+                validate: validateDatabaseUrl
+              })}
+              fullWidth
+            />
+            <TextField
+              name="description"
+              label="Instance Description"
+              margin="normal"
+              inputRef={register}
+              fullWidth
+            />
+            <Grid container className={classes.settings} spacing={8}>
+              <Grid item xs={12}>
+                <FormLabel>Action Settings</FormLabel>
+                <Grid container>
+                  <Grid item>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          name="locked"
+                          disabled={lockedDisabled}
+                          inputRef={register}
+                          defaultChecked={selectedInstance.locked}
+                        />
+                      }
+                      label="Locked (prevents all actions)"
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
-              <Grid container>
-                <Grid>
-                  <FormControlLabel
-                    control={
-                      <Field
-                        name="readOnly"
-                        component={CheckboxField}
-                        disabled={readOnlyDisabled}
-                      />
-                    }
-                    label="Read Only"
-                  />
-                </Grid>
-                <Grid>
-                  <FormControlLabel
-                    control={
-                      <Field
-                        name="writeOnly"
-                        component={CheckboxField}
-                        disabled={writeOnlyDisabled}
-                      />
-                    }
-                    label="Write Only"
-                  />
+                <Grid container>
+                  <Grid>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          name="readOnly"
+                          disabled={readOnlyDisabled}
+                          inputRef={register}
+                          defaultChecked={selectedInstance.readOnly}
+                        />
+                      }
+                      label="Read Only"
+                    />
+                  </Grid>
+                  <Grid>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          name="writeOnly"
+                          disabled={writeOnlyDisabled}
+                          inputRef={register}
+                          defaultChecked={selectedInstance.writeOnly}
+                        />
+                      }
+                      label="Write Only"
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </div>
-      </DialogContent>
-      <DialogActions>
-        <Button color="secondary" disabled={submitting} onClick={closeAndReset}>
-          Cancel
-        </Button>
-        <Button
-          color="primary"
-          disabled={pristine || submitting}
-          onClick={submit}>
-          Save
-        </Button>
-      </DialogActions>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="secondary"
+            disabled={isSubmitting}
+            onClick={closeAndReset}>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            color="primary"
+            disabled={!dirty || isSubmitting}>
+            Save
+          </Button>
+        </DialogActions>
+      </form>
     </Dialog>
   )
 }
 
 EditEnvironmentDialog.propTypes = {
-  classes: PropTypes.object.isRequired, // from enhancer (withStyles)
-  lockedDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
-  readOnlyDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
-  writeOnlyDisabled: PropTypes.bool.isRequired, // from enhancer (connect)
-  submit: PropTypes.func.isRequired, // from enhancer (reduxForm)
-  closeAndReset: PropTypes.func.isRequired, // from enhancer (reduxForm)
-  submitting: PropTypes.bool.isRequired, // from enhancer (reduxForm)
-  pristine: PropTypes.bool.isRequired, // from enhancer (reduxForm)
+  onSubmit: PropTypes.func.isRequired,
   onRequestClose: PropTypes.func.isRequired,
+  selectedInstance: PropTypes.object.isRequired,
+  projectEnvironments: PropTypes.array.isRequired,
   projectId: PropTypes.string.isRequired,
   open: PropTypes.bool.isRequired
 }

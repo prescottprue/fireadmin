@@ -16,7 +16,6 @@ function FilesUploader({
   maxSelection,
   disabled,
   acceptedFormats,
-  dropFiles,
   droppedFiles,
   label
 }) {
@@ -26,7 +25,7 @@ function FilesUploader({
     <div className={classes.root}>
       {!isUploading ? (
         <Dropzone
-          onDrop={onFilesDrop || dropFiles}
+          onDrop={onFilesDrop}
           className={`${classes.dropzone} ${
             isCompact && classes.dropzoneCompact
           }`}
@@ -63,8 +62,7 @@ FilesUploader.propTypes = {
   droppedFiles: PropTypes.array,
   acceptedFormats: PropTypes.array,
   disabled: PropTypes.bool,
-  onFilesDrop: PropTypes.func,
-  dropFiles: PropTypes.func // from enhancer (withStateHandlers)
+  onFilesDrop: PropTypes.func.isRequired
 }
 
 FilesUploader.defaultProps = {

@@ -1,33 +1,43 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Field } from 'redux-form'
+import { useForm } from 'react-hook-form'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
-import TextField from 'components/FormTextField'
+import TextField from '@material-ui/core/TextField'
+import { makeStyles } from '@material-ui/core/styles'
+import styles from './NewRoleCard.styles'
 
-function NewRoleCard({ handleSubmit, pristine, closeAndReset, classes }) {
+const useStyles = makeStyles(styles)
+
+function NewRoleCard({ onSubmit, onRequestClose }) {
+  const classes = useStyles()
+  const {
+    register,
+    handleSubmit,
+    formState: { dirty }
+  } = useForm()
   return (
     <Paper className={classes.root} elevation={1}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Typography variant="h5">New Role</Typography>
-        <Field
-          component={TextField}
-          className={classes.field}
+        <TextField
           name="name"
-          fullWidth
           label="New Role Name"
+          margin="normal"
+          inputRef={register}
+          fullWidth
         />
         <div className={classes.buttons}>
           <Button
             color="secondary"
             aria-label="Run Action"
-            onClick={closeAndReset}
+            onClick={onRequestClose}
             style={{ marginRight: '2rem' }}>
             Cancel
           </Button>
           <Button
-            disabled={pristine}
+            disabled={!dirty}
             color="primary"
             variant="contained"
             aria-label="Run Action"
@@ -41,10 +51,8 @@ function NewRoleCard({ handleSubmit, pristine, closeAndReset, classes }) {
 }
 
 NewRoleCard.propTypes = {
-  classes: PropTypes.object, // from enhancer (withStyles)
-  pristine: PropTypes.bool.isRequired, // from enhancer (reduxForm)
-  handleSubmit: PropTypes.func.isRequired, // from enhancer (reduxForm)
-  closeAndReset: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  onRequestClose: PropTypes.func.isRequired
 }
 
 export default NewRoleCard

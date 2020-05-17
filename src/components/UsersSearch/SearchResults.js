@@ -4,19 +4,20 @@ import { Stats } from 'react-instantsearch/dom'
 import { connectStateResults } from 'react-instantsearch/connectors'
 import ResultsList from './ResultsList'
 
-const SearchResults = ({
+function SearchResults({
   searchState,
   searchResults,
   onSuggestionClick,
   resultsTitle
-}) =>
-  searchState.query && searchResults && searchResults.nbHits !== 0 ? (
+}) {
+  return searchState.query && searchResults && searchResults.nbHits !== 0 ? (
     <div>
       {resultsTitle ? <div>{resultsTitle}</div> : null}
       <Stats />
       <ResultsList onSuggestionClick={onSuggestionClick} />
     </div>
   ) : null
+}
 
 SearchResults.propTypes = {
   searchState: PropTypes.shape({
@@ -25,7 +26,6 @@ SearchResults.propTypes = {
   }),
   resultsTitle: PropTypes.string,
   onSuggestionClick: PropTypes.func.isRequired,
-  // hits: PropTypes.object, // from react-instantsearch
   searchResults: PropTypes.object // from connectStateResults
 }
 

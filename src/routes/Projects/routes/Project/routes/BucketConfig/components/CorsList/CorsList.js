@@ -1,79 +1,85 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import IconButton from '@material-ui/core/IconButton'
-import { Field, FieldArray } from 'redux-form'
 import Button from '@material-ui/core/Button'
 import MenuItem from '@material-ui/core/MenuItem'
 import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
+import TextField from '@material-ui/core/TextField'
+import Select from '@material-ui/core/Select'
 import DeleteIcon from '@material-ui/icons/Delete'
-import TextField from 'components/FormTextField'
-import Select from 'components/FormSelectField'
+import { makeStyles } from '@material-ui/core/styles'
 import CorsOriginList from '../CorsOriginList'
+import styles from './CorsList.styles'
+import { useFormContext, useFieldArray, Controller } from 'react-hook-form'
 
-const methods = ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS']
+const useStyles = makeStyles(styles)
 
-function CorsList({ classes, fields, meta: { error, submitFailed } }) {
+const methods = ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS', 'HEAD']
+
+function CorsList({ name }) {
+  const classes = useStyles()
+  const { control, register } = useFormContext()
+  const { fields, remove, append } = useFieldArray({ control, name })
   return (
     <div>
-      {fields.map((member, index) => (
-        <div key={index} className={classes.item}>
-          <div className="flex-row">
-            <Typography className={classes.subHeader} variant="h5">
-              CORS Config #{index + 1}
-            </Typography>
-            <IconButton onClick={() => fields.remove(index)}>
-              <DeleteIcon />
-            </IconButton>
-          </div>
-          <div className="flex-column">
-            <FieldArray
-              name={`${member}.origin`}
-              component={(props) => <CorsOriginList {...props} />}
-            />
-            <FormControl className={classes.field}>
-              <InputLabel htmlFor="method">HTTP Methods To Include</InputLabel>
-              <Field
-                name={`${member}.method`}
-                component={Select}
-                format={(value) => (Array.isArray(value) ? value : [])}
+      {fields.map((item, index) => {
+        return (
+          <div key={index} className={classes.item}>
+            <div className={classes.header}>
+              <Typography className={classes.subHeader} variant="h5">
+                CORS Config #{index + 1}
+              </Typography>
+              <IconButton onClick={() => remove(index)}>
+                <DeleteIcon />
+              </IconButton>
+            </div>
+            <div className="flex-column">
+              <CorsOriginList name={`${name}[${index}].origin`} />
+              <FormControl className={classes.field} fullWidth>
+                <InputLabel htmlFor="method">
+                  HTTP Methods To Include
+                </InputLabel>
+                <Controller
+                  as={
+                    <Select fullWidth multiple>
+                      {methods.map((methodName) => (
+                        <MenuItem key={methodName} value={methodName}>
+                          {methodName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  }
+                  name={`${name}[${index}].method`}
+                  control={control}
+                  defaultValue={[]}
+                />
+              </FormControl>
+              <TextField
+                name={`${name}[${index}].maxAgeSeconds`}
+                label="Max Age (in seconds)"
+                type="number"
+                margin="normal"
                 fullWidth
-                multiple
-                inputProps={{
-                  name: 'method',
-                  id: 'method'
-                }}>
-                {methods.map((name) => (
-                  <MenuItem key={name} value={name}>
-                    {name}
-                  </MenuItem>
-                ))}
-              </Field>
-            </FormControl>
-            <Field
-              name={`${member}.maxAgeSeconds`}
-              type="number"
-              component={TextField}
-              label="Max Age (in seconds)"
-            />
+                inputRef={register}
+                defaultValue={0}
+              />
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
       <div className={classes.add}>
-        <Button color="primary" onClick={() => fields.push({ origin: [''] })}>
+        <Button color="primary" onClick={() => append({ origin: [''] })}>
           Add CORS Config
         </Button>
-        {submitFailed && error && <span>{error}</span>}
       </div>
     </div>
   )
 }
 
 CorsList.propTypes = {
-  classes: PropTypes.object.isRequired,
-  fields: PropTypes.object.isRequired,
-  meta: PropTypes.object.isRequired
+  name: PropTypes.string.isRequired
 }
 
 export default CorsList

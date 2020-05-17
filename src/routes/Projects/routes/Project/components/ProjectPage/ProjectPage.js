@@ -1,6 +1,7 @@
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { Route, Switch, useParams } from 'react-router-dom'
+import { useFirestore, useFirestoreDocData } from 'reactfire'
 import Typography from '@material-ui/core/Typography'
 import SidebarLayout from 'layouts/SidebarLayout'
 import { renderChildren } from 'utils/router'
@@ -9,14 +10,23 @@ import BucketConfigRoute from 'routes/Projects/routes/Project/routes/BucketConfi
 import EnvironmentsRoute from 'routes/Projects/routes/Project/routes/Environments'
 import PermissionsRoute from 'routes/Projects/routes/Project/routes/Permissions'
 import ProjectEventsRoute from 'routes/Projects/routes/Project/routes/ProjectEvents'
-import OverviewPanel from '../OverviewPanel'
 import { makeStyles } from '@material-ui/core/styles'
+import OverviewPanel from '../OverviewPanel'
 import styles from './ProjectPage.styles'
+import ProjectNotFoundPage from './ProjectNotFoundPage'
 
 const useStyles = makeStyles(styles)
 
-function ProjectPage({ project, match, projectId, uid, children }) {
+function ProjectPage({ children }) {
   const classes = useStyles()
+  const { projectId } = useParams()
+
+  const firestore = useFirestore()
+  const projectRef = firestore.doc(`projects/${projectId}`)
+  const project = useFirestoreDocData(projectRef)
+  if (!project) {
+    return <ProjectNotFoundPage />
+  }
 
   return (
     <SidebarLayout title={project.name}>
@@ -30,8 +40,7 @@ function ProjectPage({ project, match, projectId, uid, children }) {
             PermissionsRoute,
             ProjectEventsRoute
           ],
-          match,
-          { project, projectId, uid }
+          { project, projectId }
         )}
         {/* Main Route */}
         <Route
@@ -49,10 +58,6 @@ function ProjectPage({ project, match, projectId, uid, children }) {
 }
 
 ProjectPage.propTypes = {
-  project: PropTypes.object,
-  projectId: PropTypes.string,
-  uid: PropTypes.string,
-  match: PropTypes.object,
   children: PropTypes.object
 }
 

@@ -40,7 +40,8 @@ function DeleteMemberModal({
         <Button
           color="primary"
           disabled={removeDisabled}
-          onClick={removeAndClose}>
+          onClick={removeAndClose}
+          data-test="delete-submit">
           Remove
         </Button>
       </DialogActions>
@@ -53,6 +54,7 @@ DeleteMemberModal.propTypes = {
   onRequestClose: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   name: PropTypes.string,
+  uid: PropTypes.string,
   open: PropTypes.bool.isRequired
 }
 

@@ -1,7 +1,6 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { capitalize } from 'lodash'
-import { Field } from 'redux-form'
+import { useFormContext, useFieldArray, Controller } from 'react-hook-form'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -17,8 +16,8 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import DeleteIcon from '@material-ui/icons/Delete'
-import Select from 'components/FormSelectField'
-import TextField from 'components/FormTextField'
+import TextField from '@material-ui/core/TextField'
+import Select from '@material-ui/core/Select'
 import styles from './ActionTemplateBackups.styles'
 
 const useStyles = makeStyles(styles)
@@ -30,11 +29,14 @@ const resourcesOptions = [
   { value: 'storage', label: 'Cloud Storage' }
 ]
 
-function ActionTemplateBackups({ fields, steps }) {
+function ActionTemplateBackups() {
   const classes = useStyles()
+  const { control, register, watch } = useFormContext()
+  const name = 'backups'
+  const { fields, remove, append } = useFieldArray({ control, name })
 
   function addBackup() {
-    return fields.push({ dest: { resource: 'firestore' } })
+    append({ dest: { resource: 'firestore' } })
   }
 
   return (
@@ -46,31 +48,34 @@ function ActionTemplateBackups({ fields, steps }) {
         variant="contained">
         Add Backup
       </Button>
-      {fields.map((member, index, field) => {
+      {fields.map((field, index) => {
         function removeBackup() {
-          return fields.remove(index)
+          return remove(index)
         }
+        const backup = watch(`${name}[${index}]`)
         return (
           <ExpansionPanel key={index}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
-                {fields.get(index).name || fields.get(index).type || 'No Name'}
+                {backup?.name || `Backup ${index + 1}`}
               </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Grid container spacing={8} style={{ flexGrow: 1 }}>
                 <Grid item xs={10} md={6} lg={6}>
-                  <Field
-                    name={`${member}.name`}
-                    component={TextField}
+                  <TextField
+                    name={`${name}[${index}].name`}
                     label="Name"
                     className={classes.field}
+                    fullWidth
+                    inputRef={register}
                   />
-                  <Field
-                    name={`${member}.description`}
-                    component={TextField}
+                  <TextField
+                    name={`${name}[${index}].description`}
                     label="Description"
                     className={classes.field}
+                    fullWidth
+                    inputRef={register}
                   />
                 </Grid>
                 <Grid item xs={2} lg={2}>
@@ -89,31 +94,34 @@ function ActionTemplateBackups({ fields, steps }) {
                   <Typography variant="h5">Source</Typography>
                   <FormControl className={classes.field}>
                     <InputLabel htmlFor="resource">Select Resource</InputLabel>
-                    <Field
-                      name={`${member}.inputs.0.resource`}
-                      component={Select}
-                      fullWidth
-                      inputProps={{
-                        name: 'resource',
-                        id: 'resource'
-                      }}>
-                      {resourcesOptions.map((option, idx) => (
-                        <MenuItem
-                          key={`Option-${option.value}-${idx}`}
-                          value={option.value}
-                          disabled={option.disabled}>
-                          <ListItemText
-                            primary={option.label || capitalize(option.value)}
-                          />
-                        </MenuItem>
-                      ))}
-                    </Field>
+                    <Controller
+                      as={
+                        <Select>
+                          {resourcesOptions.map((option, idx) => (
+                            <MenuItem
+                              key={`Option-${option.value}-${idx}`}
+                              value={option.value}
+                              disabled={option.disabled}>
+                              <ListItemText
+                                primary={
+                                  option.label || capitalize(option.value)
+                                }
+                              />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      }
+                      name={`${name}[${index}].inputs[0].resource`}
+                      control={control}
+                      defaultValue=""
+                    />
                   </FormControl>
-                  <Field
-                    name={`${member}.inputs.0.path`}
-                    component={TextField}
+                  <TextField
+                    name={`${name}[${index}].inputs[0].path`}
                     label="Path"
                     className={classes.field}
+                    fullWidth
+                    inputRef={register}
                   />
                 </Grid>
               </Grid>
@@ -123,11 +131,6 @@ function ActionTemplateBackups({ fields, steps }) {
       })}
     </div>
   )
-}
-
-ActionTemplateBackups.propTypes = {
-  fields: PropTypes.object.isRequired,
-  steps: PropTypes.array
 }
 
 export default ActionTemplateBackups

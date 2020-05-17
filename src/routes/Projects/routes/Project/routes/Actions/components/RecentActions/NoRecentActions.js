@@ -1,19 +1,15 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Paper from '@material-ui/core/Paper'
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import styles from './RecentActions.styles'
 
-function NoRecentActions({ classes }) {
+const useStyles = makeStyles(styles)
+
+export default function NoRecentActions() {
+  const classes = useStyles()
   return (
-    <Paper className={classes.empty}>
+    <Paper className={classes.empty} data-test="no-recent-actions">
       <span>No Recent Actions Found</span>
     </Paper>
   )
 }
-
-NoRecentActions.propTypes = {
-  classes: PropTypes.object.isRequired
-}
-
-export default withStyles(styles)(NoRecentActions)
