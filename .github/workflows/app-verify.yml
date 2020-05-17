@@ -51,9 +51,15 @@ jobs:
       - name: Verify
         run: yarn lint
 
-      - name: Run Unit Tests
+      - name: Verify Functions
+        # NOTE: Project name is hardcoded since emulators are being used
         run: |
-          yarn --cwd functions test:cov
+          yarn functions:build
+          yarn --cwd functions test:cov --project fireadmin-stage
+
+      - name: Upload Functions Test Coverage
+        run: |
+          bash <(curl -s https://codecov.io/bash) -f functions/coverage/lcov.info || 'Test Coverage Upload Failed, continuing'
 
       - name: Build App
         run: |
