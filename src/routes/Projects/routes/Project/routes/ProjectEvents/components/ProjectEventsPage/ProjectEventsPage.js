@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { map, flatMap, startCase, groupBy } from 'lodash'
 import {
   useFirestore,
-  useFirestoreCollectionData,
+  useFirestoreCollection,
   useDatabase,
   useDatabaseObjectData
 } from 'reactfire'
@@ -19,6 +19,7 @@ import { formatTime, formatDate } from 'utils/formatters'
 import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 import NoProjectEvents from './NoProjectEvents'
 import styles from './ProjectEventsPage.styles'
+import LoadingSpinner from 'components/LoadingSpinner'
 
 const useStyles = makeStyles(styles)
 
@@ -31,12 +32,13 @@ function ProjectEventsPage({ projectId }) {
     .collection(`${PROJECTS_COLLECTION}/${projectId}/events`)
     .orderBy('createdAt', 'desc')
     .limit(200)
-  const projectEvents = useFirestoreCollectionData(projectEventsRef, {
+  const projectEventsSnap = useFirestoreCollection(projectEventsRef, {
     idField: 'id'
   })
   const displayNames = useDatabaseObjectData(displayNamesRef)
   // Populate project events with display names
-  const events = projectEvents.map((event) => {
+  const events = projectEventsSnap.docs.map((eventDoc) => {
+    const event = eventDoc.data()
     const createdBy = event?.createdBy
     if (displayNames && createdBy) {
       return {
@@ -46,6 +48,8 @@ function ProjectEventsPage({ projectId }) {
     }
     return event
   })
+
+  console.log('projectEventsSnap', projectEventsSnap)
 
   // Group events by createdAt date
   const groupedEvents = groupBy(events, (event) => {
@@ -57,7 +61,9 @@ function ProjectEventsPage({ projectId }) {
     <div className={classes.container}>
       <Typography className={classes.pageHeader}>Project Events</Typography>
       <div className={classes.content}>
-        {!projectEvents.length ? (
+        {projectEventsSnap.metadata.fromCache ? (
+          <LoadingSpinner />
+        ) : !projectEventsSnap.docs.length ? (
           <NoProjectEvents />
         ) : (
           <Paper>

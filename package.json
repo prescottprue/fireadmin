@@ -37,7 +37,7 @@
     "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\""
   },
   "dependencies": {
-    "@material-ui/core": "^4.9.8",
+    "@material-ui/core": "^4.9.14",
     "@material-ui/icons": "^4.9.1",
     "@sentry/browser": "^5.15.5",
     "classnames": "^2.2.6",
@@ -52,7 +52,7 @@
     "react-dom": "^16.13.0",
     "react-dropzone": "^4.2.1",
     "react-google-button": "^0.7.0",
-    "react-hook-form": "^5.5.3",
+    "react-hook-form": "^5.7.2",
     "react-instantsearch": "^4.2.0",
     "react-router-dom": "^5.1.2",
     "reactfire": "^2.0.3"

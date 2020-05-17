@@ -27,7 +27,6 @@ const useStyles = makeStyles(styles)
 
 function ActionTemplateForm({
   onSubmit,
-  templateId,
   defaultValues,
   editable,
   startTemplateDelete
@@ -171,7 +170,6 @@ function ActionTemplateForm({
 }
 
 ActionTemplateForm.propTypes = {
-  templateId: PropTypes.string.isRequired,
   startTemplateDelete: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   defaultValues: PropTypes.object,

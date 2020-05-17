@@ -1,11 +1,17 @@
 import React from 'react'
 import { uniqBy } from 'lodash'
-import { useFirestore, useUser, useFirestoreCollectionData } from 'reactfire'
+import {
+  useFirestore,
+  useUser,
+  useFirestoreCollection,
+  useFirestoreCollectionData
+} from 'reactfire'
 import useNotifications from 'modules/notification/useNotifications'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 import ProjectTile from '../ProjectTile'
 import { withErrorBoundary } from 'utils/components'
+import LoadingSpinner from 'components/LoadingSpinner'
 
 function ProjectsList() {
   const { showError, showSuccess } = useNotifications()
@@ -18,11 +24,14 @@ function ProjectsList() {
     '==',
     true
   )
-
+  const currentUserProjectsSnap = useFirestoreCollection(
+    currentUsersProjectsRef
+  )
   const currentUsersProjects = useFirestoreCollectionData(
     currentUsersProjectsRef,
     { idField: 'id' }
   )
+  const collabProjectsSnap = useFirestoreCollection(collabProjectsRef)
   const collabProjects = useFirestoreCollectionData(collabProjectsRef, {
     idField: 'id'
   })
@@ -40,6 +49,13 @@ function ProjectsList() {
       console.error('Error deleting project:', err) // eslint-disable-line no-console
       showError(err.message || 'Error deleting project')
     }
+  }
+
+  if (
+    currentUserProjectsSnap.metadata.fromCache ||
+    collabProjectsSnap.metadata.fromCache
+  ) {
+    return <LoadingSpinner />
   }
 
   return (

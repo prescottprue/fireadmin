@@ -36,14 +36,12 @@ function ActionTemplateSteps() {
   const classes = useStyles()
   const { control, register, watch } = useFormContext()
   const name = 'steps'
-  const { fields, remove, append } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormContext)
-    name // unique name for your Field Array
-  })
+  const { fields, remove, append } = useFieldArray({ control, name })
 
   function addNewStep() {
     append({ required: false })
   }
+  const subcollectionsEnabled = watch('subcollections')
 
   return (
     <div>
@@ -58,12 +56,17 @@ function ActionTemplateSteps() {
         function removeStep() {
           return remove(index)
         }
-        const step = watch(`${name}[${index}]`)
+        const {
+          name: stepName,
+          type: stepType,
+          src: stepSrc,
+          disableBatching
+        } = watch(`${name}[${index}]`) || {}
         return (
           <ExpansionPanel key={index}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
-                {step?.name || `Step ${index + 1}`}
+                {stepName || `Step ${index + 1}`}
               </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
@@ -131,29 +134,27 @@ function ActionTemplateSteps() {
                   </div>
                 </Grid>
                 <Grid item xs={12} lg={12}>
-                  {step?.type === 'copy' ? (
+                  {stepType === 'copy' && stepSrc?.resource === 'rtdb' ? (
                     <FormControlLabel
                       control={
                         <Checkbox
                           name={`${name}[${index}].disableBatching`}
-                          disabled={step?.src?.resource !== 'rtdb'}
                           inputRef={register}
-                          defaultChecked={step?.disableBatching || false}
+                          defaultChecked={disableBatching || false}
                         />
                       }
                       label="Disable Batching (only RTDB)"
                       className={classes.subcollectionOption}
                     />
                   ) : null}
-                  {step?.type === 'copy' ? (
+                  {stepType === 'copy' && stepSrc?.resource === 'firestore' ? (
                     <>
                       <FormControlLabel
                         control={
                           <Checkbox
                             name="subcollections"
-                            disabled={step?.src?.resource !== 'firestore'}
                             inputRef={register}
-                            defaultChecked={step?.subcollections || false}
+                            defaultChecked={subcollectionsEnabled || false}
                           />
                         }
                         label="Include subcollections (only Firestore)"
