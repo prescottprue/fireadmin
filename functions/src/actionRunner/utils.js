@@ -1,4 +1,4 @@
-import { isArray, omit } from 'lodash'
+import { omit } from 'lodash'
 import * as admin from 'firebase-admin'
 import { ACTION_RUNNER_RESPONSES_PATH } from './constants'
 import { to } from '../utils/async'
@@ -219,11 +219,22 @@ export function collectionsSnapToArray(collectionsSnap) {
  */
 async function getSubcollectionNames(subcollectionSetting, ref) {
   // Return if the provided setting is an array (assuming it is an array of names)
-  if (isArray(subcollectionSetting)) {
+  if (Array.isArray(subcollectionSetting)) {
     return subcollectionSetting
   }
-  // all collection names
-  const [getCollectionsErr, collections] = await to(ref.getCollections())
+  // Throw an error is listCollections method does not exist
+  // In place since getCollections was no longer a method which threw an unclear error
+  if (typeof ref.listCollections !== 'function') {
+    console.error('Document ref does not have listCollections method', {
+      subcollectionSetting,
+      ref,
+      path: ref.path,
+      type: typeof ref
+    })
+    throw new Error('Document ref does not have listCollections method')
+  }
+  // Get collection refs
+  const [getCollectionsErr, collections] = await to(ref.listCollections())
   // Handle errors in batch write
   if (getCollectionsErr) {
     console.error(
@@ -249,6 +260,7 @@ export async function batchCopyBetweenFirestoreRefs({
   opts = {}
 }) {
   const { copySubcollections } = opts
+  // TODO: Switch to querying in batches limited to 500 so reads/writes match
   // Get data from src reference
   const [getErr, firstSnap] = await to(srcRef.get())
 
@@ -288,7 +300,7 @@ export async function batchCopyBetweenFirestoreRefs({
   // Get data into array (regardless of single doc or collection)
   const dataFromSrc = dataArrayFromSnap(firstSnap)
 
-  // Write docs (batching if nessesary)
+  // Write docs (batching if necessary)
   const [writeErr] = await to(
     writeDocsInBatches(destRef.firestore, destRef.path, dataFromSrc, opts)
   )
@@ -330,7 +342,7 @@ export async function batchCopyBetweenFirestoreRefs({
         if (!subcollectionNames.length) {
           return null
         }
-
+        // Copy subcollections in batches of 500 docs at a time
         return Promise.all(
           subcollectionNames.map((collectionName) =>
             batchCopyBetweenFirestoreRefs({

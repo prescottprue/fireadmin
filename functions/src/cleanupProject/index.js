@@ -67,6 +67,7 @@ async function removeAllCollections(docRef) {
     throw new Error('docRef.getCollections does not exist')
   }
   // all collection names
+  // TODO: listCollections (including updating tests)
   const [getCollectionsErr, collectionSnaps] = await to(docRef.getCollections())
   // Handle errors in batch write
   if (getCollectionsErr) {
@@ -80,6 +81,7 @@ async function removeAllCollections(docRef) {
   if (!collectionSnaps.length) {
     return null
   }
+  // TODO: Switch to using .map directly on list of subcollection refs
   // Add each collection snap to a snaps array
   const snaps = []
   collectionSnaps.forEach((collectionSnap) => {

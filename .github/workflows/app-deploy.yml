@@ -98,6 +98,35 @@ jobs:
           name: firebase-debug
           path: firebase-debug.log
 
+      - name: Create Tag and Github Release
+        if: github.ref == 'refs/heads/prod'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gitBranch=${GITHUB_REF##*/}
+          endpoint=https://api.github.com/repos/$REPOSITORY/releases
+          version=v$(cat package.json | jq .version -r)
+
+          echo Configuring Git user
+          git config user.email sprue.dev@gmail.com
+          git config user.name prescottprue
+          git config user.password $GITHUB_TOKEN
+
+          echo Tagging release as $version
+          git tag -a $version -m "Production release $version"
+          git push origin $version
+
+          releasePayload=$(printf '{"tag_name": "%s","target_commitish": "%s","name": "%s","body": "","draft": false,"prerelease": false}' "$version" "$gitBranch" "$version")
+
+          echo ""
+          echo Creating Github Release...
+          echo - Endpoint: $endpoint
+          echo - Payload: $releasePayload
+          echo ""
+
+          curl --data "$releasePayload" -s -i ${endpoint}?access_token=$GITHUB_TOKEN
+
   # # Uncomment following job to enable UI testing after deployment
   # ui-tests:
   #   name: UI Test Hosted App
