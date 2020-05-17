@@ -101,8 +101,10 @@ export async function getAppFromServiceAccount(opts, eventData) {
 
 /**
  * Load service account data From Firestore
- * @param  {string} docPath - Path to Firestore document containing service account
- * @param  {string} name - Name under which to store local service account file
+ * @param {string} docPath - Path to Firestore document containing service account
+ * @param {string} name - Name under which to store local service account file
+ * @param {object} options - Options object
+ * @param {boolean} options.returnData - Whether or not to return service account data
  * @returns {Promise} Resolves with service account or path to service account
  */
 export async function serviceAccountFromFirestorePath(

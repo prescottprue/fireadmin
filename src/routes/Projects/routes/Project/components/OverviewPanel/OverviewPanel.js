@@ -7,7 +7,6 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import {
-  paths,
   LIST_PATH,
   PROJECT_ENVIRONMENTS_PATH,
   PROJECT_ACTION_PATH

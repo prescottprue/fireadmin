@@ -65,7 +65,7 @@ jobs:
         run: yarn --cwd functions build
 
       - name: Archive Build Artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: build
           path: build
@@ -123,7 +123,7 @@ jobs:
           echo "::set-env name=GOOGLE_APPLICATION_CREDENTIALS::$HOME/serviceAccount.json"
 
       - name: Download Build Artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2
         with:
           name: build
           path: build
@@ -142,11 +142,10 @@ jobs:
           group: 'UI Integration Tests'
           tag: emulated
           start: yarn emulate:all --project fireadmin-stage
-          wait-on: 'http://localhost:3000'
+          wait-on: ${{ env.CYPRESS_BASE_URL }}
           wait-on-timeout: 120
         env:
           TZ: America/Los_Angeles
-          CI: true
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_KEY }}
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_REF: ${{ github.ref }}

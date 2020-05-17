@@ -58,6 +58,7 @@
     "reactfire": "^2.0.3"
   },
   "devDependencies": {
+    "@sentry/cli": "^1.52.4",
     "@size-limit/preset-app": "^4.4.5",
     "@size-limit/webpack": "^4.4.5",
     "babel-eslint": "^10.1.0",
@@ -77,7 +78,7 @@
     "eslint-plugin-cypress": "^2.10.3",
     "eslint-plugin-flowtype": "^4.7.0",
     "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-jsdoc": "^24.0.2",
+    "eslint-plugin-jsdoc": "^25.4.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.0",
@@ -86,11 +87,11 @@
     "eslint-plugin-react-hooks": "^3.0.0",
     "eslint-plugin-standard": "^4.0.1",
     "firebase-admin": "^8.11.0",
-    "firebase-ci": "^0.12.2",
-    "firebase-tools": "8.1.1",
+    "firebase-ci": "^0.13.0",
+    "firebase-tools": "8.2.0",
     "firebase-tools-extra": "^1.0.0",
     "husky": "^4.2.5",
-    "lint-staged": "^10.1.6",
+    "lint-staged": "^10.2.2",
     "prettier": "^2.0.5",
     "react-scripts": "3.4.1",
     "size-limit": "^4.4.5"

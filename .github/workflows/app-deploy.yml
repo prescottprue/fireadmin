@@ -7,17 +7,14 @@ on:
     branches:
       - master
       - prod
-env:
-  # Whether or not to run hosted tests after deploying (second job of this workflow)
-  RUN_HOSTED_TESTS: false
 
 jobs:
   build:
-    name: Verify + Build + Deploy App
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Setup Node
         uses: actions/setup-node@v1
@@ -31,7 +28,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-main-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install Dependencies
         env:
@@ -58,10 +55,16 @@ jobs:
         run: |
           yarn lint
 
-      - name: Run Unit Tests
+      - name: Verify Functions
+        # NOTE: Project name is hardcoded since emulators are being used
         run: |
-          yarn --cwd functions test:cov
+          yarn functions:build
+          yarn --cwd functions test:cov --project fireadmin-stage
 
+      - name: Upload Functions Test Coverage
+        run: |
+          bash <(curl -s https://codecov.io/bash) -f functions/coverage/lcov.info || 'Test Coverage Upload Failed, continuing'
+    
       - name: Build App
         run: |
           yarn build
@@ -70,17 +73,11 @@ jobs:
         run: |
           yarn --cwd functions build
 
-      - name: Archive Build Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: app-build
-          path: build
-
-      - name: Archive Build Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: functions-build
-          path: functions/dist
+      # - name: Archive Build Artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: app-build
+      #     path: build
 
       - name: Deploy to Firebase
         env:
@@ -89,43 +86,69 @@ jobs:
           GITHUB_REF: ${{ github.ref }}
         run: |
           export FIREBASE_TARGETS=hosting:app$(if [ "${GITHUB_REF##*/}" = "stage" ]; then echo "Stage"; fi;),functions,storage,database,firestore
-          $(yarn bin)/firebase-ci deploy --only $FIREBASE_TARGETS
+          $(yarn bin)/firebase-ci deploy --only --force $FIREBASE_TARGETS
+
+      # Write new version to core database (causes client to refresh)
+      - name: Update Version In Database
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+        run: |
+          gitBranch=${GITHUB_REF##*/}
+          packageName=$(cat package.json | jq -r '.name')
+          packageVersion=$(cat package.json | jq -r '.version')
+          gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias] // .projects.default')
+          echo "::set-env name=PACKAGE_VERSION::$packageVersion"
+
+          echo Updating DB path \"/versionInfo/${packageName}/current\" value to version \"$packageVersion\"
+
+          $(yarn bin)/firebase database:update \
+            -d "$(jq -n --arg version "$packageVersion" '{current: $version}')" \
+            -y --project $gcloudProject \
+            "/versionInfo/${packageName}"
 
       - name: Archive Debug Log
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: firebase-debug
           path: firebase-debug.log
 
-      - name: Create Tag and Github Release
+      - name: Upload SourceMaps to Sentry
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: pruvit
+        run: |
+          version=$(cat package.json | jq  .version -r)
+          gitBranch=${GITHUB_REF##*/}
+          envName=$(if [ $gitBranch == "master" ]; then echo staging; else echo $gitBranch; fi;)
+          releaseName=$envName@$version
+          export SENTRY_PROJECT=fireadmin
+          echo ""
+          echo Creating Sentry release \"$releaseName\" for project \"$SENTRY_PROJECT\"
+          $(yarn bin)/sentry-cli releases new $releaseName --finalize
+          echo Uploading source maps to Sentry
+          $(yarn bin)/sentry-cli releases files $releaseName upload-sourcemaps ./build/static/js --no-rewrite
+          echo Associate commits with the release
+          $(yarn bin)/sentry-cli releases set-commits --auto $version
+
+      - name: Check if version has been updated
         if: github.ref == 'refs/heads/prod'
+        id: check
+        uses: EndBug/version-check@v1
+
+      - name: Create Release
+        if: github.ref == 'refs/heads/prod' && steps.check.outputs.changed == 'true'
+        id: create_release
+        uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          REPOSITORY: ${{ github.repository }}
-        run: |
-          gitBranch=${GITHUB_REF##*/}
-          endpoint=https://api.github.com/repos/$REPOSITORY/releases
-          version=v$(cat package.json | jq .version -r)
-
-          echo Configuring Git user
-          git config user.email sprue.dev@gmail.com
-          git config user.name prescottprue
-          git config user.password $GITHUB_TOKEN
-
-          echo Tagging release as $version
-          git tag -a $version -m "Production release $version"
-          git push origin $version
-
-          releasePayload=$(printf '{"tag_name": "%s","target_commitish": "%s","name": "%s","body": "","draft": false,"prerelease": false}' "$version" "$gitBranch" "$version")
-
-          echo ""
-          echo Creating Github Release...
-          echo - Endpoint: $endpoint
-          echo - Payload: $releasePayload
-          echo ""
-
-          curl --data "$releasePayload" -s -i ${endpoint}?access_token=$GITHUB_TOKEN
+        with:
+          tag_name: v${{ env.PACKAGE_VERSION }}
+          release_name: v${{ env.PACKAGE_VERSION }}
+          draft: false
+          prerelease: false
 
   # # Uncomment following job to enable UI testing after deployment
   # ui-tests:

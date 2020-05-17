@@ -49,8 +49,6 @@ function ProjectEventsPage({ projectId }) {
     return event
   })
 
-  console.log('projectEventsSnap', projectEventsSnap)
-
   // Group events by createdAt date
   const groupedEvents = groupBy(events, (event) => {
     const { createdAt } = event

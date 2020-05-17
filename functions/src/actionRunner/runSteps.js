@@ -260,8 +260,10 @@ function validateAndConvertInputValues(inputMeta, inputValue) {
  * @param {object} params.eventData - Data from event (contains settings for
  * @param {Array} params.inputs - List of inputs
  * @param {Array} params.convertedInputValues - List of inputs converted to relevant types
- * @param {object} params.event - Event object from Cloud Trigger
  * @param {Integer} params.totalNumSteps - Total number of actions
+ * @param {Array} params.convertedEnvs - List of converted envs
+ * @param {object} params.snap - Snap from event
+ * @param {object} params.context - Context from event
  * @returns {Function} Which accepts action and stepIdx (used in Promise.all map)
  */
 function createStepRunner({
@@ -328,6 +330,8 @@ function createStepRunner({
  * @param {number} params.stepIdx - Index of the action (from actions array)
  * @param {object} params.eventData - Data from event (contains settings for
  * action request)
+ * @param {Array} params.convertedEnvs - Converted environments
+ * @param {object} params.previousStepResult - Results from previous step
  * @returns {Promise} Resolves with results of running the provided action
  */
 export async function runStep({
