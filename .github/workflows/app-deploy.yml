@@ -85,8 +85,9 @@ jobs:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_REF: ${{ github.ref }}
         run: |
-          export FIREBASE_TARGETS=hosting:app$(if [ "${GITHUB_REF##*/}" = "stage" ]; then echo "Stage"; fi;),functions,storage,database,firestore
-          $(yarn bin)/firebase-ci deploy --only --force $FIREBASE_TARGETS
+          targets=hosting:app$(if [ "${GITHUB_REF##*/}" = "stage" ]; then echo "Stage"; fi;),functions,storage,database,firestore
+          echo Deploying targets: $targets
+          $(yarn bin)/firebase-ci deploy --force --only $targets
 
       # Write new version to core database (causes client to refresh)
       - name: Update Version In Database
