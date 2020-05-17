@@ -44,7 +44,7 @@ function ActionTemplateInputs() {
         }
         const input = watch(`${name}[${index}]`)
         return (
-          <ExpansionPanel key={index}>
+          <ExpansionPanel key={index} data-test="action-template-input">
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
                 {input?.name || `Input ${index + 1}`}

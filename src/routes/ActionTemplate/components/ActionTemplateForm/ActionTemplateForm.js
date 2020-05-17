@@ -94,7 +94,8 @@ function ActionTemplateForm({
                 onClick={startTemplateDelete}
                 disabled={!editable}
                 color="secondary"
-                className={classes.button}>
+                className={classes.button}
+                data-test="start-template-delete">
                 <DeleteIcon />
               </Fab>
             </div>

@@ -43,7 +43,7 @@ function ActionTemplateEnvs() {
         }
         const environment = watch(`${name}[${index}]`)
         return (
-          <ExpansionPanel key={field.id}>
+          <ExpansionPanel key={field.id} data-test="action-template-env">
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
                 {environment?.name || `Environment ${index + 1}`}

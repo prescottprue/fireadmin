@@ -63,7 +63,7 @@ function ActionTemplateSteps() {
           disableBatching
         } = watch(`${name}[${index}]`) || {}
         return (
-          <ExpansionPanel key={index}>
+          <ExpansionPanel key={index} data-test="action-template-step">
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
                 {stepName || `Step ${index + 1}`}
