@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app' // imported for auth provider
 import { useAuth } from 'reactfire'
 import GoogleButton from 'react-google-button'
@@ -7,9 +7,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Paper from '@material-ui/core/Paper'
 import useNotifications from 'modules/notification/useNotifications'
-import { SIGNUP_PATH, LIST_PATH } from 'constants/paths'
+import { LIST_PATH } from 'constants/paths'
 import LoadingSpinner from 'components/LoadingSpinner'
 import styles from './LoginPage.styles'
+import { Typography } from '@material-ui/core'
 
 const useStyles = makeStyles(styles)
 
@@ -44,10 +45,12 @@ function LoginPage() {
           <GoogleButton onClick={googleLogin} data-test="google-auth-button" />
         )}
         <div className={classes.signup}>
-          <span className={classes.signupLabel}>Need an account?</span>
-          <Link className={classes.signupLink} to={SIGNUP_PATH}>
-            Sign Up
-          </Link>
+          <Typography className={classes.signupLabel}>
+            Looking to Signup?
+          </Typography>
+          <Typography variant="p">
+            Your account will be automatically created on first login
+          </Typography>
         </div>
       </Paper>
     </Container>

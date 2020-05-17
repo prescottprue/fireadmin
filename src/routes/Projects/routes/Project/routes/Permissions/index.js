@@ -1,5 +1,5 @@
 import { loadable } from 'utils/router'
-import { PERMISSIONS_PATH as path } from 'constants/paths'
+import { PROJECT_PERMISSIONS_PATH as path } from 'constants/paths'
 
 export default {
   path,

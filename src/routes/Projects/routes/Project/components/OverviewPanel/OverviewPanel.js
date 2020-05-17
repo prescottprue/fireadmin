@@ -6,7 +6,12 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
-import { paths } from 'constants/paths'
+import {
+  paths,
+  LIST_PATH,
+  PROJECT_ENVIRONMENTS_PATH,
+  PROJECT_ACTION_PATH
+} from 'constants/paths'
 import styles from './OverviewPanel.styles'
 import { useFirestoreCollectionData, useFirestore } from 'reactfire'
 
@@ -14,7 +19,7 @@ const useStyles = makeStyles(styles)
 
 function OverviewPanel({ project, projectId }) {
   const classes = useStyles()
-  const projectPath = `${paths.list}/${projectId}`
+  const projectPath = `${LIST_PATH}/${projectId}`
   const firestore = useFirestore()
   const projectEnvironmentsRef = firestore.collection(
     `projects/${projectId}/environments`
@@ -44,7 +49,7 @@ function OverviewPanel({ project, projectId }) {
               </Typography>
             </div>
           )}
-          <Link to={`${projectPath}/${paths.projectEnvironments}`}>
+          <Link to={`${projectPath}/${PROJECT_ENVIRONMENTS_PATH}`}>
             <Button variant="contained" color="primary">
               Go To Environments
             </Button>
@@ -61,7 +66,7 @@ function OverviewPanel({ project, projectId }) {
             variant="contained"
             color="primary"
             component={Link}
-            to={`${projectPath}/${paths.projectActions}`}
+            to={`${projectPath}/${PROJECT_ACTION_PATH}`}
             disabled={!projectEnvironments.length}>
             Go To Actions
           </Button>
