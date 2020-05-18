@@ -55,7 +55,7 @@ function AccountForm({ account, onSubmit }) {
           fullWidth
         />
       </div>
-      {!!account && !!account.providerData && (
+      {!!account?.providerData && (
         <div>
           <Typography variant="h6">Linked Accounts</Typography>
           <ProviderDataForm providerData={account.providerData} />

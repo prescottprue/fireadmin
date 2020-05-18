@@ -1,18 +1,19 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { useFirestoreCollectionData, useFirestore } from 'reactfire'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 import {
   LIST_PATH,
   PROJECT_ENVIRONMENTS_PATH,
   PROJECT_ACTION_PATH
 } from 'constants/paths'
 import styles from './OverviewPanel.styles'
-import { useFirestoreCollectionData, useFirestore } from 'reactfire'
 
 const useStyles = makeStyles(styles)
 
@@ -21,9 +22,14 @@ function OverviewPanel({ project, projectId }) {
   const projectPath = `${LIST_PATH}/${projectId}`
   const firestore = useFirestore()
   const projectEnvironmentsRef = firestore.collection(
-    `projects/${projectId}/environments`
+    `${PROJECTS_COLLECTION}/${projectId}/environments`
   )
-  const projectEnvironments = useFirestoreCollectionData(projectEnvironmentsRef)
+  const projectEnvironments = useFirestoreCollectionData(
+    projectEnvironmentsRef,
+    {
+      idField: 'id'
+    }
+  )
 
   return (
     <Paper className={classes.root}>

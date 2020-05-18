@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import styles from './NewProjectTile.styles'
 
 const iconSize = '6rem'
-const iconStyle = { width: iconSize, height: iconSize }
 const useStyles = makeStyles(styles)
 
 function NewProjectTile({ onClick }) {
@@ -17,7 +16,7 @@ function NewProjectTile({ onClick }) {
       className={classes.root}
       onClick={onClick}
       data-test="new-project-tile">
-      <ContentAddCircle style={iconStyle} />
+      <ContentAddCircle style={{ width: iconSize, height: iconSize }} />
     </Paper>
   )
 }

@@ -10,8 +10,5 @@ export function initScripts() {
 }
 
 export function databaseURLToProjectName(databaseURL) {
-  return (
-    databaseURL &&
-    databaseURL.replace('https://', '').replace('.firebaseio.com', '')
-  )
+  return databaseURL?.replace('https://', '').replace('.firebaseio.com', '')
 }

@@ -63,6 +63,7 @@ export function triggerAnalyticsEvent(eventNameKey, eventData) {
   } else {
     if (config.segmentId && window.analytics && !window.Cypress) {
       window.analytics.track(eventName, eventData)
+      firebase.analytics().logEvent(eventName, eventData)
     } else {
       console.debug('Analytics Event:', eventName, eventData) // eslint-disable-line no-console
     }
@@ -71,9 +72,9 @@ export function triggerAnalyticsEvent(eventNameKey, eventData) {
 
 /**
  * Create event within project on Firestore
- * @param  {Object} firestore - firestore instance (from Firebase SDK)
- * @param  {String} projectId - Id of project document
- * @param  {Object} pushObject - data to push with event
+ * @param {Object} firestore - firestore instance (from Firebase SDK)
+ * @param {String} projectId - Id of project document
+ * @param {Object} pushObject - data to push with event
  * @return {Promise} Resolves with results of firestore.add call
  */
 export function createProjectEvent(
@@ -86,5 +87,3 @@ export function createProjectEvent(
     createdAt: FieldValue.serverTimestamp()
   })
 }
-
-export default { triggerAnalyticsEvent }

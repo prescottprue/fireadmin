@@ -1,19 +1,23 @@
 import React from 'react'
 import { useFirestore, useFirestoreDoc, useUser } from 'reactfire'
 import Grid from '@material-ui/core/Grid'
+import * as Sentry from '@sentry/browser'
 import { makeStyles } from '@material-ui/core/styles'
 import defaultUserImageUrl from 'static/User.png'
-import AccountForm from '../AccountForm'
+import useNotifications from 'modules/notification/useNotifications'
 import LoadingSpinner from 'components/LoadingSpinner'
+import { USERS_COLLECTION } from 'constants/firebasePaths'
+import AccountForm from '../AccountForm'
 import styles from './AccountEditor.styles'
 
 const useStyles = makeStyles(styles)
 
 function AccountEditor() {
+  const { showError } = useNotifications()
   const classes = useStyles()
   const firestore = useFirestore()
   const user = useUser()
-  const accountRef = firestore.doc(`users/${user.uid}`)
+  const accountRef = firestore.doc(`${USERS_COLLECTION}/${user.uid}`)
   const profileSnap = useFirestoreDoc(accountRef)
   const profile = profileSnap.data()
 
@@ -29,8 +33,9 @@ function AccountEditor() {
       await accountRef.set(changedAccount, { merge: true })
       return user
     } catch (error) {
-      console.error('Error updating profile', error.message || error) // eslint-disable-line no-console
-      throw error
+      console.error('Error updating account:', error.message || error) // eslint-disable-line no-console
+      showError('Error updating Account')
+      Sentry.captureException(error)
     }
   }
 

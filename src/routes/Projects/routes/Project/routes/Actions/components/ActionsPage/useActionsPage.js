@@ -5,7 +5,11 @@ import {
   useFirestore,
   useFirestoreCollectionData
 } from 'reactfire'
-import { ACTION_RUNNER_REQUESTS_PATH } from 'constants/firebasePaths'
+import * as Sentry from '@sentry/browser'
+import {
+  ACTION_RUNNER_REQUESTS_PATH,
+  PROJECTS_COLLECTION
+} from 'constants/firebasePaths'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 import useNotifications from 'modules/notification/useNotifications'
 
@@ -46,7 +50,7 @@ export default function useActionRunner({
   const { FieldValue } = useFirestore
   const environmentValues = watch('environmentValues')
   const environmentsRef = firestore.collection(
-    `projects/${projectId}/environments`
+    `${PROJECTS_COLLECTION}/${projectId}/environments`
   )
   const environments = useFirestoreCollectionData(environmentsRef, {
     idField: 'id'
@@ -139,6 +143,7 @@ export default function useActionRunner({
       .catch((err) => {
         console.error('Error: ', err.message || err) // eslint-disable-line no-console
         showError('Error starting action request')
+        Sentry.captureException(err)
       })
   }
 

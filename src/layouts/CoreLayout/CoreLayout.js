@@ -7,7 +7,6 @@ import NavbarWithoutAuth from 'containers/Navbar/NavbarWithoutAuth'
 import { Notifications } from 'modules/notification'
 import VersionChangeReloader from 'components/VersionChangeReloader'
 import styles from './CoreLayout.styles'
-import LoadingSpinner from 'components/LoadingSpinner'
 import SetupFirestore from 'components/SetupFirestore'
 
 const useStyles = makeStyles(styles)
@@ -25,7 +24,7 @@ function CoreLayout({ children }) {
       </SuspenseWithPerf>
       <div className={classes.children}>{children}</div>
       <Notifications />
-      <SuspenseWithPerf fallback={<LoadingSpinner />} traceId="load-navbar">
+      <SuspenseWithPerf traceId="load-version-change">
         <VersionChangeReloader />
       </SuspenseWithPerf>
     </div>

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { uniqBy } from 'lodash'
 import {
   useFirestore,
@@ -6,14 +7,20 @@ import {
   useFirestoreCollection,
   useFirestoreCollectionData
 } from 'reactfire'
+import { makeStyles } from '@material-ui/core/styles'
 import useNotifications from 'modules/notification/useNotifications'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 import ProjectTile from '../ProjectTile'
 import { withErrorBoundary } from 'utils/components'
 import LoadingSpinner from 'components/LoadingSpinner'
+import styles from './ProjectsList.styles'
+import NewProjectTile from '../NewProjectTile'
 
-function ProjectsList() {
+const useStyles = makeStyles(styles)
+
+function ProjectsList({ onNewClick }) {
+  const classes = useStyles()
   const { showError, showSuccess } = useNotifications()
   const firestore = useFirestore()
   const user = useUser()
@@ -31,7 +38,6 @@ function ProjectsList() {
     currentUsersProjectsRef,
     { idField: 'id' }
   )
-  const collabProjectsSnap = useFirestoreCollection(collabProjectsRef)
   const collabProjects = useFirestoreCollectionData(collabProjectsRef, {
     idField: 'id'
   })
@@ -51,15 +57,13 @@ function ProjectsList() {
     }
   }
 
-  if (
-    currentUserProjectsSnap.metadata.fromCache ||
-    collabProjectsSnap.metadata.fromCache
-  ) {
+  if (currentUserProjectsSnap.metadata.fromCache) {
     return <LoadingSpinner />
   }
 
   return (
-    <>
+    <div className={classes.root}>
+      <NewProjectTile onClick={onNewClick} />
       {projects.map((project, ind) => {
         return (
           <ProjectTile
@@ -71,8 +75,12 @@ function ProjectsList() {
           />
         )
       })}
-    </>
+    </div>
   )
+}
+
+ProjectsList.propTypes = {
+  onNewClick: PropTypes.func.isRequired
 }
 
 export default withErrorBoundary()(ProjectsList)

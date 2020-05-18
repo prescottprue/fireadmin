@@ -22,7 +22,7 @@ import styles from './ProjectTile.styles'
 
 const useStyles = makeStyles(styles)
 
-function ProjectTile({ open, project, onDelete, projectId }) {
+function ProjectTile({ project, onDelete, projectId }) {
   const classes = useStyles()
   const history = useHistory()
 
@@ -36,7 +36,6 @@ function ProjectTile({ open, project, onDelete, projectId }) {
   return (
     <Paper
       className={classes.container}
-      open={open}
       data-test="project-tile"
       data-test-id={projectId}>
       <div className={classes.top}>
@@ -91,9 +90,8 @@ function ProjectTile({ open, project, onDelete, projectId }) {
 
 ProjectTile.propTypes = {
   project: PropTypes.object.isRequired,
-  projectId: PropTypes.string,
-  onDelete: PropTypes.func,
-  open: PropTypes.bool
+  projectId: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired
 }
 
 export default ProjectTile

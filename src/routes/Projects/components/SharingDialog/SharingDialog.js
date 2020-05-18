@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { map, get, findIndex } from 'lodash'
+import { useFirestore, useDatabase, useDatabaseObjectData } from 'reactfire'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -12,9 +13,9 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { makeStyles } from '@material-ui/core/styles'
-import { useFirestore, useDatabase, useDatabaseObjectData } from 'reactfire'
 import UsersSearch from 'components/UsersSearch'
 import UsersList from 'components/UsersList'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 import useNotifications from 'modules/notification/useNotifications'
 import styles from './SharingDialog.styles'
@@ -68,7 +69,7 @@ function SharingDialog({ open, onRequestClose, project }) {
     })
     try {
       await firestore
-        .doc(`projects/${project.id}`)
+        .doc(`${PROJECTS_COLLECTION}/${project.id}`)
         .set({ collaborators, permissions }, { merge: true })
       changeSelectedCollaborators([])
       onRequestClose()

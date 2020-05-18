@@ -24,6 +24,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import CollectionSearch from 'components/CollectionSearch'
 import TabContainer from 'components/TabContainer'
 import { databaseURLToProjectName } from 'utils'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 import { ACTION_TEMPLATES_PATH } from 'constants/paths'
 import StepsViewer from '../StepsViewer'
 import PrivateActionTemplates from '../PrivateActionTemplates'
@@ -37,14 +38,13 @@ function ActionsPage({ projectId }) {
   const classes = useStyles()
   const { reset, register, watch, control, handleSubmit } = useForm()
   const [selectedTab, selectTab] = useState(0)
-  const lockedEnvInUse = false // TODO: Load this from Firestore data
   const [selectedTemplate, changeSelectedTemplate] = useState()
   const [templateEditExpanded, changeTemplateEdit] = useState(true)
   const [inputsExpanded, changeInputExpanded] = useState(true)
   const [environmentsExpanded, changeEnvironmentsExpanded] = useState(true)
   const firestore = useFirestore()
   const environmentsRef = firestore.collection(
-    `projects/${projectId}/environments`
+    `${PROJECTS_COLLECTION}/${projectId}/environments`
   )
   const environments = useFirestoreCollectionData(environmentsRef, {
     idField: 'id'
@@ -73,7 +73,7 @@ function ActionsPage({ projectId }) {
   const templateName = selectedTemplate
     ? `Template: ${get(selectedTemplate, 'name', '')}`
     : 'Template'
-
+  // TODO: Disable run action button if form is not fully filled out
   return (
     <div className={classes.container}>
       <Typography className={classes.pageHeader}>Actions</Typography>
@@ -81,7 +81,7 @@ function ActionsPage({ projectId }) {
       <div className={classes.container}>
         <div className={classes.buttons}>
           <Button
-            disabled={!selectedTemplate || lockedEnvInUse}
+            disabled={!selectedTemplate}
             color="primary"
             variant="contained"
             aria-label="Run Action"

@@ -36,7 +36,7 @@ jobs:
           yarn --cwd functions install --frozen-lockfile
 
       - name: Archive Error Logs
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: error-logs
@@ -48,9 +48,6 @@ jobs:
           GITHUB_REF: ${{ github.ref }}
         run: yarn build:config
 
-      - name: Verify
-        run: yarn lint
-
       - name: Verify Functions
         # NOTE: Project name is hardcoded since emulators are being used
         run: |
@@ -61,14 +58,14 @@ jobs:
         run: |
           bash <(curl -s https://codecov.io/bash) -f functions/coverage/lcov.info || 'Test Coverage Upload Failed, continuing'
 
+      - name: Verify
+        run: yarn lint
+
       - name: Build App
         run: |
           export REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST="localhost:$(cat firebase.json | jq .emulators.database.port)"
           export REACT_APP_FIRESTORE_EMULATOR_HOST="localhost:$(cat firebase.json | jq .emulators.firestore.port)"
           yarn build
-
-      - name: Build Functions
-        run: yarn --cwd functions build
 
       - name: Archive Build Artifact
         uses: actions/upload-artifact@v2
@@ -147,7 +144,7 @@ jobs:
           headless: true
           group: 'UI Integration Tests'
           tag: emulated
-          start: yarn emulate:all --project fireadmin-stage
+          start: yarn emulate:all --project ${{ env.GCLOUD_PROJECT }}
           wait-on: ${{ env.CYPRESS_BASE_URL }}
           wait-on-timeout: 120
         env:

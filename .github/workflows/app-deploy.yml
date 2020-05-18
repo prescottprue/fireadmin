@@ -38,11 +38,21 @@ jobs:
           yarn --cwd functions install --frozen-lockfile
 
       - name: Archive Error Logs
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: error-logs
           path: yarn-error.log
+
+      - name: Verify Functions
+        # NOTE: Project name is hardcoded since emulators are being used
+        run: |
+          yarn functions:build
+          yarn --cwd functions test:cov --project fireadmin-stage
+
+      - name: Upload Functions Test Coverage
+        run: |
+          bash <(curl -s https://codecov.io/bash) -f functions/coverage/lcov.info || 'Test Coverage Upload Failed, continuing'
 
       - name: Build App Config
         env:
@@ -55,23 +65,9 @@ jobs:
         run: |
           yarn lint
 
-      - name: Verify Functions
-        # NOTE: Project name is hardcoded since emulators are being used
-        run: |
-          yarn functions:build
-          yarn --cwd functions test:cov --project fireadmin-stage
-
-      - name: Upload Functions Test Coverage
-        run: |
-          bash <(curl -s https://codecov.io/bash) -f functions/coverage/lcov.info || 'Test Coverage Upload Failed, continuing'
-    
       - name: Build App
         run: |
           yarn build
-
-      - name: Build Functions
-        run: |
-          yarn --cwd functions build
 
       # - name: Archive Build Artifact
       #   uses: actions/upload-artifact@v2
@@ -102,12 +98,12 @@ jobs:
           gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias] // .projects.default')
           echo "::set-env name=PACKAGE_VERSION::$packageVersion"
 
-          echo Updating DB path \"/versionInfo/${packageName}/current\" value to version \"$packageVersion\"
+          echo Updating DB path \"/versionInfo/current\" value to version \"$packageVersion\"
 
           $(yarn bin)/firebase database:update \
             -d "$(jq -n --arg version "$packageVersion" '{current: $version}')" \
             -y --project $gcloudProject \
-            "/versionInfo/${packageName}"
+            "/versionInfo"
 
       - name: Archive Debug Log
         uses: actions/upload-artifact@v2
@@ -116,7 +112,7 @@ jobs:
           name: firebase-debug
           path: firebase-debug.log
 
-      - name: Upload SourceMaps to Sentry
+      - name: Create Release In Sentry
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: pruvit
@@ -128,11 +124,14 @@ jobs:
           export SENTRY_PROJECT=fireadmin
           echo ""
           echo Creating Sentry release \"$releaseName\" for project \"$SENTRY_PROJECT\"
-          $(yarn bin)/sentry-cli releases new $releaseName --finalize
-          echo Uploading source maps to Sentry
+          $(yarn bin)/sentry-cli releases new $releaseName
+          echo Uploading source maps to Sentry...
           $(yarn bin)/sentry-cli releases files $releaseName upload-sourcemaps ./build/static/js --no-rewrite
-          echo Associate commits with the release
+          echo Associating commits with the release...
           $(yarn bin)/sentry-cli releases set-commits --auto $version
+          echo Finalizing the release...
+          $(yarn bin)/sentry-cli releases finalize $releaseName
+          echo Release created successfully
 
       - name: Check if version has been updated
         if: github.ref == 'refs/heads/prod'

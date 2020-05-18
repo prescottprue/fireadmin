@@ -1,5 +1,8 @@
 export default (theme) => ({
   root: {
-    // style code
+    display: 'flex',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    '-webkit-flex-flow': 'row wrap'
   }
 })

@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { map } from 'lodash'
 import Divider from '@material-ui/core/Divider'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -20,7 +19,9 @@ function PrivateActionTemplates({ onTemplateClick }) {
     .collection('actionTemplates')
     .where('createdBy', '==', user.uid)
     .where('public', '==', false)
-  const templates = useFirestoreCollectionData(actionTemplatesQuery)
+  const templates = useFirestoreCollectionData(actionTemplatesQuery, {
+    idField: 'id'
+  })
 
   if (!templates.length) {
     return <NoTemplatesFound />
@@ -30,7 +31,7 @@ function PrivateActionTemplates({ onTemplateClick }) {
     <div className={classes.root}>
       <List component="nav">
         <Divider />
-        {map(templates, (item, idx) => [
+        {templates.map((item, idx) => [
           <ListItem
             button
             key={`PrivateTemplate-${item.id}-${idx}`}

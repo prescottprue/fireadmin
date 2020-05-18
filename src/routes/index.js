@@ -1,5 +1,9 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
+import { SuspenseWithPerf } from 'reactfire'
+import AnalyticsPageViewLogger from 'components/AnalyticsPageViewLogger'
+import { PrivateRoute } from 'utils/router'
+import LoadingSpinner from 'components/LoadingSpinner'
 import CoreLayout from '../layouts/CoreLayout'
 import AccountRoute from './Account'
 import ActionTemplateRoute from './ActionTemplate'
@@ -12,23 +16,32 @@ import ProjectsRoute from './Projects'
 export default function createRoutes(store) {
   return (
     <CoreLayout>
-      <Switch>
-        <Route exact path={Home.path} component={() => <Home.component />} />
-        {
-          /* Build Route components from routeSettings */
-          [
-            ActionTemplateRoute,
-            ActionTemplatesRoute,
-            AccountRoute,
-            ProjectsRoute,
-            LoginRoute
-            /* Add More Routes Here */
-          ].map((settings, index) => (
-            <Route key={`Route-${index}`} {...settings} />
-          ))
-        }
-        <Route component={NotFoundRoute.component} />
-      </Switch>
+      <SuspenseWithPerf fallback={<LoadingSpinner />} traceId="router-wait">
+        <Switch>
+          <Route exact path={Home.path} component={() => <Home.component />} />
+          {
+            /* Build Route components from routeSettings */
+            [
+              ActionTemplateRoute,
+              ActionTemplatesRoute,
+              AccountRoute,
+              ProjectsRoute,
+              LoginRoute
+              /* Add More Routes Here */
+            ].map((settings) =>
+              settings.authRequired ? (
+                <PrivateRoute key={`Route-${settings.path}`} {...settings} />
+              ) : (
+                <Route key={`Route-${settings.path}`} {...settings} />
+              )
+            )
+          }
+          <Route component={NotFoundRoute.component} />
+          <SuspenseWithPerf traceId="page-view-logger">
+            <AnalyticsPageViewLogger />
+          </SuspenseWithPerf>
+        </Switch>
+      </SuspenseWithPerf>
     </CoreLayout>
   )
 }
