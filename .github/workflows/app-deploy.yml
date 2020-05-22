@@ -20,15 +20,24 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10
+      
+      - name: Get Cache Settings
+        id: cache-settings
+        run: |
+          echo "::set-output name=dir::$(yarn cache dir)"
+          echo "::set-output name=firebase-tools::$(yarn list -s --depth=0 --pattern firebase-tools | tail -n 1 | sed 's/.*@//g')"
 
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v1
+      - name: Cache App Dependencies
+        uses: actions/cache@v1
         with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.cache-settings.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+
+      - name: Cache Firebase Emulator Binaries
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/firebase/emulators
+          key: ${{ runner.os }}-firebase-${{ steps.cache-settings.outputs.firebase-tools }}
 
       - name: Install Dependencies
         env:
@@ -74,6 +83,12 @@ jobs:
       #   with:
       #     name: app-build
       #     path: build
+
+      - name: Firebase Deploy Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.firebase
+          key: ${{ runner.os }}-firebase-deploy-${{ steps.cache-settings.outputs.firebase-tools }}
 
       - name: Deploy to Firebase
         env:

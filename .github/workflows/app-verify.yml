@@ -18,6 +18,12 @@ jobs:
         with:
           node-version: 10
 
+      - name: Get cache settings
+        id: cache-settings
+        run: |
+          echo "::set-output name=dir::$(yarn cache dir)"
+          echo "::set-output name=firebase-tools::$(yarn list -s --depth=0 --pattern firebase-tools | tail -n 1 | sed 's/.*@//g')"
+
       - name: Get Yarn Cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -96,16 +102,16 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Get Library Versions For Binary Caching
-        id: dep-versions
+      - name: Get Cache Settings
+        id: cache-settings
         run: |
-          echo "::set-output name=firebase-tools::$(yarn info firebase-tools version --silent)"
+          echo "::set-output name=firebase-tools::$(yarn list -s --depth=0 --pattern firebase-tools | tail -n 1 | sed 's/.*@//g')"
 
       - name: Cache Firebase Emulator Binaries
         uses: actions/cache@v1
         with:
           path: ~/.cache/firebase/emulators
-          key: ${{ runner.os }}-firebase-${{ steps.dep-versions.outputs.firebase-tools }}
+          key: ${{ runner.os }}-firebase-${{ steps.cache-settings.outputs.firebase-tools }}
 
       - name: Set Test Environment Settings
         id: emulator-settings

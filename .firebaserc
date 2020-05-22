@@ -18,7 +18,8 @@
           "appId": "1:566109548798:web:29831023bb21d00edc35af",
           "storageBucket": "fireadmin-stage.appspot.com",
           "locationId": "us-central",
-          "messagingSenderId": "566109548798"
+          "messagingSenderId": "566109548798",
+          "appId": "1:566109548798:web:29831023bb21d00edc35af"
         },
         "segmentId": "HWEhRQnBTbnYCgv9b4qeA793wVcR0W5b",
         "sentryDsn": "https://65bfbcc3e0f94d1391daae55500165fa@sentry.io/1238306",
