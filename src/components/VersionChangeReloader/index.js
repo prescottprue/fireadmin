@@ -4,13 +4,13 @@ import { useDatabase, useDatabaseObjectData } from 'reactfire'
 export default function VersionChangeReloader() {
   const database = useDatabase()
   const versionInfo = useDatabaseObjectData(database.ref('versionInfo'))
+
   const sessionStorageKey = 'fireadminVersion'
-  const sessionVersion = window.sessionStorage.getItem(sessionStorageKey)
 
   useEffect(() => {
     const currentRemoteVersion = versionInfo.current
     const currentClientVersion = window.version
-
+    const sessionVersion = window.sessionStorage.getItem(sessionStorageKey)
     // set version to session storage if it does not exist
     if (!sessionVersion) {
       window.sessionStorage.setItem(sessionStorageKey, currentRemoteVersion)
@@ -34,7 +34,7 @@ export default function VersionChangeReloader() {
     if (versionDiscrepencyExists && !refreshHasOccurred) {
       window.location.reload(true)
     }
-  }, [versionInfo, sessionVersion])
+  }, [versionInfo])
 
   return null
 }

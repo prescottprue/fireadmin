@@ -84,12 +84,6 @@ jobs:
       #     name: app-build
       #     path: build
 
-      - name: Firebase Deploy Cache
-        uses: actions/cache@v1
-        with:
-          path: ~/.firebase
-          key: ${{ runner.os }}-firebase-deploy-${{ steps.cache-settings.outputs.firebase-tools }}
-
       - name: Deploy to Firebase
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

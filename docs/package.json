@@ -21,10 +21,10 @@
     "prepush": "npm run lint"
   },
   "dependencies": {
-    "@material-ui/core": "^4.5.2",
-    "@material-ui/icons": "^4.5.1",
+    "@material-ui/core": "^4.9.14",
+    "@material-ui/icons": "^4.9.1",
     "lodash": "^4.17.15",
-    "prismjs": "^1.15.0",
+    "prismjs": "^1.20.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "eslint": "^6.8.0",
+    "eslint": "^7.0.0",
     "eslint-config-prettier": "^6.5.0",
     "eslint-config-standard": "^14.0.0",
     "eslint-config-standard-react": "^9.2.0",
@@ -59,7 +59,7 @@
     "gatsby-source-filesystem": "2.0.12",
     "gatsby-transformer-remark": "2.1.15",
     "gatsby-transformer-sharp": "2.1.9",
-    "prettier": "^2.0.2",
+    "prettier": "^2.0.5",
     "rimraf": "^3.0.0",
     "webpack": "^4.41.2"
   },

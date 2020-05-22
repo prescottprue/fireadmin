@@ -1,7 +1,7 @@
 import os from 'os'
 import path from 'path'
 import fs from 'fs-extra'
-import mkdirp from 'mkdirp-promise'
+import mkdirp from 'mkdirp'
 import * as admin from 'firebase-admin'
 
 /**

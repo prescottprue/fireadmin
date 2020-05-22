@@ -1,5 +1,5 @@
 module.exports = {
-  'extends': ['../.eslintrc.js', 'plugin:jsdoc/recommended'],
+  extends: ['../.eslintrc.js', 'plugin:jsdoc/recommended'],
   plugins: ['node', 'jsdoc'],
   settings: {
     'import/resolver': {
@@ -39,4 +39,4 @@ module.exports = {
       }
     }
   ]
-};
+}

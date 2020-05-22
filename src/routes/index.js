@@ -18,7 +18,9 @@ export default function createRoutes(store) {
     <CoreLayout>
       <SuspenseWithPerf fallback={<LoadingSpinner />} traceId="router-wait">
         <Switch>
+          {/* eslint-disable react/jsx-pascal-case */}
           <Route exact path={Home.path} component={() => <Home.component />} />
+          {/* eslint-enable react/jsx-pascal-case */}
           {
             /* Build Route components from routeSettings */
             [

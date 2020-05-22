@@ -1,5 +1,5 @@
 module.exports = {
-  'extends': ['standard', 'standard-react', 'prettier', 'prettier/react'],
+  extends: ['standard', 'standard-react', 'prettier', 'prettier/react'],
   root: true,
   parser: 'babel-eslint',
   plugins: ['import', 'babel', 'react', 'react-hooks', 'prettier'],
@@ -14,9 +14,7 @@ module.exports = {
     }
   },
   rules: {
-    semi: [
-      2, 'never'
-    ],
+    semi: [2, 'never'],
     'no-console': 'error',
     'react/forbid-prop-types': 0,
     'react/require-default-props': 0,
@@ -51,7 +49,7 @@ module.exports = {
         importScripts: true
       },
       rules: {
-       'no-restricted-globals': 0,
+        'no-restricted-globals': 0,
         'no-console': 0
       }
     },
