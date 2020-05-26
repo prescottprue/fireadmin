@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { get, some, map, orderBy, size } from 'lodash'
+import { some, map, orderBy, size } from 'lodash'
 import { useFirestore, useUser, useFirestoreDocData } from 'reactfire'
 import Button from '@material-ui/core/Button'
 import Collapse from '@material-ui/core/Collapse'
@@ -30,12 +30,12 @@ function RolesTable({ projectId }) {
   const closeNewRole = () => changeRoleOpen(false)
   const orderedRoles = orderBy(
     map(project.roles, (role, key) => ({ ...role, key })),
-    [(role) => size(get(role, 'permissions'))],
+    [(role) => size(role?.permissions)],
     ['desc']
   )
 
   async function addRole(newRole) {
-    const currentRoles = get(project, `roles`, {})
+    const currentRoles = project?.roles || {}
     if (some(currentRoles, { name: newRole.name })) {
       const existsErrMsg = 'Role with that name already exists'
       showError(existsErrMsg)

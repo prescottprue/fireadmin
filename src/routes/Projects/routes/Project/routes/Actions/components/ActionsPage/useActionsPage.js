@@ -1,11 +1,10 @@
-import { get, omit, map, some, findIndex } from 'lodash'
+import { omit, map, some, findIndex } from 'lodash'
 import {
   useDatabase,
   useUser,
   useFirestore,
   useFirestoreCollectionData
 } from 'reactfire'
-import * as Sentry from '@sentry/browser'
 import {
   ACTION_RUNNER_REQUESTS_PATH,
   PROJECTS_COLLECTION
@@ -38,17 +37,15 @@ function getLockedEnvInUse(environments) {
 
 export default function useActionRunner({
   projectId,
-  closeRunnerSections,
   selectActionTemplate,
   selectedTemplate,
-  watch
+  setValue
 }) {
   const { showError, showMessage } = useNotifications()
   const database = useDatabase()
   const firestore = useFirestore()
   const user = useUser()
   const { FieldValue } = useFirestore
-  const environmentValues = watch('environmentValues')
   const environmentsRef = firestore.collection(
     `${PROJECTS_COLLECTION}/${projectId}/environments`
   )
@@ -61,22 +58,23 @@ export default function useActionRunner({
       [environment.id]: environment
     }
   }, {})
-  const selectedEnvironments = map(
-    environmentValues,
-    (envKey) => environmentsById[envKey]
-  )
-  const lockedEnvInUse = getLockedEnvInUse(selectedEnvironments)
 
-  function runAction(formValues) {
+  async function runAction(formValues) {
+    const { environmentValues } = formValues
+    const selectedEnvironments = map(
+      environmentValues,
+      (envKey) => environmentsById[envKey]
+    )
+    const lockedEnvInUse = getLockedEnvInUse(selectedEnvironments)
     if (lockedEnvInUse) {
       const errMsg = 'Action Runner Disabled. Locked environment selected.'
       showError(errMsg)
       console.error(errMsg) // eslint-disable-line no-console
-      throw new Error(errMsg)
+      return errMsg
     }
-    const { environmentValues } = formValues
-    const templateId = get(selectedTemplate, 'templateId')
-    if (!templateId) {
+
+    // Show error and exit if template is not selected
+    if (!selectedTemplate?.templateId) {
       const errMsg =
         'A valid template must be selected in order to run an action'
       showError(errMsg)
@@ -84,8 +82,10 @@ export default function useActionRunner({
         projectId: projectId,
         environmentValues
       })
-      throw new Error(errMsg)
+      return errMsg
     }
+
+    const { templateId } = selectedTemplate
     // Build request object for action run
     const actionRequest = {
       projectId: projectId,
@@ -95,6 +95,7 @@ export default function useActionRunner({
       template: omit(selectedTemplate, ['_highlightResult']),
       ...omit(formValues, ['_highlightResult', 'updatedAt'])
     }
+
     // Convert selected environment keys into their associated environment objects
     if (environmentValues) {
       actionRequest.environments = environmentValues.map((envId) => {
@@ -113,38 +114,41 @@ export default function useActionRunner({
       templateId,
       environmentValues
     })
-
-    return Promise.all([
-      database.ref(ACTION_RUNNER_REQUESTS_PATH).push(actionRequest),
-      createProjectEvent(
-        { firestore, projectId, FieldValue },
-        {
-          eventType: 'requestActionRun',
-          eventData: omit(
-            {
-              ...actionRequest,
-              template: {
-                ...omit(selectedTemplate, ['_highlightResult']),
-                inputValues: actionRequest.inputValues || []
-              }
-            },
-            ['_highlightResult']
-          ),
-          createdBy: user.uid
-        }
-      )
-    ])
-      .then(() => {
-        // Close sections used for action runner input
-        closeRunnerSections()
-        // Notify user that action run has started
-        showMessage('Action Run Started!')
+    // TODO: Switch to onCall function instead of pushing requests to RTDB
+    try {
+      await Promise.all([
+        database.ref(ACTION_RUNNER_REQUESTS_PATH).push(actionRequest),
+        createProjectEvent(
+          { firestore, projectId, FieldValue },
+          {
+            eventType: 'requestActionRun',
+            eventData: omit(
+              {
+                ...actionRequest,
+                template: {
+                  ...omit(selectedTemplate, ['_highlightResult']),
+                  inputValues: actionRequest.inputValues || []
+                }
+              },
+              ['_highlightResult']
+            ),
+            createdBy: user.uid
+          }
+        )
+      ])
+      // Notify user that action run has started
+      showMessage('Action Run Started!')
+    } catch (err) {
+      console.error('Error starting action request: ', err.message) // eslint-disable-line no-console
+      showError('Error starting action request')
+      triggerAnalyticsEvent('actionRunError', {
+        err,
+        message: err.message,
+        projectId,
+        templateId,
+        environmentValues
       })
-      .catch((err) => {
-        console.error('Error: ', err.message || err) // eslint-disable-line no-console
-        showError('Error starting action request')
-        Sentry.captureException(err)
-      })
+    }
   }
 
   /**
@@ -161,7 +165,15 @@ export default function useActionRunner({
       inputValues: action.eventData.inputValues,
       environmentValues: action.eventData.environmentValues
     }
-    selectActionTemplate(templateWithValues)
+    if (selectedTemplate) {
+      selectActionTemplate(null)
+      // Timeout is needed in order to cause re-render of form
+      setTimeout(() => {
+        selectActionTemplate(templateWithValues)
+      })
+    } else {
+      selectActionTemplate(templateWithValues)
+    }
   }
 
   return {
