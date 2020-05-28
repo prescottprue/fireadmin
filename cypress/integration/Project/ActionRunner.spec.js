@@ -24,12 +24,6 @@ describe('Project - Actions Page', () => {
     cy.callFirestore('delete', 'projects/test-project', { recursive: true })
   })
 
-  describe('Initial Load', () => {
-    it('Run Action Button is disabled', () => {
-      cy.get(createSelector('run-action-button')).should('be.disabled')
-    })
-  })
-
   describe('Environment Locking', () => {
     const lockedEnvId = 'locked-env'
     const lockedEnv = {

@@ -4,6 +4,9 @@
       "targets": {
         "node": "10"
       }
+    }],
+    ["minify", {
+      "keepFnName": true
     }]
   ],
   "plugins": [
@@ -11,12 +14,5 @@
     ["module-resolver", {
       "root": ["./src"]
     }]
-  ],
-  "env": {
-    "production": {
-      "comments": false,
-      "minified": true,
-      "sourceMaps": "inline"
-    }
-  }
+  ]
 }
