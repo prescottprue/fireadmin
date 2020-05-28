@@ -1,39 +1,72 @@
 import React, { useState } from 'react'
 import firebase from 'firebase/app' // imported for auth provider
-import { useAuth } from 'reactfire'
+import { useAuth, useFirestore } from 'reactfire'
 import GoogleButton from 'react-google-button'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
+import * as Sentry from '@sentry/browser'
+import { USERS_COLLECTION } from 'constants/firebasePaths'
 import useNotifications from 'modules/notification/useNotifications'
 import { LIST_PATH } from 'constants/paths'
 import LoadingSpinner from 'components/LoadingSpinner'
 import styles from './LoginPage.styles'
-import { Typography } from '@material-ui/core'
 
 const useStyles = makeStyles(styles)
 
 function LoginPage() {
   const classes = useStyles()
   const auth = useAuth()
+  const firestore = useFirestore()
   const { showError } = useNotifications()
   const [isLoading, changeLoadingState] = useState(false)
 
-  function googleLogin() {
+  async function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider()
     changeLoadingState(true)
     const authMethod =
       window.isMobile && window.isMobile.any
         ? 'signInWithRedirect'
         : 'signInWithPopup'
+    let authData
+    try {
+      authData = await auth[authMethod](provider)
+    } catch (err) {
+      console.error('Error with login:', err) // eslint-disable-line no-console
+      showError(err.message)
+      Sentry.captureException(err)
+    }
 
-    return auth[authMethod](provider)
-      .then(() => {
-        // NOTE: history.push sometimes does not trigger
-        // history.push(LIST_PATH)
-        window.location = LIST_PATH
-      })
-      .catch((err) => showError(err.message))
+    try {
+      // Load user account to see if it exists
+      const userSnap = await firestore
+        .doc(`${USERS_COLLECTION}/${authData.user.uid}`)
+        .get()
+      // Save new user account if it doesn't already exist
+      if (!userSnap.exists) {
+        const {
+          email,
+          displayName,
+          providerData,
+          lastLoginAt
+        } = authData.user.toJSON()
+        const userObject = { email, displayName, lastLoginAt }
+        if (providerData) {
+          userObject.providerData = providerData
+        }
+        await firestore
+          .doc(`${USERS_COLLECTION}/${authData.user.uid}`)
+          .set(userObject, { merge: true })
+      }
+      // NOTE: history.push sometimes does not trigger
+      // history.push(LIST_PATH)
+      window.location = LIST_PATH
+    } catch (err) {
+      console.error('Error setting user profile:', err) // eslint-disable-line no-console
+      showError(err.message)
+      Sentry.captureException(err)
+    }
   }
 
   return (

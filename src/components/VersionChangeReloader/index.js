@@ -31,7 +31,12 @@ export default function VersionChangeReloader() {
     const refreshHasOccurred = currentRemoteVersion === sessionVersion
 
     // Refresh if session contains different version than database
-    if (versionDiscrepencyExists && !refreshHasOccurred) {
+    if (
+      versionDiscrepencyExists &&
+      !refreshHasOccurred &&
+      // refresh not enabled locally since DB update happens in deploy
+      !window.location.host.includes('localhost')
+    ) {
       window.location.reload(true)
     }
   }, [versionInfo])
