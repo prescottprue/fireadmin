@@ -11,12 +11,5 @@
     ["module-resolver", {
       "root": ["./src"]
     }]
-  ],
-  "env": {
-    "production": {
-      "comments": false,
-      "minified": true,
-      "sourceMaps": "inline"
-    }
-  }
+  ]
 }

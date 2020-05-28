@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { capitalize, get } from 'lodash'
+import { capitalize } from 'lodash'
 import { useFormContext, Controller } from 'react-hook-form'
 import FormLabel from '@material-ui/core/FormLabel'
 import FormControl from '@material-ui/core/FormControl'
@@ -100,12 +100,8 @@ function ActionStepLocation({ name, indexName, title }) {
                         value={idx}
                         disabled={option.disabled}>
                         <ListItemText
-                          primary={get(option, 'name', `Input ${idx}`)}
-                          secondary={get(
-                            option,
-                            'variableName',
-                            `Input ${idx}`
-                          )}
+                          primary={option?.name || `Input ${idx}`}
+                          secondary={option?.variableName || `Input ${idx}`}
                         />
                       </MenuItem>
                     ))}

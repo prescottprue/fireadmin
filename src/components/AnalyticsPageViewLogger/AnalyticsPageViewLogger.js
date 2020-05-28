@@ -20,7 +20,9 @@ export default function AnalyticsPageViewLogger() {
   useEffect(() => {
     if (!window.Cypress) {
       // Trigger event in Firebase analytics
-      analytics.logEvent('page-view', { path_name: location.pathname })
+      if (config.firebase.measurementId) {
+        analytics.logEvent('page-view', { path_name: location.pathname })
+      }
       // Track event in Segment
       if (config.segmentId && window.analytics) {
         window.analytics.track('page-view', { path_name: location.pathname })

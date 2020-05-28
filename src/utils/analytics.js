@@ -1,9 +1,10 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/analytics'
+import ANALYTICS_EVENT_NAMES from 'constants/analytics'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 import { version } from '../../package.json'
 import * as config from '../config' // eslint-disable-line import/no-unresolved
-import ANALYTICS_EVENT_NAMES from 'constants/analytics'
 
 /**
  * Set User info to analytics context
@@ -65,7 +66,9 @@ export function triggerAnalyticsEvent(eventNameKey, eventData) {
     )
     /* eslint-enable no-console */
   } else {
-    firebase.analytics().logEvent(eventName, eventData)
+    if (config.firebase.measurementId) {
+      firebase.analytics().logEvent(eventName, eventData)
+    }
     if (config.segmentId && window.analytics) {
       window.analytics.track(eventName, eventData)
     }
@@ -83,9 +86,11 @@ export function createProjectEvent(
   { firestore, projectId, FieldValue },
   pushObject
 ) {
-  return firestore.collection(`projects/${projectId}/events`).add({
-    ...pushObject,
-    createdByType: 'user',
-    createdAt: FieldValue.serverTimestamp()
-  })
+  return firestore
+    .collection(`${PROJECTS_COLLECTION}/${projectId}/events`)
+    .add({
+      ...pushObject,
+      createdByType: 'user',
+      createdAt: FieldValue.serverTimestamp()
+    })
 }

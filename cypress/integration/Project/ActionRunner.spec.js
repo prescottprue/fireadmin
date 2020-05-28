@@ -24,12 +24,6 @@ describe('Project - Actions Page', () => {
     cy.callFirestore('delete', 'projects/test-project', { recursive: true })
   })
 
-  describe('Initial Load', () => {
-    it('Run Action Button is disabled', () => {
-      cy.get(createSelector('run-action-button')).should('be.disabled')
-    })
-  })
-
   describe('Environment Locking', () => {
     const lockedEnvId = 'locked-env'
     const lockedEnv = {
@@ -150,6 +144,23 @@ describe('Project - Actions Page', () => {
         'none'
       )
     })
+  })
+
+  describe.skip('Recent Actions', () => {
+    const srcId = 'src-env'
+    const destId = 'dest-env'
+
+    before(() => {
+      cy.addProjectEnvironment('test-project', srcId, { name: 'source env' })
+      cy.addProjectEnvironment('test-project', destId, {
+        name: 'dest env'
+      })
+    })
+
+    it('shows recent actions below action runner', () => {})
+
+    it('re-run button loads action settings into action runner', () => {})
+    it('re-run button loads action settings into action runner even if there are already settings', () => {})
   })
 
   // Skipped since request object is too large
