@@ -152,6 +152,23 @@ describe('Project - Actions Page', () => {
     })
   })
 
+  describe.skip('Recent Actions', () => {
+    const srcId = 'src-env'
+    const destId = 'dest-env'
+
+    before(() => {
+      cy.addProjectEnvironment('test-project', srcId, { name: 'source env' })
+      cy.addProjectEnvironment('test-project', destId, {
+        name: 'dest env'
+      })
+    })
+
+    it('shows recent actions below action runner', () => {})
+
+    it('re-run button loads action settings into action runner', () => {})
+    it('re-run button loads action settings into action runner even if there are already settings', () => {})
+  })
+
   // Skipped since request object is too large
   // TODO: Re-enable once action runner does not require whole template to be written to request
   describe.skip('Running Action', () => {

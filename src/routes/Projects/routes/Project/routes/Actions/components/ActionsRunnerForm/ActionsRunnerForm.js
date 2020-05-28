@@ -51,6 +51,11 @@ function ActionsRunnerForm({
   const toggleEnvironments = () =>
     changeEnvironmentsExpanded(!environmentsExpanded)
   const toggleInputs = () => changeInputExpanded(!inputsExpanded)
+  const clearRunner = () => {
+    reset()
+    changeSelectedTemplate(null)
+    changeTemplateEdit(true)
+  }
   const { register, watch, control, handleSubmit, reset } = useForm({
     defaultValues: selectedTemplate
   })
@@ -155,26 +160,23 @@ function ActionsRunnerForm({
       </ExpansionPanel>
       <div className={classes.buttons}>
         <Button
+          color="secondary"
+          variant="contained"
+          aria-label="Clear"
+          onClick={clearRunner}
+          className={classes.button}
+          data-test="clear-action-button">
+          Clear
+        </Button>
+        <Button
           disabled={!selectedTemplate}
           color="primary"
           variant="contained"
           aria-label="Run Action"
           type="submit"
-          data-test="run-action-button">
+          data-test="run-action-button"
+          className={classes.button}>
           Run Action
-        </Button>
-        <Button
-          color="secondary"
-          variant="contained"
-          aria-label="Clear"
-          onClick={() => {
-            reset()
-            changeSelectedTemplate(null)
-            changeTemplateEdit(true)
-          }}
-          className={classes.button}
-          data-test="clear-action-button">
-          Clear
         </Button>
       </div>
     </form>
