@@ -13,7 +13,10 @@ import { triggerAnalyticsEvent } from 'utils/analytics'
 import useNotifications from 'modules/notification/useNotifications'
 import PermissionsTableRow from '../PermissionsTableRow'
 import DeleteMemberModal from '../DeleteMemberModal'
-import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
+import {
+  PROJECTS_COLLECTION,
+  DISPLAY_NAMES_PATH
+} from 'constants/firebasePaths'
 import styles from './PermissionsTable.styles'
 
 const useStyles = makeStyles(styles)
@@ -29,7 +32,7 @@ function PermissionsTable({ projectId }) {
     changeSelectedMemberId(selectedId)
   }
   const database = useDatabase()
-  const displayNamesRef = database.ref('displayNames')
+  const displayNamesRef = database.ref(DISPLAY_NAMES_PATH)
   const displayNames = useDatabaseObjectData(displayNamesRef)
 
   const firestore = useFirestore()

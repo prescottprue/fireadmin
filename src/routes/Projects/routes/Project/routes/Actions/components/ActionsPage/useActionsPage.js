@@ -5,6 +5,7 @@ import {
   useFirestore,
   useFirestoreCollectionData
 } from 'reactfire'
+import * as Sentry from '@sentry/browser'
 import {
   ACTION_RUNNER_REQUESTS_PATH,
   PROJECTS_COLLECTION
@@ -141,7 +142,8 @@ export default function useActionRunner({
     } catch (err) {
       console.error('Error starting action request: ', err.message) // eslint-disable-line no-console
       showError('Error starting action request')
-      triggerAnalyticsEvent('actionRunError', {
+      Sentry.captureException(err)
+      triggerAnalyticsEvent('action-run-error', {
         err,
         message: err.message,
         projectId,

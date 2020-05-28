@@ -55,7 +55,7 @@ function ActionsPage({ projectId }) {
   const templateName = selectedTemplate?.name
     ? `Template: ${selectedTemplate.name}`
     : 'Template'
-  // TODO: Disable run action button if form is not fully filled out
+
   return (
     <div className={classes.container}>
       <Typography className={classes.pageHeader}>Actions</Typography>

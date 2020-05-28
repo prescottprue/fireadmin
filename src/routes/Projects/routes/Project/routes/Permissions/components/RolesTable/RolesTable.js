@@ -14,6 +14,7 @@ import NewRoleCard from '../NewRoleCard'
 import NoRolesFound from './NoRolesFound'
 import styles from './RolesTable.styles'
 import { createPermissionGetter } from 'utils/data'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 
 const useStyles = makeStyles(styles)
 
@@ -24,7 +25,7 @@ function RolesTable({ projectId }) {
   const { FieldValue } = useFirestore
   const user = useUser()
   const { showError, showSuccess } = useNotifications()
-  const projectRef = firestore.doc(`projects/${projectId}`)
+  const projectRef = firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`)
   const project = useFirestoreDocData(projectRef)
   const openNewRole = () => changeRoleOpen(true)
   const closeNewRole = () => changeRoleOpen(false)
@@ -97,7 +98,11 @@ function RolesTable({ projectId }) {
               projectId={projectId}
               currentRoles={project.roles}
               roleOptions={roleOptions}
-              updateRolesDisabled={!userHasPermission('update.roles')}
+              updateRolesDisabled={
+                // TODO: Remove checking of ownership once update role is setup by default on project
+                project.createdBy !== user?.uid &&
+                !userHasPermission('update.roles')
+              }
               initialValues={permissions}
             />
           ))

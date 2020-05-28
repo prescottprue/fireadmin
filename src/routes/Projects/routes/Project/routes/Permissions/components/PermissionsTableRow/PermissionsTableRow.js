@@ -24,6 +24,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 import useNotifications from 'modules/notification/useNotifications'
 import styles from './PermissionsTableRow.styles'
+import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
 
 const useStyles = makeStyles(styles)
 
@@ -54,7 +55,7 @@ function PermissionsTableRow({
   const { showSuccess } = useNotifications()
   const user = useUser()
 
-  const projectRef = firestore.doc(`projects/${projectId}`)
+  const projectRef = firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`)
   const project = useFirestoreDocData(projectRef)
   const roleOptions = map(project.roles, ({ name }, value) => ({ value, name }))
 

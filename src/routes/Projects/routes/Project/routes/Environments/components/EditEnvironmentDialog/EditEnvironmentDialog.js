@@ -35,7 +35,9 @@ function EditEnvironmentDialog({
   const projectRef = firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`)
   const project = useFirestoreDocData(projectRef)
   const userHasPermission = createPermissionGetter(project, user?.uid)
-  const hasUpdatePermission = userHasPermission('update.environments')
+  // TODO: Remove checking of ownership once update role is setup by default on project
+  const hasUpdatePermission =
+    user?.uid === project.createdBy || userHasPermission('update.environments')
 
   // Form
   const {
