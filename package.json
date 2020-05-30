@@ -1,11 +1,11 @@
 {
   "name": "fireadmin",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "scripts": {
     "clean": "rimraf build",
     "size": "size-limit",
-    "build": "react-scripts build && cp public/manifest.json build",
+    "build": "react-scripts build",
     "build:config": "firebase-ci createConfig",
     "build:size": "yarn build && size-limit",
     "build:size:why": "yarn build && yarn size --why",
@@ -52,7 +52,8 @@
     "react-hook-form": "^5.7.2",
     "react-instantsearch": "^4.2.0",
     "react-router-dom": "^5.1.2",
-    "reactfire": "^2.0.3"
+    "reactfire": "^2.0.3",
+    "stackdriver-errors-js": "^0.8.0"
   },
   "devDependencies": {
     "@sentry/cli": "^1.53.0",

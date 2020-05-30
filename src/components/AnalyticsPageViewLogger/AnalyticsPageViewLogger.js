@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useAnalytics, useUser } from 'reactfire'
 import { useLocation } from 'react-router-dom'
 import * as config from 'config' // eslint-disable-line import/no-unresolved
+import { setErrorUser } from 'utils/errorHandler'
 
 export default function AnalyticsPageViewLogger() {
   const location = useLocation()
@@ -12,6 +13,7 @@ export default function AnalyticsPageViewLogger() {
   useEffect(() => {
     if (user?.uid) {
       analytics.setUserId(user.uid)
+      setErrorUser(user)
     }
   }, [user?.uid]) // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -22,7 +22,7 @@ function SplitButton({
   const [selectedIndex, setSelectedIndex] = useState(defaultIndex)
   const anchorRef = useRef(null)
   const handleClick = () => {
-    onClick(selectedIndex, options[selectedIndex])
+    onClick && onClick(selectedIndex, options[selectedIndex])
   }
 
   const handleMenuItemClick = (event, index) => {
@@ -39,9 +39,9 @@ function SplitButton({
     if (anchorRef.current?.contains(event.target)) {
       return
     }
-
     setOpen(false)
   }
+
   return (
     <>
       <ButtonGroup

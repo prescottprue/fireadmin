@@ -114,14 +114,13 @@ jobs:
             -y --project $gcloudProject \
             "/versionInfo"
 
-      - name: Archive Debug Log
-        uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: firebase-debug
-          path: firebase-debug.log
+      - name: Check if version has been updated
+        if: github.ref == 'refs/heads/prod'
+        id: check
+        uses: EndBug/version-check@v1
 
       - name: Create Release In Sentry
+        if: github.ref == 'refs/heads/prod' && steps.check.outputs.changed == 'true'
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: pruvit
@@ -141,11 +140,6 @@ jobs:
           echo Finalizing the release...
           $(yarn bin)/sentry-cli releases finalize $releaseName
           echo Release created successfully
-
-      - name: Check if version has been updated
-        if: github.ref == 'refs/heads/prod'
-        id: check
-        uses: EndBug/version-check@v1
 
       - name: Create Release
         if: github.ref == 'refs/heads/prod' && steps.check.outputs.changed == 'true'
