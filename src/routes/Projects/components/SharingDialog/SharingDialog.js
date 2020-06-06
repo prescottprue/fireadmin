@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { map, get, findIndex } from 'lodash'
+import { map, findIndex } from 'lodash'
 import { useFirestore, useDatabase, useDatabaseObjectData } from 'reactfire'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -15,7 +15,10 @@ import ListItemText from '@material-ui/core/ListItemText'
 import { makeStyles } from '@material-ui/core/styles'
 import UsersSearch from 'components/UsersSearch'
 import UsersList from 'components/UsersList'
-import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
+import {
+  PROJECTS_COLLECTION,
+  DISPLAY_NAMES_PATH
+} from 'constants/firebasePaths'
 import { triggerAnalyticsEvent } from 'utils/analytics'
 import useNotifications from 'modules/notification/useNotifications'
 import styles from './SharingDialog.styles'
@@ -28,7 +31,7 @@ function SharingDialog({ open, onRequestClose, project }) {
   const [selectedCollaborators, changeSelectedCollaborators] = useState([])
 
   const database = useDatabase()
-  const displayNamesRef = database.ref('displayNames')
+  const displayNamesRef = database.ref(DISPLAY_NAMES_PATH)
   const displayNames = useDatabaseObjectData(displayNamesRef)
 
   const firestore = useFirestore()
@@ -36,7 +39,7 @@ function SharingDialog({ open, onRequestClose, project }) {
   const { collaborators = {}, permissions = {} } = project
   const projectCollaborators = map(collaborators, (collaborator, collabId) => {
     return {
-      displayName: get(displayNames, collabId, 'User'),
+      displayName: (displayNames && displayNames[collabId]) || 'User',
       ...collaborator
     }
   })

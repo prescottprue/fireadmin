@@ -16,7 +16,10 @@ import TableRow from '@material-ui/core/TableRow'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import { formatTime, formatDate } from 'utils/formatters'
-import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
+import {
+  PROJECTS_COLLECTION,
+  DISPLAY_NAMES_PATH
+} from 'constants/firebasePaths'
 import NoProjectEvents from './NoProjectEvents'
 import styles from './ProjectEventsPage.styles'
 import LoadingSpinner from 'components/LoadingSpinner'
@@ -27,7 +30,7 @@ function ProjectEventsPage({ projectId }) {
   const classes = useStyles()
   const firestore = useFirestore()
   const database = useDatabase()
-  const displayNamesRef = database.ref('displayNames')
+  const displayNamesRef = database.ref(DISPLAY_NAMES_PATH)
   const projectEventsRef = firestore
     .collection(`${PROJECTS_COLLECTION}/${projectId}/events`)
     .orderBy('createdAt', 'desc')

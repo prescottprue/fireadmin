@@ -47,7 +47,7 @@ function PermissionsTable({ projectId }) {
     (permission, uid) => ({
       ...permission,
       uid,
-      displayName: displayNames[uid],
+      displayName: displayNames && displayNames[uid],
       roleName: roles[permission.role]
     })
   )
