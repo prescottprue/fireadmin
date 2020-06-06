@@ -1,6 +1,5 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import { get } from 'lodash'
 import { to } from 'utils/async'
 
 const requestPath = 'sendFcm'
@@ -16,7 +15,7 @@ async function sendFcmEvent(snap, context) {
   } = context
   const { userId, message = '', title = 'Fireadmin' } = snap.val() || {}
 
-  console.log(`FCM request recived for: ${userId}`)
+  console.log(`FCM request received for: ${userId}`)
 
   if (!userId) {
     const missingUserIdErr = 'userId is required to send FCM message'
@@ -38,7 +37,7 @@ async function sendFcmEvent(snap, context) {
   }
 
   // Get messaging token from user's profile
-  const token = get(userProfileSnap.data(), 'messaging.mostRecentToken')
+  const token = userProfileSnap.get('messaging.mostRecentToken')
 
   // Handle messaging token not being found on user object
   if (!token) {

@@ -1,56 +1,61 @@
 {
   "indexes": [
     {
-      "collectionId": "projects",
+      "collectionGroup": "events",
+      "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "createdBy",
-          "mode": "ASCENDING"
+          "fieldPath": "eventType",
+          "order": "ASCENDING"
         },
         {
           "fieldPath": "createdAt",
-          "mode": "DESCENDING"
+          "order": "ASCENDING"
         }
       ]
     },
     {
-      "collectionId": "projects",
+      "collectionGroup": "events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "eventType",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "projects",
+      "queryScope": "COLLECTION",
       "fields": [
         {
           "fieldPath": "createdBy",
-          "mode": "ASCENDING"
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "projects",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "createdBy",
+          "order": "ASCENDING"
         },
         {
           "fieldPath": "desc",
-          "mode": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionId": "events",
-      "fields": [
-        {
-          "fieldPath": "eventType",
-          "mode": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "mode": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionId": "events",
-      "fields": [
-        {
-          "fieldPath": "eventType",
-          "mode": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "mode": "DESCENDING"
+          "order": "ASCENDING"
         }
       ]
     }
-  ]
+  ],
+  "fieldOverrides": []
 }

@@ -1,10 +1,8 @@
 import * as functions from 'firebase-functions'
 import { encrypt } from '../utils/encryption'
 import { to } from '../utils/async'
-import {
-  downloadFromStorage,
-  slashPathToStorageRef
-} from '../utils/cloudStorage'
+import { downloadFromStorage } from '../utils/cloudStorage'
+import * as admin from 'firebase-admin'
 
 /**
  * @name copyServiceAccountToFirestore
@@ -15,7 +13,7 @@ import {
 export default functions.firestore
   .document(
     'projects/{projectId}/environments/{environmentId}'
-    // 'projects/{projectId}/environments/{envrionmentId}/serviceAccounts/{serviceAccountId}' // for serviceAccounts as subcollection
+    // 'projects/{projectId}/environments/{environmentId}/serviceAccounts/{serviceAccountId}' // for serviceAccounts as subcollection
   )
   .onCreate(handleServiceAccountCreate)
 
@@ -26,7 +24,7 @@ export default functions.firestore
  * @param {functions.firestore.DocumentSnapshot} snap - Event snapshot
  * @returns {Promise} Resolves with filePath
  */
-export async function handleServiceAccountCreate(snap) {
+async function handleServiceAccountCreate(snap) {
   const eventData = snap.data()
   if (!eventData.serviceAccount) {
     throw new Error(
@@ -68,7 +66,7 @@ export async function handleServiceAccountCreate(snap) {
   console.log('Service account copied to Firestore, cleaning up...')
 
   // Remove service account file from cloud storage
-  const fileRef = slashPathToStorageRef(fullPath)
+  const fileRef = admin.storage().bucket().file(fullPath)
   const [deleteErr] = await to(fileRef.delete())
 
   // Handle errors deleteting service account (still exists successfully)

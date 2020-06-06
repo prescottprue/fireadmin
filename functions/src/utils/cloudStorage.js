@@ -1,6 +1,7 @@
 import os from 'os'
 import path from 'path'
-import fs from 'fs-extra'
+import { readJson, outputJson } from 'fs-extra'
+import { unlinkSync } from 'fs'
 import mkdirp from 'mkdirp'
 import * as admin from 'firebase-admin'
 
@@ -31,9 +32,9 @@ export async function downloadFromStorage(app, pathInStorage) {
   }
   try {
     // Return JSON file contents
-    const fileContents = await fs.readJson(tempLocalPath)
+    const fileContents = await readJson(tempLocalPath)
     // Once the file data has been read, remove local files to free up disk space
-    fs.unlinkSync(tempLocalPath)
+    unlinkSync(tempLocalPath)
     return fileContents
   } catch (err) {
     const errMsg = 'Error saving file as JSON'
@@ -57,7 +58,7 @@ export async function uploadToStorage(app, pathInStorage, jsonObject) {
   }
   try {
     // Upload file from bucket to local filesystem
-    await fs.outputJson(tempLocalPath, jsonObject, { spaces: 2 })
+    await outputJson(tempLocalPath, jsonObject, { spaces: 2 })
     await app.storage().bucket().upload(tempLocalPath, {
       destination: pathInStorage,
       contentType: 'application/json',
@@ -68,16 +69,4 @@ export async function uploadToStorage(app, pathInStorage, jsonObject) {
     console.error('Error uploading file to storage', err.message || err)
     throw err
   }
-}
-
-/**
- * Get Google Cloud Storage reference from the file's path
- * @param {string} storagePath - relative path of file on Cloud Storage
- * @returns {Storage.Reference} Storage reference from firebase-admin library
- */
-export function slashPathToStorageRef(storagePath) {
-  if (!admin.storage) {
-    throw new Error('Storage is not enabled on firebase-admin')
-  }
-  return admin.storage().bucket().file(storagePath)
 }

@@ -1,6 +1,6 @@
 /**
  * Async await wrapper for easy error handling
- * @param  {Promise} promise - Promise to wrap responses of
+ * @param {Promise} promise - Promise to wrap responses of
  * @returns {Promise} Resolves and rejects with an array
  * @example
  * async function asyncFunctionWithThrow() {
@@ -32,16 +32,4 @@ export function promiseWaterfall(callbacks) {
       ),
     Promise.resolve()
   )
-}
-
-/**
- * Wait for a certain number of milliseconds (uses setTimeout)
- * @param {number} timeToWait - How long to wait
- * @returns {Promise} Resolves when wait has completed
- */
-export function wait(timeToWait = 10) {
-  // Wait 10ms before next stage
-  return new Promise((resolve) => {
-    setTimeout(resolve, timeToWait)
-  })
 }

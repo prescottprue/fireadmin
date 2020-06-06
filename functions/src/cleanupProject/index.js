@@ -58,7 +58,7 @@ async function removeCollection(collectionSnap) {
 
 /**
  * Remove all collections from a Firestore document
- * @param  {object} docRef - Reference of document for which all collections
+ * @param {object} docRef - Reference of document for which all collections
  * will be deleted
  * @returns {Promise} Resolves with results of removing all collections
  */

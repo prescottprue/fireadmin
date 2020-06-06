@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "scripts": {
     "clean": "rimraf build",
@@ -34,12 +34,12 @@
     "format": "prettier --single-quote --no-semi --trailing-comma none --write \"src/**/*.js\""
   },
   "dependencies": {
-    "@material-ui/core": "^4.9.14",
+    "@material-ui/core": "^4.10.1",
     "@material-ui/icons": "^4.9.1",
-    "@sentry/browser": "^5.15.5",
+    "@sentry/browser": "^5.16.0",
     "classnames": "^2.2.6",
     "date-fns": "^1.29.0",
-    "firebase": "^7.14.4",
+    "firebase": "^7.14.6",
     "history": "^4.9.0",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
@@ -51,7 +51,7 @@
     "react-google-button": "^0.7.0",
     "react-hook-form": "^5.7.2",
     "react-instantsearch": "^4.2.0",
-    "react-router-dom": "^5.1.2",
+    "react-router-dom": "^5.2.0",
     "reactfire": "^2.0.3",
     "stackdriver-errors-js": "^0.8.0"
   },

@@ -1,4 +1,7 @@
-import { get, isArray, size, map, isObject } from 'lodash'
+import { get, size, map, isObject } from 'lodash'
+import { tmpdir } from 'os'
+import { existsSync, unlinkSync } from 'fs'
+import { join as pathJoin } from 'path'
 import {
   copyFromRTDBToFirestore,
   copyFromFirestoreToRTDB,
@@ -10,16 +13,25 @@ import {
 } from './actions'
 import { to, promiseWaterfall } from '../utils/async'
 import { hasAll } from '../utils/index'
-import {
-  getAppFromServiceAccount,
-  cleanupServiceAccounts
-} from '../utils/serviceAccounts'
+import { getAppFromServiceAccount } from '../utils/serviceAccounts'
 import {
   updateResponseOnRTDB,
   updateResponseWithProgress,
   updateResponseWithError,
   updateResponseWithActionError
 } from './utils'
+
+/**
+ * Cleanup local service account files
+ */
+async function cleanupServiceAccounts() {
+  const tempLocalPath = pathJoin(tmpdir(), 'serviceAccounts')
+  if (existsSync(tempLocalPath)) {
+    try {
+      unlinkSync(tempLocalPath)
+    } catch(err) {} // eslint-disable-line
+  }
+}
 
 /**
  * Data action using Service account stored on Firestore
@@ -44,17 +56,17 @@ export async function runStepsFromEvent(snap, context) {
     template: { steps, inputs }
   } = eventData
 
-  if (!isArray(steps)) {
+  if (!Array.actionResponseisArray(steps)) {
     await updateResponseWithError(snap, context)
     throw new Error('Steps array was not provided to action request')
   }
 
-  if (!isArray(inputs)) {
+  if (!Array.actionResponseisArray(inputs)) {
     await updateResponseWithError(snap, context)
     throw new Error('Inputs array was not provided to action request')
   }
 
-  if (!isArray(inputValues)) {
+  if (!Array.actionResponseisArray(inputValues)) {
     await updateResponseWithError(snap, context)
     throw new Error('Input values array was not provided to action request')
   }
@@ -118,17 +130,17 @@ export async function runBackupsFromEvent(snap, context) {
     inputValues,
     template: { backups, inputs }
   } = eventData
-  if (!isArray(backups)) {
+  if (!Array.isArray(backups)) {
     await updateResponseWithError(snap, context)
     throw new Error('Backups array was not provided to action request')
   }
 
-  if (!isArray(inputs)) {
+  if (!Array.isArray(inputs)) {
     await updateResponseWithError(snap, context)
     throw new Error('Inputs array was not provided to action request')
   }
 
-  if (!isArray(inputValues)) {
+  if (!Array.isArray(inputValues)) {
     await updateResponseWithError(snap, context)
     throw new Error('Input values array was not provided to action request')
   }

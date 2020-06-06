@@ -1,7 +1,11 @@
-### Description
+## Description
 
+## Important Code
 
-### Check List
+## Additional Information
 
-- [ ] All test passed
-- [ ] Updated Any Relevant Docs
+## Relevant Issues
+
+<!-- Please add `closes`, `refs`, etc like so:
+- closes #1
+-->

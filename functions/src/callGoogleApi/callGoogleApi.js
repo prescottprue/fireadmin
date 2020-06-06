@@ -58,7 +58,7 @@ export async function googleApisRequest(serviceAccount, requestSettings) {
  */
 export default async function callGoogleApi(snap, context) {
   const eventVal = snap.val()
-  const eventId = get(context, 'params.pushId')
+  const { pushId: eventId } = context.params
   const {
     apiUrl,
     api = 'storage',

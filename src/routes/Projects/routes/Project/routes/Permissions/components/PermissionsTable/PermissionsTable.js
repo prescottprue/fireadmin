@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { get, map, omit } from 'lodash'
+import { map } from 'lodash'
 import {
   useFirestore,
   useDatabase,
@@ -36,37 +36,32 @@ function PermissionsTable({ projectId }) {
   const displayNames = useDatabaseObjectData(displayNamesRef)
 
   const firestore = useFirestore()
+  const { FieldValue } = useFirestore
   const projectRef = firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`)
   const project = useFirestoreDocData(projectRef)
 
-  const selectedMemberName = get(
-    displayNames,
-    selectedMemberId,
-    selectedMemberId
-  )
+  const selectedMemberName = displayNames[selectedMemberId] || selectedMemberId
   const { roles, permissions: unpopulatedPermissions } = project || {}
   const populatedPermissions = map(
     unpopulatedPermissions,
     (permission, uid) => ({
       ...permission,
       uid,
-      displayName: get(displayNames, uid),
-      roleName: get(roles, permission.role)
+      displayName: displayNames && displayNames[uid],
+      roleName: roles[permission.role]
     })
   )
 
   async function removeMember(uid) {
-    const {
-      permissions: currentPermissions,
-      collaborators: currentCollaborators
-    } = project.permissions
-    const permissions = omit(currentPermissions, [uid])
-    const collaborators = omit(currentCollaborators, [uid])
     try {
       await firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`).set(
         {
-          permissions,
-          collaborators
+          permissions: {
+            [uid]: FieldValue.delete()
+          },
+          collaborators: {
+            [uid]: FieldValue.delete()
+          }
         },
         { merge: true }
       )

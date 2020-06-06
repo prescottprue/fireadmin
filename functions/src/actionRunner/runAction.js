@@ -1,5 +1,4 @@
 import * as admin from 'firebase-admin'
-import { get } from 'lodash'
 import { runStepsFromEvent, runBackupsFromEvent } from './runSteps'
 import { to } from '../utils/async'
 import {
@@ -7,7 +6,6 @@ import {
   updateRequestAsStarted,
   writeProjectEvent
 } from './utils'
-import { rtdbRef } from '../utils/rtdb'
 
 /**
  * Run action based on action template. Multiple Service Account Types
@@ -41,7 +39,7 @@ export default async function runAction(snap, context) {
   console.log('Start event sent successfully. Starting action run...')
 
   // Handle backups if they exist within the template
-  if (get(eventData, 'template.backups')) {
+  if (eventData.template?.backups) {
     console.log('Backups exist within template, running backups...')
     const [backupsErr] = await to(runBackupsFromEvent(snap, context))
 
@@ -126,7 +124,7 @@ export default async function runAction(snap, context) {
  * @returns {Promise} Resolves with results of pushing message to RTDB
  */
 function sendFcmMessageToUser({ message, userId }) {
-  return rtdbRef('requests/sendFcm').push({
+  return admin.database().ref('requests/sendFcm').push({
     userId,
     message,
     createdAt: admin.database.ServerValue.TIMESTAMP

@@ -2,7 +2,6 @@
 
 [![Build Status][build-status-image]][build-status-url]
 [![Cypress Dashboard][cypress-dashboard-image]][cypress-dashboard-url]
-
 [![License][license-image]][license-url]
 [![Code Style][code-style-image]][code-style-url]
 
@@ -45,7 +44,7 @@ _coming soon_
 - User manager (including role assignment)
 - Data Viewer
 
-Interested in adding a feature or contributing? Open an issue or [reach out over gitter](https://gitter.im/firebase-admin/Lobby).
+Interested in adding a feature or contributing? Please open an issue!
 
 ## Getting Started
 
@@ -77,14 +76,14 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 │   ├── deploy.yml               # Deploy workflow (called on merges to "master" and "production" branches)
 │   └── verify.yml               # Verify workflow (run when PR is created)
 ├── cypress                      # UI Integration Tests
-│   └── index.html               # Main HTML page container for app
 ├── docs                         # Docs application (built with Gatsby)
 │   ├── content                  # Content of docs (written in markdown)
 │   ├── components               # React components used in docs app
 │   ├── gatsby-config.js         # Gatsby plugin settings
-│   ├── gatsby-node.js           # Gatsby node definitions (how templates are combined with content)
+│   └── gatsby-node.js           # Gatsby node definitions (how templates are combined with content)
 │   └── package.json             # Docs package file (docs specific dependencies)
 ├── functions                    # Cloud Functions (uses Cloud Functions for Firebase)
+│   ├── src                      # Cloud Functions Source code (each folder represents a function)
 │   └── index.js                 # Functions entry point
 ├── public                       # Public assets
 │   ├── favicon.ico              # Favicon
@@ -101,7 +100,6 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 │   │       ├── index.js         # Route definitions and async split points
 │   │       ├── assets           # Assets required to render components
 │   │       ├── components       # Presentational React Components
-│   │       ├── container        # Connect components to actions and store
 │   │       ├── modules          # Collections of reducers/constants/actions
 │   │       └── routes **        # Fractal sub-routes (** optional)
 │   ├── static                   # Static assets
