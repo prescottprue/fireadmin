@@ -24,7 +24,7 @@ export default functions.firestore
  * @param {functions.firestore.DocumentSnapshot} snap - Event snapshot
  * @returns {Promise} Resolves with filePath
  */
-export async function handleServiceAccountCreate(snap) {
+async function handleServiceAccountCreate(snap) {
   const eventData = snap.data()
   if (!eventData.serviceAccount) {
     throw new Error(

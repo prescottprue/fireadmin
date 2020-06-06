@@ -1,4 +1,3 @@
-import { get } from 'lodash'
 import algoliasearch from 'algoliasearch'
 import * as functions from 'firebase-functions'
 
@@ -26,7 +25,7 @@ export function createIndexFunc({
 }) {
   return (change, context) => {
     const index = client.initIndex(indexName)
-    const objectID = get(context, `params.${idParam}`)
+    const { [idParam]: objectID } = context.params
     // Remove the item from algolia if it is being deleted
     if (!change.after.exists) {
       console.log(

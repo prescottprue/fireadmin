@@ -1,52 +1,10 @@
-import * as admin from 'firebase-admin'
 import request from 'request-promise'
-import { isString, uniqueId } from 'lodash'
+import { uniqueId } from 'lodash'
 import { to } from './async'
 import {
   authClientFromServiceAccount,
   serviceAccountFromFirestorePath
 } from './serviceAccounts'
-
-/**
- * Create a reference to Real Time Database at a provided path. Uses credentials
- * of Cloud Functions.
- * @param {string} refPath - path for database reference
- * @returns {firebase.Database.Reference} Database reference for provided path
- */
-export function rtdbRef(refPath) {
-  return admin.database().ref(refPath)
-}
-
-/**
- * Watch a snapshot location for completed: true. Also handles errors.
- * @param {object} ref - Snapshot which to watch for completed flag
- * @returns {Promise} Resolves with request snapshot after completed === true
- */
-export function waitForValue(ref) {
-  return new Promise((resolve, reject) => {
-    const EVENT_TYPE = 'value'
-    const requestListener = ref.on(
-      EVENT_TYPE,
-      (responseSnap) => {
-        if (responseSnap.val()) {
-          const requestVal = responseSnap.val()
-          // reject if watching request errors out
-          if (requestVal.status === 'error' || requestVal.error) {
-            reject(responseSnap.val().error)
-          } else {
-            // Unset listener
-            ref.off(EVENT_TYPE, requestListener)
-            resolve(responseSnap)
-          }
-        }
-      },
-      (err) => {
-        console.error(`Error waiting for value at path: ${ref.path}`, err)
-        reject(err)
-      }
-    )
-  })
-}
 
 /**
  * Request google APIs with auth attached
@@ -103,8 +61,10 @@ export async function shallowRtdbGet(opts, rtdbPath = '') {
     )
     throw getErr.error || getErr
   }
-  if (isString(response)) {
+
+  if (typeof response === 'string' || response instanceof String) {
     return JSON.parse(response)
   }
+
   return response
 }

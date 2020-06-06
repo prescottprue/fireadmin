@@ -1,5 +1,4 @@
 import * as admin from 'firebase-admin'
-import { get } from 'lodash'
 import { runStepsFromEvent, runBackupsFromEvent } from './runSteps'
 import { to } from '../utils/async'
 import {
@@ -40,7 +39,7 @@ export default async function runAction(snap, context) {
   console.log('Start event sent successfully. Starting action run...')
 
   // Handle backups if they exist within the template
-  if (get(eventData, 'template.backups')) {
+  if (eventData.template?.backups) {
     console.log('Backups exist within template, running backups...')
     const [backupsErr] = await to(runBackupsFromEvent(snap, context))
 

@@ -3,7 +3,7 @@ import { to, promiseWaterfall } from '../utils/async'
 
 /**
  * Check if a slash path is a doc path
- * @param  {string} slashPath - Path to convert into firestore refernce
+ * @param {string} slashPath - Path to convert into firestore reference
  * @returns {boolean} Whether or not path is a doc path
  * @example Basic
  * isDocPath('projects') // => false

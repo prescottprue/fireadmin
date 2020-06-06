@@ -1,7 +1,6 @@
 import * as admin from 'firebase-admin'
 import os from 'os'
 import fsExtra from 'fs-extra'
-import fs from 'fs'
 import path from 'path'
 import google from 'googleapis'
 import { uniqueId } from 'lodash'
@@ -9,11 +8,24 @@ import mkdirp from 'mkdirp'
 import { decrypt } from './encryption'
 import { to } from './async'
 import { hasAll } from './index'
-import {
-  STORAGE_AND_PLATFORM_SCOPES,
-  SERVICE_ACCOUNT_PARAMS,
-  MISSING_CRED_ERROR_MSG
-} from '../constants/serviceAccount'
+
+const STORAGE_AND_PLATFORM_SCOPES = [
+  'https://www.googleapis.com/auth/devstorage.full_control',
+  'https://www.googleapis.com/auth/firebase.database',
+  'https://www.googleapis.com/auth/userinfo.email',
+  'https://www.googleapis.com/auth/cloud-platform'
+]
+
+const SERVICE_ACCOUNT_PARAMS = [
+  'type',
+  'project_id',
+  'private_key_id',
+  'private_key',
+  'client_email',
+  'client_id',
+  'auth_uri',
+  'token_uri'
+]
 
 /**
  * Get Google APIs auth client. Auth comes from serviceAccount.
@@ -127,8 +139,10 @@ export async function serviceAccountFromFirestorePath(
 
   // Handle credential parameter not existing on doc
   if (!credential) {
-    console.error(MISSING_CRED_ERROR_MSG)
-    throw new Error(MISSING_CRED_ERROR_MSG)
+    const missingCredErrorMsg =
+      'Credential parameter is required to load service account from Firestore'
+    console.error(missingCredErrorMsg)
+    throw new Error(missingCredErrorMsg)
   }
 
   // Decrypt service account string
@@ -174,18 +188,5 @@ export async function serviceAccountFromFirestorePath(
       err
     )
     throw err
-  }
-}
-
-/**
- * @param {string} appName - Name of app
- */
-export async function cleanupServiceAccounts(appName) {
-  const tempLocalPath = path.join(os.tmpdir(), 'serviceAccounts')
-  if (fs.existsSync(tempLocalPath)) {
-    try {
-      fs.unlinkSync(tempLocalPath)
-    } catch(err) {} // eslint-disable-line
-
   }
 }
