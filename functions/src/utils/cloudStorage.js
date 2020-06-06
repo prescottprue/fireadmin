@@ -69,15 +69,3 @@ export async function uploadToStorage(app, pathInStorage, jsonObject) {
     throw err
   }
 }
-
-/**
- * Get Google Cloud Storage reference from the file's path
- * @param {string} storagePath - relative path of file on Cloud Storage
- * @returns {Storage.Reference} Storage reference from firebase-admin library
- */
-export function slashPathToStorageRef(storagePath) {
-  if (!admin.storage) {
-    throw new Error('Storage is not enabled on firebase-admin')
-  }
-  return admin.storage().bucket().file(storagePath)
-}

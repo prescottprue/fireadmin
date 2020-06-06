@@ -4,7 +4,7 @@ import fsExtra from 'fs-extra'
 import fs from 'fs'
 import path from 'path'
 import google from 'googleapis'
-import { get, uniqueId } from 'lodash'
+import { uniqueId } from 'lodash'
 import mkdirp from 'mkdirp'
 import { decrypt } from './encryption'
 import { to } from './async'
@@ -112,8 +112,7 @@ export async function serviceAccountFromFirestorePath(
   name,
   { returnData = false }
 ) {
-  const firestore = admin.firestore()
-  const projectDoc = await firestore.doc(docPath).get()
+  const projectDoc = await admin.firestore().doc(docPath).get()
 
   // Handle project not existing in Firestore
   if (!projectDoc.exists) {
@@ -124,7 +123,7 @@ export async function serviceAccountFromFirestorePath(
 
   // Get serviceAccount parameter from project
   const projectData = projectDoc.data()
-  const { credential } = get(projectData, 'serviceAccount', {})
+  const { serviceAccount: credential } = projectData || {}
 
   // Handle credential parameter not existing on doc
   if (!credential) {
@@ -176,40 +175,6 @@ export async function serviceAccountFromFirestorePath(
     )
     throw err
   }
-}
-
-/**
- * Load service account file from Cloud Storage, returning local storage path.
- * @param {string} docPath - Path to Service Account File on Cloud Storage
- * @param {string} name - Name under which to store local service account file
- * @returns {Promise} Resolves with local path of file
- */
-export async function serviceAccountFromStoragePath(docPath, name) {
-  console.log('Getting service accounts stored in Cloud Storage')
-  const localPath = `serviceAccounts/${name}.json`
-  const tempLocalPath = path.join(os.tmpdir(), localPath)
-  const tempLocalDir = path.dirname(tempLocalPath)
-  // Create Temporary directory and download file to that folder
-  await mkdirp(tempLocalDir)
-  // Download file from bucket to local filesystem
-  await admin
-    .storage()
-    .bucket()
-    .file(docPath)
-    .download({ destination: tempLocalPath })
-  return tempLocalPath
-}
-
-/**
- * Load service account data from Cloud storage file (returns file contents as object)
- * @param {string} docPath - Path to Service Account File on Cloud Storage
- * @param {string} name - Name under which to store local service account file
- * @returns {Promise} Resolves with JS object containing contents of service
- * account file
- */
-export async function serviceAccountFileFromStorage(docPath, name) {
-  const accountLocalPath = await serviceAccountFromStoragePath(docPath, name)
-  return fsExtra.readJson(accountLocalPath)
 }
 
 /**

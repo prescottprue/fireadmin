@@ -30,11 +30,13 @@ function initStackdriverErrorReporter() {
  * Initialize Sentry (reports to sentry.io)
  */
 function initSentry() {
-  Sentry.init({
-    dsn: sentryDsn,
-    environment,
-    release: version
-  })
+  if (sentryDsn) {
+    Sentry.init({
+      dsn: sentryDsn,
+      environment,
+      release: version
+    })
+  }
 }
 
 /**

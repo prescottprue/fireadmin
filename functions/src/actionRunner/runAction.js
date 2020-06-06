@@ -7,7 +7,6 @@ import {
   updateRequestAsStarted,
   writeProjectEvent
 } from './utils'
-import { rtdbRef } from '../utils/rtdb'
 
 /**
  * Run action based on action template. Multiple Service Account Types
@@ -126,7 +125,7 @@ export default async function runAction(snap, context) {
  * @returns {Promise} Resolves with results of pushing message to RTDB
  */
 function sendFcmMessageToUser({ message, userId }) {
-  return rtdbRef('requests/sendFcm').push({
+  return admin.database().ref('requests/sendFcm').push({
     userId,
     message,
     createdAt: admin.database.ServerValue.TIMESTAMP

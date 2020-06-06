@@ -1,4 +1,4 @@
-import { invoke, get, chunk, isObject } from 'lodash'
+import { get, chunk, isObject } from 'lodash'
 import { batchCopyBetweenFirestoreRefs } from './utils'
 import { downloadFromStorage, uploadToStorage } from '../utils/cloudStorage'
 import { to, promiseWaterfall } from '../utils/async'
@@ -130,7 +130,7 @@ export async function copyFromRTDBToFirestore(
   const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
   try {
     const dataSnapFromFirst = await firstRTDB.ref(srcPath).once('value')
-    const dataFromFirst = invoke(dataSnapFromFirst, 'val')
+    const dataFromFirst = dataSnapFromFirst.val()
     const updateRes = await firestore2.doc(destPath).update(dataFromFirst)
     console.log('Copy from RTDB to Firestore successful')
     return updateRes
@@ -167,7 +167,7 @@ export async function copyBetweenRTDBInstances(
   eventData,
   inputValues
 ) {
-  if (!get(app1, 'database') || !get(app2, 'database')) {
+  if (!app1?.database || !app2?.database) {
     console.error('Database not found on app instance')
     throw new Error('Invalid service account, does not have access to database')
   }
@@ -186,7 +186,7 @@ export async function copyBetweenRTDBInstances(
     }
     // Load data from first database
     const dataSnapFromFirst = await firstRTDB.ref(srcPath).once('value')
-    const dataFromFirst = invoke(dataSnapFromFirst, 'val')
+    const dataFromFirst = dataSnapFromFirst.val()
 
     // Handle data not existing in source database
     if (!dataFromFirst) {
@@ -240,7 +240,7 @@ export async function copyPathBetweenRTDBInstances(
     }
     // Load data from first database
     const dataSnapFromFirst = await firstRTDB.ref(srcPath).once('value')
-    const dataFromFirst = invoke(dataSnapFromFirst, 'val')
+    const dataFromFirst = dataSnapFromFirst.val()
 
     // Handle data not existing in source database
     if (!dataFromFirst) {
@@ -359,7 +359,7 @@ export async function copyFromRTDBToStorage(app1, app2, eventData) {
   try {
     const firstRTDB = app1.database()
     const firstDataSnap = await firstRTDB.ref(src.path).once('value')
-    const firstDataVal = invoke(firstDataSnap, 'val')
+    const firstDataVal = firstDataSnap.val()
     if (!firstDataVal) {
       throw new Error('Data not found at provided path')
     }
