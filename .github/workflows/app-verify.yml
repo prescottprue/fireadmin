@@ -44,18 +44,20 @@ jobs:
           # TODO: Confirm that this local cache is not being uploaded in functions or app deploys
           # TODO: Check for changes in packages.json, utils and constants folders
           mkdir $localFolderPath
+          echo "Starting download"
           gsutil -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
-          if [ $noCache != "true" ]; then
+          echo "Finished download"
+          if [ $noCache = "true" ]; then
+            echo "No cache found"
+          else
             echo "Downloaded files"
             for f in $(diff -Nqr functions/src/ $localFolderPath/ | awk '{print $4}' | cut -d'/' -f2-); do
               functionName=$(echo ${f%?????} | sed -r 's/[\/]([a-z])/\U\2/g')
               echo $functionName
               targets="${target} functions:${functionName}"
             done
-          else
-            echo "No cache found"
           fi
-          gsutil -m rsync -d -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath
+          # gsutil -m rsync -d -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath
           echo "Function deploy targets $targets"
           echo "::set-env name=FUNCTIONS_DEPLOY_COMMAND::$targets"
 
