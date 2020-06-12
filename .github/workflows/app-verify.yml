@@ -8,6 +8,9 @@ on:
     branches:
       - single-function
 
+env:
+  GCLOUD_PROJECT: fireadmin-stage
+
 jobs:
   verify-build:
     name: Verify + Build
