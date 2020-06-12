@@ -14,6 +14,8 @@ try {
   )
 }
 
+console.log('index change')
+
 // Set Firestore timestamp settings
 // NOTE: Skipped when running tests tests so it does not have to be mocked
 if (process.env.NODE_ENV !== 'test') {
