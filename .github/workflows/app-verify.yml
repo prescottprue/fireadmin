@@ -43,6 +43,7 @@ jobs:
           targets=""
           # TODO: Confirm that this local cache is not being uploaded in functions or app deploys
           # TODO: Check for changes in packages.json, utils and constants folders
+          mkdir $localFolderPath
           gsutil -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
           if [ $noCache != "true" ]; then
             echo "Downloaded files"
