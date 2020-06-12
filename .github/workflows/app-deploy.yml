@@ -127,17 +127,18 @@ jobs:
           version=$(cat package.json | jq  .version -r)
           gitBranch=${GITHUB_REF##*/}
           envName=$(if [ $gitBranch == "master" ]; then echo staging; else echo $gitBranch; fi;)
-          releaseName=$envName@$version
           export SENTRY_PROJECT=fireadmin
           echo ""
-          echo Creating Sentry release \"$releaseName\" for project \"$SENTRY_PROJECT\"
-          $(yarn bin)/sentry-cli releases new $releaseName
+          echo Creating Sentry release \"$version\" for project \"$SENTRY_PROJECT\"
+          $(yarn bin)/sentry-cli releases new $version
           echo Uploading source maps to Sentry...
-          $(yarn bin)/sentry-cli releases files $releaseName upload-sourcemaps ./build/static/js --no-rewrite
+          $(yarn bin)/sentry-cli releases files $version upload-sourcemaps ./build/static/js --no-rewrite
           echo Associating commits with the release...
           $(yarn bin)/sentry-cli releases set-commits --auto $version
+          echo Associating deploy with release...
+          $(yarn bin)/sentry-cli releases deploys $version new -e $envName
           echo Finalizing the release...
-          $(yarn bin)/sentry-cli releases finalize $releaseName
+          $(yarn bin)/sentry-cli releases finalize $version
           echo Release created successfully
 
       - name: Create Release
