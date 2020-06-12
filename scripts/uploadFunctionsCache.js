@@ -8,7 +8,7 @@ const { runCommand } = require('./utils')
 ;(async () => {
   const defaultArgs = ['-m', 'cp']
   const { GCLOUD_PROJECT } = process.env
-  const cacheFolderPath = 'functions_cache'
+  const cacheFolderPath = 'functions_deploy_cache/current'
   const storagePath = `gs://${GCLOUD_PROJECT}.appspot.com/${cacheFolderPath}`
   const functionsPathsToCopy = ['src', 'index.js', 'package.json', 'yarn.lock']
   const functionsPath = 'functions'
@@ -23,7 +23,6 @@ const { runCommand } = require('./utils')
       `${storagePath}/${pathToCopy}`
     ])
   })
-  console.log('commands', commands)
   try {
     await Promise.all(
       commands.map((commandArgs) => runCommand('gsutil', commandArgs))
