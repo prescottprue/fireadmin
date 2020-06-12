@@ -7,6 +7,8 @@ import { shallowRtdbGet } from '../utils/rtdb'
 
 /**
  * Copy data between Firestore instances from two different Firebase projects
+ *
+ *
  * @param {firebase.App} app1 - First app for the action
  * @param {firebase.App} app2 - Second app for the action
  * @param {object} eventData - Data from event (contains settings)

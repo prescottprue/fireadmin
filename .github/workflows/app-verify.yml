@@ -50,11 +50,8 @@ jobs:
           else
             echo "Downloaded files, diffing for changes"
             packageChanged=$(diff -Nqr -w -B functions/package.json $localFolderPath/$folderSuffix/package.json)
-            echo "package changed $packageChanged"
             indexChanged=$(diff -Nqr -w -B functions/index.js $localFolderPath/$folderSuffix/index.js)
-            echo "index changed $indexChanged"
             lockChanged=$(diff -Nqr -w -B functions/yarn.lock $localFolderPath/$folderSuffix/yarn.lock)
-            echo "Change variables created"
             if [[ ! -z $packageChanged || ! -z $indexChanged || ! -z $lockChanged ]];
               then
                 echo "Top level file changed, deploying all functions"
