@@ -44,7 +44,7 @@ jobs:
           mkdir -p $localFolderPath && gsutil -q -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
           echo "Finished download"
 
-          if [ $noCache = "true" ]
+          if [[ $noCache = "true" ]]
             then
               echo "No cache found, deploying all functions"
               deployCommand="firebase deploy --only functions"
@@ -53,7 +53,8 @@ jobs:
               packageChanged=$(diff -Nqr -w -B functions/package.json $localFolderPath/$folderSuffix/package.json)
               indexChanged=$(diff -Nqr -w -B functions/index.js $localFolderPath/$folderSuffix/index.js)
               lockChanged=$(diff -Nqr -w -B functions/yarn.lock $localFolderPath/$folderSuffix/yarn.lock)
-              if [[ ! -z $packageChanged || ! -z $indexChanged || ! -z $lockChanged ]];
+              echo "Before if of changed"
+              if [[ ! -z $packageChanged || ! -z $indexChanged || ! -z $lockChanged ]]
                 then
                   echo "Top level file changed, deploying all functions..."
                   deployCommand="firebase deploy --only functions"
@@ -63,7 +64,8 @@ jobs:
               fi
           fi
 
-          if [ -z $deployCommand ]
+          echo "Before if of deploy command"
+          if [[ -z $deployCommand ]]
             then
               echo "Function deploy command $deployCommand"
               echo "Reuploading to cache"
