@@ -6,7 +6,7 @@ on:
       - 'docs/**'
   push:
     branches:
-      - single-function
+      - on-off-files
 
 env:
   GCLOUD_PROJECT: fireadmin-stage
@@ -38,9 +38,9 @@ jobs:
         run: |
           # App Version
           version=v$(cat package.json | jq .version -r)
-          cacheFolderPath="functions_deploy_cache/current"
-          localFolderPath="$HOME/local-functions-cache"
-          targets=""
+          cacheFolderChild="current"
+          cacheFolderPath="functions_deploy_cache/$cacheFolderChild"
+          localFolderPath="$HOME/local-functions-cache-2"
           # TODO: Check for changes in packages.json, utils and constants folders
           mkdir $localFolderPath
           echo "Starting download"
@@ -50,11 +50,21 @@ jobs:
             echo "No cache found"
           else
             echo "Downloaded files, diffing for changes"
-            diff -Nqr functions/src $localFolderPath/current | awk '{print $4}' | cut -d'/' -f2- | ./scripts/onlyChangedFunctions.js
-            deployCommand=$(diff -Nqr functions/src $localFolderPath/current | awk '{print $4}' | cut -d'/' -f2- | ./scripts/onlyChangedFunctions.js)
+            packageDiff=$(diff -Nqr functions/package.json $localFolderPath/package.json | awk '{print $4}' | cut -d'/' -f2-)
+            indexDiff=$(diff -Nqr functions/index.js $localFolderPath/index.js | awk '{print $4}' | cut -d'/' -f2-)
+            if [[ -z "$packageDiff" ]]; then
+              echo "there was a change to the package.json"
+              deployCommand="firebase deploy --only functions"
+            else
+              echo "There were no changes to the package.json or index.js"
+              deployCommand=$(diff -Nqr functions/src $localFolderPath/$cacheFolderChild | awk '{print $4}' | cut -d'/' -f2- | ./scripts/onlyChangedFunctions.js)
+            fi
           fi
           echo "Reuploading to cache"
-          gsutil -m rsync -d -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath
+          gsutil -m rsync -d -r functions/index.js gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/
+          gsutil -m rsync -d -r functions/package.json gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/
+          gsutil -m rsync -d -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/src
+          echo "Function deploy command $deployCommand"
           echo "Function deploy command $deployCommand"
 
   #     - name: Get cache settings
