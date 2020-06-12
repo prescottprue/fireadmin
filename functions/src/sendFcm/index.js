@@ -15,9 +15,6 @@ async function sendFcmEvent(snap, context) {
   } = context
   const { userId, message = '', title = 'Fireadmin' } = snap.val() || {}
 
-  console.log(`FCM request received for: ${userId}`)
-  console.log(`FCM request received for: ${userId}`)
-
   if (!userId) {
     const missingUserIdErr = 'userId is required to send FCM message'
     console.error(missingUserIdErr)

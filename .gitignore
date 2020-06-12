@@ -4,6 +4,8 @@
 .DS_Store
 **/.DS_Store
 
+local_functions_cache
+
 # Dependencies
 **/node_modules
 

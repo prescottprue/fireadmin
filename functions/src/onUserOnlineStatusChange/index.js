@@ -33,6 +33,7 @@ async function onUserOnlineStatusChangeEvent(change, context) {
   return change.after.ref.once('value').then((statusSnapshot) => {
     const status = statusSnapshot.val()
     console.log(status, eventStatus)
+    console.log('asdfasdf')
     // If the current timestamp for this data is newer than
     // the data that triggered this event, we exit this function.
     if (status.last_changed > eventStatus.last_changed) {

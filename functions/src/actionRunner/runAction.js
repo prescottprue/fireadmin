@@ -95,7 +95,7 @@ export default async function runAction(snap, context) {
   }
 
   console.log(
-    'Action completed successfully, writing event data and notifying user...'
+    'Action completed successfully,dffd writing event data and notifying user...'
   )
 
   await Promise.all([
