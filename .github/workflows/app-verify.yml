@@ -32,9 +32,7 @@ jobs:
           service_account_key: ${{ secrets.SERVICE_ACCOUNT }}
           export_default_credentials: true
 
-      - name: Get list of functions to deploy
-        env:
-          SHA: ${{ github.sha }}
+      - name: Deploy Only Changed Functions
         run: |
           # App Version
           version=v$(cat package.json | jq .version -r)
@@ -43,11 +41,12 @@ jobs:
           localFolderPath="$HOME/local-functions-cache"
           # Download cache from Google Cloud Storage
           echo "Starting download"
-          mkdir -p $localFolderPath && gsutil -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
-          echo "Finished download, $noCache"
+          mkdir -p $localFolderPath && gsutil -q -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
+          echo "Finished download"
 
           if [ $noCache = "true" ]; then
-            echo "No cache found"
+            echo "No cache found, deploying all functions"
+            deployCommand="firebase deploy --only functions"
           else
             echo "Downloaded files, diffing for changes"
             packageChanged=$(diff -Nqr -w -B functions/package.json $localFolderPath/$folderSuffix/package.json)
@@ -58,7 +57,7 @@ jobs:
             echo "Change variables created"
             if [[ ! -z $packageChanged || ! -z $indexChanged || ! -z $lockChanged ]];
               then
-                echo "Top level file changed"
+                echo "Top level file changed, deploying all functions"
                 deployCommand="firebase deploy --only functions"
               else
                 echo "Checking functions source for changes"
@@ -66,12 +65,16 @@ jobs:
             fi
           fi
 
-          echo "Reuploading to cache"
-          gsutil -m cp functions/index.js gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/index.js
-          gsutil -m cp functions/package.json gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/package.json
-          gsutil -m cp functions/yarn.lock gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/yarn.lock
-          gsutil -m cp -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/src
-          echo "Function deploy command $deployCommand"
+          if [ -z $deployCommand ]; then
+            echo "Function deploy command $deployCommand"
+            echo "Reuploading to cache"
+            gsutil -m cp functions/index.js gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/index.js
+            gsutil -m cp functions/package.json gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/package.json
+            gsutil -m cp functions/yarn.lock gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/yarn.lock
+            gsutil -m cp -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/src
+          else
+            echo "No Functions Changed, skipping deploy"
+          fi
 
   #     - name: Get cache settings
   #       id: cache-settings
