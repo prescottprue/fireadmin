@@ -38,23 +38,35 @@ jobs:
         run: |
           # App Version
           version=v$(cat package.json | jq .version -r)
-          cacheFolderPath="functions_deploy_cache/current"
+          folderSuffix="current"
+          cacheFolderPath="functions_deploy_cache/$folderSuffix"
           localFolderPath="$HOME/local-functions-cache"
-          targets=""
-          # TODO: Check for changes in packages.json, utils and constants folders
-          mkdir $localFolderPath
+          # Download cache from Google Cloud Storage
           echo "Starting download"
-          gsutil -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
-          echo "Finished download"
+          mkdir -p $localFolderPath && gsutil -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
+          echo "Finished download, $noCache"
+
           if [ $noCache = "true" ]; then
             echo "No cache found"
           else
             echo "Downloaded files, diffing for changes"
-            diff -Nqr functions/src $localFolderPath/current | awk '{print $4}' | cut -d'/' -f2- | ./scripts/onlyChangedFunctions.js
-            deployCommand=$(diff -Nqr functions/src $localFolderPath/current | awk '{print $4}' | cut -d'/' -f2- | ./scripts/onlyChangedFunctions.js)
+            packageChanged=$(diff -Nqr -w -B functions/package.json $localFolderPath/$folderSuffix/package.json)
+            indexChanged=$(diff -Nqr -w -B functions/index.js $localFolderPath/$folderSuffix/index.js)
+            lockChanged=$(diff -Nqr -w -B functions/yarn.lock $localFolderPath/$folderSuffix/yarn.lock)
+            if [[ ! -z $packageChanged || ! -z $indexChanged || ! -z $lockChanged ]];
+              then
+                echo "changed"
+                deployCommand="firebase deploy --only functions"
+              else
+                deployCommand=$(diff -Nqr functions/src $localFolderPath/$folderSuffix/src | awk '{print $4}' | cut -d'/' -f2- | ./scripts/onlyChangedFunctions.js)
+            fi
           fi
+
           echo "Reuploading to cache"
-          gsutil -m rsync -d -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath
+          gsutil -m cp functions/index.js gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/index.js
+          gsutil -m cp functions/package.json gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/package.json
+          gsutil -m cp functions/yarn.lock gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/yarn.lock
+          gsutil -m cp -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/src
           echo "Function deploy command $deployCommand"
 
   #     - name: Get cache settings
