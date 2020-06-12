@@ -59,13 +59,13 @@ jobs:
                   echo "Top level file changed, deploying all functions..."
                   deployCommand="firebase deploy --only functions"
                 else
-                  echo "Checking functions source for changes..."
+                  echo "Top level files unchanged, checking functions source for changes..."
                   deployCommand=$(diff -Nqr functions/src $localFolderPath/$folderSuffix/src | awk '{print $4}' | cut -d'/' -f2- | ./scripts/onlyChangedFunctions.js)
               fi
           fi
 
-          echo "Before if of deploy command"
-          if [[ -z $deployCommand ]]
+          echo "Function deploy command $deployCommand"
+          if [[ ! -z $deployCommand ]]
             then
               echo "Function deploy command $deployCommand"
               echo "Reuploading to cache"
