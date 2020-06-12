@@ -43,7 +43,7 @@ jobs:
           targets=""
           # TODO: Confirm that this local cache is not being uploaded in functions or app deploys
           # TODO: Check for changes in packages.json, utils and constants folders
-          gsutil -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath
+          gsutil -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath || echo "No cache found"
           echo "Downloaded files"
           for f in $(diff -Nqr functions/src/ $localFolderPath/ | awk '{print $4}' | cut -d'/' -f2-); do
             functionName=$(echo ${f%?????} | sed -r 's/[\/]([a-z])/\U\2/g')
