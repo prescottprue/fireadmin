@@ -26,7 +26,7 @@ jobs:
         with:
           version: '290.0.1'
           project_id: ${{ env.GCLOUD_PROJECT }}
-          service_account_key: ${{ env.MASTER_SERVICE_ACCOUNT }}
+          service_account_key: ${{ secrets.SERVICE_ACCOUNT }}
           export_default_credentials: true
 
       - name: Get list of functions to deploy
