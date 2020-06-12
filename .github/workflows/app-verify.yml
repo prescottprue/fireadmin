@@ -55,7 +55,6 @@ jobs:
               packageChanged=$(diff -Nqr -w -B functions/package.json $localFolderPath/$folderSuffix/package.json)
               indexChanged=$(diff -Nqr -w -B functions/index.js $localFolderPath/$folderSuffix/index.js)
               lockChanged=$(diff -Nqr -w -B functions/yarn.lock $localFolderPath/$folderSuffix/yarn.lock)
-              echo "Before if of changed"
               if [[ ! -z $packageChanged || ! -z $indexChanged || ! -z $lockChanged ]]
                 then
                   echo "Top level file changed, deploying all functions..."
