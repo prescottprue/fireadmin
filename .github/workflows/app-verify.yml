@@ -62,7 +62,6 @@ jobs:
                   deployCommand="firebase deploy --only functions"
                 else
                   echo "Top level files unchanged, checking functions source for changes..."
-                  echo "Output of diff $(diff -Nqr functions/src $localFolderPath/$folderSuffix/src | awk '{print $4}' | cut -d'/' -f2-)"
                   deployCommand=$(diff -Nqr functions/src $localFolderPath/$folderSuffix/src | awk '{print $4}' | cut -d'/' -f2- | ./scripts/onlyChangedFunctions.js)
               fi
           fi
