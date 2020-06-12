@@ -40,9 +40,9 @@ jobs:
           cacheFolderPath="functions_deploy_cache/$folderSuffix"
           localFolderPath="$HOME/local-functions-cache"
           # Download cache from Google Cloud Storage
-          echo "Starting download"
-          mkdir -p $localFolderPath && gsutil -q -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
-          echo "Finished download"
+          echo "Starting download \n"
+          mkdir -p $localFolderPath && gsutil -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
+          echo "\nFinished download"
 
           if [[ $noCache = "true" ]]
             then
@@ -60,19 +60,20 @@ jobs:
                   deployCommand="firebase deploy --only functions"
                 else
                   echo "Top level files unchanged, checking functions source for changes..."
+                  echo "Output of diff $(diff -Nqr functions/src $localFolderPath/$folderSuffix/src | awk '{print $4}' | cut -d'/' -f2-)"
                   deployCommand=$(diff -Nqr functions/src $localFolderPath/$folderSuffix/src | awk '{print $4}' | cut -d'/' -f2- | ./scripts/onlyChangedFunctions.js)
               fi
           fi
 
-          echo "Function deploy command $deployCommand"
           if [[ ! -z $deployCommand ]]
             then
               echo "Function deploy command $deployCommand"
-              echo "Reuploading to cache"
+              echo "Reuploading to cache\n"
               gsutil -m cp functions/index.js gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/index.js
               gsutil -m cp functions/package.json gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/package.json
               gsutil -m cp functions/yarn.lock gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/yarn.lock
               gsutil -m cp -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/src
+              echo "\nSuccessfully updated cache, exiting"
             else
               echo "No Functions Changed, skipping deploy"
           fi
