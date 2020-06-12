@@ -40,9 +40,11 @@ jobs:
           cacheFolderPath="functions_deploy_cache/$folderSuffix"
           localFolderPath="$HOME/local-functions-cache"
           # Download cache from Google Cloud Storage
-          echo "Starting download \n"
+          echo "Starting download"
+          echo ""
           mkdir -p $localFolderPath && gsutil -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
-          echo "\nFinished download"
+          echo ""
+          echo "Finished download"
 
           if [[ $noCache = "true" ]]
             then
@@ -68,12 +70,14 @@ jobs:
           if [[ ! -z $deployCommand ]]
             then
               echo "Function deploy command $deployCommand"
-              echo "Reuploading to cache\n"
+              echo "Reuploading to cache"
+              echo ""
               gsutil -m cp functions/index.js gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/index.js
               gsutil -m cp functions/package.json gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/package.json
               gsutil -m cp functions/yarn.lock gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/yarn.lock
-              gsutil -m cp -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/src
-              echo "\nSuccessfully updated cache, exiting"
+              gsutil -m cp -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/
+              echo ""
+              echo "Successfully updated cache, exiting"
             else
               echo "No Functions Changed, skipping deploy"
           fi
