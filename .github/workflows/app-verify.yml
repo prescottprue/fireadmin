@@ -42,7 +42,7 @@ jobs:
           # Download cache from Google Cloud Storage
           echo "Starting download"
           echo ""
-          mkdir -p $localFolderPath && gsutil -m cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
+          mkdir -p $localFolderPath && gsutil -m -q cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
           echo ""
           echo "Finished download"
 
@@ -52,9 +52,10 @@ jobs:
               deployCommand="firebase deploy --only functions"
             else
               echo "Downloaded files, diffing for changes..."
-              packageChanged=$(diff -Nqr -w -B functions/package.json $localFolderPath/$folderSuffix/package.json)
-              indexChanged=$(diff -Nqr -w -B functions/index.js $localFolderPath/$folderSuffix/index.js)
-              lockChanged=$(diff -Nqr -w -B functions/yarn.lock $localFolderPath/$folderSuffix/yarn.lock)
+              packageChanged=$(diff -Nqr -w -B functions/package.json $localFolderPath/$folderSuffix/package.json | awk '{print $4}' | cut -d'/' -f2-)
+              indexChanged=$(diff -Nqr -w -B functions/index.js $localFolderPath/$folderSuffix/index.js | awk '{print $4}' | cut -d'/' -f2-)
+              lockChanged=$(diff -Nqr -w -B functions/yarn.lock $localFolderPath/$folderSuffix/yarn.lock | awk '{print $4}' | cut -d'/' -f2-)
+              echo "Right before changed check"
               if [[ ! -z $packageChanged || ! -z $indexChanged || ! -z $lockChanged ]]
                 then
                   echo "Top level file changed, deploying all functions..."
@@ -70,10 +71,10 @@ jobs:
               echo "Function deploy command $deployCommand"
               echo "Reuploading to cache"
               echo ""
-              gsutil -m cp functions/index.js gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/index.js
-              gsutil -m cp functions/package.json gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/package.json
-              gsutil -m cp functions/yarn.lock gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/yarn.lock
-              gsutil -m cp -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/
+              gsutil -m -q cp functions/index.js gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/index.js
+              gsutil -m -q cp functions/package.json gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/package.json
+              gsutil -m -q cp functions/yarn.lock gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/yarn.lock
+              gsutil -m -q cp -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/
               echo ""
               echo "Successfully updated cache, exiting"
             else
