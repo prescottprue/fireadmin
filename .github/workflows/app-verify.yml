@@ -36,8 +36,9 @@ jobs:
         uses: prescottprue/deploy-changed-functions@master
         with:
           cache-folder: functions_deploy_cache/current
-          local-folder: ${{ env.HOME }}/local-functions-cache
+          local-folder: local-functions-cache
           project_id: ${{ env.GCLOUD_PROJECT }}
+          ignore: '*.spec.js'
 
       # - name: Deploy Only Changed Functions
       #   run: |
