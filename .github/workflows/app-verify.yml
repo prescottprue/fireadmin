@@ -33,53 +33,60 @@ jobs:
           export_default_credentials: true
 
       - name: Deploy Only Changed Functions
-        run: |
-          # App Version
-          version=v$(cat package.json | jq .version -r)
-          folderSuffix="current"
-          cacheFolderPath="functions_deploy_cache/$folderSuffix"
-          localFolderPath="$HOME/local-functions-cache"
-          # Download cache from Google Cloud Storage
-          echo "Starting download"
-          echo ""
-          mkdir -p $localFolderPath && gsutil -m -q cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
-          echo ""
-          echo "Finished download"
+        uses: prescottprue/deploy-changed-functions@master
+        with:
+          cache-folder: functions_deploy_cache/current
+          local-folder-path: ${{ env.HOME }}/local-functions-cache
+          project_id: ${{ env.GCLOUD_PROJECT }}
 
-          if [[ $noCache = "true" ]]
-            then
-              echo "No cache found, deploying all functions"
-              deployCommand="firebase deploy --only functions"
-            else
-              echo "Downloaded files, diffing for changes..."
-              packageChanged=$(diff -Nqr -w -B functions/package.json $localFolderPath/$folderSuffix/package.json | awk '{print $4}' | cut -d'/' -f2-)
-              indexChanged=$(diff -Nqr -w -B functions/index.js $localFolderPath/$folderSuffix/index.js | awk '{print $4}' | cut -d'/' -f2-)
-              lockChanged=$(diff -Nqr -w -B functions/yarn.lock $localFolderPath/$folderSuffix/yarn.lock | awk '{print $4}' | cut -d'/' -f2-)
-              echo "Right before changed check"
-              if [[ ! -z $packageChanged || ! -z $indexChanged || ! -z $lockChanged ]]
-                then
-                  echo "Top level file changed, deploying all functions..."
-                  deployCommand="firebase deploy --only functions"
-                else
-                  echo "Top level files unchanged, checking functions source for changes..."
-                  deployCommand=$(diff -Nqr functions/src $localFolderPath/$folderSuffix/src | awk '{print $4}' | cut -d'/' -f2- | ./scripts/onlyChangedFunctions.js)
-              fi
-          fi
+      # - name: Deploy Only Changed Functions
+      #   run: |
+      #     # App Version
+      #     version=v$(cat package.json | jq .version -r)
+      #     folderSuffix="current"
+      #     cacheFolderPath="functions_deploy_cache/$folderSuffix"
+      #     localFolderPath="$HOME/local-functions-cache"
+      #     # Download cache from Google Cloud Storage
+      #     echo "Starting download"
+      #     echo ""
+      #     mkdir -p $localFolderPath && gsutil -m -q cp -r gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath $localFolderPath/ || noCache="true"
+      #     echo ""
+      #     echo "Finished download"
 
-          if [[ ! -z $deployCommand ]]
-            then
-              echo "Function deploy command $deployCommand"
-              echo "Reuploading to cache"
-              echo ""
-              gsutil -m -q cp functions/index.js gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/index.js
-              gsutil -m -q cp functions/package.json gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/package.json
-              gsutil -m -q cp functions/yarn.lock gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/yarn.lock
-              gsutil -m -q cp -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/
-              echo ""
-              echo "Successfully updated cache, exiting"
-            else
-              echo "No Functions Changed, skipping deploy"
-          fi
+      #     if [[ $noCache = "true" ]]
+      #       then
+      #         echo "No cache found, deploying all functions"
+      #         deployCommand="firebase deploy --only functions"
+      #       else
+      #         echo "Downloaded files, diffing for changes..."
+      #         packageChanged=$(diff -Nqr -w -B functions/package.json $localFolderPath/$folderSuffix/package.json | awk '{print $4}' | cut -d'/' -f2-)
+      #         indexChanged=$(diff -Nqr -w -B functions/index.js $localFolderPath/$folderSuffix/index.js | awk '{print $4}' | cut -d'/' -f2-)
+      #         lockChanged=$(diff -Nqr -w -B functions/yarn.lock $localFolderPath/$folderSuffix/yarn.lock | awk '{print $4}' | cut -d'/' -f2-)
+      #         echo "Right before changed check"
+      #         if [[ ! -z $packageChanged || ! -z $indexChanged || ! -z $lockChanged ]]
+      #           then
+      #             echo "Top level file changed, deploying all functions..."
+      #             deployCommand="$(yarn bin)/firebase deploy --only functions"
+      #           else
+      #             echo "Top level files unchanged, checking functions source for changes..."
+      #             deployCommand=$(diff -Nqr -x '*.spec.js' functions/src $localFolderPath/$folderSuffix/src | awk '{print $4}' | cut -d'/' -f2- | ./scripts/onlyChangedFunctions.js)
+      #         fi
+      #     fi
+
+      #     if [[ ! -z $deployCommand ]]
+      #       then
+      #         echo "Function deploy command $deployCommand"
+      #         echo "Reuploading to cache"
+      #         echo ""
+      #         gsutil -m -q cp functions/index.js gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/index.js
+      #         gsutil -m -q cp functions/package.json gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/package.json
+      #         gsutil -m -q cp functions/yarn.lock gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/yarn.lock
+      #         gsutil -m -q cp -r functions/src gs://$GCLOUD_PROJECT.appspot.com/$cacheFolderPath/
+      #         echo ""
+      #         echo "Successfully updated cache, exiting"
+      #       else
+      #         echo "No Functions Changed, skipping deploy"
+      #     fi
 
   #     - name: Get cache settings
   #       id: cache-settings
