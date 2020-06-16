@@ -36,7 +36,7 @@ jobs:
         uses: prescottprue/deploy-changed-functions@master
         with:
           cache-folder: functions_deploy_cache/current
-          local-folder-path: ${{ env.HOME }}/local-functions-cache
+          local-folder: ${{ env.HOME }}/local-functions-cache
           project_id: ${{ env.GCLOUD_PROJECT }}
 
       # - name: Deploy Only Changed Functions
