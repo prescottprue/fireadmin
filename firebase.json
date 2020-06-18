@@ -65,10 +65,10 @@
       "*.md",
       "*.log",
       "**/.*",
-      "Dockerfile",
       "LICENSE",
       "build",
       "coverage",
+      "Dockerfile",
       "src",
       "test"
     ]

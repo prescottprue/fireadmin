@@ -39,6 +39,7 @@ jobs:
           local-folder: local-functions-cache
           project_id: ${{ env.GCLOUD_PROJECT }}
           ignore: '*.spec.js'
+          # global-files: 'package.json,.babelrc,'
 
       # - name: Get cache settings
       #   id: cache-settings
