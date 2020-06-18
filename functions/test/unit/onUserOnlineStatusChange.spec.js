@@ -6,7 +6,6 @@ describe('onUserOnlineStatusChange RTDB Cloud Function (RTDB:onUpdate)', () => {
   let firestoreStub = () => ({ doc: sinon.stub({ set: sinon.stub() }) })
   let refStub // eslint-disable-line no-unused-vars
   let docStub
-  let docSetStub // eslint-disable-line no-unused-vars
   let rtdbStub
   let setStub
   const resultOfSet = {}
@@ -19,7 +18,6 @@ describe('onUserOnlineStatusChange RTDB Cloud Function (RTDB:onUpdate)', () => {
     // Stub Firebase's functions.config()
     firestoreStub = sinon.stub()
     docStub = sinon.stub()
-    docSetStub = sinon.stub()
     setStub = sinon.stub()
     rtdbStub = sinon.stub()
     setStub.returns(Promise.resolve(resultOfSet))

@@ -6,7 +6,6 @@ describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
   let cleanupProject
   let refStub // eslint-disable-line no-unused-vars
   let docStub
-  let docSetStub // eslint-disable-line no-unused-vars
   let setStub
   const resultOfSet = {}
 
@@ -28,7 +27,6 @@ describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
     })
     // Stubs for Firestore methods
     docStub = sinon.stub()
-    docSetStub = sinon.stub()
     setStub = sinon.stub().returns(Promise.resolve(resultOfSet))
     docStub.returns({
       set: setStub,

@@ -56,17 +56,17 @@ export async function runStepsFromEvent(snap, context) {
     template: { steps, inputs }
   } = eventData
 
-  if (!Array.actionResponseisArray(steps)) {
+  if (!Array.isArray(steps)) {
     await updateResponseWithError(snap, context)
     throw new Error('Steps array was not provided to action request')
   }
 
-  if (!Array.actionResponseisArray(inputs)) {
+  if (!Array.isArray(inputs)) {
     await updateResponseWithError(snap, context)
     throw new Error('Inputs array was not provided to action request')
   }
 
-  if (!Array.actionResponseisArray(inputValues)) {
+  if (!Array.isArray(inputValues)) {
     await updateResponseWithError(snap, context)
     throw new Error('Input values array was not provided to action request')
   }

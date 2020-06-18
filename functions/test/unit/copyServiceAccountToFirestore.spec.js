@@ -5,7 +5,6 @@ import { to } from 'utils/async'
 describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', () => {
   let copyServiceAccountToFirestore
   let refStub // eslint-disable-line no-unused-vars
-  let docSetStub // eslint-disable-line no-unused-vars
   let adminInitStub
   let storageAdminStub
 
