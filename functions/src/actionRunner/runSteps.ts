@@ -1,4 +1,5 @@
 import * as functions from 'firebase-functions'
+import * as admin from 'firebase-admin'
 import { get, size, map, isObject } from 'lodash'
 import { tmpdir } from 'os'
 import { existsSync, unlinkSync } from 'fs'
@@ -21,7 +22,6 @@ import {
   updateResponseWithError,
   updateResponseWithActionError
 } from './utils'
-import { app } from 'firebase-admin'
 
 /**
  * Cleanup local service account files
@@ -190,7 +190,7 @@ export async function runBackupsFromEvent(snap, context) {
  * @param {Array} envsMetas - Meta data for environments
  * @returns {Promise} Resolves with an array of results of converting inputs
  */
-function validateAndConvertEnvironments(eventData, envsMetas): Promise<app.App[]> {
+function validateAndConvertEnvironments(eventData, envsMetas): Promise<admin.app.App[]> {
   if (!eventData.environments) {
     return Promise.resolve([])
   }
@@ -213,7 +213,7 @@ interface InputMetadata {
  * @param {object} inputValue - Value of input
  * @returns {Promise} Resolves with firebase app if service account type
  */
-async function validateAndConvertEnvironment(eventData, inputMeta: InputMetadata, inputValue: any): Promise<app.App> {
+async function validateAndConvertEnvironment(eventData, inputMeta: InputMetadata, inputValue: any): Promise<admin.app.App> {
   // Throw if input is required and is missing serviceAccountPath or databaseURL
   const varsNeededForStorageType = ['fullPath', 'databaseURL']
   const varsNeededForFirstoreType = ['credential', 'databaseURL']
