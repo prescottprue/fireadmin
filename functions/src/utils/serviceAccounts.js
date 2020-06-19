@@ -135,7 +135,7 @@ export async function serviceAccountFromFirestorePath(
 
   // Get serviceAccount parameter from project
   const projectData = projectDoc.data()
-  const { serviceAccount: credential } = projectData || {}
+  const { credential } = projectData?.serviceAccount || {}
 
   // Handle credential parameter not existing on doc
   if (!credential) {
@@ -159,7 +159,10 @@ export async function serviceAccountFromFirestorePath(
   try {
     serviceAccountData = JSON.parse(serviceAccountStr)
   } catch (err) {
-    console.error('Service account not a valid object', err)
+    console.error(
+      `Service account not a valid object, serviceAccountStr: "${serviceAccountStr}" err:`,
+      err
+    )
     throw new Error('Service account not a valid object')
   }
 

@@ -53,7 +53,12 @@ describe('sendFcm RTDB Cloud Function (onCreate)', () => {
     const userId = 'asdf'
     const refStub = sinon.stub().returns({})
     const databaseStub = sinon.stub().returns({ ref: refStub })
-    const getStub = sinon.stub().returns(Promise.resolve({ data: () => ({}) }))
+    const getStub = sinon.stub().returns(
+      Promise.resolve({
+        data: () => ({}),
+        get: sinon.stub().returns(undefined)
+      })
+    )
     const docStub = sinon.stub().returns({ get: getStub })
     const collectionStub = sinon.stub().returns({ doc: docStub })
     // Apply stubs as admin.firestore()
