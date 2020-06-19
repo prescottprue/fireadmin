@@ -2,6 +2,11 @@ import crypto from 'crypto'
 import { isString } from 'lodash'
 import * as functions from 'firebase-functions'
 
+interface EncryptOptions {
+  algorithm?: string
+  password?: string
+}
+
 /**
  * Encrypt a string using a password. encryption.password from
  * functions config is used by default if not passed.
@@ -13,8 +18,8 @@ import * as functions from 'firebase-functions'
  * by default if not passed.
  * @returns {string} Encrypted string
  */
-export function encrypt(text, options = {}) {
-  const { algorithm = 'aes-256-ctr', password: passwordOption } = options
+export function encrypt(text: string, options?: EncryptOptions) {
+  const { algorithm = 'aes-256-ctr', password: passwordOption } = options || {}
   if (!text) {
     return
   }
@@ -42,8 +47,8 @@ export function encrypt(text, options = {}) {
  * by default if not passed.
  * @returns {string} Encrypted string
  */
-export function decrypt(text, options = {}) {
-  const { algorithm = 'aes-256-ctr', password } = options
+export function decrypt(text, options?: EncryptOptions) {
+  const { algorithm = 'aes-256-ctr', password } = options || {}
   if (!text) {
     return
   }

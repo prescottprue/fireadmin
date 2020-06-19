@@ -24,9 +24,11 @@ export default functions.firestore
  * @param {functions.firestore.DocumentSnapshot} snap - Event snapshot
  * @returns {Promise} Resolves with filePath
  */
-async function handleServiceAccountCreate(snap) {
+async function handleServiceAccountCreate(
+  snap: functions.firestore.DocumentSnapshot
+): Promise<any> {
   const eventData = snap.data()
-  if (!eventData.serviceAccount) {
+  if (!eventData?.serviceAccount) {
     throw new Error(
       'serviceAccount parameter is required to copy service account to Firestore'
     )

@@ -31,7 +31,6 @@ export async function copyBetweenFirestoreInstances(
     batchCopyBetweenFirestoreRefs({
       srcRef,
       destRef,
-      subcollections,
       opts: { merge, copySubcollections: subcollections }
     })
   )

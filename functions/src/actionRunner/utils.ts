@@ -8,6 +8,11 @@ import {
   isDocPath
 } from '../utils/firestore'
 
+interface ErrorInfo {
+  message?: string
+  status?: string
+}
+
 /**
  * Write response object with status "success" or "error". If
  * status is "error", message is also included.
@@ -16,8 +21,8 @@ import {
  * @param {Error} error - Error object
  * @returns {Promise} Resolves with results of database write promise
  */
-export function updateResponseOnRTDB(snap, context, error) {
-  const response = {
+export function updateResponseOnRTDB(snap, context, error?: ErrorInfo) {
+  const response: any = {
     completed: true,
     completedAt: admin.database.ServerValue.TIMESTAMP
   }
@@ -65,7 +70,7 @@ export async function emitProjectEvent(eventData) {
   const [writeErr, writeRes] = await to(
     admin
       .firestore()
-      .doc(`projects/${projectId}/events`)
+      .collection(`projects/${projectId}/events`)
       .add({
         ...eventData,
         createdBy: 'system',
@@ -200,8 +205,8 @@ export async function writeProjectEvent(projectId, extraEventAttributes = {}) {
  * @param {object} collectionsSnap - Collection snap object with forEach
  * @returns {Array} List of collection snapshot ids
  */
-export function collectionsSnapToArray(collectionsSnap) {
-  const collectionsIds = []
+export function collectionsSnapToArray(collectionsSnap): string[] {
+  const collectionsIds: string[] = []
   if (collectionsSnap.forEach) {
     collectionsSnap.forEach((collectionSnap) => {
       collectionsIds.push(collectionSnap.id)
@@ -246,6 +251,11 @@ async function getSubcollectionNames(subcollectionSetting, ref) {
   return collectionsSnapToArray(collections)
 }
 
+interface FirestoreBatchCopyOptions {
+  copySubcollections?: boolean
+  merge?: boolean
+}
+
 /**
  * Write document updates in a batch process.
  * @param {object} params - Params object
@@ -257,9 +267,13 @@ async function getSubcollectionNames(subcollectionSetting, ref) {
 export async function batchCopyBetweenFirestoreRefs({
   srcRef,
   destRef,
-  opts = {}
+  opts
+}: {
+  srcRef: FirebaseFirestore.DocumentReference | FirebaseFirestore.CollectionReference | any
+  destRef: FirebaseFirestore.DocumentReference | FirebaseFirestore.CollectionReference | any
+  opts: FirestoreBatchCopyOptions
 }) {
-  const { copySubcollections } = opts
+  const { copySubcollections } = opts || {}
   // TODO: Switch to querying in batches limited to 500 so reads/writes match
   // Get data from src reference
   const [getErr, firstSnap] = await to(srcRef.get())

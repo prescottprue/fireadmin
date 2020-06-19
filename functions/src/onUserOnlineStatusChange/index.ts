@@ -16,7 +16,10 @@ export default functions.database
  * @param {functions.EventContext} context - Functions context
  * @returns {Promise} Resolves with results of setting to Firestore
  */
-async function onUserOnlineStatusChangeEvent(change, context) {
+async function onUserOnlineStatusChangeEvent(
+  change: functions.Change<functions.database.DataSnapshot>,
+  context: functions.EventContext
+): Promise<any> {
   // Get the data written to Realtime Database
   const eventStatus = change.after.val()
 

@@ -27,12 +27,16 @@ const SERVICE_ACCOUNT_PARAMS = [
   'token_uri'
 ]
 
+interface ClientObj {
+  credentials: { token_type: string, access_token: string }
+}
+
 /**
  * Get Google APIs auth client. Auth comes from serviceAccount.
  * @param {object} serviceAccount - Service account object
  * @returns {Promise} Resolves with JWT Auth Client (for attaching to request)
  */
-export async function authClientFromServiceAccount(serviceAccount) {
+export async function authClientFromServiceAccount(serviceAccount): Promise<ClientObj> {
   if (!hasAll(serviceAccount, SERVICE_ACCOUNT_PARAMS)) {
     throw new Error('Invalid service account')
   }
@@ -65,7 +69,7 @@ export async function authClientFromServiceAccount(serviceAccount) {
  * @param {object} eventData - Data from event request
  * @returns {Promise} Resolves with Firebase app
  */
-export async function getAppFromServiceAccount(opts, eventData) {
+export async function getAppFromServiceAccount(opts, eventData): Promise<admin.app.App> {
   const { databaseURL, storageBucket, environmentKey, id } = opts
   if (!databaseURL) {
     throw new Error(
@@ -97,7 +101,7 @@ export async function getAppFromServiceAccount(opts, eventData) {
   }
 
   try {
-    const appCreds = {
+    const appCreds: any = {
       credential: admin.credential.cert(accountFilePath),
       databaseURL
     }
@@ -113,17 +117,17 @@ export async function getAppFromServiceAccount(opts, eventData) {
 
 /**
  * Load service account data From Firestore
- * @param {string} docPath - Path to Firestore document containing service account
- * @param {string} name - Name under which to store local service account file
+ * @param docPath - Path to Firestore document containing service account
+ * @param name - Name under which to store local service account file
  * @param {object} options - Options object
  * @param {boolean} options.returnData - Whether or not to return service account data
  * @returns {Promise} Resolves with service account or path to service account
  */
 export async function serviceAccountFromFirestorePath(
-  docPath,
-  name,
+  docPath: string,
+  name: string,
   { returnData = false }
-) {
+): Promise<any> {
   const projectDoc = await admin.firestore().doc(docPath).get()
 
   // Handle project not existing in Firestore

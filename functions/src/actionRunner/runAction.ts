@@ -28,7 +28,7 @@ export default async function runAction(snap, context) {
 
   await Promise.all([
     // Mark original request object as started
-    updateRequestAsStarted(snap, context),
+    updateRequestAsStarted(snap),
     // Write an event to project's "events" subcollection
     writeProjectEvent(eventData.projectId, {
       eventType: 'startActionRun',

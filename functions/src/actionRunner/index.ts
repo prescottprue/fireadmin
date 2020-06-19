@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions'
 import { ACTION_RUNNER_REQUESTS_PATH } from './constants'
 import runAction from './runAction'
 
-const runtimeOpts = {
+const runtimeOpts: functions.RuntimeOptions = {
   timeoutSeconds: 540,
   memory: '2GB'
 }

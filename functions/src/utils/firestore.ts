@@ -1,3 +1,4 @@
+import * as admin from 'firebase-admin'
 import { size, chunk, flatten } from 'lodash'
 import { to, promiseWaterfall } from '../utils/async'
 
@@ -9,7 +10,7 @@ import { to, promiseWaterfall } from '../utils/async'
  * isDocPath('projects') // => false
  * isDocPath('projects/asdf') // => true
  */
-export function isDocPath(slashPath) {
+export function isDocPath(slashPath: string): boolean {
   return (slashPath.split('/').length - 1) % 2 === 1
 }
 
@@ -24,7 +25,7 @@ export function isDocPath(slashPath) {
  * subCollectRef.add({}) // add some doc to the subcollection
  * // => Subcollection reference
  */
-export function slashPathToFirestoreRef(firestoreInstance, slashPath) {
+export function slashPathToFirestoreRef(firestoreInstance, slashPath: string) {
   let ref = firestoreInstance
   const srcPathArr = slashPath.split('/')
   srcPathArr.forEach((pathSegment) => {
@@ -38,15 +39,21 @@ export function slashPathToFirestoreRef(firestoreInstance, slashPath) {
   })
   return ref
 }
+interface DataObject {
+  id: string
+  data: any
+}
 
 /**
  * Create data object with values for each document with keys being doc.id.
- * @param {firebase.database.DataSnapshot} snap - Data for which to create
+ * @param snap - Data for which to create
  * an ordered array.
  * @returns {object|null} Object documents from snapshot or null
  */
-export function dataArrayFromSnap(snap) {
-  const data = []
+export function dataArrayFromSnap(
+  snap: admin.firestore.DocumentSnapshot | admin.firestore.QuerySnapshot | any
+): DataObject[] {
+  const data: DataObject[] = []
   if (snap.data && snap.exists) {
     data.push({ id: snap.id, data: snap.data() })
   } else if (snap.forEach) {

@@ -1,12 +1,15 @@
 import * as functions from 'firebase-functions'
+import * as admin from 'firebase-admin'
 import { to } from '../utils/async'
 
 /**
  * Remove collection provided the snap (handles removing subcollections)
- * @param  {object} collectionSnap - Snapshot of collection to remove
+ * @param collectionSnap - Snapshot of collection to remove
  * @returns {Promise} Results of removing collection
  */
-async function removeCollection(collectionSnap) {
+async function removeCollection(
+  collectionSnap: admin.firestore.CollectionReference
+) {
   const [getErr, collectionQueryResult] = await to(collectionSnap.get())
   // Handle errors getting collection data
   if (getErr) {
@@ -15,21 +18,17 @@ async function removeCollection(collectionSnap) {
   }
   if (!collectionQueryResult.size) {
     console.log(`No docs in ${collectionSnap.id}, removing all collections`)
-    await removeAllCollections(collectionSnap.ref)
+    await removeAllCollections(collectionSnap)
     return null
   }
   console.log(
     `Removing ${collectionQueryResult.size} docs from the "${collectionSnap.id}" subcollection`
   )
-  const docRefs = []
-  collectionQueryResult.forEach((doc) => {
-    docRefs.push(doc)
-  })
 
   // Remove all documents from collection (removing the document's
   // subcollections first if they exist)
   return Promise.all(
-    docRefs.map(async (docSnap) => {
+    collectionQueryResult.docs.map(async (docSnap) => {
       // Remove all subcollections before deleting document
       const [deleteSubcollectionsErr] = await to(
         removeAllCollections(docSnap.ref)
@@ -62,13 +61,15 @@ async function removeCollection(collectionSnap) {
  * will be deleted
  * @returns {Promise} Resolves with results of removing all collections
  */
-async function removeAllCollections(docRef) {
+async function removeAllCollections(docRef: any) {
   if (!docRef.getCollections) {
     throw new Error('docRef.getCollections does not exist')
   }
   // all collection names
-  // TODO: listCollections (including updating tests)
-  const [getCollectionsErr, collectionSnaps] = await to(docRef.getCollections())
+  // TODO: getCollections (including updating tests)
+  const [getCollectionsErr, collectionSnaps] = await to(
+    docRef.getCollections()
+  )
   // Handle errors in batch write
   if (getCollectionsErr) {
     console.error(
@@ -81,14 +82,8 @@ async function removeAllCollections(docRef) {
   if (!collectionSnaps.length) {
     return null
   }
-  // TODO: Switch to using .map directly on list of subcollection refs
-  // Add each collection snap to a snaps array
-  const snaps = []
-  collectionSnaps.forEach((collectionSnap) => {
-    snaps.push(collectionSnap)
-  })
   // Remove each collection
-  return Promise.all(snaps.map(removeCollection))
+  return Promise.all(collectionSnaps.map(removeCollection))
 }
 
 /**

@@ -43,7 +43,7 @@ export async function shallowRtdbGet(opts, rtdbPath = '') {
     throw saErr
   }
 
-  const client = await authClientFromServiceAccount(serviceAccount)
+  const client: any = await authClientFromServiceAccount(serviceAccount)
 
   const apiUrl = `https://${
     databaseName || serviceAccount.project_id
@@ -63,7 +63,7 @@ export async function shallowRtdbGet(opts, rtdbPath = '') {
   }
 
   if (typeof response === 'string' || response instanceof String) {
-    return JSON.parse(response)
+    return JSON.parse(response as string)
   }
 
   return response
