@@ -40,7 +40,7 @@ async function sendFcmEvent(
   }
 
   // Get messaging token from user's profile
-  const token = userProfileSnap.get('messaging.mostRecentToken')
+  const token = userProfileSnap?.get('messaging.mostRecentToken')
 
   // Handle messaging token not being found on user object
   if (!token) {

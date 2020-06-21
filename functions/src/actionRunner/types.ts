@@ -6,7 +6,9 @@ export interface ActionRunnerInstanceSetting {
 }
 
 interface EnvironmentServiceAccountObj {
-  /* Set by copyServiceAccountToFirestore Cloud Function */
+  /**
+   * Set by copyServiceAccountToFirestore Cloud Function
+   */
   credential?: string
   fullPath: string
 }

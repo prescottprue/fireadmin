@@ -4,8 +4,8 @@ import { to, promiseWaterfall } from '../utils/async'
 
 /**
  * Check if a slash path is a doc path
- * @param {string} slashPath - Path to convert into firestore reference
- * @returns {boolean} Whether or not path is a doc path
+ * @param slashPath - Path to convert into firestore reference
+ * @returns Whether or not path is a doc path
  * @example Basic
  * isDocPath('projects') // => false
  * isDocPath('projects/asdf') // => true
@@ -18,7 +18,7 @@ export function isDocPath(slashPath: string): boolean {
  * Convert slash path to Firestore reference
  * @param {firestore.Firestore} firestoreInstance - Instance on which to
  * create ref
- * @param {string} slashPath - Path to convert into firestore reference
+ * @param slashPath - Path to convert into firestore reference
  * @returns {firestore.CollectionReference|firestore.DocumentReference} Reference
  * @example Subcollection
  * const subCollectRef = slashPathToFirestoreRef(admin.firestore(), 'projects/some/events')
@@ -39,6 +39,7 @@ export function slashPathToFirestoreRef(firestoreInstance, slashPath: string) {
   })
   return ref
 }
+
 interface DataObject {
   id: string
   data: any
@@ -48,7 +49,7 @@ interface DataObject {
  * Create data object with values for each document with keys being doc.id.
  * @param snap - Data for which to create
  * an ordered array.
- * @returns {object|null} Object documents from snapshot or null
+ * @returns Object documents from snapshot or null
  */
 export function dataArrayFromSnap(
   snap: admin.firestore.DocumentSnapshot | admin.firestore.QuerySnapshot | any
@@ -82,22 +83,26 @@ export function dataByIdSnapshot(snap) {
   return size(data) ? data : null
 }
 
+interface BatchWriteOptions {
+  merge?: boolean
+}
+
 /**
  * Write document updates in a batch process.
  * @param {firestore.Firestore} firestoreInstance - Instance on which to
  * create ref
- * @param {string} destPath - Destination path under which data should be
+ * @param destPath - Destination path under which data should be
  * written
- * @param {Array} docData - List of docs to be written
- * @param {object} opts - Options object (can contain merge)
- * @returns {Promise} Resolves with results of batch commit
+ * @param docData - List of docs to be written
+ * @param opts - Options object (can contain merge)
+ * @returns Resolves with results of batch commit
  */
 export async function batchWriteDocs(
   firestoreInstance,
-  destPath,
-  docData,
-  opts
-) {
+  destPath: string,
+  docData: any[],
+  opts?: BatchWriteOptions
+): Promise<any> {
   const batch = firestoreInstance.batch()
   // Call set to dest for each doc within the original data
   docData.forEach(({ id, data }) => {
@@ -126,20 +131,19 @@ const MAX_DOCS_PER_BATCH = 500
  * the max docs per batch count, multiple batches will be run in succession.
  * @param {firestore.Firestore} firestoreInstance - Instance on which to
  * create ref
- * @param {string} destPath - Destination path under which data should be
- * written
- * @param {Array} docData - List of docs to be written
- * @param {object} opts - Options object (can contain merge)
- * @returns {Promise} Resolves with results of batch commit
+ * @param destPath - Destination path under which data should be written
+ * @param docData - List of docs to be written
+ * @param opts - Options object (can contain merge)
+ * @returns Resolves with results of batch commit
  */
 export async function writeDocsInBatches(
   firestoreInstance,
-  destPath,
-  docData,
-  opts
-) {
+  destPath: string,
+  docData: any[],
+  opts?: BatchWriteOptions
+): Promise<any[]> {
   // Check if doc data is longer than max docs per batch
-  if (docData && docData.length < MAX_DOCS_PER_BATCH) {
+  if (docData?.length < MAX_DOCS_PER_BATCH) {
     console.log(
       `Updating all in once back since there are ${docData.length} updates and the max batch size is ${MAX_DOCS_PER_BATCH}`
     )

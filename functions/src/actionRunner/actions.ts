@@ -58,14 +58,14 @@ export async function copyBetweenFirestoreInstances(
  * @param {firebase.App} app2 - Second app for the action
  * @param {object} eventData - Data from event (contains settings)
  * @param {Array} inputValues - Values of inputs
- * @returns {Promise} Resolves with result of update call
+ * @returns Resolves with result of update call
  */
 export async function copyFromFirestoreToRTDB(
   app1: admin.app.App,
   app2: admin.app.App,
   eventData: ActionStep,
   inputValues
-) {
+): Promise<any> {
   const firestore1 = app1.firestore()
   const secondRTDB = app2.database()
   const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
@@ -148,7 +148,7 @@ export async function copyFromRTDBToFirestore(
  * @param {string} [location='src'] - Path location (i.e. src/dest)
  * @returns {string} Inputs value or path provided within template's step
  */
-function inputValueOrTemplatePath(templateStep, inputValues, location = 'src') {
+function inputValueOrTemplatePath(templateStep: ActionStep, inputValues: any[], location = 'src') {
   return get(templateStep, `${location}.pathType`) === 'input'
     ? get(inputValues, get(templateStep, `${location}.path`))
     : get(templateStep, `${location}.path`)

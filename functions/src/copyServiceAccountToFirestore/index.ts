@@ -1,8 +1,8 @@
 import * as functions from 'firebase-functions'
+import * as admin from 'firebase-admin'
 import { encrypt } from '../utils/encryption'
 import { to } from '../utils/async'
 import { downloadFromStorage } from '../utils/cloudStorage'
-import * as admin from 'firebase-admin'
 
 /**
  * Download service account from Cloud Storage and store it as an encrypted

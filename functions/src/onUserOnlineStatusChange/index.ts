@@ -3,9 +3,9 @@ import * as admin from 'firebase-admin'
 
 /**
  * Copy online status to Firestore from RTDB
- * @param {functions.Change} change - Change event
- * @param {functions.EventContext} context - Functions context
- * @returns {Promise} Resolves with results of setting to Firestore
+ * @param change - Change event
+ * @param context - Functions context
+ * @returns Resolves with results of setting to Firestore
  */
 async function onUserOnlineStatusChangeEvent(
   change: functions.Change<functions.database.DataSnapshot>,

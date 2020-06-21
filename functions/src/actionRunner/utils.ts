@@ -24,10 +24,10 @@ interface ErrorInfo {
 /**
  * Write response object with status "success" or "error". If
  * status is "error", message is also included.
- * @param {object} snap - Functions snapshot object
- * @param {object} context - Functions context object
- * @param {Error} error - Error object
- * @returns {Promise} Resolves with results of database write promise
+ * @param snap - Functions snapshot object
+ * @param context - Functions context object
+ * @param error - Error object
+ * @returns Resolves with results of database write promise
  */
 export function updateResponseOnRTDB(snap, context, error?: ErrorInfo) {
   const response: any = {
@@ -48,10 +48,10 @@ export function updateResponseOnRTDB(snap, context, error?: ErrorInfo) {
 
 /**
  * Update request with status "started"
- * @param {object} snap - Functions snapshot object
- * @returns {Promise} Resolves with results of database update promise
+ * @param snap - Functions snapshot object
+ * @returns Resolves with results of database update promise
  */
-export async function updateRequestAsStarted(snap) {
+export async function updateRequestAsStarted(snap: admin.database.DataSnapshot): Promise<any> {
   const response = {
     status: 'started',
     startedAt: admin.database.ServerValue.TIMESTAMP
@@ -69,11 +69,11 @@ export async function updateRequestAsStarted(snap) {
 
 /**
  * Write event to project events subcollection
- * @param {object} eventData - Functions snapshot object
- * @param {string} eventData.projectId - Functions snapshot object
- * @returns {Promise} Resolves with results of firstore add promise
+ * @param eventData - Functions snapshot object
+ * @param eventData.projectId - Functions snapshot object
+ * @returns Resolves with results of firstore add promise
  */
-export async function emitProjectEvent(eventData) {
+export async function emitProjectEvent(eventData): Promise<any> {
   const { projectId } = eventData
   const [writeErr, writeRes] = await to(
     admin
@@ -100,16 +100,16 @@ export async function emitProjectEvent(eventData) {
  * about an action.
  * @param {functions.firestore.DocumentSnapshot} snap - Snapshot
  * @param {functions.EventContext} context - event context
- * @param {object} actionInfo - Info about action
- * @param {number} actionInfo.stepIdx - Index of current step
- * @param {number} actionInfo.totalNumSteps - Total number of steps in action
- * @returns {Promise} Resolves with results of database write promise
+ * @param actionInfo - Info about action
+ * @param actionInfo.stepIdx - Index of current step
+ * @param actionInfo.totalNumSteps - Total number of steps in action
+ * @returns Resolves with results of database write promise
  */
 export function updateResponseWithProgress(
   snap,
   context,
-  { stepIdx, totalNumSteps }
-) {
+  { stepIdx, totalNumSteps }: { stepIdx: number, totalNumSteps: number }
+): Promise<any> {
   const response = {
     status: 'running',
     stepStatus: {
@@ -128,11 +128,11 @@ export function updateResponseWithProgress(
 
 /**
  * Write error to response object within Database
- * @param  {object} snap - Functions snapshot object
- * @param  {object} context - Functions context object
- * @returns {Promise} Resolves with results of database write promise
+ * @param  snap - Functions snapshot object
+ * @param  context - Functions context object
+ * @returns Resolves with results of database write promise
  */
-export function updateResponseWithError(snap, context) {
+export function updateResponseWithError(snap, context): Promise<any> {
   const response = {
     status: 'error',
     complete: true,
@@ -147,19 +147,18 @@ export function updateResponseWithError(snap, context) {
 /**
  * Update response object within Real Time Database with error information about
  * an action
- *
- * @param {object} snap - Functions snapshot object
- * @param {functions.EventContext} context - Context of event
- * @param {object} actionInfo - Info about action
- * @param {number} actionInfo.stepIdx - Index of current step
- * @param {number} actionInfo.totalNumSteps - Total number of steps in action
+ * @param snap - Functions snapshot object
+ * @param context - Context of event
+ * @param actionInfo - Info about action
+ * @param actionInfo.stepIdx - Index of current step
+ * @param actionInfo.totalNumSteps - Total number of steps in action
  * @returns {Promise} Resolves with results of database write promise
  */
 export function updateResponseWithActionError(
   snap,
   context,
   { stepIdx, totalNumSteps }
-) {
+): Promise<any> {
   const response = {
     status: 'error',
     stepCompleteStatus: {
@@ -181,11 +180,11 @@ export function updateResponseWithActionError(
 
 /**
  * Write an event to a project's "events" subcollection
- * @param {string} projectId - id of project in which event should be placed
- * @param {object} extraEventAttributes - Data to attach to the event
- * @returns {Promise} Resolves with results of pushing event object
+ * @param projectId - id of project in which event should be placed
+ * @param extraEventAttributes - Data to attach to the event
+ * @returns Resolves with results of pushing event object
  */
-export async function writeProjectEvent(projectId, extraEventAttributes = {}) {
+export async function writeProjectEvent(projectId: string, extraEventAttributes = {}) {
   const eventObject = {
     createdByType: 'system',
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -210,10 +209,10 @@ export async function writeProjectEvent(projectId, extraEventAttributes = {}) {
 
 /**
  * Convert a collection snapshot into an array (uses forEach).
- * @param {object} collectionsSnap - Collection snap object with forEach
- * @returns {Array} List of collection snapshot ids
+ * @param collectionsSnap - Collection snap object with forEach
+ * @returns List of collection snapshot ids
  */
-export function collectionsSnapToArray(collectionsSnap): string[] {
+function collectionsSnapToArray(collectionsSnap): string[] {
   const collectionsIds: string[] = []
   if (collectionsSnap.forEach) {
     collectionsSnap.forEach((collectionSnap) => {
@@ -227,10 +226,10 @@ export function collectionsSnapToArray(collectionsSnap): string[] {
  * Get collection names from provided settings falling back to getting all
  * collection names for the provided Firestore ref using getCollections.
  * @param {Array|boolean} subcollectionSetting [description]
- * @param {object} ref - Firestore reference
- * @returns {Promise} Resolves with an array of collection names
+ * @param ref - Firestore reference
+ * @returns Resolves with an array of collection names
  */
-async function getSubcollectionNames(subcollectionSetting, ref) {
+async function getSubcollectionNames(subcollectionSetting, ref: admin.firestore.DocumentReference): Promise<any> {
   // Return if the provided setting is an array (assuming it is an array of names)
   if (Array.isArray(subcollectionSetting)) {
     return subcollectionSetting
@@ -266,11 +265,11 @@ interface FirestoreBatchCopyOptions {
 
 /**
  * Write document updates in a batch process.
- * @param {object} params - Params object
- * @param {firestore.Firestore} params.srcRef - Instance on which to create ref
- * @param {object} params.destRef - Destination path under which data should be written
- * @param {object} params.opts - Options object (can contain merge)
- * @returns {Promise} Resolves with results of batch commit
+ * @param params - Params object
+ * @param params.srcRef - Instance on which to create ref
+ * @param params.destRef - Destination path under which data should be written
+ * @param params.opts - Options object (can contain merge)
+ * @returns Resolves with results of batch commit
  */
 export async function batchCopyBetweenFirestoreRefs({
   srcRef,
@@ -280,7 +279,7 @@ export async function batchCopyBetweenFirestoreRefs({
   srcRef: FirebaseFirestore.DocumentReference | FirebaseFirestore.CollectionReference | any
   destRef: FirebaseFirestore.DocumentReference | FirebaseFirestore.CollectionReference | any
   opts: FirestoreBatchCopyOptions
-}) {
+}): Promise<any> {
   const { copySubcollections } = opts || {}
   // TODO: Switch to querying in batches limited to 500 so reads/writes match
   // Get data from src reference
@@ -404,7 +403,7 @@ export async function batchCopyBetweenFirestoreRefs({
  * @param {string} rtdbPath - Path of RTDB data to get
  * @returns {Promise} Resolves with results of RTDB shallow get
  */
-export async function shallowRtdbGet(opts, rtdbPath = '') {
+export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promise<any> {
   const { projectId, environmentId, databaseName } = opts
   if (!environmentId) {
     throw new Error(
@@ -436,7 +435,7 @@ export async function shallowRtdbGet(opts, rtdbPath = '') {
 
   const apiUrl = `https://${
     databaseName || serviceAccount.project_id
-  }.firebaseio.com/${rtdbPath}.json?access_token=${
+  }.firebaseio.com/${rtdbPath || ''}.json?access_token=${
     client.credentials.access_token
   }&shallow=true`
 
