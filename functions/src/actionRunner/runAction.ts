@@ -1,3 +1,4 @@
+import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import { runStepsFromEvent, runBackupsFromEvent } from './runSteps'
 import { to } from '../utils/async'
@@ -8,6 +9,21 @@ import {
 } from './utils'
 
 /**
+ * Send FCM message to user
+ * @param {object} params - Params object
+ * @param {string} params.message - Message to send to user
+ * @param {string} params.userId - UID of user to send FCM to
+ * @returns {Promise} Resolves with results of pushing message to RTDB
+ */
+function sendFcmMessageToUser(userId: string, message: string): Promise<any> {
+  return admin.database().ref('requests/sendFcm').push({
+    userId,
+    message,
+    createdAt: admin.database.ServerValue.TIMESTAMP
+  })
+}
+
+/**
  * Run action based on action template. Multiple Service Account Types
  * supported (i.e. stored on Firestore or cloud storage)
  * @param {functions.database.DataSnapshot} snap - Data snapshot from cloud function
@@ -15,7 +31,10 @@ import {
  * @param {object} context.params - Parameters from event
  * @returns {Promise} Resolves with results of running action
  */
-export default async function runAction(snap, context) {
+export default async function runAction(
+  snap: admin.database.DataSnapshot,
+  context: functions.EventContext
+): Promise<null> {
   const eventData = snap.val() || {}
   console.log('Action run request received. Sending start event...')
 
@@ -86,10 +105,7 @@ export default async function runAction(snap, context) {
       // Write an error event to project's events subcollection
       writeProjectEvent(eventData.projectId, errorEvent),
       // Request sendFcm Cloud Function to send error message to creator of run request
-      sendFcmMessageToUser({
-        userId: eventData.createdBy,
-        message: 'Error with Action Run'
-      })
+      sendFcmMessageToUser(eventData.createdBy, 'Error with Action Run')
     ])
     throw err
   }
@@ -105,28 +121,13 @@ export default async function runAction(snap, context) {
       eventData
     }),
     // Request sendFcm Cloud Function to send message to creator of run request
-    sendFcmMessageToUser({
-      userId: eventData.createdBy,
-      message: `Action Run completed successfully`
-    })
+    sendFcmMessageToUser(
+      eventData.createdBy,
+      'Action Run completed successfully'
+    )
   ])
 
   console.log('Event and message request written successfully, exiting.')
 
   return null
-}
-
-/**
- * Send FCM message to user
- * @param {object} params - Params object
- * @param {string} params.message - Message to send to user
- * @param {string} params.userId - UID of user to send FCM to
- * @returns {Promise} Resolves with results of pushing message to RTDB
- */
-function sendFcmMessageToUser({ message, userId }) {
-  return admin.database().ref('requests/sendFcm').push({
-    userId,
-    message,
-    createdAt: admin.database.ServerValue.TIMESTAMP
-  })
 }

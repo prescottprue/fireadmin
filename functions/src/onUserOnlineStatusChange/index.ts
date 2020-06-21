@@ -2,15 +2,6 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 
 /**
- * @name onUserOnlineStatusChange
- * Cloud Function triggered by Real Time Database Update Event
- * @type {functions.CloudFunction}
- */
-export default functions.database
-  .ref('/requests/onUserOnlineStatusChange/{pushId}')
-  .onUpdate(onUserOnlineStatusChangeEvent)
-
-/**
  * Copy online status to Firestore from RTDB
  * @param {functions.Change} change - Change event
  * @param {functions.EventContext} context - Functions context
@@ -49,3 +40,13 @@ async function onUserOnlineStatusChangeEvent(
     return userStatusFirestoreRef.set(eventStatus)
   })
 }
+
+/**
+ * @name onUserOnlineStatusChange
+ * Cloud Function triggered by Real Time Database Update Event
+ * @type {functions.CloudFunction}
+ */
+export default functions.database
+  .ref('/requests/onUserOnlineStatusChange/{pushId}')
+  .onUpdate(onUserOnlineStatusChangeEvent)
+

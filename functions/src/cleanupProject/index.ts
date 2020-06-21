@@ -5,11 +5,11 @@ import { to } from '../utils/async'
 /**
  * Remove collection provided the snap (handles removing subcollections)
  * @param collectionSnap - Snapshot of collection to remove
- * @returns {Promise} Results of removing collection
+ * @returns Results of removing collection
  */
 async function removeCollection(
   collectionSnap: admin.firestore.CollectionReference | any
-) {
+): Promise<null | any[]> {
   const [getErr, collectionQueryResult] = await to(collectionSnap.get())
   // Handle errors getting collection data
   if (getErr) {
@@ -57,11 +57,11 @@ async function removeCollection(
 
 /**
  * Remove all collections from a Firestore document
- * @param {object} docRef - Reference of document for which all collections
+ * @param docRef - Reference of document for which all collections
  * will be deleted
- * @returns {Promise} Resolves with results of removing all collections
+ * @returns Resolves with results of removing all collections
  */
-async function removeAllCollections(docRef: any) {
+async function removeAllCollections(docRef: any): Promise<null | any[]> {
   if (!docRef.getCollections) {
     throw new Error('docRef.getCollections does not exist')
   }
@@ -89,10 +89,10 @@ async function removeAllCollections(docRef: any) {
 }
 
 /**
- * @param {functions.firestore.DocumentSnapshot} snap - Snapshot of event
- * @returns {Promise} Resolves with null
+ * @param snap - Snapshot of event
+ * @returns Resolves with null
  */
-async function cleanupProjectEvent(snap) {
+async function cleanupProjectEvent(snap: admin.firestore.DocumentSnapshot): Promise<null> {
   const [removeErr] = await to(removeAllCollections(snap.ref))
   if (removeErr) {
     console.error(

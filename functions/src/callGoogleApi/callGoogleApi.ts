@@ -6,8 +6,21 @@ import { eventPathName } from './constants'
 import { to } from '../utils/async'
 import {
   authClientFromServiceAccount,
-  serviceAccountFromFirestorePath
+  serviceAccountFromFirestorePath,
+  ServiceAccount
 } from '../utils/serviceAccounts'
+
+interface RequestSettings {
+  method: string
+  uri: string
+  body: any
+  json?: boolean
+  headers: any
+}
+
+interface RequestSettingsWithAuth extends RequestSettings {
+  headers: { Authorization: string }
+}
 
 /**
  * Add authentication to a google request using serviceAccount
@@ -15,7 +28,10 @@ import {
  * @param {object} requestSettings - Request object without auth
  * @returns {Promise} Resolves with request that has auth attached
  */
-async function addServiceAccountAuthToRequest(serviceAccount, requestSettings) {
+async function addServiceAccountAuthToRequest(
+  serviceAccount: ServiceAccount,
+  requestSettings: RequestSettings
+): Promise<RequestSettingsWithAuth> {
   const client = await authClientFromServiceAccount(serviceAccount)
   return {
     ...requestSettings,
@@ -27,11 +43,14 @@ async function addServiceAccountAuthToRequest(serviceAccount, requestSettings) {
 
 /**
  * Request google APIs with auth attached
- * @param {object} serviceAccount - Service account object
+ * @param serviceAccount - Service account object
  * @param {object} requestSettings - Settings for request
  * @returns {Promise} Resolves with results of Goggle API request
  */
-export async function googleApisRequest(serviceAccount, requestSettings) {
+export async function googleApisRequest(
+  serviceAccount: ServiceAccount,
+  requestSettings: RequestSettings
+): Promise<any> {
   const requestSettingsWithAuth = await addServiceAccountAuthToRequest(
     serviceAccount,
     requestSettings
@@ -52,11 +71,14 @@ export async function googleApisRequest(serviceAccount, requestSettings) {
 
 /**
  * Call a Google API with a Service Account
- * @param {functions.database.DataSnapshot} snap - Snapshot of the event
- * @param {functions.EventContext} context - Context of the event
- * @returns {Promise} Resolves with results of calling Google API
+ * @param snap - Snapshot of the event
+ * @param context - Context of the event
+ * @returns Resolves with results of calling Google API
  */
-export default async function callGoogleApi(snap, context) {
+export default async function callGoogleApi(
+  snap: admin.database.DataSnapshot,
+  context: functions.EventContext
+): Promise<any> {
   const eventVal = snap.val()
   const { pushId: eventId } = context.params
   const {
