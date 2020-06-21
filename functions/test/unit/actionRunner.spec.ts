@@ -7,7 +7,6 @@ import 'sinon-chai'
 import { to } from '../../src/utils/async'
 import { encrypt } from '../../src/utils/encryption'
 import functionsTestLib from 'firebase-functions-test'
-import { mockFunctionsConfig } from '../utils'
 
 const functionsTest = functionsTestLib()
 
@@ -103,7 +102,18 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
 
   beforeEach(() => {
     // Stub Firebase's functions.config() (default in test/setup)
-    mockFunctionsConfig()
+    functionsTest.mockConfig({
+      firebase: {
+        databaseURL: 'https://some-project.firebaseio.com'
+      },
+      encryption: {
+        password: 'asdf'
+      },
+      algolia: {
+        app_id: 'asdf',
+        api_key: 'asdf'
+      },
+    })
 
     // Stubs for Firestore methods
     docStub = sinon.stub().returns({

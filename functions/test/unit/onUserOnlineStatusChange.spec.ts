@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import * as admin from 'firebase-admin'
 import functionsTestLib from 'firebase-functions-test'
-import { mockFunctionsConfig } from '../utils'
 
 const functionsTest = functionsTestLib()
 
@@ -15,8 +14,6 @@ describe('onUserOnlineStatusChange RTDB Cloud Function (RTDB:onUpdate)', () => {
   const resultOfSet = {}
 
   before(() => {
-    // Stub Firebase's functions.config() (default in test/setup)
-    mockFunctionsConfig()
     adminInitStub = sinon.stub(admin, 'initializeApp')
     setStub = sinon.stub().returns(Promise.resolve(resultOfSet))
     docStub = sinon.stub().returns({ set: setStub, once: () => Promise.resolve({}) })

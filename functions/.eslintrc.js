@@ -24,28 +24,28 @@ module.exports = {
     'jsdoc/no-undefined-types': 0
   },
   overrides: [
-    // {
-    //   files: ['./test/unit/**/*.spec.ts'],
-    //   env: {
-    //     mocha: true
-    //   },
-    //   globals: {
-    //     sinon: true,
-    //     expect: true,
-    //     should: true,
-    //     functionsTest: true,
-    //     mockFunctionsConfig: true
-    //   },
-    //   rules: {
-    //     'jsdoc/require-returns': 0,
-    //     'jsdoc/require-param-description': 0,
-    //     'jsdoc/require-param-type': 0,
-    //     'no-console': 0,
-    //     'import/no-dynamic-require': 0,
-    //     'no-unused-expressions': 0,
-    //     'import/prefer-default-export': 0,
-    //     'no-return-await': 2
-    //   }
-    // }
+    {
+      files: ['./test/unit/**/*.spec.ts'],
+      env: {
+        mocha: true
+      },
+      globals: {
+        sinon: true,
+        expect: true,
+        should: true,
+        functionsTest: true,
+        mockFunctionsConfig: true
+      },
+      rules: {
+        'jsdoc/require-returns': 0,
+        'jsdoc/require-param-description': 0,
+        'jsdoc/require-param-type': 0,
+        'no-console': 0,
+        'import/no-dynamic-require': 0,
+        'no-unused-expressions': 0,
+        'import/prefer-default-export': 0,
+        'no-return-await': 2
+      }
+    }
   ]
 }
