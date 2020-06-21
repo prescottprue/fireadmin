@@ -1,5 +1,10 @@
+import { expect } from 'chai';
+import sinon from 'sinon';
 import * as admin from 'firebase-admin'
+import functionsTestLib from 'firebase-functions-test'
 import fauxJax from 'faux-jax'
+
+const functionsTest = functionsTestLib()
 
 describe('indexActionTemplates RTDB Cloud Function (onWrite)', () => {
   let adminInitStub
@@ -31,7 +36,7 @@ describe('indexActionTemplates RTDB Cloud Function (onWrite)', () => {
     process.env.GCLOUD_PROJECT = 'test'
     /* eslint-disable global-require */
     indexActionTemplates = functionsTest.wrap(
-      require(`${__dirname}/../../index`).indexActionTemplates
+      require(`${__dirname}/../../src/indexActionTemplates`).default
     )
     /* eslint-enable global-require */
   })

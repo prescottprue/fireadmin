@@ -1,3 +1,5 @@
+import { expect } from 'chai';
+import sinon from 'sinon';
 import * as admin from 'firebase-admin'
 
 describe('Cloud Functions', () => {

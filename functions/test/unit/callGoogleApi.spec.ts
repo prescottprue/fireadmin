@@ -1,7 +1,12 @@
 import * as admin from 'firebase-admin'
 import fauxJax from 'faux-jax'
+import { expect } from 'chai';
+import sinon from 'sinon';
 import { createCipher } from 'crypto' // eslint-disable-line node/no-deprecated-api
-import { to } from 'utils/async'
+import { to } from '../../src/utils/async'
+import functionsTestLib from 'firebase-functions-test'
+
+const functionsTest = functionsTestLib()
 
 describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
   let adminInitStub
@@ -20,7 +25,7 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
     process.env.GCLOUD_PROJECT = 'test'
 
     // Intercept all http requests and respond with 200
-    fauxJax.install()
+    fauxJax.install({})
     fauxJax.on('request', function respond(request) {
       request.respond(200, {}, '{}')
     })
@@ -59,7 +64,7 @@ describe('callGoogleApi RTDB Cloud Function (onCreate)', () => {
     // Load wrapped version of Cloud Function
     /* eslint-disable global-require */
     callGoogleApi = functionsTest.wrap(
-      require(`${__dirname}/../../index`).callGoogleApi
+      require(`${__dirname}/../../src/callGoogleApi`).default
     )
     /* eslint-enable global-require */
   })
@@ -262,8 +267,8 @@ const TEST_PASSWORD = 'asdf'
  * encrypting. encryption.password from functions config is used
  * by default if not passed.
  */
-function encrypt(text, options = {}) {
-  const { algorithm = 'aes-256-ctr' } = options
+function encrypt(text, options?) {
+  const { algorithm = 'aes-256-ctr' } = options || {}
   const cipher = createCipher(algorithm, TEST_PASSWORD) // eslint-disable-line node/no-deprecated-api
   let crypted = cipher.update(text, 'utf8', 'hex')
   crypted += cipher.final('hex')

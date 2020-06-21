@@ -1,6 +1,11 @@
 import fs from 'fs'
+import { expect } from 'chai';
+import sinon from 'sinon';
 import * as admin from 'firebase-admin'
-import { to } from 'utils/async'
+import functionsTestLib from 'firebase-functions-test'
+import { to } from '../../src/utils/async'
+
+const functionsTest = functionsTestLib()
 
 describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', () => {
   let copyServiceAccountToFirestore
@@ -41,7 +46,7 @@ describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', ()
     // Load wrapped version of Cloud Function
     /* eslint-disable global-require */
     copyServiceAccountToFirestore = functionsTest.wrap(
-      require(`${__dirname}/../../index`).copyServiceAccountToFirestore
+      require(`${__dirname}/../../src/copyServiceAccountToFirestore`).default
     )
     /* eslint-enable global-require */
   })

@@ -1,5 +1,10 @@
 import * as admin from 'firebase-admin'
-import { to } from 'utils/async'
+import { expect } from 'chai';
+import sinon from 'sinon';
+import functionsTestLib from 'firebase-functions-test'
+import { to } from '../../src/utils/async'
+
+const functionsTest = functionsTestLib()
 
 describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
   let adminInitStub
@@ -36,7 +41,7 @@ describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
     // Load wrapped version of Cloud Function
     /* eslint-disable global-require */
     cleanupProject = functionsTest.wrap(
-      require(`${__dirname}/../../index`).cleanupProject
+      require(`${__dirname}/../../src/cleanupProject`).default
     )
     /* eslint-enable global-require */
   })
@@ -50,7 +55,7 @@ describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
   it('Cleans up all data and exits if there are subcollections for a project', async () => {
     const fakeEvent = {
       data: () => ({}),
-      ref: { getCollections: () => Promise.resolve({}) }
+      ref: { getCollections: () => Promise.resolve([]) }
     }
     const fakeContext = { params: { projectId: 'abc123' } }
     const res = await cleanupProject(fakeEvent, fakeContext)
@@ -123,9 +128,9 @@ describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
               get: sinon.stub().returns(
                 Promise.resolve({
                   size: 1,
-                  forEach: (feCb) => {
-                    feCb({ ref: { delete: deleteStub } })
-                  }
+                  docs: [
+                    { ref: { delete: deleteStub } }
+                  ]
                 })
               )
             }
@@ -150,9 +155,9 @@ describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
               get: sinon.stub().returns(
                 Promise.resolve({
                   size: 1,
-                  forEach: (feCb) => {
-                    feCb({ ref: { delete: deleteStub } })
-                  }
+                  docs: [
+                    { ref: { delete: deleteStub } }
+                  ]
                 })
               )
             }

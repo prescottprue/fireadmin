@@ -1,14 +1,22 @@
+import 'mocha'
 import * as admin from 'firebase-admin'
-import { to } from 'utils/async'
-import { encrypt } from 'utils/encryption'
 import fs from 'fs'
+import { expect } from 'chai';
+import * as sinon from 'sinon';
+import 'sinon-chai'
+import { to } from '../../src/utils/async'
+import { encrypt } from '../../src/utils/encryption'
+import functionsTestLib from 'firebase-functions-test'
+import { mockFunctionsConfig } from '../utils'
+
+const functionsTest = functionsTestLib()
 
 const responsePath = 'responses/actionRunner/1'
 const createdAt = 'timestamp'
 const existingProjectId = 'existing'
 
 describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
-  this.timeout(20000)
+  (this as any).timeout(20000)
   let actionRunner
   let adminInitStub
   let databaseStub
@@ -75,7 +83,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
       set: sinon.stub().returns(Promise.resolve()),
       commit: sinon.stub().returns(Promise.resolve())
     })
-    adminInitStub = sinon.stub(admin, 'initializeApp').returns({
+    adminInitStub = sinon.stub(admin, 'initializeApp').returns(({
       firestore: parentFirestoreStub,
       database: sinon.stub().returns({
         ref: sinon.stub().returns({
@@ -84,7 +92,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
         })
       }),
       storage: parentStorageStub
-    })
+    } as any))
     sinon.stub(admin.credential, 'cert')
   })
 
@@ -128,7 +136,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
 
     // Apply stubs as admin.firestore()
     sinon.stub(admin, 'firestore').get(() => firestoreStub)
-    admin.firestore.FieldValue = { serverTimestamp: () => createdAt }
+    admin.firestore.FieldValue = ({ serverTimestamp: sinon.stub(() => createdAt) } as any)
 
     // Stubs for RTDB methods
     setStub = sinon.stub().returns(Promise.resolve({ ref: 'new_ref' }))
@@ -145,7 +153,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
 
     // Load wrapped version of Cloud Function
     actionRunner = functionsTest.wrap(
-      require(`${__dirname}/../../index`).actionRunner
+      require(`${__dirname}/../../src/actionRunner`).default
     )
     /* eslint-enable global-require */
   })
@@ -523,7 +531,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
           Promise.resolve({
             data: () => ({
               serviceAccount: {
-                credential: encrypt({
+                credential: encrypt(({
                   type: 'service_account',
                   project_id: 'asdf',
                   private_key_id: 'asdf',
@@ -535,7 +543,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
                   auth_provider_x509_cert_url:
                     'https://www.googleapis.com/oauth2/v1/certs',
                   client_x509_cert_url: 'asdf'
-                })
+                } as any))
               }
             }),
             exists: true
@@ -595,7 +603,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
     /**
      * @param opts
      */
-    function createValidActionRunnerStubs(opts) {
+    function createValidActionRunnerStubs(opts?: any) {
       const {
         projectId = 'asdfasdf1',
         srcResource = 'rtdb',
@@ -610,7 +618,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
             Promise.resolve({
               data: () => ({
                 serviceAccount: {
-                  credential: encrypt({
+                  credential: encrypt(({
                     type: 'service_account',
                     project_id: 'asdf',
                     private_key_id: 'asdf',
@@ -622,7 +630,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
                     auth_provider_x509_cert_url:
                       'https://www.googleapis.com/oauth2/v1/certs',
                     client_x509_cert_url: 'asdf'
-                  })
+                  } as any))
                 }
               }),
               exists: true

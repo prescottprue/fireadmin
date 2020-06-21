@@ -2,9 +2,9 @@
   "name": "fireadmin-functions",
   "description": "Cloud Functions for Fireadmin application.",
   "scripts": {
-    "test": "mocha ./test/unit/**",
+    "test": "mocha ./test/unit/**/*.spec.ts",
     "test:watch": "yarn test --watch",
-    "test:cov": "nyc --reporter=lcov npm test",
+    "test:cov": "nyc --reporter=lcov --reporter=html yarn test",
     "test:cov:watch": "npm run test:cov -- --watch",
     "lint": "eslint -c .eslintrc.js src test",
     "lint:fix": "npm run lint -- --fix",
@@ -30,7 +30,11 @@
     "request-promise": "^4.2.2"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
     "@types/node": "^14.0.13",
+    "@types/sinon": "^9.0.4",
+    "@types/sinon-chai": "^3.2.4",
     "chai": "^4.2.0",
     "faux-jax": "^5.0.6",
     "firebase-functions-test": "^0.2.1",
@@ -39,6 +43,7 @@
     "rimraf": "^3.0.2",
     "sinon": "^9.0.1",
     "sinon-chai": "^3.5.0",
+    "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },
   "engines": {

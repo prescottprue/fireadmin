@@ -8,7 +8,7 @@ import { to } from '../utils/async'
  * @returns {Promise} Results of removing collection
  */
 async function removeCollection(
-  collectionSnap: admin.firestore.CollectionReference
+  collectionSnap: admin.firestore.CollectionReference | any
 ) {
   const [getErr, collectionQueryResult] = await to(collectionSnap.get())
   // Handle errors getting collection data
@@ -18,7 +18,7 @@ async function removeCollection(
   }
   if (!collectionQueryResult.size) {
     console.log(`No docs in ${collectionSnap.id}, removing all collections`)
-    await removeAllCollections(collectionSnap)
+    await removeAllCollections(collectionSnap.ref)
     return null
   }
   console.log(
@@ -78,20 +78,21 @@ async function removeAllCollections(docRef: any) {
     )
     throw getCollectionsErr
   }
+
   // Exit if document does not have subcollections
-  if (!collectionSnaps.length) {
+  if (!collectionSnaps?.length) {
     return null
   }
+
   // Remove each collection
   return Promise.all(collectionSnaps.map(removeCollection))
 }
 
 /**
  * @param {functions.firestore.DocumentSnapshot} snap - Snapshot of event
- * @param {functions.EventContext} context - Function's context
  * @returns {Promise} Resolves with null
  */
-async function cleanupProjectEvent(snap, context) {
+async function cleanupProjectEvent(snap) {
   const [removeErr] = await to(removeAllCollections(snap.ref))
   if (removeErr) {
     console.error(
