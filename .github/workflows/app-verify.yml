@@ -33,12 +33,13 @@ jobs:
           export_default_credentials: true
 
       - name: Deploy Only Changed Functions
-        uses: prescottprue/deploy-changed-functions@master
+        uses: prescottprue/deploy-changed-functions@v0
         with:
           cache-folder: functions_deploy_cache/current
           local-folder: local-functions-cache
           project-id: ${{ env.GCLOUD_PROJECT }}
           token: ${{ secrets.FIREBASE_TOKEN }}
+          skip-deploy: true
           ignore: '*.spec.js'
           # global-files: 'package.json,.babelrc,'
 
