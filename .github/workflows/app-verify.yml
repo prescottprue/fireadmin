@@ -49,7 +49,7 @@ jobs:
 
       - name: Install Firebase
         run: |
-          curl -sL https://firebase.tools | bash
+          yarn add global firebase-tools
 
       - name: Setup Google CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
