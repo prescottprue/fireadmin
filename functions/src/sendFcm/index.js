@@ -5,7 +5,7 @@ import { to } from 'utils/async'
 const requestPath = 'sendFcm'
 
 /**
- * Handle event for sending FCM
+ * Handle event for sending Firebase Cloud Message
  * @param {functions.firestore.DocumentSnapshot} snap - Snapshot of event
  * @param {functions.Context} context - Functions context
  * @returns {Promise} Resolves with results of sending FCM
