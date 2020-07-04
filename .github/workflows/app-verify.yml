@@ -56,6 +56,7 @@ jobs:
       # - name: Install Firebase
       #   run: |
       #     yarn global add firebase-tools
+      #
 
       - name: Setup Google CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
