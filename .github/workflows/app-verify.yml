@@ -37,7 +37,8 @@ jobs:
         with:
           cache-folder: functions_deploy_cache/current
           local-folder: local-functions-cache
-          project_id: ${{ env.GCLOUD_PROJECT }}
+          project-id: ${{ env.GCLOUD_PROJECT }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
           ignore: '*.spec.js'
           # global-files: 'package.json,.babelrc,'
 
