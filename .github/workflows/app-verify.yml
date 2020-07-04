@@ -24,28 +24,28 @@ jobs:
         with:
           node-version: 10
 
-      # - name: Get cache settings
-      #   id: cache-settings
-      #   run: |
-      #     echo "::set-output name=dir::$(yarn cache dir)"
-      #     echo "::set-output name=firebase-tools::$(yarn list -s --depth=0 --pattern firebase-tools | tail -n 1 | sed 's/.*@//g')"
+      - name: Get cache settings
+        id: cache-settings
+        run: |
+          echo "::set-output name=dir::$(yarn cache dir)"
+          echo "::set-output name=firebase-tools::$(yarn list -s --depth=0 --pattern firebase-tools | tail -n 1 | sed 's/.*@//g')"
 
-      # - name: Get Yarn Cache
-      #   id: yarn-cache
-      #   run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Get Yarn Cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      # - name: Cache NPM Dependencies
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: ${{ steps.yarn-cache.outputs.dir }}
-      #     key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      - name: Cache NPM Dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
-      # - name: Install Dependencies
-      #   env:
-      #     CYPRESS_INSTALL_BINARY: 0 # Skip installing of cypress
-      #   run: |
-      #     yarn install --frozen-lockfile
-      #     yarn --cwd functions install --frozen-lockfile
+      - name: Install Dependencies
+        env:
+          CYPRESS_INSTALL_BINARY: 0 # Skip installing of cypress
+        run: |
+          yarn install --frozen-lockfile
+          yarn --cwd functions install --frozen-lockfile
 
       - name: Setup Google CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
