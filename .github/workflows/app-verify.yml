@@ -39,7 +39,6 @@ jobs:
           local-folder: local-functions-cache
           project-id: ${{ env.GCLOUD_PROJECT }}
           token: ${{ secrets.FIREBASE_TOKEN }}
-          skip-deploy: true
           ignore: '*.spec.js'
           # global-files: 'package.json,.babelrc,'
 
