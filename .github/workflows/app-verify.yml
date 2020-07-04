@@ -47,6 +47,10 @@ jobs:
       #     yarn install --frozen-lockfile
       #     yarn --cwd functions install --frozen-lockfile
 
+      - name: Install Firebase
+        run: |
+          curl -sL https://firebase.tools | bash
+
       - name: Setup Google CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
