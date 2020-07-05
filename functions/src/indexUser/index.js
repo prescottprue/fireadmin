@@ -4,7 +4,6 @@ import { createIndexFunc } from '../utils/search'
 
 // Updates the search index when users are created or displayName is updated
 // another comment
-// another one
 export default functions.firestore.document('/users/{userId}').onWrite(
   createIndexFunc({
     indexName: 'users',
