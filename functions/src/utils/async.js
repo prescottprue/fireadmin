@@ -7,6 +7,7 @@
  *  const [err, snap] = await to(
  *    admin.database().ref('some').once('value')
  *  );
+ *
  *  if (err) {
  *    console.error('Error getting data:', err.message || err)
  *    throw err
