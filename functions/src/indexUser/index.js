@@ -3,7 +3,6 @@ import * as functions from 'firebase-functions'
 import { createIndexFunc } from '../utils/search'
 
 // Updates the search index when users are created or displayName is updated
-// Only changed indexUser function
 export default functions.firestore.document('/users/{userId}').onWrite(
   createIndexFunc({
     indexName: 'users',
