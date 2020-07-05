@@ -82,6 +82,12 @@ jobs:
           name: deploy-fail-log
           path: firepit-log.txt
 
+      - name: Archive Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: firebase-fail-log
+          path: firebase-debug.log
+
       # - name: Archive Error Logs
       #   uses: actions/upload-artifact@v2
       #   if: failure()
