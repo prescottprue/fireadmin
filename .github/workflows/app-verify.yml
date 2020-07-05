@@ -76,6 +76,12 @@ jobs:
           ignore: '*.spec.js'
           # global-files: 'package.json,.babelrc,functions/index.js'
 
+      - name: Archive Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: deploy-fail-log
+          path: firepit-log.txt
+
       # - name: Archive Error Logs
       #   uses: actions/upload-artifact@v2
       #   if: failure()
