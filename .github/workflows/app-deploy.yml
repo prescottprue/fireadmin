@@ -138,6 +138,8 @@ jobs:
           $(yarn bin)/sentry-cli releases set-commits --auto $version
           echo Finalizing the release...
           $(yarn bin)/sentry-cli releases finalize $releaseName
+          echo Marking new release as deployed...
+          $(yarn bin)/sentry-cli releases deploys $releaseName new -e $environment
           echo Release created successfully
 
       - name: Create Release

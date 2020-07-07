@@ -35,7 +35,15 @@ function LoginPage() {
     } catch (err) {
       console.error('Error with login:', err) // eslint-disable-line no-console
       showError(err.message)
-      Sentry.captureException(err)
+      // Exit without reporting to error handler if error is from user leaving oAuth window open
+      if (
+        err.message.includes(
+          'The popup has been closed by the user before finalizing the operation.'
+        )
+      ) {
+        return
+      }
+      return Sentry.captureException(err)
     }
 
     try {
