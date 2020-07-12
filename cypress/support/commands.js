@@ -87,7 +87,7 @@ Cypress.Commands.add(
       ...fakeEnvironment,
       ...extraData,
       createdBy: Cypress.env('TEST_UID'),
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      createdAt: firebase.firestore.FieldValue.serverTimestamp().valueOf()
     })
   }
 )
@@ -102,6 +102,6 @@ Cypress.Commands.add('addProjectEvent', (project, eventId, extraData = {}) => {
     ...fakeEvent,
     ...extraData,
     createdBy: Cypress.env('TEST_UID'),
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    createdAt: firebase.firestore.FieldValue.serverTimestamp().valueOf()
   })
 })
