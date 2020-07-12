@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { initScripts } from './utils'
 import { version } from '../package.json'
-import { env } from './config'
 import App from './containers/App'
 import createRoutes from './routes'
 import './index.css'
@@ -12,7 +11,7 @@ import './index.css'
 // Window Variables
 // ------------------------------------
 window.version = version
-window.env = env
+window.env = process.env.FIREADMIN_ENV || 'local'
 initScripts()
 
 const routes = createRoutes()

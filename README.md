@@ -127,7 +127,23 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 
 ### Local Environment Setup
 
-1. Install dependencies: `npm install`
+1. Install dependencies: `yarn install`
+1. Create a Web app within the Firebase Console of your project (config will be used in next step)
+1. Create a `.env.local` that has the following format (with your values filled from previous step):
+
+   ```bash
+   REACT_APP_FIREBASE_apiKey=<- api key ->
+   REACT_APP_FIREBASE_authDomain=<- auth domain ->
+   REACT_APP_FIREBASE_databaseURL=<- database URL ->
+   REACT_APP_FIREBASE_projectId=<- project ID ->
+   REACT_APP_FIREBASE_storageBucket=<- storageBucket ->
+   REACT_APP_FIREBASE_messagingSenderId=<- message sender ID ->
+   REACT_APP_FIREBASE_appId=<- project app id ->
+   REACT_APP_FIREBASE_PUBLIC_VAPID_KEY=<- project app id ->
+   REACT_APP_ALGOLIA_APP_ID=<- ->
+   REACT_APP_ALGOLIA_API_KEY=<- ->
+   ```
+
 1. Look for a `src/config.js` file. If one doesn't exist, create it to look like so (this is generated using [`firebase-ci`](https://www.npmjs.com/package/firebase-ci) in CI environments):
 
    ```js

@@ -1,6 +1,5 @@
 import * as Sentry from '@sentry/browser'
 import StackdriverErrorReporter from 'stackdriver-errors-js'
-import { firebase, sentryDsn, env as environment } from '../config'
 import { version } from '../../package.json'
 
 let errorHandler // eslint-disable-line import/no-mutable-exports
@@ -12,8 +11,8 @@ function initStackdriverErrorReporter() {
   try {
     const errorHandler = new StackdriverErrorReporter()
     errorHandler.start({
-      key: firebase.apiKey,
-      projectId: firebase.projectId,
+      key: process.env.REACT_APP_FIREBASE_apiKey,
+      projectId: process.env.REACT_APP_FIREBASE_projectId,
       service: 'fireadmin-site',
       version
     })
@@ -30,10 +29,10 @@ function initStackdriverErrorReporter() {
  * Initialize Sentry (reports to sentry.io)
  */
 function initSentry() {
-  if (sentryDsn) {
+  if (process.env.REACT_APP_SENTRY_DSN) {
     Sentry.init({
-      dsn: sentryDsn,
-      environment,
+      dsn: process.env.REACT_APP_SENTRY_DSN,
+      environment: process.env.REACT_APP_FIREADMIN_ENV || 'local',
       release: version
     })
   }

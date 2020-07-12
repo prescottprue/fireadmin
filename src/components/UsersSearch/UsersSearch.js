@@ -8,7 +8,6 @@ import {
 } from 'react-instantsearch/dom'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchResults from './SearchResults'
-import { algolia } from '../../config'
 import styles from './UsersSearch.styles'
 import { useUser } from 'reactfire'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
@@ -44,8 +43,8 @@ function UsersSearch({
 
   return (
     <InstantSearch
-      appId={algolia.appId}
-      apiKey={algolia.apiKey}
+      appId={process.env.REACT_APP_ALGOLIA_APP_ID}
+      apiKey={process.env.REACT_APP_ALGOLIA_API_KEY}
       indexName="users">
       <SearchBox autoFocus />
       <div className={classes.poweredBy}>

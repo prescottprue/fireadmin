@@ -6,56 +6,40 @@
     "default": "fireadmin-stage"
   },
   "ci": {
-    "createConfig": {
+    "setEnv": {
       "master": {
-        "version": "${npm_package_version}",
-        "env": "stage",
-        "firebase": {
-          "apiKey": "AIzaSyCmw3fvlPnZtqChbIY_yEWXUcDGlemeIRQ",
-          "authDomain": "fireadmin-stage.firebaseapp.com",
-          "databaseURL": "https://fireadmin-stage.firebaseio.com",
-          "projectId": "fireadmin-stage",
-          "appId": "1:566109548798:web:29831023bb21d00edc35af",
-          "storageBucket": "fireadmin-stage.appspot.com",
-          "locationId": "us-central",
-          "messagingSenderId": "566109548798",
-          "appId": "1:566109548798:web:29831023bb21d00edc35af"
-        },
-        "segmentId": "HWEhRQnBTbnYCgv9b4qeA793wVcR0W5b",
-        "sentryDsn": "https://65bfbcc3e0f94d1391daae55500165fa@sentry.io/1238306",
-        "publicVapidKey": "BMQbbkyTknePwCeoqbyFVC6z4WJ6A3mdFKgIeNXDmcwUwl_DLIY6LYHKOAedvZW4rge-cD0iO4ZP7nxZ3LbFJVk",
-        "googleApis": {
-          "apiKey": "AIzaSyCmw3fvlPnZtqChbIY_yEWXUcDGlemeIRQ"
-        },
-        "algolia": {
-          "appId": "WULRUE0M3R",
-          "apiKey": "96c289817959585293abf860ec7aca8a"
-        }
+        "REACT_APP_FIREADMIN_ENV": "stage",
+        "REACT_APP_FIREBASE_apiKey": "AIzaSyCmw3fvlPnZtqChbIY_yEWXUcDGlemeIRQ",
+        "REACT_APP_FIREBASE_authDomain": "fireadmin-stage.firebaseapp.com",
+        "REACT_APP_FIREBASE_databaseURL": "https://fireadmin-stage.firebaseio.com",
+        "REACT_APP_FIREBASE_projectId": "fireadmin-stage",
+        "REACT_APP_FIREBASE_appId": "1:566109548798:web:29831023bb21d00edc35af",
+        "REACT_APP_FIREBASE_storageBucket": "fireadmin-stage.appspot.com",
+        "REACT_APP_FIREBASE_locationId": "us-central",
+        "REACT_APP_FIREBASE_messagingSenderId": "566109548798",
+        "REACT_APP_FIREBASE_appId": "1:566109548798:web:29831023bb21d00edc35af",
+        "REACT_APP_SEGMENT_ID": "HWEhRQnBTbnYCgv9b4qeA793wVcR0W5b",
+        "REACT_APP_SENTRY_DSN": "https://65bfbcc3e0f94d1391daae55500165fa@sentry.io/1238306",
+        "REACT_APP_PUBLIC_VAPID_KEY": "BMQbbkyTknePwCeoqbyFVC6z4WJ6A3mdFKgIeNXDmcwUwl_DLIY6LYHKOAedvZW4rge-cD0iO4ZP7nxZ3LbFJVk",
+        "REACT_APP_ALGOLIA_APP_ID": "WULRUE0M3R",
+        "REACT_APP_ALGOLIA_API_KEY": "96c289817959585293abf860ec7aca8a"
       },
       "prod": {
-        "version": "${npm_package_version}",
-        "env": "production",
-        "firebase": {
-          "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s",
-          "authDomain": "fireadmin-33d82.firebaseapp.com",
-          "databaseURL": "https://fireadmin-33d82.firebaseio.com",
-          "projectId": "fireadmin-33d82",
-          "storageBucket": "fireadmin-33d82.appspot.com",
-          "messagingSenderId": "286913465508",
-          "locationId": "us-central",
-          "appId": "1:286913465508:web:c5b9e41062f4a42ef3aa31",
-          "measurementId": "G-X0ZR0VFH3Y"
-        },
-        "segmentId": "F9YnTGtlTuDSYnOmzIqgPVvY2SRJ4efI",
-        "sentryDsn": "https://65bfbcc3e0f94d1391daae55500165fa@sentry.io/1238306",
-        "publicVapidKey": "BKcXWc4wy3PcmxBAbYZJ4qtqQQdqnEfmVJVEzNSZ95SUK89ZuqT6XjCk7VaSJWOJgXYiSN-d07m3gcvDSQnxRnA",
-        "googleApis": {
-          "apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s"
-        },
-        "algolia": {
-          "appId": "C0D1I0GB86",
-          "apiKey": "7327fc566154893e3834a49de6fa73c3"
-        }
+        "REACT_APP_FIREADMIN_ENV": "production",
+        "REACT_APP_FIREBASE_apiKey": "AIzaSyCz8fdvlyeVpwz22bjuw-MEI3wckXhSx9s",
+        "REACT_APP_FIREBASE_authDomain": "fireadmin-33d82.firebaseapp.com",
+        "REACT_APP_FIREBASE_databaseURL": "https://fireadmin-33d82.firebaseio.com",
+        "REACT_APP_FIREBASE_projectId": "fireadmin-33d82",
+        "REACT_APP_FIREBASE_storageBucket": "fireadmin-33d82.appspot.com",
+        "REACT_APP_FIREBASE_messagingSenderId": "286913465508",
+        "REACT_APP_FIREBASE_locationId": "us-central",
+        "REACT_APP_FIREBASE_appId": "1:286913465508:web:c5b9e41062f4a42ef3aa31",
+        "REACT_APP_FIREBASE_measurementId": "G-X0ZR0VFH3Y",
+        "REACT_APP_SEGMENT_ID": "F9YnTGtlTuDSYnOmzIqgPVvY2SRJ4efI",
+        "REACT_APP_SENTRY_DSN": "https://65bfbcc3e0f94d1391daae55500165fa@sentry.io/1238306",
+        "REACT_APP_PUBLIC_VAPID_KEY": "BKcXWc4wy3PcmxBAbYZJ4qtqQQdqnEfmVJVEzNSZ95SUK89ZuqT6XjCk7VaSJWOJgXYiSN-d07m3gcvDSQnxRnA",
+        "REACT_APP_ALGOLIA_APP_ID": "C0D1I0GB86",
+        "REACT_APP_ALGOLIA_API_KEY": "7327fc566154893e3834a49de6fa73c3"
       }
     }
   },
