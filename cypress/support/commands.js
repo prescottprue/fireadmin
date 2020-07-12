@@ -86,7 +86,7 @@ Cypress.Commands.add('addProject', (project, extraData = {}) => {
       ...fakeProject,
       ...extraData,
       createdBy: Cypress.env('TEST_UID'),
-      createdAt: new firebase.firestore.Timestamp().valueOf()
+      createdAt: firebase.firestore.Timestamp.now()
     })
   })
 })
@@ -103,7 +103,7 @@ Cypress.Commands.add(
       ...fakeEnvironment,
       ...extraData,
       createdBy: Cypress.env('TEST_UID'),
-      createdAt: new firebase.firestore.Timestamp().valueOf()
+      createdAt: firebase.firestore.Timestamp.now()
     })
   }
 )
@@ -114,10 +114,13 @@ Cypress.Commands.add(
  * @function
  */
 Cypress.Commands.add('addProjectEvent', (project, eventId, extraData = {}) => {
-  cy.callFirestore('set', `projects/${project}/events/${eventId}`, {
+  const newEventData = {
     ...fakeEvent,
     ...extraData,
-    createdBy: Cypress.env('TEST_UID'),
-    createdAt: new firebase.firestore.Timestamp().valueOf()
-  })
+    createdBy: Cypress.env('TEST_UID')
+  }
+  if (!newEventData.createdAt) {
+    newEventData.createdAt = firebase.firestore.Timestamp.now()
+  }
+  cy.callFirestore('set', `projects/${project}/events/${eventId}`)
 })
