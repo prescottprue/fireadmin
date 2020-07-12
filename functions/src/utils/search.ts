@@ -7,6 +7,20 @@ const client = algoliasearch(
   functions.config().algolia.api_key
 )
 
+interface IndexPromiseFunc {
+  (data: any, objectID: string)
+}
+
+interface CreateIndexFuncParams {
+  indexName: string
+  idParam: string
+  indexCondition: (
+    data: any,
+    change: functions.Change<functions.firestore.DocumentSnapshot>
+  ) => boolean
+  otherPromises?: any[]
+}
+
 /**
  * Creates a function indexs item within Algolia from a function event.
  * @param {string} options - Options object
@@ -22,8 +36,11 @@ export function createIndexFunc({
   idParam,
   indexCondition,
   otherPromises = []
-}) {
-  return (change, context) => {
+}: CreateIndexFuncParams): (
+  change: functions.Change<functions.firestore.DocumentSnapshot>,
+  context: functions.EventContext
+) => any {
+  return (change, context): null | Promise<any> => {
     const index = client.initIndex(indexName)
     const { [idParam]: objectID } = context.params
     // Remove the item from algolia if it is being deleted
@@ -56,7 +73,7 @@ export function createIndexFunc({
         )
         return algoliaResponse
       }),
-      ...otherPromises.map((otherPromiseCreator) =>
+      ...otherPromises.map((otherPromiseCreator: IndexPromiseFunc) =>
         otherPromiseCreator(data, objectID)
       )
     ]).then(() => firebaseObject)

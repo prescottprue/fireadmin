@@ -1,5 +1,0 @@
---require @babel/register
---require ./scripts/testSetup.js
---recursive
---colors
---report mochawesome

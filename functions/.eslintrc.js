@@ -1,6 +1,12 @@
 module.exports = {
   extends: ['../.eslintrc.js', 'plugin:jsdoc/recommended'],
-  plugins: ['node', 'jsdoc'],
+  parser: '@typescript-eslint/parser',
+  plugins: [
+    'node',
+    'jsdoc',
+    '@typescript-eslint',
+    'prettier/@typescript-eslint'
+  ],
   settings: {
     'import/resolver': {
       node: {
@@ -9,14 +15,17 @@ module.exports = {
     }
   },
   rules: {
+    '@typescript-eslint/no-explicit-any': 0,
     'no-console': 0,
     'no-return-await': 2,
+    'no-unused-vars': 0,
+    'jsdoc/require-param-type': 0,
     'jsdoc/newline-after-description': 0,
     'jsdoc/no-undefined-types': 0
   },
   overrides: [
     {
-      files: ['./test/unit/**/*.spec.js'],
+      files: ['./test/unit/**/*.spec.ts'],
       env: {
         mocha: true
       },

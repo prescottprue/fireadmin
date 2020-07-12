@@ -1,9 +1,11 @@
+import * as admin from 'firebase-admin'
 import { get, chunk, isObject } from 'lodash'
 import { batchCopyBetweenFirestoreRefs } from './utils'
 import { downloadFromStorage, uploadToStorage } from '../utils/cloudStorage'
 import { to, promiseWaterfall } from '../utils/async'
 import { slashPathToFirestoreRef, dataByIdSnapshot } from '../utils/firestore'
-import { shallowRtdbGet } from '../utils/rtdb'
+import { shallowRtdbGet } from './utils'
+import { ActionStep, ActionRunnerEventData } from './types'
 
 /**
  * Copy data between Firestore instances from two different Firebase projects
@@ -14,9 +16,9 @@ import { shallowRtdbGet } from '../utils/rtdb'
  * @returns {Promise} Resolves with result of update call
  */
 export async function copyBetweenFirestoreInstances(
-  app1,
-  app2,
-  eventData,
+  app1: admin.app.App,
+  app2: admin.app.App,
+  eventData: ActionStep,
   inputValues
 ) {
   const { merge = true, subcollections } = eventData
@@ -31,7 +33,6 @@ export async function copyBetweenFirestoreInstances(
     batchCopyBetweenFirestoreRefs({
       srcRef,
       destRef,
-      subcollections,
       opts: { merge, copySubcollections: subcollections }
     })
   )
@@ -57,14 +58,14 @@ export async function copyBetweenFirestoreInstances(
  * @param {firebase.App} app2 - Second app for the action
  * @param {object} eventData - Data from event (contains settings)
  * @param {Array} inputValues - Values of inputs
- * @returns {Promise} Resolves with result of update call
+ * @returns Resolves with result of update call
  */
 export async function copyFromFirestoreToRTDB(
-  app1,
-  app2,
-  eventData,
+  app1: admin.app.App,
+  app2: admin.app.App,
+  eventData: ActionStep,
   inputValues
-) {
+): Promise<any> {
   const firestore1 = app1.firestore()
   const secondRTDB = app2.database()
   const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
@@ -119,9 +120,9 @@ export async function copyFromFirestoreToRTDB(
  * @returns {Promise} Resolves with result of update call
  */
 export async function copyFromRTDBToFirestore(
-  app1,
-  app2,
-  eventData,
+  app1: admin.app.App,
+  app2: admin.app.App,
+  eventData: ActionStep,
   inputValues
 ) {
   const firestore2 = app2.firestore()
@@ -147,7 +148,7 @@ export async function copyFromRTDBToFirestore(
  * @param {string} [location='src'] - Path location (i.e. src/dest)
  * @returns {string} Inputs value or path provided within template's step
  */
-function inputValueOrTemplatePath(templateStep, inputValues, location = 'src') {
+function inputValueOrTemplatePath(templateStep: ActionStep, inputValues: any[], location = 'src') {
   return get(templateStep, `${location}.pathType`) === 'input'
     ? get(inputValues, get(templateStep, `${location}.path`))
     : get(templateStep, `${location}.path`)
@@ -162,9 +163,9 @@ function inputValueOrTemplatePath(templateStep, inputValues, location = 'src') {
  * @returns {Promise} Resolves with result of update call
  */
 export async function copyBetweenRTDBInstances(
-  app1,
-  app2,
-  eventData,
+  app1: admin.app.App,
+  app2: admin.app.App,
+  eventData: ActionStep,
   inputValues
 ) {
   if (!app1?.database || !app2?.database) {
@@ -218,10 +219,10 @@ export async function copyBetweenRTDBInstances(
  * @returns {Promise} Resolves with result of update call
  */
 export async function copyPathBetweenRTDBInstances(
-  app1,
-  app2,
-  srcPath,
-  destPath
+  app1: admin.app.App,
+  app2: admin.app.App,
+  srcPath: string,
+  destPath: string
 ) {
   if (!get(app1, 'database') || !get(app2, 'database')) {
     console.error('Database not found on app instance')
@@ -273,11 +274,11 @@ const DEFAULT_RTDB_BATCH_SIZE = 50
  * @returns {Promise} Resolves with result of update call
  */
 export async function batchCopyBetweenRTDBInstances(
-  app1,
-  app2,
+  app1: admin.app.App,
+  app2: admin.app.App,
   step,
   inputValues,
-  eventData
+  eventData: ActionRunnerEventData
 ) {
   // TODO: Support passing in chunk size (it will have to be validated)
   const chunkSize = DEFAULT_RTDB_BATCH_SIZE
@@ -327,7 +328,7 @@ export async function batchCopyBetweenRTDBInstances(
  * @param {object} eventData - Data from event (contains settings)
  * @returns {Promise} Resolves with result of update call
  */
-export async function copyFromStorageToRTDB(app1, app2, eventData) {
+export async function copyFromStorageToRTDB(app1: admin.app.App, app2: admin.app.App, eventData: ActionStep) {
   if (!get(app1, 'database') || !get(app2, 'database')) {
     throw new Error('Invalid service account, database not defined on app')
   }
@@ -351,7 +352,7 @@ export async function copyFromStorageToRTDB(app1, app2, eventData) {
  * @param {object} eventData - Data from event (contains settings)
  * @returns {Promise} Resolves with result of update call
  */
-export async function copyFromRTDBToStorage(app1, app2, eventData) {
+export async function copyFromRTDBToStorage(app1: admin.app.App, app2: admin.app.App, eventData: ActionStep) {
   if (!get(app1, 'database')) {
     throw new Error('Invalid service account, database not defined on app1')
   }

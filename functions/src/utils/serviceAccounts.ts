@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin'
 import os from 'os'
-import fsExtra from 'fs-extra'
+import { promises as fs } from 'fs'
 import path from 'path'
 import google from 'googleapis'
 import { uniqueId } from 'lodash'
@@ -8,6 +8,7 @@ import mkdirp from 'mkdirp'
 import { decrypt } from './encryption'
 import { to } from './async'
 import { hasAll } from './index'
+import { ActionRunnerEventData } from '../actionRunner/types'
 
 const STORAGE_AND_PLATFORM_SCOPES = [
   'https://www.googleapis.com/auth/devstorage.full_control',
@@ -27,12 +28,27 @@ const SERVICE_ACCOUNT_PARAMS = [
   'token_uri'
 ]
 
+export interface ServiceAccount {
+  type: string
+  project_id: string
+  private_key_id: string
+  private_key: string
+  client_email: string
+  client_id: string
+  auth_uri: string
+  token_ur: string
+}
+
+interface ClientObj {
+  credentials: { token_type: string, access_token: string }
+}
+
 /**
  * Get Google APIs auth client. Auth comes from serviceAccount.
  * @param {object} serviceAccount - Service account object
  * @returns {Promise} Resolves with JWT Auth Client (for attaching to request)
  */
-export async function authClientFromServiceAccount(serviceAccount) {
+export async function authClientFromServiceAccount(serviceAccount: ServiceAccount): Promise<ClientObj> {
   if (!hasAll(serviceAccount, SERVICE_ACCOUNT_PARAMS)) {
     throw new Error('Invalid service account')
   }
@@ -65,7 +81,7 @@ export async function authClientFromServiceAccount(serviceAccount) {
  * @param {object} eventData - Data from event request
  * @returns {Promise} Resolves with Firebase app
  */
-export async function getAppFromServiceAccount(opts, eventData) {
+export async function getAppFromServiceAccount(opts, eventData: ActionRunnerEventData): Promise<admin.app.App> {
   const { databaseURL, storageBucket, environmentKey, id } = opts
   if (!databaseURL) {
     throw new Error(
@@ -97,7 +113,7 @@ export async function getAppFromServiceAccount(opts, eventData) {
   }
 
   try {
-    const appCreds = {
+    const appCreds: any = {
       credential: admin.credential.cert(accountFilePath),
       databaseURL
     }
@@ -113,17 +129,17 @@ export async function getAppFromServiceAccount(opts, eventData) {
 
 /**
  * Load service account data From Firestore
- * @param {string} docPath - Path to Firestore document containing service account
- * @param {string} name - Name under which to store local service account file
+ * @param docPath - Path to Firestore document containing service account
+ * @param name - Name under which to store local service account file
  * @param {object} options - Options object
  * @param {boolean} options.returnData - Whether or not to return service account data
  * @returns {Promise} Resolves with service account or path to service account
  */
 export async function serviceAccountFromFirestorePath(
-  docPath,
-  name,
+  docPath: string,
+  name: string,
   { returnData = false }
-) {
+): Promise<any> {
   const projectDoc = await admin.firestore().doc(docPath).get()
 
   // Handle project not existing in Firestore
@@ -180,7 +196,7 @@ export async function serviceAccountFromFirestorePath(
     // Create local folder for decrypted serice account file
     await mkdirp(tempLocalDir)
     // Write decrypted string as a local file
-    await fsExtra.writeJson(tempLocalPath, serviceAccountData)
+    await fs.writeFile(tempLocalPath, JSON.stringify(serviceAccountData, null, 2))
     // Return localPath of service account
     return tempLocalPath
   } catch (err) {

@@ -2,14 +2,14 @@
   "name": "fireadmin-functions",
   "description": "Cloud Functions for Fireadmin application.",
   "scripts": {
-    "test": "mocha ./test/unit/**",
+    "test": "NODE_ENV=test mocha ./test/unit/**/*.spec.ts",
     "test:watch": "yarn test --watch",
-    "test:cov": "nyc --reporter=lcov npm test",
+    "test:cov": "nyc --reporter=lcov --reporter=html yarn test",
     "test:cov:watch": "npm run test:cov -- --watch",
     "lint": "eslint -c .eslintrc.js src test",
     "lint:fix": "npm run lint -- --fix",
     "clean": "rimraf dist etc",
-    "build": "npm run clean && babel src -d --out-dir dist",
+    "build": "npm run clean && tsc",
     "watch": "npm run build -- --watch",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
@@ -30,13 +30,12 @@
     "request-promise": "^4.2.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.1",
-    "@babel/core": "^7.10.1",
-    "@babel/preset-env": "^7.10.1",
-    "@babel/register": "^7.10.1",
-    "@babel/runtime": "^7.10.1",
-    "babel-plugin-lodash": "^3.3.4",
-    "babel-plugin-module-resolver": "^4.0.0",
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^14.0.13",
+    "@types/sinon": "^9.0.4",
+    "@types/sinon-chai": "^3.2.4",
     "chai": "^4.2.0",
     "faux-jax": "^5.0.6",
     "firebase-functions-test": "^0.2.1",
@@ -44,7 +43,9 @@
     "nyc": "^15.0.0",
     "rimraf": "^3.0.2",
     "sinon": "^9.0.1",
-    "sinon-chai": "^3.5.0"
+    "sinon-chai": "^3.5.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
   },
   "engines": {
     "node": "10"

@@ -7,11 +7,14 @@ import * as admin from 'firebase-admin'
 
 /**
  * Download JSON File from Google Cloud Storage and return is contents
- * @param  {firebase.App} app - App from which the storage File should be downloaded
- * @param  {string} pathInStorage - Path of file within cloud storage bucket
- * @returns {Promise} Resolves with JSON contents of the file
+ * @param app - App from which the storage File should be downloaded
+ * @param pathInStorage - Path of file within cloud storage bucket
+ * @returns Resolves with JSON contents of the file
  */
-export async function downloadFromStorage(app, pathInStorage) {
+export async function downloadFromStorage(
+  app: admin.app.App | null,
+  pathInStorage: string
+): Promise<any> {
   if (app && !app.storage) {
     throw new Error('Storage is not enabled on firebase-admin')
   }
@@ -45,12 +48,16 @@ export async function downloadFromStorage(app, pathInStorage) {
 
 /**
  * Upload JSON Object to Google Cloud Storage and return is contents
- * @param {firebase.App} app - App from which the storage File should be downloaded
- * @param {string} pathInStorage - Path of file within cloud storage bucket
- * @param {object} jsonObject - Object to upload to storage
- * @returns {Promise} Resolves with JSON contents of the file
+ * @param app - App from which the storage File should be downloaded
+ * @param pathInStorage - Path of file within cloud storage bucket
+ * @param jsonObject - Object to upload to storage
+ * @returns Resolves with JSON contents of the file
  */
-export async function uploadToStorage(app, pathInStorage, jsonObject) {
+export async function uploadToStorage(
+  app: admin.app.App,
+  pathInStorage: string,
+  jsonObject: any
+): Promise<void> {
   const localPath = `actions/storage/${Date.now()}/${pathInStorage}.json`
   const tempLocalPath = path.join(os.tmpdir(), localPath)
   if (!app.storage) {
@@ -61,8 +68,7 @@ export async function uploadToStorage(app, pathInStorage, jsonObject) {
     await outputJson(tempLocalPath, jsonObject, { spaces: 2 })
     await app.storage().bucket().upload(tempLocalPath, {
       destination: pathInStorage,
-      contentType: 'application/json',
-      contentLanguage: 'en'
+      contentType: 'application/json'
     })
     // Return JSON file contents
   } catch (err) {

@@ -1,7 +1,7 @@
 /**
  * Async await wrapper for easy error handling
- * @param {Promise} promise - Promise to wrap responses of
- * @returns {Promise} Resolves and rejects with an array
+ * @param promise - Promise to wrap responses of
+ * @returns Resolves and rejects with an array
  * @example
  * async function asyncFunctionWithThrow() {
  *  const [err, snap] = await to(
@@ -15,16 +15,16 @@
  *  console.log('Data found:', snap.val())
  * }
  */
-export function to(promise) {
-  return promise.then((data) => [null, data]).catch((err) => [err])
+export function to(promise: Promise<any>): Promise<any> {
+  return promise.then((data) => [null, data]).catch((err) => [err, undefined])
 }
 
 /**
  * Run promises in a waterfall instead of all the same time (Promise.all)
- * @param  {Array} callbacks - List of promises to run in order
- * @returns {Promise} Resolves when all promises have completed in order
+ * @param callbacks - List of promises to run in order
+ * @returns Resolves when all promises have completed in order
  */
-export function promiseWaterfall(callbacks) {
+export function promiseWaterfall(callbacks: any[]): Promise<any> {
   return callbacks.reduce(
     (accumulator, callback) =>
       accumulator.then(

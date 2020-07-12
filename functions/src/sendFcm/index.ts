@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import { to } from 'utils/async'
+import { to } from '../utils/async'
 
 const requestPath = 'sendFcm'
 
@@ -9,7 +9,10 @@ const requestPath = 'sendFcm'
  * @param {functions.Context} context - Functions context
  * @returns {Promise} Resolves with results of sending FCM
  */
-async function sendFcmEvent(snap, context) {
+async function sendFcmEvent(
+  snap: functions.database.DataSnapshot,
+  context: functions.EventContext
+): Promise<any> {
   const {
     params: { pushId }
   } = context
@@ -37,7 +40,7 @@ async function sendFcmEvent(snap, context) {
   }
 
   // Get messaging token from user's profile
-  const token = userProfileSnap.get('messaging.mostRecentToken')
+  const token = userProfileSnap?.get('messaging.mostRecentToken')
 
   // Handle messaging token not being found on user object
   if (!token) {

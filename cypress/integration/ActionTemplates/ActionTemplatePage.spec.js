@@ -45,6 +45,7 @@ const ACTION_TEMPLATES_ROUTE = '/action-templates'
 
 describe('Action Template Page', () => {
   before(() => {
+    cy.login()
     cy.callFirestore(
       'set',
       `${ACTION_TEMPLATES_COLLECTION}/${testPublicTemplateId}`,

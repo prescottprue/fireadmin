@@ -2,19 +2,24 @@ import crypto from 'crypto'
 import { isString } from 'lodash'
 import * as functions from 'firebase-functions'
 
+interface EncryptOptions {
+  algorithm?: string
+  password?: string
+}
+
 /**
  * Encrypt a string using a password. encryption.password from
  * functions config is used by default if not passed.
- * @param {string} text - Text string to encrypt
- * @param {object} [options={}] - Options object
- * @param {object} [options.algorithm='aes-256-ctr'] - Encryption algorithm
- * @param {object} options.password - Password to use while
+ * @param text - Text string to encrypt
+ * @param [options={}] - Options object
+ * @param [options.algorithm='aes-256-ctr'] - Encryption algorithm
+ * @param options.password - Password to use while
  * encrypting. encryption.password from functions config is used
  * by default if not passed.
- * @returns {string} Encrypted string
+ * @returns Encrypted string
  */
-export function encrypt(text, options = {}) {
-  const { algorithm = 'aes-256-ctr', password: passwordOption } = options
+export function encrypt(text: string, options?: EncryptOptions): string | undefined {
+  const { algorithm = 'aes-256-ctr', password: passwordOption } = options || {}
   if (!text) {
     return
   }
@@ -34,16 +39,16 @@ export function encrypt(text, options = {}) {
 /**
  * Decrypt a string using a password. encryption.password from
  * functions config is used by default if not passed.
- * @param {string} text - Text string to decrypt
- * @param {object} [options={}] - Options object
- * @param {object} [options.algorithm='aes-256-ctr'] - Encryption algorithm
- * @param {object} options.password - Password to use while
+ * @param text - Text string to decrypt
+ * @param [options={}] - Options object
+ * @param [options.algorithm='aes-256-ctr'] - Encryption algorithm
+ * @param options.password - Password to use while
  * decrypting. encryption.password from functions config is used
  * by default if not passed.
- * @returns {string} Encrypted string
+ * @returns Encrypted string
  */
-export function decrypt(text, options = {}) {
-  const { algorithm = 'aes-256-ctr', password } = options
+export function decrypt(text: string, options?: EncryptOptions): string | undefined {
+  const { algorithm = 'aes-256-ctr', password } = options || {}
   if (!text) {
     return
   }

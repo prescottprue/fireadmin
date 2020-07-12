@@ -1,3 +1,5 @@
+import * as functions from 'firebase-functions'
+import * as admin from 'firebase-admin'
 import { get, size, map, isObject } from 'lodash'
 import { tmpdir } from 'os'
 import { existsSync, unlinkSync } from 'fs'
@@ -20,6 +22,7 @@ import {
   updateResponseWithError,
   updateResponseWithActionError
 } from './utils'
+import { ActionRunnerEventData, ActionStep } from './types'
 
 /**
  * Cleanup local service account files
@@ -159,6 +162,7 @@ export async function runBackupsFromEvent(snap, context) {
           inputs,
           convertedInputValues,
           snap,
+          context,
           eventData,
           totalNumSteps
         })
@@ -185,10 +189,9 @@ export async function runBackupsFromEvent(snap, context) {
  * data replaced with app)
  * @param {object} eventData - Data from event
  * @param {Array} envsMetas - Meta data for environments
- * @param {object} event - Function event
  * @returns {Promise} Resolves with an array of results of converting inputs
  */
-function validateAndConvertEnvironments(eventData, envsMetas, event) {
+function validateAndConvertEnvironments(eventData: ActionRunnerEventData, envsMetas): Promise<admin.app.App[]> {
   if (!eventData.environments) {
     return Promise.resolve([])
   }
@@ -199,15 +202,23 @@ function validateAndConvertEnvironments(eventData, envsMetas, event) {
   )
 }
 
+interface InputMetadata {
+  required?: boolean
+}
+
 /**
  * Validate and convert a single input to relevant type
  * (i.e. serviceAccount data replaced with app)
  * @param {object} eventData - Data from event
- * @param {object} inputMeta - Metadat for input
+ * @param {object} inputMeta - Metadata for input
  * @param {object} inputValue - Value of input
  * @returns {Promise} Resolves with firebase app if service account type
  */
-async function validateAndConvertEnvironment(eventData, inputMeta, inputValue) {
+async function validateAndConvertEnvironment(
+  eventData: ActionRunnerEventData,
+  inputMeta: InputMetadata,
+  inputValue: any
+): Promise<admin.app.App> {
   // Throw if input is required and is missing serviceAccountPath or databaseURL
   const varsNeededForStorageType = ['fullPath', 'databaseURL']
   const varsNeededForFirstoreType = ['credential', 'databaseURL']
@@ -227,13 +238,11 @@ async function validateAndConvertEnvironment(eventData, inputMeta, inputValue) {
 /**
  * Validate and convert list of inputs to relevant types (i.e. serviceAccount
  * data replaced with app)
- *
- * @param {object} eventData - Data from event
+ * @param eventData - Data from event
  * @param {Array} inputsMetas - Metadata for inputs
- * @param {object} event - Metadata for inputs
  * @returns {Promise} Resolves with an array of results of converting inputs
  */
-function validateAndConvertInputs(eventData, inputsMetas, event) {
+function validateAndConvertInputs(eventData: ActionRunnerEventData, inputsMetas: any[]) {
   return eventData.inputValues.map((inputValue, inputIdx) =>
     validateAndConvertInputValues(get(inputsMetas, inputIdx), inputValue)
   )
@@ -264,19 +273,29 @@ function validateAndConvertInputValues(inputMeta, inputValue) {
   return inputValue
 }
 
+interface CreateStepRunnerParams {
+  inputs: any
+  convertedInputValues: any
+  convertedEnvs?: any
+  snap: any
+  context: functions.EventContext
+  eventData: any
+  totalNumSteps: number
+}
+
 /**
  * Builds an action runner function which accepts an action config object
  * and the stepIdx. Action runner function runs action then updates
  * response with progress and/or error.
- * @param {object} params - Params object
- * @param {object} params.eventData - Data from event (contains settings for
- * @param {Array} params.inputs - List of inputs
- * @param {Array} params.convertedInputValues - List of inputs converted to relevant types
- * @param {Integer} params.totalNumSteps - Total number of actions
- * @param {Array} params.convertedEnvs - List of converted envs
- * @param {object} params.snap - Snap from event
- * @param {object} params.context - Context from event
- * @returns {Function} Which accepts action and stepIdx (used in Promise.all map)
+ * @param params - Params object
+ * @param params.eventData - Data from event (contains settings for
+ * @param params.inputs - List of inputs
+ * @param params.convertedInputValues - List of inputs converted to relevant types
+ * @param params.totalNumSteps - Total number of actions
+ * @param params.convertedEnvs - List of converted envs
+ * @param params.snap - Snap from event
+ * @param params.context - Context from event
+ * @returns Which accepts action and stepIdx (used in Promise.all map)
  */
 function createStepRunner({
   inputs,
@@ -286,14 +305,14 @@ function createStepRunner({
   context,
   eventData,
   totalNumSteps
-}) {
+}: CreateStepRunnerParams): Function {
   /**
    * Run action based on provided settings and update response with progress
    * @param {object} step - Step object
    * @param {number} stepIdx - Index of the action (from actions array)
    * @returns {Promise} Resolves with results of progress update call
    */
-  return function runStepAndUpdateProgress(step, stepIdx) {
+  return function runStepAndUpdateProgress(step: ActionStep, stepIdx: number) {
     /**
      * Receives results of previous action and calls next action
      * @param  {Any} previousStepResult - result of previous action
@@ -306,9 +325,7 @@ function createStepRunner({
           inputs,
           convertedInputValues,
           convertedEnvs,
-          stepIdx,
-          eventData,
-          previousStepResult
+          eventData
         })
       )
       // Handle errors running step
@@ -332,31 +349,35 @@ function createStepRunner({
   }
 }
 
+interface RunStepParams {
+  inputs: any[]
+  convertedInputValues: any
+  convertedEnvs: any
+  step: ActionStep
+  eventData: ActionRunnerEventData
+}
+
 /**
  * Data action using Service account stored on Firestore
- * @param {object} params - Params object
- * @param {object} params.step - Object containing settings for step
- * @param {Array} params.inputs - Inputs provided to the action
- * @param {Array} params.convertedInputValues - Inputs provided to the action converted
+ * @param params - Params object
+ * @param params.step - Object containing settings for step
+ * @param params.inputs - Inputs provided to the action
+ * @param params.convertedInputValues - Inputs provided to the action converted
  * to relevant data (i.e. service accounts)
- * @param {number} params.stepIdx - Index of the action (from actions array)
- * @param {object} params.eventData - Data from event (contains settings for
+ * @param params.eventData - Data from event (contains settings for
  * action request)
- * @param {Array} params.convertedEnvs - Converted environments
- * @param {object} params.previousStepResult - Results from previous step
- * @returns {Promise} Resolves with results of running the provided action
+ * @param params.convertedEnvs - Converted environments
+ * @returns Resolves with results of running the provided action
  */
 export async function runStep({
   inputs,
   convertedInputValues,
   convertedEnvs,
   step,
-  stepIdx,
-  eventData,
-  previousStepResult
-}) {
+  eventData
+}: RunStepParams): Promise<any> {
   // Handle step or step type not existing
-  if (!step || !step.type) {
+  if (!step?.type) {
     throw new Error('Step object is invalid (i.e. does not contain a type)')
   }
 
@@ -429,7 +450,7 @@ export async function runStep({
           )
         })
       } else if (dest.resource === 'storage') {
-        return copyFromRTDBToStorage(app1, app2, step, convertedInputValues)
+        return copyFromRTDBToStorage(app1, app2, step)
       } else {
         throw new Error(
           `Invalid dest.resource: ${dest.resource} for step: ${step}`
@@ -437,7 +458,7 @@ export async function runStep({
       }
     case 'storage':
       if (dest.resource === 'rtdb') {
-        return copyFromStorageToRTDB(app1, app2, step, convertedInputValues)
+        return copyFromStorageToRTDB(app1, app2, step)
       } else {
         throw new Error(
           `Invalid dest.resource: ${dest.resource} for step: ${step}`

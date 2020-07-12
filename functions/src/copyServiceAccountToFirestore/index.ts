@@ -1,32 +1,21 @@
 import * as functions from 'firebase-functions'
+import * as admin from 'firebase-admin'
 import { encrypt } from '../utils/encryption'
 import { to } from '../utils/async'
 import { downloadFromStorage } from '../utils/cloudStorage'
-import * as admin from 'firebase-admin'
-
-/**
- * @name copyServiceAccountToFirestore
- * Copy service account to Firestore from Cloud Storage when new service
- * account meta data is added to Firestore
- * @type {functions.CloudFunction}
- */
-export default functions.firestore
-  .document(
-    'projects/{projectId}/environments/{environmentId}'
-    // 'projects/{projectId}/environments/{environmentId}/serviceAccounts/{serviceAccountId}' // for serviceAccounts as subcollection
-  )
-  .onCreate(handleServiceAccountCreate)
 
 /**
  * Download service account from Cloud Storage and store it as an encrypted
  * string within Firestore. Could be a storage function, but it
  * would require more code due to being triggered for all storage files.
- * @param {functions.firestore.DocumentSnapshot} snap - Event snapshot
- * @returns {Promise} Resolves with filePath
+ * @param snap - Event snapshot
+ * @returns Resolves with filePath
  */
-async function handleServiceAccountCreate(snap) {
+async function handleServiceAccountCreate(
+  snap: functions.firestore.DocumentSnapshot
+): Promise<null> {
   const eventData = snap.data()
-  if (!eventData.serviceAccount) {
+  if (!eventData?.serviceAccount) {
     throw new Error(
       'serviceAccount parameter is required to copy service account to Firestore'
     )
@@ -81,3 +70,16 @@ async function handleServiceAccountCreate(snap) {
 
   return null
 }
+
+/**
+ * @name copyServiceAccountToFirestore
+ * Copy service account to Firestore from Cloud Storage when new service
+ * account meta data is added to Firestore
+ * @type {functions.CloudFunction}
+ */
+export default functions.firestore
+  .document(
+    'projects/{projectId}/environments/{environmentId}'
+    // 'projects/{projectId}/environments/{environmentId}/serviceAccounts/{serviceAccountId}' // for serviceAccounts as subcollection
+  )
+  .onCreate(handleServiceAccountCreate)

@@ -1,5 +1,11 @@
+import { expect } from 'chai';
 import * as admin from 'firebase-admin'
-import { to } from 'utils/async'
+import functionsTestLib from 'firebase-functions-test'
+import sinon from 'sinon';
+import { to } from '../../src/utils/async'
+
+const functionsTest = functionsTestLib()
+// console.log('asdfasdf', require(`${__dirname}/../../index`))
 const userId = 1
 const refParam = `users_public/${userId}`
 
@@ -17,7 +23,7 @@ describe('sendFcm RTDB Cloud Function (onCreate)', () => {
       storageBucket: 'some-bucket.appspot.com'
     })
     /* eslint-disable global-require */
-    sendFcm = functionsTest.wrap(require(`${__dirname}/../../index`).sendFcm)
+    sendFcm = functionsTest.wrap(require(`${__dirname}/../../src/sendFcm`).default)
     /* eslint-enable global-require */
   })
 
