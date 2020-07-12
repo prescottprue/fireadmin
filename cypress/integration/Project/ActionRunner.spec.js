@@ -5,8 +5,9 @@ describe('Project - Actions Page', () => {
   // Setup before tests including creating a fake project
   before(() => {
     // Add a fake project owned by the test user
-    cy.callFirestore('set', 'projects/test-project', fakeProject, {
-      withMeta: true
+    cy.callFirestore('set', 'projects/test-project', {
+      ...fakeProject,
+      createdBy: Cypress.env('TEST_UID')
     })
     // Login using custom token
     cy.login()
