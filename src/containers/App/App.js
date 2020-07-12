@@ -22,9 +22,11 @@ const firebaseConfig = {
 
 // Enable Real Time Database emulator if environment variable is set
 if (process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST) {
-  firebaseConfig.databaseURL = `http://${process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST}?ns=${firebaseConfig.projectId}`
+  firebaseConfig.databaseURL = `http://${process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST}?ns=${process.env.REACT_APP_FIREBASE_projectId}`
   console.debug(`RTDB emulator enabled: ${firebaseConfig.databaseURL}`) // eslint-disable-line no-console
 }
+
+console.log('-------- client firebase config', firebaseConfig)
 
 function App({ routes }) {
   return (
