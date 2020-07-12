@@ -41,13 +41,6 @@ jobs:
           yarn install --frozen-lockfile
           yarn --cwd functions install --frozen-lockfile
 
-      - name: Archive Error Logs
-        uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: error-logs
-          path: yarn-error.log
-
       - name: Verify Functions
         # NOTE: Project name is hardcoded since emulators are being used
         run: |
@@ -65,7 +58,7 @@ jobs:
       - name: Expose Application Environment Variables
         env:
           GITHUB_REF: ${{ github.ref }}
-          # Firebase token needed since firebase-tools is used to load app configs
+          # Firebase token needed to authenticate firebase-tools to be able to load app configs
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
           set -o pipefail
@@ -88,8 +81,8 @@ jobs:
           )
 
           # Set emulator settings
-          echo "::set-env name=REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST::http://localhost:$(cat firebase.json | jq .emulators.database.port)"
-          echo "::set-env name=REACT_APP_FIRESTORE_EMULATOR_HOST::http://localhost:$(cat firebase.json | jq .emulators.firestore.port)"
+          echo "::set-env name=REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.database.port)"
+          echo "::set-env name=REACT_APP_FIRESTORE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.firestore.port)"
 
           # Set other app configs (settings within .firebaserc in the ci.setEnv section)
           $(yarn bin)/firebase-ci setEnv
@@ -102,14 +95,21 @@ jobs:
             eval $line
           done <<< "$firebaseConfig"
 
+      - name: Print CI Env Variables
+        run: |
+          echo Available ENV vars:
+          env | sort
+
       - name: Build App
         run: |
           yarn build
 
-      - name: Print CI Context
-        run: |
-          echo Available ENV vars:
-          env | sort
+      - name: Archive Error Logs
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: error-logs
+          path: yarn-error.log
 
       - name: Archive Build Artifact
         uses: actions/upload-artifact@v2
@@ -154,17 +154,17 @@ jobs:
       - name: Set Test Environment Settings
         id: emulator-settings
         env:
-          GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_REF: ${{ github.ref }}
         run: |
-          export GIT_BRANCH=${GITHUB_REF##*/}
-          export GCLOUD_PROJECT=$(cat .firebaserc | jq -r --arg branch "$GIT_BRANCH" '.projects[$branch] // .projects.master')
-          echo "::set-env name=GCLOUD_PROJECT::$GCLOUD_PROJECT"
-          echo "Environment set for branch: $GIT_BRANCH and project: $GCLOUD_PROJECT"
-          echo "Setting emulator settings to environment..."
+          gitBranch=${GITHUB_REF##*/}
+          gcloudProject=$(cat .firebaserc | jq -r --arg branch "$gitBranch" '.projects[$branch] // .projects.master')
+          
+          echo "Exposing settings to environment for branch: $gitBranch and project: $gcloudProject..."
+          echo "::set-env name=GCLOUD_PROJECT::$gcloudProject"
           echo "::set-env name=FIREBASE_DATABASE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.database.port)"
           echo "::set-env name=FIRESTORE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.firestore.port)"
           echo "::set-env name=CYPRESS_BASE_URL::http://localhost:$(cat package.json | jq .config.port)"
+
           echo "Generating Service Account File..."
           echo "$(echo $SERVICE_ACCOUNT | jq .)" > $HOME/serviceAccount.json
           echo "::set-env name=GOOGLE_APPLICATION_CREDENTIALS::$HOME/serviceAccount.json"

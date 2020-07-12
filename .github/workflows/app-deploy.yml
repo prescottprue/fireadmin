@@ -66,7 +66,7 @@ jobs:
       - name: Expose Application Environment Variables
         env:
           GITHUB_REF: ${{ github.ref }}
-          # Firebase token needed since firebase-tools is used to load app configs
+          # Firebase token needed to authenticate firebase-tools to be able to load app configs
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
           set -o pipefail
@@ -89,8 +89,8 @@ jobs:
           )
 
           # Set emulator settings
-          echo "::set-env name=REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST::http://localhost:$(cat firebase.json | jq .emulators.database.port)"
-          echo "::set-env name=REACT_APP_FIRESTORE_EMULATOR_HOST::http://localhost:$(cat firebase.json | jq .emulators.firestore.port)"
+          echo "::set-env name=REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.database.port)"
+          echo "::set-env name=REACT_APP_FIRESTORE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.firestore.port)"
 
           # Set other app configs (settings within .firebaserc in the ci.setEnv section)
           $(yarn bin)/firebase-ci setEnv
