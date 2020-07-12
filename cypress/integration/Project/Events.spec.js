@@ -1,13 +1,10 @@
 import { createSelector } from '../../utils'
-import fakeProject from '../../fixtures/fakeProject.json'
 
 describe('Project - Events Page', () => {
   // Setup before tests including creating a server to listen for external requests
   before(() => {
     // Add a fake project owned by the test user
-    cy.callFirestore('set', 'projects/test-project', fakeProject, {
-      withMeta: true
-    })
+    cy.addProject('test-project')
     // Login using custom token
     cy.login()
   })

@@ -77,6 +77,22 @@ Cypress.Commands.add(
 
 /**
  * @memberOf Cypress.Chainable#
+ * @name addProject
+ * @function
+ */
+Cypress.Commands.add('addProject', (project, extraData = {}) => {
+  cy.fixture('fakeProject.json').then((fakeProject) => {
+    cy.callFirestore('set', `projects/${project}`, {
+      ...fakeProject,
+      ...extraData,
+      createdBy: Cypress.env('TEST_UID'),
+      createdAt: new firebase.firestore.Timestamp().valueOf()
+    })
+  })
+})
+
+/**
+ * @memberOf Cypress.Chainable#
  * @name addProjectEnvironment
  * @function
  */
