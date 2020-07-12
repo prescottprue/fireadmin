@@ -20,7 +20,7 @@ const fbConfig = {
   storageBucket: `fireadmin-stage.appspot.com`
 }
 
-cy.log('fb config', fbConfig)
+console.log('fb config', fbConfig)
 
 firebase.initializeApp(fbConfig)
 
@@ -30,7 +30,7 @@ if (Cypress.env('FIRESTORE_EMULATOR_HOST')) {
     host: Cypress.env('FIRESTORE_EMULATOR_HOST'),
     ssl: false
   }
-    console.log('Using Firestore emulator', firestoreSettings.host) // eslint-disable-line
+  console.log('Using Firestore emulator', firestoreSettings.host) // eslint-disable-line
 
   if (window.Cypress) {
     // Needed for Firestore support in Cypress (see https://github.com/cypress-io/cypress/issues/6350)
