@@ -122,5 +122,5 @@ Cypress.Commands.add('addProjectEvent', (project, eventId, extraData = {}) => {
   if (!newEventData.createdAt) {
     newEventData.createdAt = firebase.firestore.Timestamp.now()
   }
-  cy.callFirestore('set', `projects/${project}/events/${eventId}`)
+  cy.callFirestore('set', `projects/${project}/events/${eventId}`, newEventData)
 })
