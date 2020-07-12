@@ -83,14 +83,12 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'addProjectEnvironment',
   (project, environment, extraData = {}) => {
-    cy.callFirestore(
-      'set',
-      `projects/${project}/environments/${environment}`,
-      { ...fakeEnvironment, ...extraData },
-      {
-        withMeta: true
-      }
-    )
+    cy.callFirestore('set', `projects/${project}/environments/${environment}`, {
+      ...fakeEnvironment,
+      ...extraData,
+      createdBy: Cypress.env('TEST_UID'),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    })
   }
 )
 
@@ -100,13 +98,10 @@ Cypress.Commands.add(
  * @function
  */
 Cypress.Commands.add('addProjectEvent', (project, eventId, extraData = {}) => {
-  cy.callFirestore(
-    'set',
-    `projects/${project}/events/${eventId}`,
-    {
-      ...fakeEvent,
-      ...extraData
-    },
-    { withMeta: true }
-  )
+  cy.callFirestore('set', `projects/${project}/events/${eventId}`, {
+    ...fakeEvent,
+    ...extraData,
+    createdBy: Cypress.env('TEST_UID'),
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  })
 })
