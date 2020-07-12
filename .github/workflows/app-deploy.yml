@@ -66,17 +66,18 @@ jobs:
       - name: Expose Application Environment Variables
         env:
           GITHUB_REF: ${{ github.ref }}
+          # Firebase token needed since firebase-tools is used to load app configs
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
           set -o pipefail
-  
+
           gitBranch=${GITHUB_REF##*/}
-  
-          # Find the config associated to the firebase project in .firebaserc.base
-          gcloudProject=$(cat .firebaserc.base | jq -r --arg alias "$gitBranch" '.projects[$alias]')
-  
-          echo Exporting Firebase SDK Config for $gcloudProject project and $APP_NAME app...
-  
+
+          # Find the config associated to the firebase project in .firebaserc
+          gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias]')
+
+          echo Exporting Firebase SDK Config for $gcloudProject project...
+
           # Use firebase SDK API to get the app's configuration (databaseURL is removed since it is set to the emulator URL above)
           firebaseConfig=$($(yarn bin)/firebase --project $gcloudProject apps:sdkconfig WEB \
             $($(yarn bin)/firebase --project $gcloudProject apps:list WEB | grep fireadmin | awk '{ print $4}') | \
@@ -86,13 +87,16 @@ jobs:
               jq -r 'del(.databaseURL) | to_entries[] | [.key, (.value | tojson)] | join("::")' | \
               sed 's/:"/:/g; s/^/echo \"::set-env name=REACT_APP_FIREBASE_/g' \
           )
-  
+
+          # Set emulator settings
           echo "::set-env name=REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST::http://localhost:$(cat firebase.json | jq .emulators.database.port)"
           echo "::set-env name=REACT_APP_FIRESTORE_EMULATOR_HOST::http://localhost:$(cat firebase.json | jq .emulators.firestore.port)"
+
+          # Set other app configs (settings within .firebaserc in the ci.setEnv section)
           $(yarn bin)/firebase-ci setEnv
-  
+
           echo Begin evaluating project config to export as environment variables:
-  
+
           # Loop through each line of config and evaluate to export env vars
           while IFS= read -r line; do
             echo Evaluating: $line
@@ -127,7 +131,6 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           GITHUB_REF: ${{ github.ref }}
-          GITHUB_HEAD_REF: ${{ github.head_ref }}
         run: |
           gitBranch=${GITHUB_REF##*/}
           packageName=$(cat package.json | jq -r '.name')
