@@ -71,10 +71,10 @@ jobs:
 
           gitBranch=${GITHUB_REF##*/}
 
-          # Find the config associated to the firebase project in .firebaserc.base
-          gcloudProject=$(cat .firebaserc.base | jq -r --arg alias "$gitBranch" '.projects[$alias]')
+          # Find the config associated to the firebase project in .firebaserc
+          gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias]')
 
-          echo Exporting Firebase SDK Config for $gcloudProject project and $APP_NAME app...
+          echo Exporting Firebase SDK Config for $gcloudProject project...
 
           # Use firebase SDK API to get the app's configuration (databaseURL is removed since it is set to the emulator URL above)
           firebaseConfig=$($(yarn bin)/firebase --project $gcloudProject apps:sdkconfig WEB \
