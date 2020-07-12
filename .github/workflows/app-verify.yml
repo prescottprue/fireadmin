@@ -21,14 +21,8 @@ jobs:
       - name: Get cache settings
         id: cache-settings
         run: |
-          $(yarn bin)/firebase-ci setEnv
           echo "::set-output name=dir::$(yarn cache dir)"
           echo "::set-output name=firebase-tools::$(yarn list -s --depth=0 --pattern firebase-tools | tail -n 1 | sed 's/.*@//g')"
-
-      - name: Print CI Context
-        run: |
-          echo Available ENV vars:
-          env | sort
 
       - name: Get Yarn Cache
         id: yarn-cache
@@ -72,10 +66,18 @@ jobs:
         run: |
           export REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST=localhost:$(cat firebase.json | jq .emulators.database.port)
           export REACT_APP_FIRESTORE_EMULATOR_HOST=localhost:$(cat firebase.json | jq .emulators.firestore.port)
-
+          
+          echo $REACT_APP_SEGMENT_TOKEN
+          echo $REACT_APP_FIREBASE_databaseURL
+          $(yarn bin)/firebase-ci setEnv
           echo $REACT_APP_SEGMENT_TOKEN
           echo $REACT_APP_FIREBASE_databaseURL
           yarn build
+
+      - name: Print CI Context
+        run: |
+          echo Available ENV vars:
+          env | sort
 
       - name: Archive Build Artifact
         uses: actions/upload-artifact@v2
