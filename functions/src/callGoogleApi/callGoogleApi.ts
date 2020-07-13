@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
-import { get, uniqueId } from 'lodash'
+import { uniqueId } from 'lodash'
 import fetch from 'node-fetch'
 import { eventPathName } from './constants'
 import { to } from '../utils/async'

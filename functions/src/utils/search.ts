@@ -1,14 +1,15 @@
 import algoliasearch from 'algoliasearch'
 import * as functions from 'firebase-functions'
 
-// Authenticate to Algolia Database
-const client = algoliasearch(
-  functions.config().algolia.app_id,
-  functions.config().algolia.api_key
-)
-
 interface IndexPromiseFunc {
   (data: any, objectID: string)
+}
+
+interface IndexFunc {
+  (
+    change: functions.Change<functions.firestore.DocumentSnapshot>,
+    context: functions.EventContext
+  ): Promise<null>
 }
 
 interface CreateIndexFuncParams {
@@ -22,28 +23,31 @@ interface CreateIndexFuncParams {
 }
 
 /**
- * Creates a function indexs item within Algolia from a function event.
- * @param {string} options - Options object
- * @param {string} options.indexName - name of Algolia index under which to place item
- * @param {string} options.idParam - Parameter which contains id
- * @param {Function} options.indexCondition - Function that decides conditions under
+ * Creates a function indexes item within Algolia from a function event.
+ * @param options - Options object
+ * @param options.indexName - name of Algolia index under which to place item
+ * @param options.idParam - Parameter which contains id
+ * @param options.indexCondition - Function that decides conditions under
  * which item is index. If provided, it must return truthy in order for item
  * to be indexed.
- * @returns {Function} Cloud Function event handler function
+ * @returns Cloud Function event handler function
  */
 export function createIndexFunc({
   indexName,
   idParam,
   indexCondition,
   otherPromises = []
-}: CreateIndexFuncParams): (
-  change: functions.Change<functions.firestore.DocumentSnapshot>,
-  context: functions.EventContext
-) => any {
-  return (change, context): null | Promise<any> => {
+}: CreateIndexFuncParams): IndexFunc {
+  // Authenticate to Algolia Database
+  const client = algoliasearch(
+    functions.config().algolia.app_id,
+    functions.config().algolia.api_key
+  )
+  return async (change, context): Promise<null> => {
     const index = client.initIndex(indexName)
     const { [idParam]: objectID } = context.params
-    // Remove the item from algolia if it is being deleted
+
+    // Remove the item from Algolia if it is being deleted
     if (!change.after.exists) {
       console.log(
         `Object with ID: ${objectID} being deleted, deleting from Algolia index: ${indexName} ... `
@@ -55,6 +59,7 @@ export function createIndexFunc({
         return null
       })
     }
+
     const data = change.after.data()
     // Check if index indexCondition is a function
     if (typeof indexCondition === 'function') {
@@ -63,19 +68,25 @@ export function createIndexFunc({
         console.log('Item index indexCondition provided and not met. Exiting.')
         return null
       }
-      console.log('Item index indexCondition provided met. Indexing item.')
+      console.log('Item index indexCondition provided was met. Indexing item.')
     }
-    const firebaseObject = Object.assign({}, data, { objectID })
-    return Promise.all([
-      index.saveObject(firebaseObject).then((algoliaResponse) => {
-        console.log(
-          `Object with ID: ${objectID} successfully saved to index: ${indexName} on Algolia successfully. Exiting.`
+
+    const firebaseObject = { ...data, objectID }
+
+    try {
+      await Promise.all([
+        index.saveObject(firebaseObject),
+        ...otherPromises.map((otherPromiseCreator: IndexPromiseFunc) =>
+          otherPromiseCreator(data, objectID)
         )
-        return algoliaResponse
-      }),
-      ...otherPromises.map((otherPromiseCreator: IndexPromiseFunc) =>
-        otherPromiseCreator(data, objectID)
-      )
-    ]).then(() => firebaseObject)
+      ])
+    } catch(err) {
+      console.error('Error running index promises:', err)
+      throw err
+    }
+
+    console.log(`Successfully indexed object with id ${objectID}`)
+
+    return null
   }
 }

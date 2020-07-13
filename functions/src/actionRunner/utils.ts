@@ -11,7 +11,6 @@ import { ACTION_RUNNER_EVENT_PATH } from './constants'
 import { to } from '../utils/async'
 import {
   writeDocsInBatches,
-  dataArrayFromSnap,
   isDocPath
 } from '../utils/firestore'
 
@@ -21,6 +20,33 @@ interface ErrorInfo {
   message?: string
   status?: string
 }
+
+
+interface DataObject {
+  id: string
+  data: any
+}
+
+/**
+ * Create data object with values for each document with keys being doc.id.
+ * @param snap - Data for which to create
+ * an ordered array.
+ * @returns Object documents from snapshot or null
+ */
+function dataArrayFromSnap(
+  snap: admin.firestore.DocumentSnapshot | admin.firestore.QuerySnapshot | any
+): DataObject[] {
+  const data: DataObject[] = []
+  if (snap.data && snap.exists) {
+    data.push({ id: snap.id, data: snap.data() })
+  } else if (snap.forEach) {
+    snap.forEach((doc) => {
+      data.push({ id: doc.id, data: doc.data() || doc })
+    })
+  }
+  return data
+}
+
 
 /**
  * Write response object with status "success" or "error". If
@@ -224,15 +250,16 @@ function collectionsSnapToArray(collectionsSnap): string[] {
 /**
  * Get collection names from provided settings falling back to getting all
  * collection names for the provided Firestore ref using getCollections.
- * @param {Array|boolean} subcollectionSetting [description]
+ * @param subcollectionSetting - Current subcollection setting (list of names)
  * @param ref - Firestore reference
  * @returns Resolves with an array of collection names
  */
-async function getSubcollectionNames(subcollectionSetting, ref: admin.firestore.DocumentReference): Promise<any> {
+async function getSubcollectionNames(subcollectionSetting: string[] | boolean, ref: admin.firestore.DocumentReference): Promise<any> {
   // Return if the provided setting is an array (assuming it is an array of names)
   if (Array.isArray(subcollectionSetting)) {
     return subcollectionSetting
   }
+
   // Throw an error is listCollections method does not exist
   // In place since getCollections was no longer a method which threw an unclear error
   if (typeof ref.listCollections !== 'function') {
@@ -244,8 +271,10 @@ async function getSubcollectionNames(subcollectionSetting, ref: admin.firestore.
     })
     throw new Error('Document ref does not have listCollections method')
   }
+
   // Get collection refs
   const [getCollectionsErr, collections] = await to(ref.listCollections())
+
   // Handle errors in batch write
   if (getCollectionsErr) {
     console.error(
@@ -254,6 +283,7 @@ async function getSubcollectionNames(subcollectionSetting, ref: admin.firestore.
     )
     throw getCollectionsErr
   }
+
   return collectionsSnapToArray(collections)
 }
 
