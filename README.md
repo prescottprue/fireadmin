@@ -144,56 +144,6 @@ While developing, you will probably rely mostly on `npm start`; however, there a
    REACT_APP_ALGOLIA_API_KEY=<- ->
    ```
 
-1. Look for a `src/config.js` file. If one doesn't exist, create it to look like so (this is generated using [`firebase-ci`](https://www.npmjs.com/package/firebase-ci) in CI environments):
-
-   ```js
-   export const version = "0.*.*"; // matches package.json when using firebase-ci in CI environment
-
-   export const env = "local"; // matches branch/project alias when using firebase-ci in CI environment
-
-   // Get from Auth Tab with Firebase's Console
-   // matches branch/project settings when using firebase-ci in CI environment
-   export const firebase = {
-     apiKey: "<- api key ->",
-     authDomain: "<- auth domain ->",
-     databaseURL: "<- database URL ->",
-     projectId: "<- project ID ->",
-     storageBucket: "<- storageBucket ->",
-     messagingSenderId: "<- message sender ID ->",
-   };
-
-   export const reduxFirebase = {
-     userProfile: "users",
-     enableLogging: false,
-     updateProfileOnLogin: true,
-     useFirestoreForProfile: true,
-   };
-
-   // Google Analytics Tracking ID (leave blank for no analytics)
-   export const analyticsTrackingId = "<- your analytics tracking id ->";
-
-   // Stackdriver client side error reporting (leave blank for no client side error reporting)
-   export const googleApis = {
-     apiKey: "<- your API Key for Google APIs ->",
-   };
-
-   // Algolia project info (for searching of User's Public Info and Public Templates)
-   export const algolia = {
-     appId: "<- your algolia app id ->",
-     apiKey: "<- your algolia apiKey ->",
-   };
-
-   export default {
-     version,
-     env,
-     firebase,
-     reduxFirebase,
-     analyticsTrackingId,
-     googleApis,
-     algolia,
-   };
-   ```
-
 1. Create `functions/.runtimeconfig.json` file that looks like so:
 
    ```json

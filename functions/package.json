@@ -11,11 +11,8 @@
     "clean": "rimraf dist etc",
     "build": "npm run clean && tsc",
     "watch": "npm run build -- --watch",
-    "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "start": "npm run shell"
   },
   "dependencies": {
     "algoliasearch": "^3.24.6",
@@ -26,8 +23,7 @@
     "googleapis": "^23.0.0",
     "lodash": "^4.17.15",
     "mkdirp": "^1.0.4",
-    "request": "^2.83.0",
-    "request-promise": "^4.2.2"
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.1",

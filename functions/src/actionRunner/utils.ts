@@ -1,7 +1,8 @@
-import { omit } from 'lodash'
-import request from 'request-promise'
-import { uniqueId } from 'lodash'
+import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
+import fetch from 'node-fetch'
+import { omit, uniqueId } from 'lodash'
+import { PROJECTS_COLLECTION } from '../constants/firebasePaths.js'
 import {
   authClientFromServiceAccount,
   serviceAccountFromFirestorePath
@@ -78,7 +79,7 @@ export async function emitProjectEvent(eventData): Promise<any> {
   const [writeErr, writeRes] = await to(
     admin
       .firestore()
-      .collection(`projects/${projectId}/events`)
+      .collection(`${PROJECTS_COLLECTION}/${projectId}/events`)
       .add({
         ...eventData,
         createdBy: 'system',
@@ -98,16 +99,16 @@ export async function emitProjectEvent(eventData): Promise<any> {
 /**
  * Update response object within Real Time Database with progress information
  * about an action.
- * @param {functions.firestore.DocumentSnapshot} snap - Snapshot
- * @param {functions.EventContext} context - event context
+ * @param snap - Snapshot
+ * @param context - event context
  * @param actionInfo - Info about action
  * @param actionInfo.stepIdx - Index of current step
  * @param actionInfo.totalNumSteps - Total number of steps in action
  * @returns Resolves with results of database write promise
  */
 export function updateResponseWithProgress(
-  snap,
-  context,
+  snap: admin.firestore.DocumentSnapshot,
+  context: functions.EventContext,
   { stepIdx, totalNumSteps }: { stepIdx: number, totalNumSteps: number }
 ): Promise<any> {
   const response = {
@@ -438,8 +439,11 @@ export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promis
   }.firebaseio.com/${rtdbPath || ''}.json?access_token=${
     client.credentials.access_token
   }&shallow=true`
+  console.log('calling shallow get')
 
-  const [getErr, response] = await to(request(apiUrl))
+  const [getErr, response] = await to(fetch(apiUrl))
+
+  const responseJson = await response.json()
 
   if (getErr) {
     console.error(
@@ -449,11 +453,12 @@ export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promis
     )
     throw getErr.error || getErr
   }
+  console.log('------ json response', responseJson)
 
-  if (typeof response === 'string' || response instanceof String) {
+  if (typeof responseJson === 'string' || responseJson instanceof String) {
     return JSON.parse(response as string)
   }
-
-  return response
+  
+  return responseJson
 }
 

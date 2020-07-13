@@ -188,7 +188,7 @@ jobs:
           headless: true
           group: 'UI Integration Tests'
           tag: emulated
-          start: yarn emulate:all --project ${{ env.GCLOUD_PROJECT }}
+          start: yarn emulate:hosting --project ${{ env.GCLOUD_PROJECT }}
           wait-on: ${{ env.CYPRESS_BASE_URL }}
           wait-on-timeout: 120
         env:

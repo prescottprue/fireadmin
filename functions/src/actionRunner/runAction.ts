@@ -26,10 +26,10 @@ function sendFcmMessageToUser(userId: string, message: string): Promise<any> {
 /**
  * Run action based on action template. Multiple Service Account Types
  * supported (i.e. stored on Firestore or cloud storage)
- * @param {functions.database.DataSnapshot} snap - Data snapshot from cloud function
- * @param {functions.EventContext} context - The context in which an event occurred
- * @param {object} context.params - Parameters from event
- * @returns {Promise} Resolves with results of running action
+ * @param snap - Data snapshot from cloud function
+ * @param context - The context in which an event occurred
+ * @param context.params - Parameters from event
+ * @returns Resolves with results of running action
  */
 export default async function runAction(
   snap: admin.database.DataSnapshot,

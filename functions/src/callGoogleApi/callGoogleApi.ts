@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 import { get, uniqueId } from 'lodash'
-import request from 'request-promise'
+import fetch from 'node-fetch'
 import { eventPathName } from './constants'
 import { to } from '../utils/async'
 import {
@@ -12,7 +12,6 @@ import {
 
 interface RequestSettings {
   method: string
-  uri: string
   body: any
   json?: boolean
   headers: any
@@ -24,9 +23,9 @@ interface RequestSettingsWithAuth extends RequestSettings {
 
 /**
  * Add authentication to a google request using serviceAccount
- * @param {object} serviceAccount - Service account object
- * @param {object} requestSettings - Request object without auth
- * @returns {Promise} Resolves with request that has auth attached
+ * @param serviceAccount - Service account object
+ * @param requestSettings - Request object without auth
+ * @returns Resolves with request that has auth attached
  */
 async function addServiceAccountAuthToRequest(
   serviceAccount: ServiceAccount,
@@ -44,11 +43,12 @@ async function addServiceAccountAuthToRequest(
 /**
  * Request google APIs with auth attached
  * @param serviceAccount - Service account object
- * @param {object} requestSettings - Settings for request
- * @returns {Promise} Resolves with results of Goggle API request
+ * @param requestSettings - Settings for request
+ * @returns Resolves with results of Goggle API request
  */
 export async function googleApisRequest(
   serviceAccount: ServiceAccount,
+  apiUrl: string,
   requestSettings: RequestSettings
 ): Promise<any> {
   const requestSettingsWithAuth = await addServiceAccountAuthToRequest(
@@ -56,9 +56,11 @@ export async function googleApisRequest(
     requestSettings
   )
   try {
-    const response = await request(requestSettingsWithAuth)
-    console.log(`Google API Request completed successfully`, response.body)
-    return response
+
+    const response = await fetch(apiUrl, requestSettingsWithAuth)
+    const jsonResponse = await response.json()
+    console.log(`Google API Request completed successfully`, jsonResponse)
+    return jsonResponse
   } catch (err) {
     console.error(
       `Google API Responded with an error code: ${err.statusCode} \n ${
@@ -84,13 +86,14 @@ export default async function callGoogleApi(
   const {
     apiUrl,
     api = 'storage',
-    method = 'GET',
+    method = 'get',
     body,
     apiVersion = 'v1',
     suffix = `b/${eventVal.storageBucket}`,
     projectId,
     environment
   } = eventVal
+
   const responseRef = admin
     .database()
     .ref(`responses/${eventPathName}/${eventId}`)
@@ -138,9 +141,8 @@ export default async function callGoogleApi(
     }`
   // Call Google API with service account
   const [err, response] = await to(
-    googleApisRequest(serviceAccount, {
+    googleApisRequest(serviceAccount, uri, {
       method,
-      uri,
       body,
       headers: {
         'Gdata-Version': '3.0'
@@ -151,8 +153,8 @@ export default async function callGoogleApi(
 
   // Handle errors calling Google API
   if (err) {
-    const errorMessage = get(err, 'error.message', JSON.stringify(err))
-    const errorCode = get(err, 'error.code', 500)
+    const errorMessage = err?.error?.message || JSON.stringify(err)
+    const errorCode = err?.error?.code || 500
     console.error(`Error calling Google API: ${uri}`, err.message || err)
     await responseRef.set({
       completed: true,
