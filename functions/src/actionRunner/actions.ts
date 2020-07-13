@@ -1,11 +1,29 @@
 import * as admin from 'firebase-admin'
-import { get, chunk, isObject } from 'lodash'
+import { get, chunk, isObject, size } from 'lodash'
 import { batchCopyBetweenFirestoreRefs } from './utils'
 import { downloadFromStorage, uploadToStorage } from '../utils/cloudStorage'
 import { to, promiseWaterfall } from '../utils/async'
-import { slashPathToFirestoreRef, dataByIdSnapshot } from '../utils/firestore'
+import { isDocPath } from '../utils/firestore'
 import { shallowRtdbGet } from './utils'
 import { ActionStep, ActionRunnerEventData } from './types'
+
+/**
+ * Create data object with values for each document with keys being doc.id.
+ * @param snap - Data for which to create
+ * an ordered array.
+ * @returns Object documents from snapshot or null
+ */
+function dataByIdSnapshot(snap) {
+  const data = {}
+  if (snap.data && snap.exists) {
+    data[snap.id] = snap.data()
+  } else if (snap.forEach) {
+    snap.forEach((doc) => {
+      data[doc.id] = doc.data() || doc
+    })
+  }
+  return size(data) ? data : null
+}
 
 /**
  * Copy data between Firestore instances from two different Firebase projects
@@ -24,9 +42,11 @@ export async function copyBetweenFirestoreInstances(
   const { merge = true, subcollections } = eventData
   const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
   const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
+  const dataPathMethod = isDocPath(srcPath) ? 'doc' : 'collection'
+
   // Get Firestore references from slash paths (handling both doc and collection)
-  const srcRef = slashPathToFirestoreRef(app1.firestore(), srcPath)
-  const destRef = slashPathToFirestoreRef(app2.firestore(), destPath)
+  const srcRef = app1.firestore()[dataPathMethod](srcPath)
+  const destRef = app2.firestore()[dataPathMethod](destPath)
 
   // Copy from src ref to dest ref with support for merging and subcollections
   const [copyErr, writeRes] = await to(
@@ -72,7 +92,8 @@ export async function copyFromFirestoreToRTDB(
   const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
 
   // Get Firestore instance from slash path (handling both doc and collection)
-  const srcRef = slashPathToFirestoreRef(firestore1, srcPath)
+  const dataPathMethod = isDocPath(srcPath) ? 'doc' : 'collection'
+  const srcRef = firestore1[dataPathMethod](srcPath)
 
   // Get data from first instance
   const [getErr, firstSnap] = await to(srcRef.get())

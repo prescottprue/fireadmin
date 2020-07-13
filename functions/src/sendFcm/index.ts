@@ -30,7 +30,7 @@ async function sendFcmEvent(
 
   // Get user profile
   const [getProfileErr, userProfileSnap] = await to(
-    admin.firestore().collection('users').doc(userId).get()
+    admin.firestore().doc(`users/${userId}`).get()
   )
 
   // Handle errors getting user profile
@@ -42,11 +42,10 @@ async function sendFcmEvent(
   // Get messaging token from user's profile
   const token = userProfileSnap?.get('messaging.mostRecentToken')
 
-  // Handle messaging token not being found on user object
+  // Exit with log if messaging token not found on user object
   if (!token) {
-    const missingTokenMsg = `Messaging token not found for uid: "${userId}"`
-    console.error(missingTokenMsg)
-    throw new Error(missingTokenMsg)
+    console.debug(`Messaging token not found for uid "${userId}", exiting...`)
+    return null
   }
 
   // Send FCM message to client

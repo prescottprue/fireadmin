@@ -5,11 +5,11 @@ const functions = require('firebase-functions')
 
 // Initialize Firebase so it is available within functions
 try {
-  admin.initializeApp(functions.config().firebase)
+  admin.initializeApp()
 } catch (e) {
   /* istanbul ignore next: not called in tests */
   console.error(
-    'Caught error initializing app with functions.config():',
+    'Caught error initializing app:',
     e.message || e
   )
 }

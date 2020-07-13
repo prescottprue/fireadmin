@@ -2,18 +2,20 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { createSelector } from '../../utils'
 
+const testProjectId = 'test-events-project'
+
 describe('Project - Events Page', () => {
   // Setup before tests including creating a server to listen for external requests
   before(() => {
     // Add a fake project owned by the test user
-    cy.addProject('test-project')
+    cy.addProject(testProjectId)
     // Login using custom token
     cy.login()
   })
 
   beforeEach(() => {
     // Go to events page
-    cy.visit('projects/test-project/events')
+    cy.visit(`projects/${testProjectId}/events`)
   })
 
   describe('Events List -', () => {
@@ -39,9 +41,9 @@ describe('Project - Events Page', () => {
             new Date(mostRecentDate)
           )
         }
-        cy.addProjectEvent('test-project', 'event1', event1)
-        cy.addProjectEvent('test-project', 'event2', event2)
-        cy.addProjectEvent('test-project', 'event3', event3)
+        cy.addProjectEvent(testProjectId, 'event1', event1)
+        cy.addProjectEvent(testProjectId, 'event2', event2)
+        cy.addProjectEvent(testProjectId, 'event3', event3)
       })
 
       it('displays a list of all events', () => {

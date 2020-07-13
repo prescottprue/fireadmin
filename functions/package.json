@@ -15,9 +15,9 @@
     "start": "npm run shell"
   },
   "dependencies": {
-    "algoliasearch": "^3.24.6",
-    "firebase-admin": "^8.12.1",
-    "firebase-functions": "^3.6.1",
+    "algoliasearch": "^4.3.0",
+    "firebase-admin": "^8.13.0",
+    "firebase-functions": "^3.7.0",
     "fs-extra": "^4.0.2",
     "glob": "^7.1.6",
     "googleapis": "^23.0.0",
@@ -28,6 +28,7 @@
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/chai": "^4.2.11",
+    "@types/mkdirp": "^1.0.1",
     "@types/mocha": "^7.0.2",
     "@types/node": "^14.0.13",
     "@types/sinon": "^9.0.4",

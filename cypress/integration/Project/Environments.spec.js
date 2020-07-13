@@ -1,19 +1,20 @@
 import { find } from 'lodash'
 import { createSelector } from '../../utils'
+const testProjectId = 'test-environments-project'
 
 describe('Project - Environments Page', () => {
   let openSpy // eslint-disable-line no-unused-vars
   // Setup before tests including creating a server to listen for external requests
   before(() => {
     // Add a fake project owned by the test user
-    cy.addProject('test-project')
+    cy.addProject(testProjectId)
     // Login using custom token
     cy.login()
   })
 
   beforeEach(() => {
     // Go to environments page
-    cy.visit('projects/test-project/environments', {
+    cy.visit(`projects/${testProjectId}/environments`, {
       onBeforeLoad(win) {
         // https://on.cypress.io/stub
         cy.stub(win.Notification, 'permission', 'granted')
@@ -22,15 +23,10 @@ describe('Project - Environments Page', () => {
     })
   })
 
-  after(() => {
-    // Remove fake project and subcollections
-    cy.callFirestore('delete', 'projects/test-project', { recursive: true })
-  })
-
   describe('Add Environment - ', () => {
     after(() => {
       // Remove created environment
-      cy.callFirestore('delete', 'projects/test-project/environments', {
+      cy.callFirestore('delete', `projects/${testProjectId}/environments`, {
         recursive: true
       })
     })
@@ -62,7 +58,7 @@ describe('Project - Environments Page', () => {
         'Environment added successfully'
       )
       // Verify new environment was added to Firestore with correct data
-      cy.callFirestore('get', 'projects/test-project/environments').then(
+      cy.callFirestore('get', `projects/${testProjectId}/environments`).then(
         (environments) => {
           expect(environments).to.be.an('array')
           const matchingEnv = find(environments, { name: newProjectName })
@@ -76,10 +72,10 @@ describe('Project - Environments Page', () => {
     const newEnvName = 'test-env'
     beforeEach(() => {
       // Remove created environment
-      cy.callFirestore('delete', 'projects/test-project/environments', {
+      cy.callFirestore('delete', `projects/${testProjectId}/environments`, {
         recursive: true
       })
-      cy.addProjectEnvironment('test-project', newEnvName)
+      cy.addProjectEnvironment(testProjectId, newEnvName)
     })
 
     it('allows environment to be deleted by project owner', () => {
@@ -99,7 +95,7 @@ describe('Project - Environments Page', () => {
         'Environment deleted successfully'
       )
       // Confirm that deleted environment is no longer within Firestore
-      cy.callFirestore('get', 'projects/test-project/environments').then(
+      cy.callFirestore('get', `projects/${testProjectId}/environments`).then(
         (environments) => {
           expect(environments).to.be.null
         }

@@ -20,7 +20,7 @@ export default functions.firestore.document('/users/{userId}').onWrite(
       return nameChanged
     },
     otherPromises: [
-      (user, objectID: string): Promise<any> =>
+      (user: any, objectID: string): Promise<any> =>
         admin.database().ref(`displayNames/${objectID}`).set(user?.displayName)
     ]
   })

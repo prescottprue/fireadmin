@@ -45,8 +45,8 @@ interface ClientObj {
 
 /**
  * Get Google APIs auth client. Auth comes from serviceAccount.
- * @param {object} serviceAccount - Service account object
- * @returns {Promise} Resolves with JWT Auth Client (for attaching to request)
+ * @param serviceAccount - Service account object
+ * @returns Resolves with JWT Auth Client (for attaching to request)
  */
 export async function authClientFromServiceAccount(serviceAccount: ServiceAccount): Promise<ClientObj> {
   if (!hasAll(serviceAccount, SERVICE_ACCOUNT_PARAMS)) {
@@ -77,9 +77,9 @@ export async function authClientFromServiceAccount(serviceAccount: ServiceAccoun
 /**
  * Get Firebase app from request event containing path information for
  * service account
- * @param {object} opts - Options object
- * @param {object} eventData - Data from event request
- * @returns {Promise} Resolves with Firebase app
+ * @param opts - Options object
+ * @param eventData - Data from event request
+ * @returns Resolves with Firebase app
  */
 export async function getAppFromServiceAccount(opts, eventData: ActionRunnerEventData): Promise<admin.app.App> {
   const { databaseURL, storageBucket, environmentKey, id } = opts
@@ -131,9 +131,9 @@ export async function getAppFromServiceAccount(opts, eventData: ActionRunnerEven
  * Load service account data From Firestore
  * @param docPath - Path to Firestore document containing service account
  * @param name - Name under which to store local service account file
- * @param {object} options - Options object
- * @param {boolean} options.returnData - Whether or not to return service account data
- * @returns {Promise} Resolves with service account or path to service account
+ * @param options - Options object
+ * @param options.returnData - Whether or not to return service account data
+ * @returns Resolves with service account or path to service account
  */
 export async function serviceAccountFromFirestorePath(
   docPath: string,

@@ -1,8 +1,8 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import { get, size, map, isObject } from 'lodash'
+import { get, map } from 'lodash'
 import { tmpdir } from 'os'
-import { existsSync, unlinkSync } from 'fs'
+import { existsSync, unlinkSync, rmdirSync, lstatSync, readdirSync } from 'fs'
 import { join as pathJoin } from 'path'
 import {
   copyFromRTDBToFirestore,
@@ -25,17 +25,33 @@ import {
 import { ActionRunnerEventData, ActionStep } from './types'
 
 /**
+ * Remove folder using recursion (since unlinkSync is for deleting files)
+ * @param folderPath - Path of folder to remove
+ */
+function deleteFolderRecursive(folderPath: string): void {
+  if (existsSync(folderPath)) {
+    readdirSync(folderPath).forEach((file) => {
+      const curPath = `${folderPath}/${file}`;
+      if (lstatSync(curPath).isDirectory()) {
+        // recurse
+        deleteFolderRecursive(curPath);
+      } else {
+        // delete file
+        unlinkSync(curPath);
+      }
+    });
+    rmdirSync(folderPath);
+  } else {
+    console.log('------folder does not exist', folderPath)
+  }
+}
+
+/**
  * Cleanup local service account files
  */
-async function cleanupServiceAccounts() {
+function cleanupServiceAccounts(): void {
   const tempLocalPath = pathJoin(tmpdir(), 'serviceAccounts')
-  if (existsSync(tempLocalPath)) {
-    try {
-      unlinkSync(tempLocalPath)
-    } catch(err) {
-      console.error('Error deleting local files:', err)
-    }
-  }
+  deleteFolderRecursive(tempLocalPath)
 }
 
 /**
@@ -44,14 +60,14 @@ async function cleanupServiceAccounts() {
  * @param context - The context in which an event occurred
  * @returns Resolves with results
  */
-export async function runStepsFromEvent(snap: admin.database.DataSnapshot, context: functions.EventContext) {
+export async function runStepsFromEvent(
+  snap: admin.database.DataSnapshot,
+  context: functions.EventContext
+) {
   const eventData = snap.val()
-  if (!eventData) {
-    throw new Error('Run action request does not contain a value.')
-  }
 
-  if (!isObject(eventData.template)) {
-    throw new Error('Action template is required to run steps')
+  if (!eventData?.template?.steps) {
+    throw new Error('Valid Action Template is required to run steps')
   }
 
   const {
@@ -83,7 +99,7 @@ export async function runStepsFromEvent(snap: admin.database.DataSnapshot, conte
   // Convert inputs into their values
   const convertedInputValues = validateAndConvertInputs(eventData, inputs)
 
-  const totalNumSteps = size(steps)
+  const totalNumSteps = steps.length
 
   console.log(`Running ${totalNumSteps} steps(s)`)
 
@@ -150,7 +166,7 @@ export async function runBackupsFromEvent(snap: admin.database.DataSnapshot, con
 
   const convertedInputValues = validateAndConvertInputs(eventData, inputs)
 
-  const totalNumSteps = size(backups)
+  const totalNumSteps = backups.length
   console.log(`Running ${totalNumSteps} backup(s)`)
 
   // Run all action promises in a waterfall
@@ -257,7 +273,7 @@ function validateAndConvertInputs(eventData: ActionRunnerEventData, inputsMetas:
  */
 function validateAndConvertInputValues(inputMeta, inputValue) {
   // Handle no longer supported input type "serviceAccount"
-  if (get(inputMeta, 'type') === 'serviceAccount') {
+  if (inputMeta?.type === 'serviceAccount') {
     console.error('serviceAccount inputMeta type still being used: ', inputMeta)
     throw new Error(
       'serviceAccount input type is no longer supported. Please update your action template'
@@ -265,7 +281,7 @@ function validateAndConvertInputValues(inputMeta, inputValue) {
   }
 
   // Confirm required inputs have a value
-  if (get(inputMeta, 'required') && !size(inputValue)) {
+  if (inputMeta?.required && !inputValue) {
     throw new Error('Input is required and does not contain a value')
   }
 
@@ -350,8 +366,8 @@ function createStepRunner({
 
 interface RunStepParams {
   inputs: any[]
-  convertedInputValues: any
-  convertedEnvs: any
+  convertedInputValues: any[]
+  convertedEnvs: any[]
   step: ActionStep
   eventData: ActionRunnerEventData
 }
