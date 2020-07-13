@@ -10,10 +10,10 @@ import {
 
 /**
  * Send FCM message to user
- * @param {object} params - Params object
- * @param {string} params.message - Message to send to user
- * @param {string} params.userId - UID of user to send FCM to
- * @returns {Promise} Resolves with results of pushing message to RTDB
+ * @param params - Params object
+ * @param params.message - Message to send to user
+ * @param params.userId - UID of user to send FCM to
+ * @returns Resolves with results of pushing message to RTDB
  */
 function sendFcmMessageToUser(userId: string, message: string): Promise<any> {
   return admin.database().ref('requests/sendFcm').push({
@@ -26,10 +26,10 @@ function sendFcmMessageToUser(userId: string, message: string): Promise<any> {
 /**
  * Run action based on action template. Multiple Service Account Types
  * supported (i.e. stored on Firestore or cloud storage)
- * @param {functions.database.DataSnapshot} snap - Data snapshot from cloud function
- * @param {functions.EventContext} context - The context in which an event occurred
- * @param {object} context.params - Parameters from event
- * @returns {Promise} Resolves with results of running action
+ * @param snap - Data snapshot from cloud function
+ * @param context - The context in which an event occurred
+ * @param context.params - Parameters from event
+ * @returns Resolves with results of running action
  */
 export default async function runAction(
   snap: admin.database.DataSnapshot,

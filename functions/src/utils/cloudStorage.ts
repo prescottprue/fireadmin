@@ -1,5 +1,5 @@
-import os from 'os'
-import path from 'path'
+import { tmpdir } from 'os'
+import { join, dirname } from 'path'
 import { readJson, outputJson } from 'fs-extra'
 import { unlinkSync } from 'fs'
 import mkdirp from 'mkdirp'
@@ -21,8 +21,8 @@ export async function downloadFromStorage(
   // Handle default app
   const bucket = !app ? admin.storage().bucket() : app.storage().bucket()
   const localPath = `actions/storage/${pathInStorage}/${Date.now()}.json`
-  const tempLocalPath = path.join(os.tmpdir(), localPath)
-  const tempLocalDir = path.dirname(tempLocalPath)
+  const tempLocalPath = join(tmpdir(), localPath)
+  const tempLocalDir = dirname(tempLocalPath)
   try {
     // Create Temporary directory and download file to that folder
     await mkdirp(tempLocalDir)
@@ -59,7 +59,7 @@ export async function uploadToStorage(
   jsonObject: any
 ): Promise<void> {
   const localPath = `actions/storage/${Date.now()}/${pathInStorage}.json`
-  const tempLocalPath = path.join(os.tmpdir(), localPath)
+  const tempLocalPath = join(tmpdir(), localPath)
   if (!app.storage) {
     throw new Error('Storage is not enabled on firebase-admin')
   }

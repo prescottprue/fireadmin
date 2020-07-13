@@ -1,7 +1,8 @@
-import { omit } from 'lodash'
-import request from 'request-promise'
-import { uniqueId } from 'lodash'
+import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
+import fetch from 'node-fetch'
+import { omit, uniqueId } from 'lodash'
+import { PROJECTS_COLLECTION } from '../constants/firebasePaths.js'
 import {
   authClientFromServiceAccount,
   serviceAccountFromFirestorePath
@@ -78,7 +79,7 @@ export async function emitProjectEvent(eventData): Promise<any> {
   const [writeErr, writeRes] = await to(
     admin
       .firestore()
-      .collection(`projects/${projectId}/events`)
+      .collection(`${PROJECTS_COLLECTION}/${projectId}/events`)
       .add({
         ...eventData,
         createdBy: 'system',
@@ -98,16 +99,16 @@ export async function emitProjectEvent(eventData): Promise<any> {
 /**
  * Update response object within Real Time Database with progress information
  * about an action.
- * @param {functions.firestore.DocumentSnapshot} snap - Snapshot
- * @param {functions.EventContext} context - event context
+ * @param snap - Snapshot
+ * @param context - event context
  * @param actionInfo - Info about action
  * @param actionInfo.stepIdx - Index of current step
  * @param actionInfo.totalNumSteps - Total number of steps in action
  * @returns Resolves with results of database write promise
  */
 export function updateResponseWithProgress(
-  snap,
-  context,
+  snap: admin.firestore.DocumentSnapshot,
+  context: functions.EventContext,
   { stepIdx, totalNumSteps }: { stepIdx: number, totalNumSteps: number }
 ): Promise<any> {
   const response = {
@@ -192,9 +193,7 @@ export async function writeProjectEvent(projectId: string, extraEventAttributes 
   }
   const eventsRef = admin
     .firestore()
-    .collection('projects')
-    .doc(projectId)
-    .collection('events')
+    .collection(`${PROJECTS_COLLECTION}/${projectId}/events`)
 
   const [addErr, addRes] = await to(eventsRef.add(eventObject))
 
@@ -396,12 +395,12 @@ export async function batchCopyBetweenFirestoreRefs({
 
 /**
  * Request google APIs with auth attached
- * @param {object} opts - Google APIs method to call
- * @param {string} opts.projectId - Id of fireadmin project
- * @param {string} opts.environmentId - Id of fireadmin environment
- * @param {string} opts.databaseName - Name of database on which to run (defaults to project base DB)
- * @param {string} rtdbPath - Path of RTDB data to get
- * @returns {Promise} Resolves with results of RTDB shallow get
+ * @param opts - Google APIs method to call
+ * @param opts.projectId - Id of fireadmin project
+ * @param opts.environmentId - Id of fireadmin environment
+ * @param opts.databaseName - Name of database on which to run (defaults to project base DB)
+ * @param rtdbPath - Path of RTDB data to get
+ * @returns Resolves with results of RTDB shallow get
  */
 export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promise<any> {
   const { projectId, environmentId, databaseName } = opts
@@ -417,7 +416,7 @@ export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promis
   // Get Service account data from resource (i.e Storage, Firestore, etc)
   const [saErr, serviceAccount] = await to(
     serviceAccountFromFirestorePath(
-      `projects/${projectId}/environments/${environmentId}`,
+      `${PROJECTS_COLLECTION}/${projectId}/environments/${environmentId}`,
       appName,
       { returnData: true }
     )
@@ -439,7 +438,9 @@ export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promis
     client.credentials.access_token
   }&shallow=true`
 
-  const [getErr, response] = await to(request(apiUrl))
+  const [getErr, response] = await to(fetch(apiUrl))
+
+  const responseJson = await response.json()
 
   if (getErr) {
     console.error(
@@ -450,10 +451,10 @@ export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promis
     throw getErr.error || getErr
   }
 
-  if (typeof response === 'string' || response instanceof String) {
+  if (typeof responseJson === 'string' || responseJson instanceof String) {
     return JSON.parse(response as string)
   }
 
-  return response
+  return responseJson
 }
 

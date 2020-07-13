@@ -9,17 +9,17 @@ import { ActionStep, ActionRunnerEventData } from './types'
 
 /**
  * Copy data between Firestore instances from two different Firebase projects
- * @param {firebase.App} app1 - First app for the action
- * @param {firebase.App} app2 - Second app for the action
- * @param {object} eventData - Data from event (contains settings)
- * @param {Array} inputValues - Values of inputs
- * @returns {Promise} Resolves with result of update call
+ * @param app1 - First app for the action
+ * @param app2 - Second app for the action
+ * @param eventData - Data from event (contains settings)
+ * @param inputValues - Values of inputs
+ * @returns Resolves with result of update call
  */
 export async function copyBetweenFirestoreInstances(
   app1: admin.app.App,
   app2: admin.app.App,
   eventData: ActionStep,
-  inputValues
+  inputValues: any[]
 ) {
   const { merge = true, subcollections } = eventData
   const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
@@ -54,26 +54,29 @@ export async function copyBetweenFirestoreInstances(
 
 /**
  * Copy data from Cloud Firestore to Firebase Real Time Database
- * @param {firebase.App} app1 - First app for the action
- * @param {firebase.App} app2 - Second app for the action
- * @param {object} eventData - Data from event (contains settings)
- * @param {Array} inputValues - Values of inputs
+ * @param app1 - First app for the action
+ * @param app2 - Second app for the action
+ * @param eventData - Data from event (contains settings)
+ * @param inputValues - Values of inputs
  * @returns Resolves with result of update call
  */
 export async function copyFromFirestoreToRTDB(
   app1: admin.app.App,
   app2: admin.app.App,
   eventData: ActionStep,
-  inputValues
+  inputValues: any[]
 ): Promise<any> {
   const firestore1 = app1.firestore()
   const secondRTDB = app2.database()
   const destPath = inputValueOrTemplatePath(eventData, inputValues, 'dest')
   const srcPath = inputValueOrTemplatePath(eventData, inputValues, 'src')
+
   // Get Firestore instance from slash path (handling both doc and collection)
   const srcRef = slashPathToFirestoreRef(firestore1, srcPath)
+
   // Get data from first instance
   const [getErr, firstSnap] = await to(srcRef.get())
+
   // Handle errors getting original data
   if (getErr) {
     console.error(
@@ -84,6 +87,7 @@ export async function copyFromFirestoreToRTDB(
     )
     throw getErr
   }
+
   // Get data into array (regardless of single doc or collection)
   const dataFromSrc = dataByIdSnapshot(firstSnap)
 
@@ -113,17 +117,17 @@ export async function copyFromFirestoreToRTDB(
 
 /**
  * Copy data from Real Time Database to Cloud Firestore
- * @param {firebase.App} app1 - First app for the action
- * @param {firebase.App} app2 - Second app for the action
- * @param {object} eventData - Data from event (contains settings)
- * @param {Array} inputValues - Values of inputs
- * @returns {Promise} Resolves with result of update call
+ * @param app1 - First app for the action
+ * @param app2 - Second app for the action
+ * @param eventData - Data from event (contains settings)
+ * @param inputValues - Values of inputs
+ * @returns Resolves with result of update call
  */
 export async function copyFromRTDBToFirestore(
   app1: admin.app.App,
   app2: admin.app.App,
   eventData: ActionStep,
-  inputValues
+  inputValues: any[]
 ) {
   const firestore2 = app2.firestore()
   const firstRTDB = app1.database()
@@ -143,12 +147,12 @@ export async function copyFromRTDBToFirestore(
 
 /**
  * Get input value if pathtype is input otherwise get path value from template
- * @param {object} templateStep - Step from which to get pathType and fallback paths.
- * @param {Array} inputValues - Converted input values
- * @param {string} [location='src'] - Path location (i.e. src/dest)
- * @returns {string} Inputs value or path provided within template's step
+ * @param templateStep - Step from which to get pathType and fallback paths.
+ * @param inputValues - Converted input values
+ * @param [location='src'] - Path location (i.e. src/dest)
+ * @returns Inputs value or path provided within template's step
  */
-function inputValueOrTemplatePath(templateStep: ActionStep, inputValues: any[], location = 'src') {
+function inputValueOrTemplatePath(templateStep: ActionStep, inputValues: any[], location = 'src'): any {
   return get(templateStep, `${location}.pathType`) === 'input'
     ? get(inputValues, get(templateStep, `${location}.path`))
     : get(templateStep, `${location}.path`)
@@ -156,18 +160,18 @@ function inputValueOrTemplatePath(templateStep: ActionStep, inputValues: any[], 
 
 /**
  * Copy data between Firebase Realtime Database Instances
- * @param {firebase.App} app1 - First app for the action
- * @param {firebase.App} app2 - Second app for the action
- * @param {object} eventData - Data from event (contains settings)
- * @param {Array} inputValues - Converted input values
- * @returns {Promise} Resolves with result of update call
+ * @param app1 - First app for the action
+ * @param app2 - Second app for the action
+ * @param eventData - Data from event (contains settings)
+ * @param inputValues - Converted input values
+ * @returns Resolves with result of update call
  */
 export async function copyBetweenRTDBInstances(
   app1: admin.app.App,
   app2: admin.app.App,
   eventData: ActionStep,
-  inputValues
-) {
+  inputValues: any[]
+): Promise<null> {
   if (!app1?.database || !app2?.database) {
     console.error('Database not found on app instance')
     throw new Error('Invalid service account, does not have access to database')
@@ -212,19 +216,19 @@ export async function copyBetweenRTDBInstances(
 
 /**
  * Copy data between Firebase Realtime Database Instances
- * @param {firebase.App} app1 - First app for the action
- * @param {firebase.App} app2 - Second app for the action
- * @param {string} srcPath - Data source path
- * @param {string} destPath - Data destination path
- * @returns {Promise} Resolves with result of update call
+ * @param app1 - First app for the action
+ * @param app2 - Second app for the action
+ * @param srcPath - Data source path
+ * @param destPath - Data destination path
+ * @returns Resolves with result of update call
  */
 export async function copyPathBetweenRTDBInstances(
   app1: admin.app.App,
   app2: admin.app.App,
   srcPath: string,
   destPath: string
-) {
-  if (!get(app1, 'database') || !get(app2, 'database')) {
+): Promise<null> {
+  if (!app1?.database || !app2?.database) {
     console.error('Database not found on app instance')
     throw new Error('Invalid service account, does not have access to database')
   }
@@ -266,20 +270,20 @@ const DEFAULT_RTDB_BATCH_SIZE = 50
 
 /**
  * Copy data between Firebase Realtime Database Instances in batches (suited for large data sets)
- * @param {firebase.App} app1 - First app for the action
- * @param {firebase.App} app2 - Second app for the action
- * @param {object} step - Current step
- * @param {Array} inputValues - Converted input values
- * @param {object} eventData - Data from event (contains settings)
- * @returns {Promise} Resolves with result of update call
+ * @param app1 - First app for the action
+ * @param app2 - Second app for the action
+ * @param step - Current step
+ * @param inputValues - Converted input values
+ * @param eventData - Data from event (contains settings)
+ * @returns Resolves with result of update call
  */
 export async function batchCopyBetweenRTDBInstances(
   app1: admin.app.App,
   app2: admin.app.App,
-  step,
-  inputValues,
+  step: ActionStep,
+  inputValues: any[],
   eventData: ActionRunnerEventData
-) {
+): Promise<void> {
   // TODO: Support passing in chunk size (it will have to be validated)
   const chunkSize = DEFAULT_RTDB_BATCH_SIZE
 
@@ -323,13 +327,13 @@ export async function batchCopyBetweenRTDBInstances(
 
 /**
  * Copy JSON from Firebase Real Time Database to Google Cloud Storage
- * @param {firebase.App} app1 - First app for the action
- * @param {firebase.App} app2 - Second app for the action
- * @param {object} eventData - Data from event (contains settings)
- * @returns {Promise} Resolves with result of update call
+ * @param app1 - First app for the action
+ * @param app2 - Second app for the action
+ * @param eventData - Data from event (contains settings)
+ * @returns Resolves with result of update call
  */
 export async function copyFromStorageToRTDB(app1: admin.app.App, app2: admin.app.App, eventData: ActionStep) {
-  if (!get(app1, 'database') || !get(app2, 'database')) {
+  if (!app1?.database || !app2?.database) {
     throw new Error('Invalid service account, database not defined on app')
   }
   const secondRTDB = app2.database()
@@ -347,13 +351,13 @@ export async function copyFromStorageToRTDB(app1: admin.app.App, app2: admin.app
 
 /**
  * Copy JSON from Cloud Storage to Firebase Real Time Database
- * @param {firebase.App} app1 - First app for the action
- * @param {firebase.App} app2 - Second app for the action
- * @param {object} eventData - Data from event (contains settings)
- * @returns {Promise} Resolves with result of update call
+ * @param app1 - First app for the action
+ * @param app2 - Second app for the action
+ * @param eventData - Data from event (contains settings)
+ * @returns Resolves with result of update call
  */
 export async function copyFromRTDBToStorage(app1: admin.app.App, app2: admin.app.App, eventData: ActionStep) {
-  if (!get(app1, 'database')) {
+  if (!app1?.database) {
     throw new Error('Invalid service account, database not defined on app1')
   }
   const { src, dest } = eventData
