@@ -20,8 +20,6 @@ const fbConfig = {
   storageBucket: `fireadmin-stage.appspot.com`
 }
 
-console.log('fb config', fbConfig)
-
 firebase.initializeApp(fbConfig)
 
 // Use Firestore emulator

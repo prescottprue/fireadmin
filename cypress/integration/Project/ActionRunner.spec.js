@@ -1,28 +1,21 @@
 import { createSelector } from '../../utils'
-import fakeProject from '../../fixtures/fakeProject.json'
+
+const testProjectId = 'test-action-runner-project'
 
 describe('Project - Actions Page', () => {
   // Setup before tests including creating a fake project
   before(() => {
     // Add a fake project owned by the test user
-    cy.callFirestore('set', 'projects/test-project', {
-      ...fakeProject,
-      createdBy: Cypress.env('TEST_UID')
-    })
+    cy.addProject(testProjectId)
     // Login using custom token
     cy.login()
     // Go to fake project page actions page
-    cy.visit('/projects/test-project/actions')
+    cy.visit(`/projects/${testProjectId}/actions`)
   })
 
   beforeEach(() => {
     // Reload using cache to clear action runner component state
     cy.reload(false)
-  })
-
-  after(() => {
-    // Remove project and subcollections
-    cy.callFirestore('delete', 'projects/test-project', { recursive: true })
   })
 
   describe('Environment Locking', () => {
@@ -33,7 +26,7 @@ describe('Project - Actions Page', () => {
       databaseURL: 'https://test.firebaseio.com'
     }
     before(() => {
-      cy.addProjectEnvironment('test-project', lockedEnvId, lockedEnv)
+      cy.addProjectEnvironment(testProjectId, lockedEnvId, lockedEnv)
       cy.log('after env add')
     })
 
@@ -41,7 +34,7 @@ describe('Project - Actions Page', () => {
       // Remove environment after
       cy.callFirestore(
         'delete',
-        `projects/test-project/environments/${lockedEnvId}`
+        `projects/${testProjectId}/environments/${lockedEnvId}`
       )
     })
 
@@ -85,12 +78,7 @@ describe('Project - Actions Page', () => {
         readOnly: true,
         databaseURL: 'https://test.firebaseio.com'
       }
-      cy.addProjectEnvironment('test-project', srcId, lockedEnv)
-    })
-
-    after(() => {
-      // Remove environments (made in before)
-      cy.callFirestore('delete', 'projects/test-project/environments')
+      cy.addProjectEnvironment(testProjectId, srcId, lockedEnv)
     })
 
     it('disables run action button if "Read Only" environment is selected as a destination', () => {
@@ -120,12 +108,7 @@ describe('Project - Actions Page', () => {
         writeOnly: true,
         databaseURL: 'https://test.firebaseio.com'
       }
-      cy.addProjectEnvironment('test-project', destId, lockedEnv)
-    })
-
-    after(() => {
-      // Remove environments (made in before)
-      cy.callFirestore('delete', 'projects/test-project/environments')
+      cy.addProjectEnvironment(testProjectId, destId, lockedEnv)
     })
 
     it('disables run action button if "Write Only" environment is selected as a source', () => {
@@ -152,8 +135,8 @@ describe('Project - Actions Page', () => {
     const destId = 'dest-env'
 
     before(() => {
-      cy.addProjectEnvironment('test-project', srcId, { name: 'source env' })
-      cy.addProjectEnvironment('test-project', destId, {
+      cy.addProjectEnvironment(testProjectId, srcId, { name: 'source env' })
+      cy.addProjectEnvironment(testProjectId, destId, {
         name: 'dest env'
       })
     })
@@ -171,15 +154,10 @@ describe('Project - Actions Page', () => {
     const destId = 'dest-env'
 
     before(() => {
-      cy.addProjectEnvironment('test-project', srcId, { name: 'source env' })
-      cy.addProjectEnvironment('test-project', destId, {
+      cy.addProjectEnvironment(testProjectId, srcId, { name: 'source env' })
+      cy.addProjectEnvironment(testProjectId, destId, {
         name: 'dest env'
       })
-    })
-
-    after(() => {
-      // Remove environments (made in before)
-      cy.callFirestore('delete', 'projects/test-project/environments')
     })
 
     it('requests valid action run provided valid inputs', () => {
