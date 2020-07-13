@@ -56,7 +56,7 @@
     "stackdriver-errors-js": "^0.8.0"
   },
   "devDependencies": {
-    "@sentry/cli": "^1.53.0",
+    "@sentry/cli": "^1.55.0",
     "@size-limit/preset-app": "^4.5.0",
     "@size-limit/webpack": "^4.5.0",
     "@typescript-eslint/eslint-plugin": "^3.3.0",
@@ -65,11 +65,11 @@
     "concurrently": "^5.2.0",
     "cross-env": "^7.0.2",
     "cypress": "^4.10.0",
-    "cypress-firebase": "^1.4.0",
+    "cypress-firebase": "^1.4.1",
     "cypress-log-to-output": "^1.0.8",
     "cypress-plugin-retries": "^1.5.2",
     "cypress-wait-until": "^1.7.1",
-    "eslint": "^7.2.0",
+    "eslint": "^7.4.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-config-standard-react": "^9.2.0",
@@ -86,9 +86,9 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^3.0.0",
     "eslint-plugin-standard": "^4.0.1",
-    "firebase-admin": "^8.12.1",
+    "firebase-admin": "^8.13.0",
     "firebase-ci": "^0.14.0-alpha",
-    "firebase-tools": "8.4.3",
+    "firebase-tools": "8.5.0",
     "firebase-tools-extra": "^1.0.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
@@ -96,7 +96,7 @@
     "react-scripts": "3.4.1",
     "size-limit": "^4.5.0",
     "typescript": "^3.9.5",
-    "wait-on": "^5.0.0"
+    "wait-on": "^5.1.0"
   },
   "browserslist": [],
   "repository": {
