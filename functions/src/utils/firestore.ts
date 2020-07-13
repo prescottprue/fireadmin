@@ -33,23 +33,23 @@ export async function batchWriteDocs(
   opts?: BatchWriteOptions
 ): Promise<any> {
   const batch = firestoreInstance.batch()
+
   // Call set to dest for each doc within the original data
   docData.forEach(({ id, data }) => {
     const childRef = firestoreInstance.doc(`${destPath}/${id}`)
     batch.set(childRef, data, opts)
   })
+
   const [writeErr, writeRes] = await to(batch.commit())
 
   // Handle errors in batch write
   if (writeErr) {
     console.error(
-      'Error copying between Firestore instances: ',
-      writeErr.message || writeErr
+      'Error batch copying between Firestore instances: ',
+      { err: writeErr, destPath }
     )
     throw writeErr
   }
-
-  console.log(`Successfully copied docs to Firestore path: ${destPath}`)
 
   return writeRes
 }

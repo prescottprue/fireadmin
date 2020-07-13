@@ -439,7 +439,6 @@ export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promis
       'environmentId is required for action to authenticate through serviceAccount'
     )
   }
-  console.log(`Getting service account from Firestore...`)
 
   // Make unique app name (prevents issue of multiple apps initialized with same name)
   const appName = `${environmentId}-${uniqueId()}`
