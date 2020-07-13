@@ -1,13 +1,12 @@
+import firebase from 'firebase/app'
+import 'firebase/firestore'
 import { createSelector } from '../../utils'
-import fakeProject from '../../fixtures/fakeProject.json'
 
 describe('Project - Events Page', () => {
   // Setup before tests including creating a server to listen for external requests
   before(() => {
     // Add a fake project owned by the test user
-    cy.callFirestore('set', 'projects/test-project', fakeProject, {
-      withMeta: true
-    })
+    cy.addProject('test-project')
     // Login using custom token
     cy.login()
   })
@@ -30,13 +29,15 @@ describe('Project - Events Page', () => {
       before(() => {
         // Add fake events
         const event1 = {
-          createdAt: new Date('01/01/18').toISOString()
+          createdAt: firebase.firestore.Timestamp.fromDate(new Date('01/01/18'))
         }
         const event2 = {
-          createdAt: new Date('04/04/18').toISOString()
+          createdAt: firebase.firestore.Timestamp.fromDate(new Date('04/04/18'))
         }
         const event3 = {
-          createdAt: new Date(mostRecentDate).toISOString()
+          createdAt: firebase.firestore.Timestamp.fromDate(
+            new Date(mostRecentDate)
+          )
         }
         cy.addProjectEvent('test-project', 'event1', event1)
         cy.addProjectEvent('test-project', 'event2', event2)

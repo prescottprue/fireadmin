@@ -54,8 +54,7 @@ function ProjectEventsPage({ projectId }) {
 
   // Group events by createdAt date
   const groupedEvents = groupBy(events, (event) => {
-    const { createdAt } = event
-    return formatDate(createdAt.toDate ? createdAt.toDate() : createdAt)
+    return formatDate(event?.createdAt)
   })
 
   return (

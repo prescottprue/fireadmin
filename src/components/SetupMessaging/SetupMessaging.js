@@ -1,7 +1,6 @@
 import React from 'react'
 import { useMessaging, useUser } from 'reactfire'
 import useSetupMessaging from './useSetupMessaging'
-import * as config from 'config' // eslint-disable-line import/no-unresolved
 
 function LoadMessaging() {
   const { initializeMessaging } = useSetupMessaging()
@@ -24,7 +23,11 @@ export default function SetupMessaging() {
   const { isSupported } = useMessaging
 
   // Render nothing if not supported or run UI tests
-  if (!isSupported() || window.Cypress || !config.firebase.measurementId) {
+  if (
+    !process.env.REACT_APP_FB_measurementId ||
+    window.Cypress ||
+    !isSupported()
+  ) {
     return null
   }
 

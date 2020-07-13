@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { useAnalytics, useUser } from 'reactfire'
 import { useLocation } from 'react-router-dom'
-import * as config from 'config' // eslint-disable-line import/no-unresolved
 import { setErrorUser } from 'utils/errorHandler'
 
 export default function AnalyticsPageViewLogger() {
@@ -22,11 +21,11 @@ export default function AnalyticsPageViewLogger() {
   useEffect(() => {
     if (!window.Cypress) {
       // Trigger event in Firebase analytics
-      if (config.firebase.measurementId) {
+      if (process.env.REACT_APP_FB_measurementId) {
         analytics.logEvent('page-view', { path_name: location.pathname })
       }
       // Track event in Segment
-      if (config.segmentId && window.analytics) {
+      if (process.env.REACT_APP_SEGMENT_ID && window.analytics) {
         window.analytics.track('page-view', { path_name: location.pathname })
       }
     }

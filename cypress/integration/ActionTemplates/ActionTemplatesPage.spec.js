@@ -1,9 +1,12 @@
+import firebase from 'firebase/app'
+import 'firebase/firestore'
 import { createSelector } from '../../utils'
 
 const testPublicTemplateId = 'testtemplate'
 const testPublicTemplate = {
   name: 'test public template',
   createdBy: 'ABC123',
+  createdAt: firebase.firestore.Timestamp.now(),
   public: true
 }
 const ACTION_TEMPLATES_COLLECTION = 'actionTemplates'
@@ -63,6 +66,7 @@ describe('Actions Template Page', () => {
     const testPrivateTemplate = {
       name: 'test private template',
       createdBy: Cypress.env('TEST_UID'),
+      createdAt: firebase.firestore.Timestamp.now(),
       public: false
     }
 

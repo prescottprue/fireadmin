@@ -156,9 +156,7 @@ describe("Listings Page", () => {
     // Set transaction documents to Real Time Database
     cy.callRtdb("set", TEST_TRANSACTION_DOCS_PATH, fakeTransactionDocs);
     // Set listing to Real Time Database with meta (createdAt and createdBy)
-    cy.callRtdb("set", TEST_TRANSACTION_PATH, fakeTransaction, {
-      withMeta: true,
-    });
+    cy.callRtdb("set", TEST_TRANSACTION_PATH, fakeTransaction);
     // Login using custom token (Not needed for callRtdb)
     cy.login();
     // Go to listings page

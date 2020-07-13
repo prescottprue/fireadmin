@@ -10,7 +10,6 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import styles from './CollectionSearch.styles'
 import SearchResults from './SearchResults'
-import { algolia } from '../../config'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 
 const useStyles = makeStyles(styles)
@@ -38,8 +37,8 @@ function CollectionSearch({ onSuggestionClick, ignoreSuggestions, indexName }) {
     .join(' ')
   return (
     <InstantSearch
-      appId={algolia.appId}
-      apiKey={algolia.apiKey}
+      appId={process.env.REACT_APP_ALGOLIA_APP_ID}
+      apiKey={process.env.REACT_APP_ALGOLIA_API_KEY}
       indexName={indexName}>
       <SearchBox autoFocus />
       <div className={classes.poweredBy}>

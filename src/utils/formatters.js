@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 
 /**
  * Convert date string or object into date object
- * @param  {[type]} [dateValue=null] - Date value which to format
+ * @param {firebase.firestore.Timestamp|Date|String} [dateValue=null] - Date value which to format
  * @return {Date} Formatted time
  */
 export function getDateObject(dateValue = null) {
@@ -15,7 +15,7 @@ export function getDateObject(dateValue = null) {
 
 /**
  * Format date to time with am/pm
- * @param  {[type]} dateValue - Date value which to format
+ * @param {firebase.firestore.Timestamp|Date|String} dateValue - Date value which to format
  * @return {String} Formatted time
  */
 export function formatTime(dateValue) {
@@ -24,7 +24,7 @@ export function formatTime(dateValue) {
 
 /**
  * Format date string or object into date string with format 1/22/2018
- * @param  {Object} dateValue - Date value which to format
+ * @param {firebase.firestore.Timestamp|Date|String} dateValue - Date value which to format
  * @return {String} Formatted date
  */
 export function formatDate(dateValue) {
@@ -34,7 +34,7 @@ export function formatDate(dateValue) {
 /**
  * Format date string or object into date string with format
  * 1/22/2018 - 3:30:25.123 AM
- * @param  {Object} dateValue - Date value which to format
+ * @param {firebase.firestore.Timestamp|Date|String} dateValue - Date value which to format
  * @return {String} Formatted date
  */
 export function formatDateTime(dateValue) {

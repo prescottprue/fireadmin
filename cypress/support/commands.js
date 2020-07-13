@@ -20,6 +20,8 @@ const fbConfig = {
   storageBucket: `fireadmin-stage.appspot.com`
 }
 
+console.log('fb config', fbConfig)
+
 firebase.initializeApp(fbConfig)
 
 // Use Firestore emulator
@@ -28,7 +30,7 @@ if (Cypress.env('FIRESTORE_EMULATOR_HOST')) {
     host: Cypress.env('FIRESTORE_EMULATOR_HOST'),
     ssl: false
   }
-    console.log('Using Firestore emulator', firestoreSettings.host) // eslint-disable-line
+  console.log('Using Firestore emulator', firestoreSettings.host) // eslint-disable-line
 
   if (window.Cypress) {
     // Needed for Firestore support in Cypress (see https://github.com/cypress-io/cypress/issues/6350)
@@ -75,20 +77,34 @@ Cypress.Commands.add(
 
 /**
  * @memberOf Cypress.Chainable#
+ * @name addProject
+ * @function
+ */
+Cypress.Commands.add('addProject', (project, extraData = {}) => {
+  cy.fixture('fakeProject.json').then((fakeProject) => {
+    cy.callFirestore('set', `projects/${project}`, {
+      ...fakeProject,
+      ...extraData,
+      createdBy: Cypress.env('TEST_UID'),
+      createdAt: firebase.firestore.Timestamp.now()
+    })
+  })
+})
+
+/**
+ * @memberOf Cypress.Chainable#
  * @name addProjectEnvironment
  * @function
  */
 Cypress.Commands.add(
   'addProjectEnvironment',
   (project, environment, extraData = {}) => {
-    cy.callFirestore(
-      'set',
-      `projects/${project}/environments/${environment}`,
-      { ...fakeEnvironment, ...extraData },
-      {
-        withMeta: true
-      }
-    )
+    cy.callFirestore('set', `projects/${project}/environments/${environment}`, {
+      ...fakeEnvironment,
+      ...extraData,
+      createdBy: Cypress.env('TEST_UID'),
+      createdAt: firebase.firestore.Timestamp.now()
+    })
   }
 )
 
@@ -98,13 +114,13 @@ Cypress.Commands.add(
  * @function
  */
 Cypress.Commands.add('addProjectEvent', (project, eventId, extraData = {}) => {
-  cy.callFirestore(
-    'set',
-    `projects/${project}/events/${eventId}`,
-    {
-      ...fakeEvent,
-      ...extraData
-    },
-    { withMeta: true }
-  )
+  const newEventData = {
+    ...fakeEvent,
+    ...extraData,
+    createdBy: Cypress.env('TEST_UID')
+  }
+  if (!newEventData.createdAt) {
+    newEventData.createdAt = firebase.firestore.Timestamp.now()
+  }
+  cy.callFirestore('set', `projects/${project}/events/${eventId}`, newEventData)
 })
