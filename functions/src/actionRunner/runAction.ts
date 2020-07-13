@@ -10,10 +10,10 @@ import {
 
 /**
  * Send FCM message to user
- * @param {object} params - Params object
- * @param {string} params.message - Message to send to user
- * @param {string} params.userId - UID of user to send FCM to
- * @returns {Promise} Resolves with results of pushing message to RTDB
+ * @param params - Params object
+ * @param params.message - Message to send to user
+ * @param params.userId - UID of user to send FCM to
+ * @returns Resolves with results of pushing message to RTDB
  */
 function sendFcmMessageToUser(userId: string, message: string): Promise<any> {
   return admin.database().ref('requests/sendFcm').push({

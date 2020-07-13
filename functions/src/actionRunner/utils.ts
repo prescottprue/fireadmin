@@ -193,9 +193,7 @@ export async function writeProjectEvent(projectId: string, extraEventAttributes 
   }
   const eventsRef = admin
     .firestore()
-    .collection('projects')
-    .doc(projectId)
-    .collection('events')
+    .collection(`${PROJECTS_COLLECTION}/${projectId}/events`)
 
   const [addErr, addRes] = await to(eventsRef.add(eventObject))
 
@@ -397,12 +395,12 @@ export async function batchCopyBetweenFirestoreRefs({
 
 /**
  * Request google APIs with auth attached
- * @param {object} opts - Google APIs method to call
- * @param {string} opts.projectId - Id of fireadmin project
- * @param {string} opts.environmentId - Id of fireadmin environment
- * @param {string} opts.databaseName - Name of database on which to run (defaults to project base DB)
- * @param {string} rtdbPath - Path of RTDB data to get
- * @returns {Promise} Resolves with results of RTDB shallow get
+ * @param opts - Google APIs method to call
+ * @param opts.projectId - Id of fireadmin project
+ * @param opts.environmentId - Id of fireadmin environment
+ * @param opts.databaseName - Name of database on which to run (defaults to project base DB)
+ * @param rtdbPath - Path of RTDB data to get
+ * @returns Resolves with results of RTDB shallow get
  */
 export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promise<any> {
   const { projectId, environmentId, databaseName } = opts
@@ -418,7 +416,7 @@ export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promis
   // Get Service account data from resource (i.e Storage, Firestore, etc)
   const [saErr, serviceAccount] = await to(
     serviceAccountFromFirestorePath(
-      `projects/${projectId}/environments/${environmentId}`,
+      `${PROJECTS_COLLECTION}/${projectId}/environments/${environmentId}`,
       appName,
       { returnData: true }
     )
@@ -439,7 +437,6 @@ export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promis
   }.firebaseio.com/${rtdbPath || ''}.json?access_token=${
     client.credentials.access_token
   }&shallow=true`
-  console.log('calling shallow get')
 
   const [getErr, response] = await to(fetch(apiUrl))
 
@@ -453,12 +450,11 @@ export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promis
     )
     throw getErr.error || getErr
   }
-  console.log('------ json response', responseJson)
 
   if (typeof responseJson === 'string' || responseJson instanceof String) {
     return JSON.parse(response as string)
   }
-  
+
   return responseJson
 }
 

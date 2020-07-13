@@ -32,18 +32,19 @@ async function cleanupServiceAccounts() {
   if (existsSync(tempLocalPath)) {
     try {
       unlinkSync(tempLocalPath)
-    } catch(err) {} // eslint-disable-line
+    } catch(err) {
+      console.error('Error deleting local files:', err)
+    }
   }
 }
 
 /**
  * Data action using Service account stored on Firestore
- * @param  {functions.database.DataSnapshot} snap - Data snapshot from cloud function
- * @param  {functions.EventContext} context - The context in which an event occurred
- * @param  {object} context.params - Parameters from event
- * @returns {Promise} Resolves with results
+ * @param snap - Data snapshot from cloud function
+ * @param context - The context in which an event occurred
+ * @returns Resolves with results
  */
-export async function runStepsFromEvent(snap, context) {
+export async function runStepsFromEvent(snap: admin.database.DataSnapshot, context: functions.EventContext) {
   const eventData = snap.val()
   if (!eventData) {
     throw new Error('Run action request does not contain a value.')
@@ -122,12 +123,11 @@ export async function runStepsFromEvent(snap, context) {
 
 /**
  * Data action using Service account stored on Firestore
- * @param {functions.database.DataSnapshot} snap - Data snapshot from cloud function
- * @param {functions.EventContext} context - The context in which an event occurred
- * @param {object} context.params - Parameters from event
- * @returns {Promise} Resolves with results
+ * @param snap - Data snapshot from cloud function
+ * @param context - The context in which an event occurred
+ * @returns Resolves with results
  */
-export async function runBackupsFromEvent(snap, context) {
+export async function runBackupsFromEvent(snap: admin.database.DataSnapshot, context: functions.EventContext) {
   const eventData = snap.val()
   const {
     inputValues,
@@ -187,11 +187,11 @@ export async function runBackupsFromEvent(snap, context) {
 /**
  * Validate and convert list of inputs to relevant types (i.e. serviceAccount
  * data replaced with app)
- * @param {object} eventData - Data from event
- * @param {Array} envsMetas - Meta data for environments
- * @returns {Promise} Resolves with an array of results of converting inputs
+ * @param eventData - Data from event
+ * @param envsMetas - Meta data for environments
+ * @returns Resolves with an array of results of converting inputs
  */
-function validateAndConvertEnvironments(eventData: ActionRunnerEventData, envsMetas): Promise<admin.app.App[]> {
+function validateAndConvertEnvironments(eventData: ActionRunnerEventData, envsMetas: any[]): Promise<admin.app.App[]> {
   if (!eventData.environments) {
     return Promise.resolve([])
   }
@@ -209,10 +209,10 @@ interface InputMetadata {
 /**
  * Validate and convert a single input to relevant type
  * (i.e. serviceAccount data replaced with app)
- * @param {object} eventData - Data from event
- * @param {object} inputMeta - Metadata for input
- * @param {object} inputValue - Value of input
- * @returns {Promise} Resolves with firebase app if service account type
+ * @param eventData - Data from event
+ * @param inputMeta - Metadata for input
+ * @param inputValue - Value of input
+ * @returns Resolves with firebase app if service account type
  */
 async function validateAndConvertEnvironment(
   eventData: ActionRunnerEventData,
@@ -239,10 +239,10 @@ async function validateAndConvertEnvironment(
  * Validate and convert list of inputs to relevant types (i.e. serviceAccount
  * data replaced with app)
  * @param eventData - Data from event
- * @param {Array} inputsMetas - Metadata for inputs
- * @returns {Promise} Resolves with an array of results of converting inputs
+ * @param inputsMetas - Metadata for inputs
+ * @returns List of valid and converted inputs
  */
-function validateAndConvertInputs(eventData: ActionRunnerEventData, inputsMetas: any[]) {
+function validateAndConvertInputs(eventData: ActionRunnerEventData, inputsMetas: any[]): any[] {
   return eventData.inputValues.map((inputValue, inputIdx) =>
     validateAndConvertInputValues(get(inputsMetas, inputIdx), inputValue)
   )
@@ -251,9 +251,9 @@ function validateAndConvertInputs(eventData: ActionRunnerEventData, inputsMetas:
 /**
  * Validate and convert a single input to relevant type
  * (i.e. serviceAccount data replaced with app)
- * @param {object} inputMeta - Metadat for input
- * @param {object} inputValue - Value for input
- * @returns {Promise} Resolves with input value
+ * @param inputMeta - Metadat for input
+ * @param inputValue - Value for input
+ * @returns Validates/coverts input value
  */
 function validateAndConvertInputValues(inputMeta, inputValue) {
   // Handle no longer supported input type "serviceAccount"
@@ -308,17 +308,16 @@ function createStepRunner({
 }: CreateStepRunnerParams): Function {
   /**
    * Run action based on provided settings and update response with progress
-   * @param {object} step - Step object
-   * @param {number} stepIdx - Index of the action (from actions array)
-   * @returns {Promise} Resolves with results of progress update call
+   * @param step - Step object
+   * @param stepIdx - Index of the action (from actions array)
+   * @returns Resolves with results of progress update call
    */
   return function runStepAndUpdateProgress(step: ActionStep, stepIdx: number) {
     /**
      * Receives results of previous action and calls next action
-     * @param  {Any} previousStepResult - result of previous action
-     * @returns {Function} Accepts action and stepIdx (used in Promise.all map)
+     * @returns Accepts action and stepIdx (used in Promise.all map)
      */
-    return async function runNextStep(previousStepResult) {
+    return async function runNextStep() {
       const [err, stepResponse] = await to(
         runStep({
           step,
