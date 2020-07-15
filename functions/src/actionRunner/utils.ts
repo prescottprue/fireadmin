@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import fetch from 'node-fetch'
 import { omit, uniqueId } from 'lodash'
-import { PROJECTS_COLLECTION } from '../constants/firebasePaths.js'
+import { PROJECTS_COLLECTION } from '../constants/firebasePaths'
 import {
   authClientFromServiceAccount,
   serviceAccountFromFirestorePath

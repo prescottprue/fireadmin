@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import * as admin from 'firebase-admin'
 import functionsTestLib from 'firebase-functions-test'
 import sinon from 'sinon';
-import { to } from '../../src/utils/async'
+import { to } from '../utils/async'
 
 const functionsTest = functionsTestLib()
 // console.log('asdfasdf', require(`${__dirname}/../../index`))
@@ -61,7 +61,6 @@ describe('sendFcm RTDB Cloud Function (onCreate)', () => {
     const databaseStub = sinon.stub().returns({ ref: refStub })
     const getStub = sinon.stub().returns(
       Promise.resolve({
-        data: () => ({}),
         get: sinon.stub().returns(undefined)
       })
     )
@@ -79,10 +78,7 @@ describe('sendFcm RTDB Cloud Function (onCreate)', () => {
     const fakeContext = {
       params: { filePath: 'testing', userId: 1 }
     }
-    const [err] = await to(sendFcm(snap, fakeContext))
-    expect(err).to.have.property(
-      'message',
-      `Messaging token not found for uid: "${userId}"`
-    )
+    const result = await sendFcm(snap, fakeContext)
+    expect(result).to.be.null
   })
 })

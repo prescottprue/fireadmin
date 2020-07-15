@@ -2,7 +2,7 @@
   "name": "fireadmin-functions",
   "description": "Cloud Functions for Fireadmin application.",
   "scripts": {
-    "test": "NODE_ENV=test mocha ./test/unit/**/*.spec.ts",
+    "test": "NODE_ENV=test mocha ./src/**/*.spec.ts",
     "test:watch": "yarn test --watch",
     "test:cov": "nyc --reporter=lcov --reporter=html yarn test",
     "test:cov:watch": "npm run test:cov -- --watch",

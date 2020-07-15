@@ -11,7 +11,7 @@ import { to, promiseWaterfall } from '../utils/async'
  */
 export function isDocPath(slashPath: string): boolean {
   // Remove leading and trailing slashes then split into array to see if length is even
-  return (slashPath.replace(/^\/+|\/+$/g, '').split('/').length - 1) % 2 === 1
+  return !!slashPath && (slashPath.replace(/^\/+|\/+$/g, '').split('/').length - 1) % 2 === 1
 }
 
 interface BatchWriteOptions {
@@ -75,7 +75,7 @@ export async function writeDocsInBatches(
   // Check if doc data is longer than max docs per batch
   if (docData?.length < MAX_DOCS_PER_BATCH) {
     console.log(
-      `Updating all in once back since there are ${docData.length} updates and the max batch size is ${MAX_DOCS_PER_BATCH}`
+      `Updating all at once since there are ${docData.length} updates and the max batch size is ${MAX_DOCS_PER_BATCH}`
     )
 
     // Less than the max number of docs in a batch

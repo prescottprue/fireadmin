@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import * as admin from 'firebase-admin'
 import functionsTestLib from 'firebase-functions-test'
-import { to } from '../../src/utils/async'
+import { to } from '../utils/async'
 
 const functionsTest = functionsTestLib()
 
