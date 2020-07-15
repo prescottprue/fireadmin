@@ -3,7 +3,7 @@ import fauxJax from 'faux-jax'
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { createCipher } from 'crypto' // eslint-disable-line node/no-deprecated-api
-import { to } from '../../src/utils/async'
+import { to } from '../utils/async'
 import functionsTestLib from 'firebase-functions-test'
 
 const functionsTest = functionsTestLib()

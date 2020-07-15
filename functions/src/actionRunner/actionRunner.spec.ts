@@ -1,11 +1,11 @@
 import 'mocha'
 import * as admin from 'firebase-admin'
 import fs from 'fs'
-import { expect } from 'chai';
-import * as sinon from 'sinon';
+import { expect } from 'chai'
+import * as sinon from 'sinon'
 import 'sinon-chai'
-import { to } from '../../src/utils/async'
-import { encrypt } from '../../src/utils/encryption'
+import { to } from '../utils/async'
+import { encrypt } from '../utils/encryption'
 import functionsTestLib from 'firebase-functions-test'
 
 const functionsTest = functionsTestLib()
@@ -46,18 +46,18 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
     // Stub Firebase's admin.initializeApp()
     parentFirestoreStub = sinon.stub().returns({
       collection: sinon.stub().returns({
-        get: sinon
-          .stub()
-          .returns(
-            Promise.resolve({ data: () => ({ some: 'value' }), exists: true })
-          ),
+        doc: sinon.stub().returns({
+          get: sinon.stub().returns(Promise.resolve({ data: () => ({}) })),
+          set: sinon.stub().returns(Promise.resolve(null)),
+          path: 'projects/my-project'
+        }),
+        path: 'projects',
         firestore: {
           batch: sinon.stub().returns({
             commit: sinon.stub().returns(Promise.resolve()),
             set: sinon.stub().returns({})
           }),
-          collection: sinon.stub().returns({
-            doc: sinon.stub().returns({}),
+          doc: sinon.stub().returns({
             get: sinon.stub().returns(
               Promise.resolve({
                 data: () => ({ some: 'value' }),
@@ -66,15 +66,34 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
             )
           })
         },
-        doc: sinon.stub().returns({
-          get: sinon.stub().returns(Promise.resolve({ data: () => ({}) })),
-          set: sinon.stub().returns(Promise.resolve(null)),
-          path: 'projects/my-project'
-        }),
-        path: 'projects'
+        get: sinon.stub().returns(
+          Promise.resolve({
+            data: () => ({ some: 'value' }),
+            exists: true
+          })
+        )
       }),
       doc: sinon.stub().returns({
-        update: sinon.stub().returns(Promise.resolve())
+        firestore: {
+          batch: sinon.stub().returns({
+            commit: sinon.stub().returns(Promise.resolve()),
+            set: sinon.stub().returns({})
+          }),
+          doc: sinon.stub().returns({
+            get: sinon.stub().returns(
+              Promise.resolve({
+                data: () => ({ some: 'value' }),
+                exists: true
+              })
+            )
+          })
+        },
+        update: sinon.stub().returns(Promise.resolve()),
+        get: sinon
+        .stub()
+        .returns(
+          Promise.resolve({ data: () => ({ some: 'value' }), exists: true })
+        ),
       })
     })
 
@@ -209,7 +228,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
       // Confir error thrown with correct message
       expect(err).to.have.property(
         'message',
-        'Action template is required to run steps'
+        'Valid Action Template is required to run steps'
       )
       // Ref for response is correct path
       expect(refStub).to.have.been.calledWith(responsePath)
@@ -217,7 +236,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
       expect(setStub).to.have.been.calledWith({
         completed: true,
         completedAt: 'test',
-        error: 'Action template is required to run steps',
+        error: 'Valid Action Template is required to run steps',
         status: 'error'
       })
     })
@@ -240,7 +259,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
       // Confir error thrown with correct message
       expect(err).to.have.property(
         'message',
-        'Action template is required to run steps'
+        'Valid Action Template is required to run steps'
       )
       // Ref for response is correct path
       expect(refStub).to.have.been.calledWith(responsePath)
@@ -248,7 +267,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
       expect(setStub).to.have.been.calledWith({
         completed: true,
         completedAt: 'test',
-        error: 'Action template is required to run steps',
+        error: 'Valid Action Template is required to run steps',
         status: 'error'
       })
     })
@@ -271,7 +290,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
       // Confir error thrown with correct message
       expect(err).to.have.property(
         'message',
-        'Steps array was not provided to action request'
+        'Valid Action Template is required to run steps'
       )
       // Ref for response is correct path
       expect(refStub).to.have.been.calledWith(responsePath)
@@ -279,7 +298,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
       expect(setStub).to.have.been.calledWith({
         completed: true,
         completedAt: 'test',
-        error: 'Steps array was not provided to action request',
+        error: 'Valid Action Template is required to run steps',
         status: 'error'
       })
     })
