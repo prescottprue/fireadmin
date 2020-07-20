@@ -1,9 +1,38 @@
 import { tmpdir } from 'os'
 import { join, dirname } from 'path'
-import { readJson, outputJson } from 'fs-extra'
-import { unlinkSync } from 'fs'
+import { unlinkSync, existsSync, promises as fs } from 'fs'
 import mkdirp from 'mkdirp'
 import * as admin from 'firebase-admin'
+
+/**
+ * Read file and parse as json
+ * @param filePath - Path to file to read json from
+ */
+async function readJson(filePath: string) {
+  if (!existsSync(filePath)) {
+    throw new Error(`${filePath} does not exist`)
+  }
+  const fileBuffer = await fs.readFile(filePath)
+  try {
+    return JSON.parse(fileBuffer.toString())
+  } catch (err) {
+    console.error(`Error parsing JSON file ${filePath}`, err)
+    throw err
+  }
+}
+
+/**
+ * Read file and parse as json
+ * @param filePath - Path to file to read json from
+ */
+async function outputJson(filePath: string, fileContents: any) {
+  try {
+    await fs.writeFile(filePath, JSON.stringify(fileContents, null, 2))
+  } catch (err) {
+    console.error(`Error writing JSON file ${filePath}`, err)
+    throw err
+  }
+}
 
 /**
  * Download JSON File from Google Cloud Storage and return is contents
@@ -65,7 +94,8 @@ export async function uploadToStorage(
   }
   try {
     // Upload file from bucket to local filesystem
-    await outputJson(tempLocalPath, jsonObject, { spaces: 2 })
+    await outputJson(tempLocalPath, jsonObject)
+    // TODO: Look into using a buffer here instead of creating
     await app.storage().bucket().upload(tempLocalPath, {
       destination: pathInStorage,
       contentType: 'application/json'

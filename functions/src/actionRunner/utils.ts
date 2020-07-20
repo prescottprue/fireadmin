@@ -445,9 +445,7 @@ export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promis
   // Get Service account data from resource (i.e Storage, Firestore, etc)
   const [saErr, serviceAccount] = await to(
     serviceAccountFromFirestorePath(
-      `${PROJECTS_COLLECTION}/${projectId}/environments/${environmentId}`,
-      appName,
-      { returnData: true }
+      `${PROJECTS_COLLECTION}/${projectId}/environments/${environmentId}`
     )
   )
 

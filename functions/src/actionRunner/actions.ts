@@ -389,6 +389,7 @@ export async function copyFromRTDBToStorage(app1: admin.app.App, app2: admin.app
     if (!firstDataVal) {
       throw new Error('Data not found at provided path')
     }
+    // TODO: Handle non-json values
     await uploadToStorage(app2, dest.path, firstDataVal)
     console.log('copy from RTDB to Storage was successful')
   } catch (err) {
