@@ -9,6 +9,7 @@ import {
   serviceAccountFromFirestorePath,
   ServiceAccount
 } from '../utils/serviceAccounts'
+import { PROJECTS_COLLECTION } from '../constants/firebasePaths'
 
 interface RequestSettings {
   method: string
@@ -98,23 +99,18 @@ export default async function callGoogleApi(
     .database()
     .ref(`responses/${eventPathName}/${eventId}`)
 
-  const appName = `app-${uniqueId()}`
-
   let serviceAccount
   // Set to application default credentials when using compute api
   if (projectId && environment) {
+    const serviceAccountPath = `${PROJECTS_COLLECTION}/${projectId}/environments/${environment}`
     console.log(
       'Searching for service account from: ',
-      `projects/${projectId}/environments/${environment}`
+      serviceAccountPath
     )
     let getSAErr
-      // Get Service Account object by decryping string from Firestore
+    // Get Service Account object by decryping string from Firestore
     ;[getSAErr, serviceAccount] = await to(
-      serviceAccountFromFirestorePath(
-        `projects/${projectId}/environments/${environment}`,
-        appName,
-        { returnData: true }
-      )
+      serviceAccountFromFirestorePath(serviceAccountPath)
     )
     // Handle errors getting service account
     if (getSAErr || !serviceAccount) {

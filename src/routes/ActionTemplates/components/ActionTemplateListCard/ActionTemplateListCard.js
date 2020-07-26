@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import { size } from 'lodash'
 import { useUser } from 'reactfire'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -99,7 +98,7 @@ function ActionTemplateListCard({
             {name}
           </Link>
         }
-        subheader={`${size(steps)} Steps`}
+        subheader={`${steps?.length || 0} Steps`}
         classes={{ title: classes.cardTitle, subheader: classes.cardSubheader }}
       />
       <CardContent className={classes.media}>

@@ -62,6 +62,7 @@ export async function downloadFromStorage(
     console.error(`${downloadErrMsg}: ${err.message || ''}`, err)
     throw err
   }
+  // TODO: Look into streaming results directly instead of needing to use a local file
   try {
     // Return JSON file contents
     const fileContents = await readJson(tempLocalPath)

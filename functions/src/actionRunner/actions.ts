@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin'
-import { get, chunk, isObject, size } from 'lodash'
+import { get, chunk, isObject } from 'lodash'
 import { batchCopyBetweenFirestoreRefs } from './utils'
 import { downloadFromStorage, uploadToStorage } from '../utils/cloudStorage'
 import { to, promiseWaterfall } from '../utils/async'
@@ -22,7 +22,7 @@ function dataByIdSnapshot(snap) {
       data[doc.id] = doc.data() || doc
     })
   }
-  return size(data) ? data : null
+  return Object.keys(data).length ? data : null
 }
 
 /**

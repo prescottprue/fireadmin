@@ -1,13 +1,11 @@
-import { invoke, get } from 'lodash'
-
-export function waitForResponseWith(ref, pathForValue = 'completed', value) {
+function waitForResponseWith(ref, pathForValue = 'completed', value) {
   return new Promise((resolve, reject) => {
     ref.on(
       'value',
       (responseSnap) => {
-        const response = invoke(responseSnap, 'val')
-        if (get(response, pathForValue)) {
-          if (value && get(response, pathForValue) !== value) {
+        const response = responseSnap.val()
+        if (response[pathForValue]) {
+          if (value && response[pathForValue] !== value) {
             return
           }
           resolve(response)
@@ -21,7 +19,8 @@ export function waitForResponseWith(ref, pathForValue = 'completed', value) {
   })
 }
 
-export const createWaitForValue = (...args) => (ref) =>
-  waitForResponseWith(ref, ...args)
+function createWaitForValue(...args) {
+  return (ref) => waitForResponseWith(ref, ...args)
+}
 
 export const waitForCompleted = createWaitForValue('completed', true)
