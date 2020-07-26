@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useFirestore, useFirestoreDocData, useUser } from 'reactfire'
 import { useForm } from 'react-hook-form'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormLabel from '@material-ui/core/FormLabel'
@@ -11,12 +12,12 @@ import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Checkbox from '@material-ui/core/Checkbox'
+import InputAdornment from '@material-ui/core/InputAdornment'
 import { makeStyles } from '@material-ui/core/styles'
-import { validateDatabaseUrl } from 'utils/form'
 import styles from './EditEnvironmentDialog.styles'
-import { useFirestore, useFirestoreDocData, useUser } from 'reactfire'
 import { createPermissionGetter } from 'utils/data'
 import { PROJECTS_COLLECTION } from 'constants/firebasePaths'
+import { databaseURLToProjectName } from 'utils/index'
 
 const useStyles = makeStyles(styles)
 
@@ -40,31 +41,36 @@ function EditEnvironmentDialog({
     user?.uid === project.createdBy || userHasPermission('update.environments')
 
   // Form
+  const defaultValues = {
+    ...selectedInstance,
+    databaseName: databaseURLToProjectName(selectedInstance.databaseURL)
+  }
   const {
     register,
     handleSubmit,
     reset,
     watch,
-    formState: { dirty, isSubmitting }
-  } = useForm({ defaultValues: selectedInstance })
+    errors,
+    formState: { isValid, isSubmitting, touched }
+  } = useForm({ defaultValues, mode: 'onChange' })
 
   // Disabled states
   const lockedDisabled =
     !hasUpdatePermission ||
     // Form is clean and the environment is currently read only or write only
-    (!dirty && (selectedInstance.readOnly || selectedInstance.writeOnly)) ||
+    (touched && (selectedInstance.readOnly || selectedInstance.writeOnly)) ||
     watch('readOnly') ||
     watch('writeOnly')
   const readOnlyDisabled =
     !hasUpdatePermission ||
     // Form is clean and the environment is currently locked or write only
-    (!dirty && (selectedInstance.locked || selectedInstance.writeOnly)) ||
+    (touched && (selectedInstance.locked || selectedInstance.writeOnly)) ||
     watch('locked') ||
     watch('writeOnly')
   const writeOnlyDisabled =
     !hasUpdatePermission ||
     // Form is clean and the environment is currently locked or read only
-    (!dirty && (selectedInstance.locked || selectedInstance.readOnly)) ||
+    (touched && (selectedInstance.locked || selectedInstance.readOnly)) ||
     watch('locked') ||
     watch('readOnly')
 
@@ -84,18 +90,32 @@ function EditEnvironmentDialog({
               name="name"
               label="Environment Name"
               margin="normal"
-              inputRef={register}
+              inputRef={register({
+                required: true
+              })}
               fullWidth
             />
             <TextField
-              name="databaseURL"
-              label="Database URL"
-              margin="normal"
+              name="databaseName"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">https://</InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    .firebaseio.com
+                  </InputAdornment>
+                )
+              }}
               inputRef={register({
-                required: true,
-                validate: validateDatabaseUrl
+                required: true
               })}
+              error={!!errors.databaseURL}
+              helperText={errors.databaseURL && 'Database URL must be valid'}
+              margin="normal"
               fullWidth
+              label="Database URL"
+              data-test="new-environment-db-url"
             />
             <TextField
               name="description"
@@ -164,7 +184,7 @@ function EditEnvironmentDialog({
           <Button
             type="submit"
             color="primary"
-            disabled={!dirty || isSubmitting}>
+            disabled={!isValid || isSubmitting}>
             Save
           </Button>
         </DialogActions>

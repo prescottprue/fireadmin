@@ -30,7 +30,7 @@
 - Action Features include support for:
   - Multiple steps allowing many actions in one run
   - Backup phase (for easy backing up data before running your actions)
-  - Custom logic (JS written in the browser with ESNext features like `async/await`)
+  <!-- - Custom logic (JS written in the browser with ESNext features like `async/await`) -->
 - Project level tracking of actions which have been run through Action Runner
 - Get/Set CORS Config of Storage Buckets
 - Testing for React App (Cypress) and Cloud Functions (Mocha)
@@ -54,18 +54,17 @@ Since this is source code, a great place to start is checking the [hosted versio
 
 While developing, you will probably rely mostly on `npm start`; however, there are additional scripts at your disposal:
 
-| `npm run <script>` | Description                                                                                                               |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| `start`            | Serves your app at `localhost:3000` and displays [Webpack Dashboard](https://github.com/FormidableLabs/webpack-dashboard) |
-| `start:simple`     | Serves your app at `localhost:3000` without [Webpack Dashboard](https://github.com/FormidableLabs/webpack-dashboard)      |
-| `start:dist`       | Builds the application to ./dist and Serves it at `localhost:3000` using `firebase serve`                                 |
-| `functions:start`  | Runs Functions locally using `firebase functions:shell`                                                                   |
-| `functions:build`  | Builds Cloud Functions to ./functions/dist                                                                                |
-| `functions:test`   | Runs Functions Unit Tests with Mocha                                                                                      |
-| `build`            | Builds the application to ./dist                                                                                          |
-| `test`             | Runs E2E Tests with Cypress. See [testing](#testing)                                                                      |
-| `lint`             | [Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors                      |
-| `lint:fix`         | Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix)   |
+| `npm run <script>` | Description                                                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `start`            | Serves your app at `localhost:3000`                                                                                     |
+| `start:dist`       | Builds the application to `./dist` and Serves it at `localhost:3000` using `firebase serve`                             |
+| `functions:start`  | Runs Functions REPL locally (uses `firebase functions:shell`                                                            |
+| `functions:build`  | Builds Cloud Functions to `./functions/dist`                                                                            |
+| `functions:test`   | Runs Functions Unit Tests with Mocha                                                                                    |
+| `build`            | Builds the application to `./dist`                                                                                      |
+| `test`             | Runs E2E Tests with Cypress. See [testing](#testing)                                                                    |
+| `lint`             | [Lints](http://stackoverflow.com/questions/8503559/what-is-linting) the project for potential errors                    |
+| `lint:fix`         | Lints the project and [fixes all correctable errors](http://eslint.org/docs/user-guide/command-line-interface.html#fix) |
 
 [Husky](https://github.com/typicode/husky) is used to enable `prepush` hook capability. The `prepush` script currently runs `eslint`, which will keep you from pushing if there is any lint within your code. If you would like to disable this, remove the `prepush` script from the `package.json`.
 
@@ -198,16 +197,7 @@ For more options on CI settings checkout the [firebase-ci docs](https://github.c
 
 #### Manual deploy
 
-1. Make sure you have created a `src/config.js` file as mentioned above
-1. Initialize project with `firebase init` then answer:
-
-- What file should be used for Database Rules? -> `database.rules.json`
-- What do you want to use as your public directory? -> `build`
-- Configure as a single-page app (rewrite all urls to /index.html)? -> `Yes`
-- What Firebase project do you want to associate as default? -> **your Firebase project name**
-
 1. Build Project: `npm run build`
-1. Confirm Firebase config by running locally: `firebase serve`
 1. Deploy to firebase: `firebase deploy`
    **NOTE:** You can use `firebase serve` to test how your application will work when deployed to Firebase, but make sure you run `npm run build` first.
 
@@ -265,7 +255,7 @@ NOTE: `npm run start:dist` is used to start the local server in the example abov
 ## FAQ
 
 1. Why node `10.18.0` instead of a newer version?
-   [Cloud Functions runtime supports `8` or `10`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
+   [Cloud Functions runtime supports `10`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
 1. Uploading service accounts? Where do they go and how are my service accounts stored?
    When uploading a service account, it first goes to a Google Cloud Storage Bucket which [has security rules](/storage.rules) and does not have CORS access. The [copyServiceAccountToFirestore Cloud Function](/functions/src/copyServiceAccountToFirestore) converts it into an encrypted string, stores it within Firestore, then removes the original file from Cloud Storage. Firestore rules keep anyone that is not a collaborator on your project using or reading the service account. Since it is associated with a specific environment, you can then limit access to what can be done with it right in the Users/Permissions tab of Fireadmin.
 
