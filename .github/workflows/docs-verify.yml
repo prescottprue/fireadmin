@@ -23,11 +23,17 @@ jobs:
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - name: Cache npm dependencies
+      - name: Cache Dependencies
         uses: actions/cache@v1
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-docs-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Cache Gatsby Build
+        uses: actions/cache@v1
+        with:
+          path: docs/.cache
+          key: ${{ runner.os }}-docs-build
 
       - name: Install Dependencies
         env:

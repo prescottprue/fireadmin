@@ -71,9 +71,11 @@ jobs:
         run: |
           set -o pipefail
 
-          gitBranch=${GITHUB_REF##*/}
+          # Set other app configs (settings within .firebaserc in the ci.setEnv section)
+          $(yarn bin)/firebase-ci setEnv
 
           # Find the config associated to the firebase project in .firebaserc
+          gitBranch=${GITHUB_REF##*/}
           gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias]')
 
           echo Exporting Firebase SDK Config for $gcloudProject project...
@@ -87,9 +89,6 @@ jobs:
               jq -r 'to_entries[] | [.key, (.value | tojson)] | join("::")' | \
               sed 's/:"/:/g; s/^/echo \"::set-env name=REACT_APP_FIREBASE_/g' \
           )
-
-          # Set other app configs (settings within .firebaserc in the ci.setEnv section)
-          $(yarn bin)/firebase-ci setEnv
 
           echo Begin evaluating project config to export as environment variables:
 

@@ -164,17 +164,8 @@ While developing, you will probably rely mostly on `npm start`; however, there a
 
 1. Set Functions config variables to match the file you just made (for the deployed version of your functions):
 
-   **Required Variables**
-
    ```bash
-   firebase functions:config:set algolia.api_key="<- your algolia api key ->" algolia.api_key="<- your algolia api key ->"\
-   encryption.password="somePassword"
-   ```
-
-   **Optional**
-
-   ```bash
-   firebase functions:config:set gmail.email="<- inviter gmail account ->" gmail.password="<- password of inviter account ->"
+   firebase functions:config:set $(jq -r 'to_entries[] | [.key, (.value | tojson)] | join("=")' < functions/.runtimeconfig.json)
    ```
 
 1. Build Project: `npm run build`
