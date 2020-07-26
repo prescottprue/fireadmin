@@ -5,7 +5,7 @@ module.exports = {
   authorAvatar: '/images/avatar.png',
   authorDescription:
     'Mechanical/Aerospace engineer turned fullstack javascript developer. Author of react-redux-firebase, redux-firestore and other tools.',
-  siteUrl: 'fireadmin.io',
+  siteUrl: 'https://docs.fireadmin.io',
   // Prefixes all links
   pathPrefix: '/docs', // Note: it must *not* have a trailing slash.
   siteCover: '/images/cover.jpg',

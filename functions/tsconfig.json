@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "lib": ["es6", "dom"],
+    "lib": ["es6"],
     "types": ["node"],
     "skipLibCheck": true,
-    "target": "es5",
+    "target": "ES2019",
     "module": "commonjs",
     "moduleResolution": "node",
     "declaration": true,

@@ -45,7 +45,7 @@
     "typescript": "^3.9.5"
   },
   "engines": {
-    "node": "10"
+    "node": "12"
   },
   "author": "prescottprue (https://github.com/prescottprue)",
   "license": "MIT",

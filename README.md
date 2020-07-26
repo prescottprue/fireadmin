@@ -254,12 +254,12 @@ NOTE: `npm run start:dist` is used to start the local server in the example abov
 
 ## FAQ
 
-1. Why node `10.18.0` instead of a newer version?
-   [Cloud Functions runtime supports `10`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
+1. Why node `12` instead of a newer version?
+   [Cloud Functions runtime supports up to `12`][functions-runtime-url], which is why that is what is used for the CI build version. This will be switched when the functions runtime is updated
 1. Uploading service accounts? Where do they go and how are my service accounts stored?
    When uploading a service account, it first goes to a Google Cloud Storage Bucket which [has security rules](/storage.rules) and does not have CORS access. The [copyServiceAccountToFirestore Cloud Function](/functions/src/copyServiceAccountToFirestore) converts it into an encrypted string, stores it within Firestore, then removes the original file from Cloud Storage. Firestore rules keep anyone that is not a collaborator on your project using or reading the service account. Since it is associated with a specific environment, you can then limit access to what can be done with it right in the Users/Permissions tab of Fireadmin.
 
-[functions-runtime-url]: https://cloud.google.com/functions/docs/concepts/exec
+[functions-runtime-url]: https://cloud.google.com/functions/docs/concepts/nodejs-runtime
 [build-status-url]: https://github.com/prescottprue/fireadmin/actions
 [build-status-image]: https://img.shields.io/github/workflow/status/prescottprue/fireadmin/Verify%20App?style=flat-square
 [cypress-dashboard-image]: https://img.shields.io/static/v1?label=Cypress&message=Dashboard&color=00BF88&style=flat-square
