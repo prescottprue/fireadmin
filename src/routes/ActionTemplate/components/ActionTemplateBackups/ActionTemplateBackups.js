@@ -3,9 +3,9 @@ import { capitalize } from 'lodash'
 import { useFormContext, useFieldArray, Controller } from 'react-hook-form'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import Accordion from '@material-ui/core/Accordion'
+import AccordionSummary from '@material-ui/core/AccordionSummary'
+import AccordionDetails from '@material-ui/core/AccordionDetails'
 import Typography from '@material-ui/core/Typography'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -54,13 +54,13 @@ function ActionTemplateBackups() {
         }
         const backup = watch(`${name}[${index}]`)
         return (
-          <ExpansionPanel key={index}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Accordion key={index}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
                 {backup?.name || `Backup ${index + 1}`}
               </Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
+            </AccordionSummary>
+            <AccordionDetails>
               <Grid container spacing={8} style={{ flexGrow: 1 }}>
                 <Grid item xs={10} md={6} lg={6}>
                   <TextField
@@ -125,8 +125,8 @@ function ActionTemplateBackups() {
                   />
                 </Grid>
               </Grid>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+            </AccordionDetails>
+          </Accordion>
         )
       })}
     </div>

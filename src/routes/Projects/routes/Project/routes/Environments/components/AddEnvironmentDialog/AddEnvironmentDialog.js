@@ -30,8 +30,8 @@ function AddEnvironmentDialog({ onSubmit, projectId, onRequestClose, open }) {
     register,
     handleSubmit,
     errors,
-    formState: { isSubmitting, dirty }
-  } = useForm()
+    formState: { isSubmitting, isValid }
+  } = useForm({ mode: 'onChange' })
 
   function callSubmit(formValues) {
     return onSubmit({
@@ -131,7 +131,7 @@ function AddEnvironmentDialog({ onSubmit, projectId, onRequestClose, open }) {
           <Button
             color="primary"
             type="submit"
-            disabled={!dirty || isSubmitting}
+            disabled={!isValid || !selectedServiceAccountInd || isSubmitting}
             data-test="new-environment-create-button">
             Create
           </Button>

@@ -5,5 +5,5 @@
  * @returns Whether or not object has all keys
  */
 export function hasAll(obj: any, keysList: string[]) {
-  return !!obj && Object.keys(obj).filter((k) => keysList.includes(k)).length === keysList.length
+  return !!obj && keysList.every((k) => !!obj[k])
 }

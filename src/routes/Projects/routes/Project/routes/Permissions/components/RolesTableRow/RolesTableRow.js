@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { startCase } from 'lodash'
 import { useForm } from 'react-hook-form'
 import Button from '@material-ui/core/Button'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import Accordion from '@material-ui/core/Accordion'
+import AccordionDetails from '@material-ui/core/AccordionDetails'
+import AccordionSummary from '@material-ui/core/AccordionSummary'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
@@ -124,16 +124,16 @@ function RolesTableRow({
         onRequestClose={handleDeleteClose}
         onDeleteClick={deleteRole}
       />
-      <ExpansionPanel
+      <Accordion
         key={roleKey}
         className={classes.root}
         data-test={`role-panel-${roleKey}`}>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>
             {name || startCase(roleKey)}
           </Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </AccordionSummary>
+        <AccordionDetails>
           <form className={classes.content} onSubmit={handleSubmit(updateRole)}>
             <Divider />
             <div className={classes.menu}>
@@ -275,8 +275,8 @@ function RolesTableRow({
               </Button>
             </div>
           </form>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionDetails>
+      </Accordion>
     </>
   )
 }
