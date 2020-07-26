@@ -51,7 +51,10 @@ describe('Project - Environments Page', () => {
       )
 
       // Click on the new environment button
-      cy.get(createSelector('new-environment-create-button')).click()
+      cy.get(createSelector('new-environment-create-button'))
+        .scrollIntoView()
+        .should('not.be.disabled')
+        .click()
       // Confirm user is notified of successful environment creation
       cy.get(createSelector('notification-message')).should(
         'contain',

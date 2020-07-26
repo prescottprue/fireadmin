@@ -50,8 +50,8 @@ function PermissionsTableRow({
     reset,
     control,
     handleSubmit,
-    formState: { dirty, isSubmitting }
-  } = useForm({ defaultValues: initialValues })
+    formState: { isValid, isSubmitting }
+  } = useForm({ defaultValues: initialValues, mode: 'onChange' })
   const { showSuccess } = useNotifications()
   const user = useUser()
 
@@ -175,7 +175,7 @@ function PermissionsTableRow({
           </div>
           <div className={classes.buttons}>
             <Button
-              disabled={!dirty || isSubmitting}
+              disabled={isSubmitting}
               color="secondary"
               aria-label="Cancel"
               onClick={reset}
@@ -183,7 +183,7 @@ function PermissionsTableRow({
               Cancel
             </Button>
             <Button
-              disabled={!dirty || isSubmitting}
+              disabled={!isValid || isSubmitting}
               color="primary"
               variant="contained"
               aria-label="Update Member"

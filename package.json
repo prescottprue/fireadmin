@@ -12,7 +12,7 @@
     "start": "react-scripts start",
     "start:dist": "yarn build && yarn serve",
     "emulators": "yarn emulate:dbs",
-    "emulate:dbs": "firebase emulators:start --only firestore,database",
+    "emulators:dbs": "firebase emulators:start --only firestore,database",
     "emulators:all": "firebase emulators:start --only firestore,database,functions",
     "emulators:no-functions": "firebase emulators:start --only firestore,database,hosting",
     "dev": "concurrently -c yellow,green npm:emulate:dbs \"yarn wait-on:dbs && yarn dev\"",
