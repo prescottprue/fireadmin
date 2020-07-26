@@ -84,13 +84,9 @@ jobs:
               tr '\n' ' ' | \
               sed 's/.*initializeApp(//g' | \
               sed 's/);//g' | \
-              jq -r 'del(.databaseURL) | to_entries[] | [.key, (.value | tojson)] | join("::")' | \
+              jq -r 'to_entries[] | [.key, (.value | tojson)] | join("::")' | \
               sed 's/:"/:/g; s/^/echo \"::set-env name=REACT_APP_FIREBASE_/g' \
           )
-
-          # Set emulator settings
-          echo "::set-env name=REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.database.port)"
-          echo "::set-env name=REACT_APP_FIRESTORE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.firestore.port)"
 
           # Set other app configs (settings within .firebaserc in the ci.setEnv section)
           $(yarn bin)/firebase-ci setEnv
