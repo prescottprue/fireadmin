@@ -131,7 +131,9 @@ function AddEnvironmentDialog({ onSubmit, projectId, onRequestClose, open }) {
           <Button
             color="primary"
             type="submit"
-            disabled={!isValid || !selectedServiceAccountInd || isSubmitting}
+            disabled={
+              !isValid || selectedServiceAccountInd === null || isSubmitting
+            }
             data-test="new-environment-create-button">
             Create
           </Button>
