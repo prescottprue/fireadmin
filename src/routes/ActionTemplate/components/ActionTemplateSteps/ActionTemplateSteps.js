@@ -4,9 +4,9 @@ import { useFormContext, useFieldArray, Controller } from 'react-hook-form'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import Accordion from '@material-ui/core/Accordion'
+import AccordionSummary from '@material-ui/core/AccordionSummary'
+import AccordionDetails from '@material-ui/core/AccordionDetails'
 import ListItemText from '@material-ui/core/ListItemText'
 import Typography from '@material-ui/core/Typography'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -63,13 +63,13 @@ function ActionTemplateSteps() {
           disableBatching
         } = watch(`${name}[${index}]`) || {}
         return (
-          <ExpansionPanel key={index} data-test="action-template-step">
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Accordion key={index} data-test="action-template-step">
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
                 {stepName || `Step ${index + 1}`}
               </Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
+            </AccordionSummary>
+            <AccordionDetails>
               <Grid container spacing={8} style={{ flexGrow: 1 }}>
                 <Grid
                   item
@@ -188,8 +188,8 @@ function ActionTemplateSteps() {
                   </Grid>
                 </Grid>
               </Grid>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+            </AccordionDetails>
+          </Accordion>
         )
       })}
     </div>

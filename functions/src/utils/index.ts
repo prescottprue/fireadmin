@@ -1,11 +1,9 @@
-import { size, pick } from 'lodash'
-
 /**
  * Check object for all keys
- * @param {object} obj - Object to check for keys
- * @param {Array} keysList - List of keys to check for in object
- * @returns {boolean} Whether or not object has all keys
+ * @param obj - Object to check for keys
+ * @param keysList - List of keys to check for in object
+ * @returns Whether or not object has all keys
  */
-export function hasAll(obj, keysList) {
-  return size(pick(obj, keysList)) === size(keysList)
+export function hasAll(obj: any, keysList: string[]) {
+  return !!obj && keysList.every((k) => !!obj[k])
 }

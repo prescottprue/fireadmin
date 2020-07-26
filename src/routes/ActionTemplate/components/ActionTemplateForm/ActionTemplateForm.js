@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import { useForm, FormContext } from 'react-hook-form'
+import { useForm, FormProvider } from 'react-hook-form'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
@@ -49,7 +49,7 @@ function ActionTemplateForm({
   const cancelTooltip = !dirty || isSubmitting ? 'Nothing to undo' : 'Undo'
   const deleteTooltip = editable ? 'Delete Template' : 'Must be owner'
   return (
-    <FormContext {...methods}>
+    <FormProvider {...methods}>
       <form className={classes.root} onSubmit={handleSubmit(onSubmit)}>
         <div className={classes.buttons}>
           <div style={{ marginRight: '4rem' }}>
@@ -166,7 +166,7 @@ function ActionTemplateForm({
           <ActionTemplateSteps />
         </div>
       </form>
-    </FormContext>
+    </FormProvider>
   )
 }
 

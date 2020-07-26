@@ -4,9 +4,9 @@ import { map, capitalize } from 'lodash'
 import { useFirestore, useUser, useFirestoreDocData } from 'reactfire'
 import { Controller, useForm } from 'react-hook-form'
 import Button from '@material-ui/core/Button'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import Accordion from '@material-ui/core/Accordion'
+import AccordionDetails from '@material-ui/core/AccordionDetails'
+import AccordionSummary from '@material-ui/core/AccordionSummary'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -50,8 +50,8 @@ function PermissionsTableRow({
     reset,
     control,
     handleSubmit,
-    formState: { dirty, isSubmitting }
-  } = useForm({ defaultValues: initialValues })
+    formState: { isValid, isSubmitting }
+  } = useForm({ defaultValues: initialValues, mode: 'onChange' })
   const { showSuccess } = useNotifications()
   const user = useUser()
 
@@ -94,8 +94,8 @@ function PermissionsTableRow({
   }
 
   return (
-    <ExpansionPanel className={classes.root}>
-      <ExpansionPanelSummary
+    <Accordion className={classes.root}>
+      <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         data-test="member-expand">
         <Typography className={classes.displayName}>
@@ -104,8 +104,8 @@ function PermissionsTableRow({
         <Typography className={classes.permission}>
           {capitalize(roleKey)}
         </Typography>
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails style={{ paddingTop: 0 }}>
+      </AccordionSummary>
+      <AccordionDetails style={{ paddingTop: 0 }}>
         <form
           className={classes.content}
           onSubmit={handleSubmit(updatePermission)}>
@@ -175,7 +175,7 @@ function PermissionsTableRow({
           </div>
           <div className={classes.buttons}>
             <Button
-              disabled={!dirty || isSubmitting}
+              disabled={isSubmitting}
               color="secondary"
               aria-label="Cancel"
               onClick={reset}
@@ -183,7 +183,7 @@ function PermissionsTableRow({
               Cancel
             </Button>
             <Button
-              disabled={!dirty || isSubmitting}
+              disabled={!isValid || isSubmitting}
               color="primary"
               variant="contained"
               aria-label="Update Member"
@@ -193,8 +193,8 @@ function PermissionsTableRow({
             </Button>
           </div>
         </form>
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
+      </AccordionDetails>
+    </Accordion>
   )
 }
 

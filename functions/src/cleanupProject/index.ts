@@ -8,19 +8,23 @@ import { to } from '../utils/async'
  * @returns Results of removing collection
  */
 async function removeCollection(
-  collectionSnap: admin.firestore.CollectionReference | any
+  collectionSnap: admin.firestore.CollectionReference
 ): Promise<null | any[]> {
+  // TODO: Handle deleting documents in batches
   const [getErr, collectionQueryResult] = await to(collectionSnap.get())
+
   // Handle errors getting collection data
   if (getErr) {
-    console.error('Error data for collection: ', getErr.message || getErr)
+    console.error(`Error getting data for collection "${collectionSnap.id}": `, getErr.message)
     throw getErr
   }
+
+  // Handle no docs existing in collection
   if (!collectionQueryResult.size) {
     console.log(`No docs in ${collectionSnap.id}, removing all collections`)
-    await removeAllCollections(collectionSnap.ref)
     return null
   }
+
   console.log(
     `Removing ${collectionQueryResult.size} docs from the "${collectionSnap.id}" subcollection`
   )
@@ -31,16 +35,18 @@ async function removeCollection(
     collectionQueryResult.docs.map(async (docSnap) => {
       // Remove all subcollections before deleting document
       const [deleteSubcollectionsErr] = await to(
-        removeAllCollections(docSnap.ref)
+        removeAllCollections(docSnap)
       )
+
       // Handle issues deleteing subcollections
       if (deleteSubcollectionsErr) {
         console.error(
-          `Error deleting doc: "${collectionSnap.id}/${docSnap.id}"`,
+          `Error deleting doc subcollections: "${collectionSnap.id}/${docSnap.id}"`,
           deleteSubcollectionsErr
         )
-        // Continue on to deleting document anyway
+        throw deleteSubcollectionsErr
       }
+
       // Delete document
       const [deleteErr] = await to(docSnap.ref.delete())
       // Handle errors deleting document
@@ -61,26 +67,25 @@ async function removeCollection(
  * will be deleted
  * @returns Resolves with results of removing all collections
  */
-async function removeAllCollections(docRef: any): Promise<null | any[]> {
-  if (!docRef.getCollections) {
-    throw new Error('docRef.getCollections does not exist')
-  }
-  // all collection names
-  // TODO: getCollections (including updating tests)
+async function removeAllCollections(
+  snap: admin.firestore.DocumentSnapshot
+): Promise<null | any[]> {
   const [getCollectionsErr, collectionSnaps] = await to(
-    docRef.getCollections()
+    snap.ref.listCollections()
   )
+
   // Handle errors in batch write
   if (getCollectionsErr) {
     console.error(
-      'Error getting collections: ',
-      getCollectionsErr.message || getCollectionsErr
+      `Error getting collections for document with id ${snap.id}: `,
+      getCollectionsErr.message
     )
     throw getCollectionsErr
   }
 
   // Exit if document does not have subcollections
   if (!collectionSnaps?.length) {
+    console.log('collections snaps length not there')
     return null
   }
 
@@ -92,9 +97,15 @@ async function removeAllCollections(docRef: any): Promise<null | any[]> {
  * @param snap - Snapshot of event
  * @returns Resolves with null
  */
-async function cleanupProjectEvent(snap: admin.firestore.DocumentSnapshot): Promise<null> {
-  const [removeErr] = await to(removeAllCollections(snap.ref))
-  if (removeErr) {
+async function cleanupProjectEvent(
+  snap: admin.firestore.DocumentSnapshot,
+  context: functions.EventContext
+): Promise<null> {
+  const { projectId } = context.params
+  console.log(`Starting to cleanup project "${projectId}"`)
+  try {
+    await removeAllCollections(snap)
+  } catch(removeErr) {
     console.error(
       `Error removing sub-collections for project: ${snap.id}`,
       removeErr
@@ -104,6 +115,7 @@ async function cleanupProjectEvent(snap: admin.firestore.DocumentSnapshot): Prom
   console.log(`Cleanup successful for project: ${snap.id}`)
   return null
 }
+
 
 /**
  * @name cleanupProject

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { get, map, pick } from 'lodash'
-import { useForm, Controller, FormContext } from 'react-hook-form'
+import { useForm, Controller, FormProvider } from 'react-hook-form'
 import {
   useFirestore,
   useDatabase,
@@ -132,7 +132,7 @@ function BucketConfigForm({ projectId }) {
   }
 
   return (
-    <FormContext {...methods}>
+    <FormProvider {...methods}>
       <form
         onSubmit={methods.handleSubmit(sendBucketConfigRequest)}
         className={classes.container}>
@@ -206,7 +206,7 @@ function BucketConfigForm({ projectId }) {
           <CorsList name="body.cors" />
         </Paper>
       </form>
-    </FormContext>
+    </FormProvider>
   )
 }
 

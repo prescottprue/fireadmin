@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { invoke } from 'lodash'
 import Paper from '@material-ui/core/Paper'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
@@ -69,7 +68,7 @@ function ProjectTile({ project, onDelete, projectId }) {
       </div>
       {project.createdAt ? (
         <span className={classes.createdAt}>
-          {formatDate(invoke(project.createdAt, 'toDate'))}
+          {formatDate(project.createdAt)}
         </span>
       ) : null}
       <div className="flex-column">

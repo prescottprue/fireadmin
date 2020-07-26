@@ -1,9 +1,9 @@
 import React from 'react'
 import { useFormContext, useFieldArray } from 'react-hook-form'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import Accordion from '@material-ui/core/Accordion'
+import AccordionSummary from '@material-ui/core/AccordionSummary'
+import AccordionDetails from '@material-ui/core/AccordionDetails'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
@@ -44,8 +44,8 @@ function ActionTemplateInputs() {
         }
         const input = watch(`${name}[${index}]`)
         return (
-          <ExpansionPanel key={index} data-test="action-template-input">
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Accordion key={index} data-test="action-template-input">
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.title}>
                 {input?.name || `Input ${index + 1}`}
               </Typography>
@@ -54,8 +54,8 @@ function ActionTemplateInputs() {
                   {input.description.substring(0, 100)}
                 </Typography>
               )}
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
+            </AccordionSummary>
+            <AccordionDetails>
               <Grid container spacing={8} style={{ flexGrow: 1 }}>
                 <Grid item xs={10} md={6} lg={4}>
                   <TextField
@@ -109,9 +109,9 @@ function ActionTemplateInputs() {
                   )}
                 </Grid>
               </Grid>
-            </ExpansionPanelDetails>
+            </AccordionDetails>
             <Divider />
-          </ExpansionPanel>
+          </Accordion>
         )
       })}
     </div>

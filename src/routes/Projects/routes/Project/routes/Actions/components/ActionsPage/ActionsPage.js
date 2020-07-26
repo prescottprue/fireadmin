@@ -5,9 +5,9 @@ import Button from '@material-ui/core/Button'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import Accordion from '@material-ui/core/Accordion'
+import AccordionSummary from '@material-ui/core/AccordionSummary'
+import AccordionDetails from '@material-ui/core/AccordionDetails'
 import Tooltip from '@material-ui/core/Tooltip'
 import IconButton from '@material-ui/core/IconButton'
 import Help from '@material-ui/icons/Help'
@@ -81,15 +81,15 @@ function ActionsPage({ projectId }) {
       </Tooltip>
       <div className={classes.container}>
         <div>
-          <ExpansionPanel
+          <Accordion
             expanded={templateEditExpanded}
             onChange={toggleTemplateEdit}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography className={classes.sectionHeader}>
                 {templateName}
               </Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
+            </AccordionSummary>
+            <AccordionDetails>
               <Grid container spacing={2} justify="center" alignItems="center">
                 <Grid item xs={12} md={12} className={classes.paperHeader}>
                   <Typography variant="h6" className={classes.paperHeaderText}>
@@ -150,8 +150,8 @@ function ActionsPage({ projectId }) {
                   </Button>
                 </Grid>
               </Grid>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+            </AccordionDetails>
+          </Accordion>
           {selectedTemplate ? (
             <ActionsRunnerForm
               selectedTemplate={selectedTemplate}

@@ -26,8 +26,6 @@ if (process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST) {
   console.debug(`RTDB emulator enabled: ${firebaseConfig.databaseURL}`) // eslint-disable-line no-console
 }
 
-console.log('-------- client firebase config', firebaseConfig) // eslint-disable-line no-console
-
 function App({ routes }) {
   return (
     <MuiThemeProvider theme={theme}>

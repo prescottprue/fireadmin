@@ -9,9 +9,9 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import MenuItem from '@material-ui/core/MenuItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import Accordion from '@material-ui/core/Accordion'
+import AccordionSummary from '@material-ui/core/AccordionSummary'
+import AccordionDetails from '@material-ui/core/AccordionDetails'
 import TextField from '@material-ui/core/TextField'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -62,13 +62,11 @@ function ActionsRunnerForm({
   // TODO: Disable run action button if form is not fully filled out
   return (
     <form onSubmit={handleSubmit(runActionAndClose)} className={classes.root}>
-      <ExpansionPanel
-        expanded={environmentsExpanded}
-        onChange={toggleEnvironments}>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+      <Accordion expanded={environmentsExpanded} onChange={toggleEnvironments}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>Environments</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails className={classes.inputs}>
+        </AccordionSummary>
+        <AccordionDetails className={classes.inputs}>
           <Grid container spacing={8}>
             {selectedTemplate.environments ? (
               selectedTemplate.environments.map((input, index) => (
@@ -116,13 +114,13 @@ function ActionsRunnerForm({
               <div className="flex-row-center">No Environments</div>
             )}
           </Grid>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-      <ExpansionPanel expanded={inputsExpanded} onChange={toggleInputs}>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion expanded={inputsExpanded} onChange={toggleInputs}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>Inputs</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails className={classes.inputs}>
+        </AccordionSummary>
+        <AccordionDetails className={classes.inputs}>
           {selectedTemplate.inputs
             ? selectedTemplate.inputs.map((input, index) => (
                 <TextField
@@ -138,13 +136,13 @@ function ActionsRunnerForm({
                 />
               ))
             : null}
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-      <ExpansionPanel>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>Steps</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </AccordionSummary>
+        <AccordionDetails>
           <Grid container spacing={8} style={{ flexGrow: 1 }}>
             <Grid item xs={12} lg={6}>
               {selectedTemplate?.steps ? (
@@ -156,8 +154,8 @@ function ActionsRunnerForm({
               ) : null}
             </Grid>
           </Grid>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionDetails>
+      </Accordion>
       <div className={classes.buttons}>
         <Button
           color="secondary"

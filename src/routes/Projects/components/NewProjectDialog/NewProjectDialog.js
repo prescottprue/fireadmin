@@ -20,7 +20,6 @@ function NewProjectDialog({ onSubmit, open, onRequestClose }) {
     errors,
     formState: { isSubmitting, isValid }
   } = useForm({ mode: 'onChange' })
-
   return (
     <Dialog open={open} onClose={onRequestClose}>
       <DialogTitle id="new-project-dialog-title">New Project</DialogTitle>

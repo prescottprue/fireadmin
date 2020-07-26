@@ -10,6 +10,11 @@ jobs:
     name: Verify + Build
     runs-on: ubuntu-latest
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.4.0
+        with:
+          access_token: ${{ github.token }}
+
       - name: Checkout Repo
         uses: actions/checkout@v2
 
@@ -45,7 +50,7 @@ jobs:
         # NOTE: Project name is hardcoded since emulators are being used
         run: |
           yarn functions:build
-          yarn --cwd functions test:cov || echo "::warning::Functions unit tests failed"
+          yarn --cwd functions test:cov
 
       - name: Upload Functions Test Coverage
         uses: codecov/codecov-action@v1
@@ -188,7 +193,7 @@ jobs:
           headless: true
           group: 'UI Integration Tests'
           tag: emulated
-          start: yarn emulate:hosting --project ${{ env.GCLOUD_PROJECT }}
+          start: yarn emulators:no-functions --project ${{ env.GCLOUD_PROJECT }}
           wait-on: ${{ env.CYPRESS_BASE_URL }}
           wait-on-timeout: 120
         env:

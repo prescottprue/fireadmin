@@ -20,8 +20,8 @@ function NewActionTemplateDialog({ onRequestClose, onSubmit, open }) {
     register,
     handleSubmit,
     errors,
-    formState: { dirty, isSubmitting }
-  } = useForm()
+    formState: { isValid, isSubmitting }
+  } = useForm({ mode: 'onChange' })
 
   return (
     <Dialog open={open} onClose={onRequestClose}>
@@ -68,7 +68,7 @@ function NewActionTemplateDialog({ onRequestClose, onSubmit, open }) {
             Cancel
           </Button>
           <Button
-            disabled={isSubmitting || !dirty}
+            disabled={isSubmitting || !isValid}
             color="primary"
             type="submit"
             className={classes.submit}

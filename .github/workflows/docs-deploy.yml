@@ -14,6 +14,11 @@ jobs:
     name: Verify + Build + Deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.4.0
+        with:
+          access_token: ${{ github.token }}
+
       - name: Checkout Repo
         uses: actions/checkout@v2
 
@@ -41,7 +46,6 @@ jobs:
       - name: Install Dependencies
         env:
           CYPRESS_INSTALL_BINARY: 0 # Skip installing of cypress
-          CI: true
         run: |
           yarn install --frozen-lockfile
           yarn --cwd docs install --frozen-lockfile
@@ -74,5 +78,3 @@ jobs:
         with:
           name: firebase-debug
           path: firebase-debug.log
-
-      # TODO: Look into saving docs/.cache for faster builds

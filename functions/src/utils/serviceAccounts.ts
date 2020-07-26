@@ -1,14 +1,12 @@
 import * as admin from 'firebase-admin'
-import os from 'os'
-import { promises as fs } from 'fs'
 import path from 'path'
 import google from 'googleapis'
 import { uniqueId } from 'lodash'
-import mkdirp from 'mkdirp'
 import { decrypt } from './encryption'
 import { to } from './async'
 import { hasAll } from './index'
 import { ActionRunnerEventData } from '../actionRunner/types'
+import { PROJECTS_COLLECTION } from '../constants/firebasePaths'
 
 const STORAGE_AND_PLATFORM_SCOPES = [
   'https://www.googleapis.com/auth/devstorage.full_control',
@@ -96,14 +94,10 @@ export async function getAppFromServiceAccount(opts, eventData: ActionRunnerEven
   console.log(`Getting service account from Firestore...`)
   const { projectId } = eventData
 
-  // Make unique app name (prevents issue of multiple apps initialized with same name)
-  const appName = `app-${uniqueId()}`
   // Get Service account data from resource (i.e Storage, Firestore, etc)
   const [err, accountFilePath] = await to(
     serviceAccountFromFirestorePath(
-      `projects/${projectId}/environments/${id || environmentKey}`,
-      appName,
-      { returnData: false }
+      `${PROJECTS_COLLECTION}/${projectId}/environments/${id || environmentKey}`
     )
   )
 
@@ -120,6 +114,8 @@ export async function getAppFromServiceAccount(opts, eventData: ActionRunnerEven
     if (storageBucket) {
       appCreds.storageBucket = storageBucket
     }
+    // Make unique app name (prevents issue of multiple apps initialized with same name)
+    const appName = `app-${uniqueId()}`
     return admin.initializeApp(appCreds, appName)
   } catch (err) {
     console.error('Error initializing firebase app:', err.message || err)
@@ -130,15 +126,12 @@ export async function getAppFromServiceAccount(opts, eventData: ActionRunnerEven
 /**
  * Load service account data From Firestore
  * @param docPath - Path to Firestore document containing service account
- * @param name - Name under which to store local service account file
  * @param options - Options object
  * @param options.returnData - Whether or not to return service account data
  * @returns Resolves with service account or path to service account
  */
 export async function serviceAccountFromFirestorePath(
-  docPath: string,
-  name: string,
-  { returnData = false }
+  docPath: string
 ): Promise<any> {
   const projectDoc = await admin.firestore().doc(docPath).get()
 
@@ -182,30 +175,6 @@ export async function serviceAccountFromFirestorePath(
     throw new Error('Service account not a valid object')
   }
 
-  const localPath = `serviceAccounts/${name}.json`
-  const tempLocalPath = path.join(os.tmpdir(), localPath)
-  const tempLocalDir = path.dirname(tempLocalPath)
-
   // Return service account data if specified by options
-  if (returnData) {
-    return serviceAccountData
-  }
-
-  // Write decrypted string as a local file and return
-  try {
-    // Create local folder for decrypted serice account file
-    await mkdirp(tempLocalDir)
-    // Write decrypted string as a local file
-    await fs.writeFile(tempLocalPath, JSON.stringify(serviceAccountData, null, 2))
-    // Return localPath of service account
-    return tempLocalPath
-  } catch (err) {
-    console.error(
-      `Error writing service account from Firestore to local file ${
-        err.message || ''
-      }`,
-      err
-    )
-    throw err
-  }
+  return serviceAccountData
 }

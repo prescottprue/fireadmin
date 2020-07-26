@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin'
-import { get, chunk, isObject, size } from 'lodash'
+import { get, chunk, isObject } from 'lodash'
 import { batchCopyBetweenFirestoreRefs } from './utils'
 import { downloadFromStorage, uploadToStorage } from '../utils/cloudStorage'
 import { to, promiseWaterfall } from '../utils/async'
@@ -22,7 +22,7 @@ function dataByIdSnapshot(snap) {
       data[doc.id] = doc.data() || doc
     })
   }
-  return size(data) ? data : null
+  return Object.keys(data).length ? data : null
 }
 
 /**
@@ -389,6 +389,7 @@ export async function copyFromRTDBToStorage(app1: admin.app.App, app2: admin.app
     if (!firstDataVal) {
       throw new Error('Data not found at provided path')
     }
+    // TODO: Handle non-json values
     await uploadToStorage(app2, dest.path, firstDataVal)
     console.log('copy from RTDB to Storage was successful')
   } catch (err) {

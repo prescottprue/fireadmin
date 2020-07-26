@@ -1,10 +1,13 @@
 import crypto from 'crypto'
-import { isString } from 'lodash'
 import * as functions from 'firebase-functions'
 
 interface EncryptOptions {
   algorithm?: string
   password?: string
+}
+
+function isString(valToCheck: any): boolean {
+  return typeof valToCheck === 'string' || valToCheck instanceof String
 }
 
 /**

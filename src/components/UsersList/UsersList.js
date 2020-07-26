@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { find } from 'lodash'
 import PersonIcon from '@material-ui/icons/Person'
 import Checkbox from '@material-ui/core/Checkbox'
 import Avatar from '@material-ui/core/Avatar'
@@ -32,9 +31,10 @@ function UsersList({ users, onUserClick }) {
               edge="end"
               onChange={() => onUserClick(user)}
               checked={
-                !!find(users, {
-                  objectID: user.id || user.objectID
-                })
+                !!users.find(
+                  (currentUser) =>
+                    currentUser.objectID === user.id || user.objectID
+                )
               }
             />
           </ListItemSecondaryAction>
