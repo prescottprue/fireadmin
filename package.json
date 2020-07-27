@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.9.12",
+  "version": "0.10.0",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "scripts": {
     "clean": "rimraf build",
@@ -50,7 +50,7 @@
     "react-dom": "^16.13.0",
     "react-dropzone": "^4.2.1",
     "react-google-button": "^0.7.0",
-    "react-hook-form": "^6.0.8",
+    "react-hook-form": "^6.1.0",
     "react-instantsearch": "^4.2.0",
     "react-router-dom": "^5.2.0",
     "reactfire": "^2.0.3",
