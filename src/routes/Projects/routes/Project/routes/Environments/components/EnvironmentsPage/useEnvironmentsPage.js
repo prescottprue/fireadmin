@@ -5,6 +5,7 @@ import {
   useFirestoreCollectionData,
   useStorage
 } from 'reactfire'
+import * as Sentry from '@sentry/browser'
 import useNotifications from 'modules/notification/useNotifications'
 import { triggerAnalyticsEvent, createProjectEvent } from 'utils/analytics'
 import { to } from 'utils/async'
@@ -80,6 +81,7 @@ export default function useEnvironmentsPage({ projectId }) {
         'Error uploading service account: ',
         uploadErr.message || 'Could not add project'
       )
+      Sentry.captureException(uploadErr)
       throw uploadErr
     }
 
@@ -106,6 +108,7 @@ export default function useEnvironmentsPage({ projectId }) {
     if (newEnvErr) {
       console.error('Error creating environment', newEnvErr) // eslint-disable-line no-console
       showError('Error creating new environment: ', newEnvErr.message)
+      Sentry.captureException(newEnvErr)
       throw newEnvErr
     }
 
@@ -165,6 +168,7 @@ export default function useEnvironmentsPage({ projectId }) {
     } catch (err) {
       console.error('error', err) // eslint-disable-line no-console
       showError('Error: ', err.message || 'Could not remove environment')
+      Sentry.captureException(err)
     }
   }
 
@@ -204,7 +208,7 @@ export default function useEnvironmentsPage({ projectId }) {
     } catch (err) {
       console.error('Error updating environment:', err.message) // eslint-disable-line no-console
       showError('Error: ', err.message || 'Could not update environment')
-      throw err
+      Sentry.captureException(err)
     }
   }
 

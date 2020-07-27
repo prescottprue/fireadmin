@@ -47,6 +47,7 @@ export default function useActionRunner({
   const firestore = useFirestore()
   const user = useUser()
   const { FieldValue } = useFirestore
+  const { ServerValue } = useDatabase
   const environmentsRef = firestore.collection(
     `${PROJECTS_COLLECTION}/${projectId}/environments`
   )
@@ -80,7 +81,7 @@ export default function useActionRunner({
         'A valid template must be selected in order to run an action'
       showError(errMsg)
       triggerAnalyticsEvent('invalidTemplateRunAttempt', {
-        projectId: projectId,
+        projectId,
         environmentValues
       })
       return errMsg
@@ -89,12 +90,13 @@ export default function useActionRunner({
     const { templateId } = selectedTemplate
     // Build request object for action run
     const actionRequest = {
-      projectId: projectId,
+      ...omit(formValues, ['_highlightResult', 'updatedAt', 'createdAt']),
+      projectId,
       serviceAccountType: 'firestore',
       templateId,
       createdBy: user.uid,
-      template: omit(selectedTemplate, ['_highlightResult']),
-      ...omit(formValues, ['_highlightResult', 'updatedAt'])
+      createdAt: ServerValue.TIMESTAMP,
+      template: omit(selectedTemplate, ['_highlightResult'])
     }
 
     // Convert selected environment keys into their associated environment objects
