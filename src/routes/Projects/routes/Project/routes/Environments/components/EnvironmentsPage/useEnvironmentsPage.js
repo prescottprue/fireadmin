@@ -54,13 +54,15 @@ export default function useEnvironmentsPage({ projectId }) {
   /**
    * Handler for adding an environment to a project. Called clicking create
    * within AddEnvironmentDialog.
-   * @param  {Object} props - EnvironmentsPage Component props
+   * @param {Object} newProjectData - Data for new project (comes from form values)
    * @return {Promise} Resolves after environment has been added and
    * success message has been displayed to user
    */
   async function addEnvironment(newProjectData) {
+    const { databaseName, serviceAccount, ...otherData } = newProjectData
+
     // Show error if service account is not selected (not part of form)
-    if (!newProjectData.serviceAccount) {
+    if (!serviceAccount) {
       return showError('Please select a service account')
     }
 
@@ -68,8 +70,10 @@ export default function useEnvironmentsPage({ projectId }) {
     const [uploadErr, serviceAccountRes] = await to(
       storage
         .ref(`serviceAccounts/${user.uid}/${projectId}/${Date.now()}`)
-        .put(newProjectData.serviceAccount)
+        .put(serviceAccount)
     )
+
+    // Handle errors uploading service account
     if (uploadErr) {
       console.error('error', uploadErr) // eslint-disable-line no-console
       showError(
@@ -78,23 +82,18 @@ export default function useEnvironmentsPage({ projectId }) {
       )
       throw uploadErr
     }
+
     const { ref } = serviceAccountRes
     // Build new environment object
     const newEnv = {
-      ...newProjectData,
+      ...otherData,
+      databaseURL: `https://${databaseName}.firebaseio.com`,
       serviceAccount: {
         fullPath: ref.fullPath
       },
-      projectId,
       createdBy: user.uid,
       createdAt: FieldValue.serverTimestamp()
     }
-    // Unselect selected service account
-    clearServiceAccount()
-    // Close AddEnvironmentDialog
-    toggleNewDialog()
-    // Show success snackbar
-    showSuccess('Environment added successfully')
 
     // Write new environment to project
     const [newEnvErr, newEnvironmentRes] = await to(
@@ -109,6 +108,7 @@ export default function useEnvironmentsPage({ projectId }) {
       showError('Error creating new environment: ', newEnvErr.message)
       throw newEnvErr
     }
+
     // Write event to project events
     await createProjectEvent(
       { projectId, firestore, FieldValue },
@@ -118,11 +118,21 @@ export default function useEnvironmentsPage({ projectId }) {
         createdBy: user.uid
       }
     )
+
     // Write event to Analytics
     triggerAnalyticsEvent('createEnvironment', {
       projectId,
       newEnvironmentId: newEnvironmentRes.id
     })
+
+    // Unselect selected service account
+    clearServiceAccount()
+
+    // Close AddEnvironmentDialog
+    toggleNewDialog()
+
+    // Show success snackbar
+    showSuccess('Environment added successfully')
   }
 
   /**
@@ -165,8 +175,14 @@ export default function useEnvironmentsPage({ projectId }) {
    * @returns {Promise} Resolves after environment has been updated and
    * success message has been displayed to user
    */
-  async function updateEnvironment(newValues) {
+  async function updateEnvironment(formValues) {
+    const { databaseName, ...other } = formValues
     try {
+      const newValues = {
+        ...other,
+        databaseURL: `https://${databaseName}.firebaseio.com`,
+        updatedAt: FieldValue.serverTimestamp()
+      }
       await firestore
         .doc(`${PROJECTS_COLLECTION}/${projectId}/environments/${selectedKey}`)
         .update(newValues)
@@ -188,6 +204,7 @@ export default function useEnvironmentsPage({ projectId }) {
     } catch (err) {
       console.error('Error updating environment:', err.message) // eslint-disable-line no-console
       showError('Error: ', err.message || 'Could not update environment')
+      throw err
     }
   }
 

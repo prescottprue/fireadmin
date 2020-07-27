@@ -11,9 +11,9 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Checkbox from '@material-ui/core/Checkbox'
-import { makeStyles } from '@material-ui/core/styles'
-import { validateDatabaseUrl } from 'utils/form'
 import TextField from '@material-ui/core/TextField'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import { makeStyles } from '@material-ui/core/styles'
 import FilesUploader from '../FilesUploader'
 import styles from './AddEnvironmentDialog.styles'
 
@@ -72,10 +72,17 @@ function AddEnvironmentDialog({ onSubmit, projectId, onRequestClose, open }) {
             data-test="new-environment-name"
           />
           <TextField
-            name="databaseURL"
+            name="databaseName"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">https://</InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">.firebaseio.com</InputAdornment>
+              )
+            }}
             inputRef={register({
-              required: true,
-              validate: validateDatabaseUrl
+              required: true
             })}
             error={!!errors.databaseURL}
             helperText={errors.databaseURL && 'Database URL must be valid'}

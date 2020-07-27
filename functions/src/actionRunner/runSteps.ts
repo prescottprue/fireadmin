@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import { get, map } from 'lodash'
 import { tmpdir } from 'os'
-import { existsSync, unlinkSync, rmdirSync, lstatSync, readdirSync } from 'fs'
+import { existsSync, rmdirSync, lstatSync, readdirSync } from 'fs'
 import { join as pathJoin } from 'path'
 import {
   copyFromRTDBToFirestore,
@@ -23,36 +23,6 @@ import {
   updateResponseWithActionError
 } from './utils'
 import { ActionRunnerEventData, ActionStep } from './types'
-
-/**
- * Remove folder using recursion (since unlinkSync is for deleting files)
- * @param folderPath - Path of folder to remove
- */
-function deleteFolderRecursive(folderPath: string): void {
-  if (existsSync(folderPath)) {
-    readdirSync(folderPath).forEach((file) => {
-      const curPath = `${folderPath}/${file}`;
-      if (lstatSync(curPath).isDirectory()) {
-        // recurse
-        deleteFolderRecursive(curPath);
-      } else {
-        // delete file
-        unlinkSync(curPath);
-      }
-    });
-    rmdirSync(folderPath);
-  } else {
-    console.log('------folder does not exist', folderPath)
-  }
-}
-
-/**
- * Cleanup local service account files
- */
-function cleanupServiceAccounts(): void {
-  const tempLocalPath = pathJoin(tmpdir(), 'serviceAccounts')
-  deleteFolderRecursive(tempLocalPath)
-}
 
 /**
  * Data action using Service account stored on Firestore
@@ -121,9 +91,6 @@ export async function runStepsFromEvent(
     )
   )
 
-  // Cleanup temp directory
-  cleanupServiceAccounts()
-
   // Handle errors running action
   if (actionErr) {
     // Write error back to RTDB response object
@@ -185,9 +152,6 @@ export async function runBackupsFromEvent(snap: admin.database.DataSnapshot, con
       )
     )
   )
-
-  // Cleanup temp directory
-  cleanupServiceAccounts()
 
   if (actionErr) {
     await updateResponseWithError(snap, context)

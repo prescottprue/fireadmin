@@ -13,6 +13,7 @@ jobs:
   build-deploy:
     name: Verify + Build + Deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.4.0
@@ -25,7 +26,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: 12
 
       - name: Get yarn cache
         id: yarn-cache

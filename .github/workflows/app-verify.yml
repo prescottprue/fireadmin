@@ -9,6 +9,7 @@ jobs:
   verify-build:
     name: Verify + Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.4.0
@@ -21,7 +22,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: 12
 
       - name: Get cache settings
         id: cache-settings
@@ -126,6 +127,7 @@ jobs:
     name: UI Test Emulated App
     needs: verify-build
     runs-on: ubuntu-16.04
+    timeout-minutes: 20
     strategy:
       # Keep all in-progress jobs running if any matrix job fails. Needed to prevent
       # the Cypress Dashboard from being stuck in "in progress" state since not all tests run.
@@ -140,7 +142,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: 12
 
       - name: Checkout Repo
         uses: actions/checkout@v2

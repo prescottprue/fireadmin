@@ -1,6 +1,6 @@
 {
   "name": "fireadmin",
-  "version": "0.9.11",
+  "version": "0.10.0",
   "description": "Application for Managing Firebase Applications. Includes support for multiple environments and data migrations.",
   "scripts": {
     "clean": "rimraf build",
@@ -11,11 +11,11 @@
     "build:size:why": "yarn build && yarn size --why",
     "start": "react-scripts start",
     "start:dist": "yarn build && yarn serve",
-    "emulators": "yarn emulate:dbs",
+    "emulators": "yarn emulators:dbs",
     "emulators:dbs": "firebase emulators:start --only firestore,database",
     "emulators:all": "firebase emulators:start --only firestore,database,functions",
     "emulators:no-functions": "firebase emulators:start --only firestore,database,hosting",
-    "dev": "concurrently -c yellow,green npm:emulate:dbs \"yarn wait-on:dbs && yarn dev\"",
+    "dev": "concurrently -c yellow,green npm:emulators:dbs \"yarn wait-on:dbs && yarn dev\"",
     "wait-on:dbs": "wait-on tcp:$(cat firebase.json | jq '.emulators.database.port') && wait-on tcp:$(cat firebase.json | jq '.emulators.firestore.port')",
     "start:emulate": "cross-env REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" REACT_APP_FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" yarn start",
     "test:emulate": "cross-env FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" CYPRESS_TEST_UID=$npm_package_config_testUid yarn test:open",
@@ -38,7 +38,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
-    "@sentry/browser": "^5.19.1",
+    "@sentry/browser": "^5.20.1",
     "classnames": "^2.2.6",
     "date-fns": "^1.29.0",
     "firebase": "^7.16.0",
@@ -50,7 +50,7 @@
     "react-dom": "^16.13.0",
     "react-dropzone": "^4.2.1",
     "react-google-button": "^0.7.0",
-    "react-hook-form": "^6.0.8",
+    "react-hook-form": "^6.1.0",
     "react-instantsearch": "^4.2.0",
     "react-router-dom": "^5.2.0",
     "reactfire": "^2.0.3",
@@ -105,7 +105,7 @@
     "url": "git+https://github.com/prescottprue/fireadmin.git"
   },
   "engines": {
-    "node": ">=10.15.3"
+    "node": ">=12.0.0"
   },
   "author": "prescottprue (https://github.com/prescottprue)",
   "license": "MIT",

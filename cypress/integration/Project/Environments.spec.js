@@ -42,7 +42,7 @@ describe('Project - Environments Page', () => {
       // Type in new environment url
       cy.get(createSelector('new-environment-db-url'))
         .find('input')
-        .type(`https://some-project.firebaseio.com`, { delay: 0 })
+        .type('some-project', { delay: 0 })
 
       // Upload service account
       cy.uploadFile(
