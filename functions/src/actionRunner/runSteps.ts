@@ -153,9 +153,6 @@ export async function runBackupsFromEvent(snap: admin.database.DataSnapshot, con
     )
   )
 
-  // Cleanup temp directory
-  cleanupServiceAccounts()
-
   if (actionErr) {
     await updateResponseWithError(snap, context)
     throw actionErr
