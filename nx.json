@@ -1,0 +1,178 @@
+{
+  "version": 1,
+  "implicitDependencies": {
+    "workspace.json": "*",
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    "firebase.json": "*",
+    "firestore.rules": "*",
+    "bin/security-rules-builder.js": "*",
+    "tsconfig.json": "*",
+    "nx.json": "*"
+  },
+  "projects": {
+    "brawndo": {
+      "root": "apps/main/",
+      "sourceRoot": "apps/main/src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "yarn --cwd apps/main build"
+              }
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "yarn --cwd apps/main lint"
+              }
+            ]
+          }
+        },
+        "ui-test": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "yarn test:brawndo:emulate"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "cider": {
+      "root": "apps/docs/",
+      "sourceRoot": "apps/docs/src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "yarn --cwd apps/docs build"
+              }
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "yarn --cwd apps/docs lint"
+              }
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "echo No unit tests for Cider"
+              }
+            ]
+          }
+        },
+        "ui-test": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "yarn test:cider:emulate"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "horchata": {
+      "root": "packages/horchata/",
+      "sourceRoot": "packages/horchata/src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "yarn --cwd packages/horchata build"
+              }
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              {
+                "command": "yarn --cwd packages/horchata lint"
+              }
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/horchata/functions/jest.config.js"
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/workspace"
+  },
+  "schematics": {
+    "@nrwl/workspace": {
+      "library": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/cypress": {
+      "cypress-project": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/react": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/web": {
+      "application": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/node": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/nx-plugin": {
+      "plugin": {
+        "linter": "eslint"
+      }
+    }
+  }
+}

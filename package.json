@@ -57,6 +57,7 @@
     "stackdriver-errors-js": "^0.8.0"
   },
   "devDependencies": {
+    "@nrwl/workspace": "^10.0.7",
     "@sentry/cli": "^1.55.0",
     "@size-limit/preset-app": "^4.5.0",
     "@size-limit/webpack": "^4.5.0",
@@ -96,7 +97,7 @@
     "prettier": "^2.0.5",
     "react-scripts": "3.4.1",
     "size-limit": "^4.5.0",
-    "typescript": "^3.9.5",
+    "typescript": "^3.9.7",
     "wait-on": "^5.1.0"
   },
   "browserslist": [],
