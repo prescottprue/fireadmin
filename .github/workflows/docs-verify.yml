@@ -35,11 +35,12 @@ jobs:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-docs-${{ hashFiles('**/yarn.lock') }}
 
-      - name: Cache Gatsby Build
-        uses: actions/cache@v2.1.0
-        with:
-          path: docs/.cache
-          key: ${{ runner.os }}-docs-build
+      # Removed due to causing failed builds
+      # - name: Cache Gatsby Build
+      #   uses: actions/cache@v2.1.0
+      #   with:
+      #     path: docs/.cache
+      #     key: ${{ runner.os }}-docs-build
 
       - name: Install Dependencies
         env:
