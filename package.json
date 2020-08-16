@@ -40,7 +40,7 @@
     "@material-ui/icons": "^4.9.1",
     "@sentry/browser": "^5.21.1",
     "classnames": "^2.2.6",
-    "date-fns": "^1.29.0",
+    "date-fns": "^2.15.0",
     "firebase": "^7.16.0",
     "lodash": "^4.17.19",
     "prop-types": "^15.7.2",
