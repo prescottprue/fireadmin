@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { some, map, orderBy, size } from 'lodash'
+import { map, orderBy } from 'lodash'
 import { useFirestore, useUser, useFirestoreDocData } from 'reactfire'
 import Button from '@material-ui/core/Button'
 import Collapse from '@material-ui/core/Collapse'
@@ -25,22 +25,27 @@ function RolesTable({ projectId }) {
   const { FieldValue } = useFirestore
   const user = useUser()
   const { showError, showSuccess } = useNotifications()
+
+  // Data
   const projectRef = firestore.doc(`${PROJECTS_COLLECTION}/${projectId}`)
   const project = useFirestoreDocData(projectRef)
-  const openNewRole = () => changeRoleOpen(true)
-  const closeNewRole = () => changeRoleOpen(false)
   const orderedRoles = orderBy(
     map(project.roles, (role, key) => ({ ...role, key })),
-    [(role) => size(role?.permissions)],
+    [(role) => Object.keys(role?.permissions || {}).length],
     ['desc']
   )
+  const roleOptions = map(project.roles, ({ name }, value) => ({ value, name }))
+  const userHasPermission = createPermissionGetter(project, user.uid)
 
+  // Handlers
+  const openNewRole = () => changeRoleOpen(true)
+  const closeNewRole = () => changeRoleOpen(false)
   async function addRole(newRole) {
     const currentRoles = project?.roles || {}
-    if (some(currentRoles, { name: newRole.name })) {
-      const existsErrMsg = 'Role with that name already exists'
+    if (Object.values(currentRoles).some((r) => r.name === newRole.name)) {
+      const existsErrMsg = `Role with name "${newRole.name}" already exists`
       showError(existsErrMsg)
-      throw new Error(existsErrMsg)
+      return null
     }
     await projectRef.set(
       {
@@ -66,8 +71,7 @@ function RolesTable({ projectId }) {
     triggerAnalyticsEvent('addRole', { projectId })
     closeNewRole()
   }
-  const roleOptions = map(project.roles, ({ name }, value) => ({ value, name }))
-  const userHasPermission = createPermissionGetter(project, user.uid)
+
   return (
     <div className={classes.root}>
       <Typography className={classes.heading}>Roles</Typography>

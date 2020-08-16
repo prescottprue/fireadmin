@@ -8,7 +8,7 @@ function SuggestedUser({ hit, onClick }) {
   return (
     <ListItem onClick={() => onClick(hit)} style={{ cursor: 'pointer' }}>
       <ListItemText
-        primary={<Highlight attributeName="displayName" hit={hit} />}
+        primary={<Highlight attribute="displayName" hit={hit} />}
         // secondary={<Highlight attributeName="email" hit={hit} />}
       />
     </ListItem>
