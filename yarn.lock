@@ -2383,6 +2383,11 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.5.tgz#dcce4430e64b443ba8945f0290fb564ad5bac6dd"
   integrity sha512-7+2BITlgjgDhH0vvwZU/HZJVyk+2XUlvxXe8dFMedNX/aMkaOq++rMAFXc0tM7ij15QaWlbdQASBR9dihi+bDQ==
 
+"@types/json5@^0.0.29":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
+  integrity sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
+
 "@types/long@^4.0.0", "@types/long@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9"
@@ -3295,7 +3300,7 @@ array-unique@^0.3.2:
   resolved "https://registry.yarnpkg.com/array-unique/-/array-unique-0.3.2.tgz#a894b75d4bc4f6cd679ef3244a9fd8f46ae2d428"
   integrity sha1-qJS3XUvE9s1nnvMkSp/Y9Gri1Cg=
 
-array.prototype.flat@^1.2.1:
+array.prototype.flat@^1.2.1, array.prototype.flat@^1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/array.prototype.flat/-/array.prototype.flat-1.2.3.tgz#0de82b426b0318dbfdb940089e38b043d37f6c7b"
   integrity sha512-gBlRZV0VSmfPIeWfuuy56XZMvbVfbEUnOXUvt3F/eUUUSyzlgLxhEX4YAEpxNAogRGehPSnfXyPtYyKAhkzQhQ==
@@ -4247,15 +4252,7 @@ chalk@^3.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chalk@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.0.0.tgz#6e98081ed2d17faab615eb52ac66ec1fe6209e72"
-  integrity sha512-N9oWFcegS0sFr9oh1oz2d7Npos6vNoWW9HvtCg5N1KRFpUhaAhvTv5Y58g880fZaEYSNm3qDz8SU1UrGvp+n7A==
-  dependencies:
-    ansi-styles "^4.1.0"
-    supports-color "^7.1.0"
-
-chalk@^4.1.0:
+chalk@^4.0.0, chalk@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.0.tgz#4e14870a618d9e2edd97dd8345fd9d9dc315646a"
   integrity sha512-qwx12AxXe2Q5xQ43Ac//I6v5aXTipYrSESdOgzrN+9XjgEpyjpKuvSGaN4qE93f7TQTlerQQ8S+EQ0EyDoVL1A==
@@ -4784,10 +4781,10 @@ concat-stream@^2.0.0:
     readable-stream "^3.0.2"
     typedarray "^0.0.6"
 
-concurrently@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/concurrently/-/concurrently-5.2.0.tgz#ead55121d08a0fc817085584c123cedec2e08975"
-  integrity sha512-XxcDbQ4/43d6CxR7+iV8IZXhur4KbmEJk1CetVMUqCy34z9l0DkszbY+/9wvmSnToTej0SYomc2WSRH+L0zVJw==
+concurrently@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/concurrently/-/concurrently-5.3.0.tgz#7500de6410d043c912b2da27de3202cb489b1e7b"
+  integrity sha512-8MhqOB6PWlBfA2vJ8a0bSFKATOdWlHiQlk11IfmQBPaHVP8oP2gsh2MObE6UR3hqDHqvaIvLTyceNW6obVuFHQ==
   dependencies:
     chalk "^2.4.2"
     date-fns "^2.0.1"
@@ -5368,15 +5365,15 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-cypress-firebase@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/cypress-firebase/-/cypress-firebase-1.4.1.tgz#a6d98007862287a0bc783ec7d09daeccb0195e58"
-  integrity sha512-SookPWd21GXhgUKFd8XjLhPDOzMMpSf9PKzt796pdMbEpbgogeXyfe2wEDfgVe8EAv4BODixT5tBb9G66BXdgA==
+cypress-firebase@^1.4.4:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/cypress-firebase/-/cypress-firebase-1.4.4.tgz#f10aaa389bf94a006fc0b9062976bb3ee9f3edac"
+  integrity sha512-qTWeT6Xgg+Xdnu0RCBfOk65fiQBrQEaCqJQAfVa8M1ZPgdACfzhSEoCEocAwDb75+CiXd+5Yup6RJrbCjcOEHA==
 
-cypress-log-to-output@^1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/cypress-log-to-output/-/cypress-log-to-output-1.0.8.tgz#8698db2cd68b88fd62e7f9ea8d1eece20bb210cf"
-  integrity sha512-o0PwNSXSZho2QLTOa4I/KgyPfZwgqNBqNcz+jBMcKJHPsRBZDUElaosigqSXI28uuSlprUlvcYjpcb/791u/lg==
+cypress-log-to-output@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/cypress-log-to-output/-/cypress-log-to-output-1.1.1.tgz#8013b325499807145225ccff41eda492ae3fdb3a"
+  integrity sha512-ogZqZ16p93Uh2sfeUrbhJti4aov9zTN/e/n29bpRSWA8sUAwozCdnRuRy+HdS4CFVovc31no+s2tJcIh5rLTkA==
   dependencies:
     chalk "^2.4.2"
     chrome-remote-interface "^0.27.1"
@@ -6262,6 +6259,14 @@ eslint-import-resolver-node@^0.3.2:
     debug "^2.6.9"
     resolve "^1.13.1"
 
+eslint-import-resolver-node@^0.3.3:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/eslint-import-resolver-node/-/eslint-import-resolver-node-0.3.4.tgz#85ffa81942c25012d8231096ddf679c03042c717"
+  integrity sha512-ogtf+5AB/O+nM6DIeBUNr2fuT7ot9Qg/1harBfBtaP13ekEWFQEEMP94BCB7zaNW3gyY+8SHYF00rnqYwXKWOA==
+  dependencies:
+    debug "^2.6.9"
+    resolve "^1.13.1"
+
 eslint-loader@3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/eslint-loader/-/eslint-loader-3.0.3.tgz#e018e3d2722381d982b1201adb56819c73b480ca"
@@ -6273,7 +6278,7 @@ eslint-loader@3.0.3:
     object-hash "^2.0.1"
     schema-utils "^2.6.1"
 
-eslint-module-utils@^2.4.1:
+eslint-module-utils@^2.4.1, eslint-module-utils@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/eslint-module-utils/-/eslint-module-utils-2.6.0.tgz#579ebd094f56af7797d19c9866c9c9486629bfa6"
   integrity sha512-6j9xxegbqe8/kZY8cYpcp0xhbK0EgJlg3g9mib3/miLaExuuwc3n5UEfSnU6hWMbT0FAYVvDbL9RrRgpUeQIvA==
@@ -6281,10 +6286,10 @@ eslint-module-utils@^2.4.1:
     debug "^2.6.9"
     pkg-dir "^2.0.0"
 
-eslint-plugin-babel@^5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-babel/-/eslint-plugin-babel-5.3.0.tgz#2e7f251ccc249326da760c1a4c948a91c32d0023"
-  integrity sha512-HPuNzSPE75O+SnxHIafbW5QB45r2w78fxqwK3HmjqIUoPfPzVrq6rD+CINU3yzoDSzEhUkX07VUphbF73Lth/w==
+eslint-plugin-babel@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-babel/-/eslint-plugin-babel-5.3.1.tgz#75a2413ffbf17e7be57458301c60291f2cfbf560"
+  integrity sha512-VsQEr6NH3dj664+EyxJwO4FCYm/00JhYb3Sk3ft8o+fpKuIfQ9TaW6uVUfvwMXHcf/lsnRIoyFPsLMyiWCSL/g==
   dependencies:
     eslint-rule-composer "^0.3.0"
 
@@ -6293,10 +6298,10 @@ eslint-plugin-chai-friendly@^0.6.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-chai-friendly/-/eslint-plugin-chai-friendly-0.6.0.tgz#54052fab79302ed0cea76ab997351ea4809bfb77"
   integrity sha512-Uvvv1gkbRGp/qfN15B0kQyQWg+oFA8buDSqrwmW3egNSk/FpqH2MjQqKOuKwmEL6w4QIQrIjDp+gg6kGGmD3oQ==
 
-eslint-plugin-cypress@^2.10.3:
-  version "2.10.3"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-cypress/-/eslint-plugin-cypress-2.10.3.tgz#82eba7e014954149d590402eecd0d4e147cc7f14"
-  integrity sha512-CvFeoCquShfO8gHNIKA1VpUTz78WtknMebLemBd1lRbcmJNjwpqCqpQYUG/XVja8GjdX/e2TJXYa+EUBxehtUg==
+eslint-plugin-cypress@^2.11.1:
+  version "2.11.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-cypress/-/eslint-plugin-cypress-2.11.1.tgz#a945e2774b88211e2c706a059d431e262b5c2862"
+  integrity sha512-MxMYoReSO5+IZMGgpBZHHSx64zYPSPTpXDwsgW7ChlJTF/sA+obqRbHplxD6sBStE+g4Mi0LCLkG4t9liu//mQ==
   dependencies:
     globals "^11.12.0"
 
@@ -6315,12 +6320,13 @@ eslint-plugin-flowtype@4.6.0:
   dependencies:
     lodash "^4.17.15"
 
-eslint-plugin-flowtype@^4.7.0:
-  version "4.7.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-4.7.0.tgz#903a6ea3eb5cbf4c7ba7fa73cc43fc39ab7e4a70"
-  integrity sha512-M+hxhSCk5QBEValO5/UqrS4UunT+MgplIJK5wA1sCtXjzBcZkpTGRwxmLHhGpbHcrmQecgt6ZL/KDdXWqGB7VA==
+eslint-plugin-flowtype@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-5.2.0.tgz#a4bef5dc18f9b2bdb41569a4ab05d73805a3d261"
+  integrity sha512-z7ULdTxuhlRJcEe1MVljePXricuPOrsWfScRXFhNzVD5dmTHWjIF57AxD0e7AbEoLSbjSsaA5S+hCg43WvpXJQ==
   dependencies:
     lodash "^4.17.15"
+    string-natural-compare "^3.0.1"
 
 eslint-plugin-import@2.20.1:
   version "2.20.1"
@@ -6340,23 +6346,24 @@ eslint-plugin-import@2.20.1:
     read-pkg-up "^2.0.0"
     resolve "^1.12.0"
 
-eslint-plugin-import@^2.20.1:
-  version "2.20.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.20.2.tgz#91fc3807ce08be4837141272c8b99073906e588d"
-  integrity sha512-FObidqpXrR8OnCh4iNsxy+WACztJLXAHBO5hK79T1Hc77PgQZkyDGA5Ag9xAvRpglvLNxhH/zSmZ70/pZ31dHg==
+eslint-plugin-import@^2.20.0:
+  version "2.22.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.22.0.tgz#92f7736fe1fde3e2de77623c838dd992ff5ffb7e"
+  integrity sha512-66Fpf1Ln6aIS5Gr/55ts19eUuoDhAbZgnr6UxK5hbDx6l/QgQgx61AePq+BV4PP2uXQFClgMVzep5zZ94qqsxg==
   dependencies:
-    array-includes "^3.0.3"
-    array.prototype.flat "^1.2.1"
+    array-includes "^3.1.1"
+    array.prototype.flat "^1.2.3"
     contains-path "^0.1.0"
     debug "^2.6.9"
     doctrine "1.5.0"
-    eslint-import-resolver-node "^0.3.2"
-    eslint-module-utils "^2.4.1"
+    eslint-import-resolver-node "^0.3.3"
+    eslint-module-utils "^2.6.0"
     has "^1.0.3"
     minimatch "^3.0.4"
-    object.values "^1.1.0"
+    object.values "^1.1.1"
     read-pkg-up "^2.0.0"
-    resolve "^1.12.0"
+    resolve "^1.17.0"
+    tsconfig-paths "^3.9.0"
 
 eslint-plugin-jsdoc@^30.2.2:
   version "30.2.2"
@@ -14604,6 +14611,11 @@ string-length@^3.1.0:
     astral-regex "^1.0.0"
     strip-ansi "^5.2.0"
 
+string-natural-compare@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/string-natural-compare/-/string-natural-compare-3.0.1.tgz#7a42d58474454963759e8e8b7ae63d71c1e7fdf4"
+  integrity sha512-n3sPwynL1nwKi3WJ6AIsClwBMa0zTi54fn2oLU6ndfTSIO05xaznjSf15PcBZU6FNWbmN5Q6cxT4V5hGvB4taw==
+
 string-width@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-1.0.2.tgz#118bdf5b8cdc51a2a7e70d211e07e2b0b9b107d3"
@@ -15297,6 +15309,16 @@ ts-pnp@^1.1.6:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/ts-pnp/-/ts-pnp-1.2.0.tgz#a500ad084b0798f1c3071af391e65912c86bca92"
   integrity sha512-csd+vJOb/gkzvcCHgTGSChYpy5f1/XKNsmvBGO4JXS+z1v2HobugDz4s1IeFXM3wZB44uczs+eazB5Q/ccdhQw==
+
+tsconfig-paths@^3.9.0:
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/tsconfig-paths/-/tsconfig-paths-3.9.0.tgz#098547a6c4448807e8fcb8eae081064ee9a3c90b"
+  integrity sha512-dRcuzokWhajtZWkQsDVKbWyY+jgcLC5sqJhg2PSgf4ZkH2aHPvaOY8YWGhmjb68b5qqTfasSsDO9k7RUiEmZAw==
+  dependencies:
+    "@types/json5" "^0.0.29"
+    json5 "^1.0.1"
+    minimist "^1.2.0"
+    strip-bom "^3.0.0"
 
 tslib@1.11.1:
   version "1.11.1"
