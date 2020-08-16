@@ -8,11 +8,17 @@ import {
 } from 'react-instantsearch/dom'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchResults from './SearchResults'
+import algoliasearch from 'algoliasearch/lite'
 import styles from './UsersSearch.styles'
 import { useUser } from 'reactfire'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 
 const useStyles = makeStyles(styles)
+
+const searchClient = algoliasearch(
+  process.env.REACT_APP_ALGOLIA_APP_ID,
+  process.env.REACT_APP_ALGOLIA_API_KEY
+)
 
 function UsersSearch({
   onSuggestionClick,
@@ -42,10 +48,7 @@ function UsersSearch({
     .join(' ')
 
   return (
-    <InstantSearch
-      appId={process.env.REACT_APP_ALGOLIA_APP_ID}
-      apiKey={process.env.REACT_APP_ALGOLIA_API_KEY}
-      indexName="users">
+    <InstantSearch searchClient={searchClient} indexName="users">
       <SearchBox autoFocus />
       <div className={classes.poweredBy}>
         <PoweredBy />

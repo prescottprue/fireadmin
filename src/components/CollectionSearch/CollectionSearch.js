@@ -7,12 +7,18 @@ import {
   SearchBox,
   Configure
 } from 'react-instantsearch/dom'
+import algoliasearch from 'algoliasearch/lite'
 import { makeStyles } from '@material-ui/core/styles'
 import styles from './CollectionSearch.styles'
 import SearchResults from './SearchResults'
 // import 'react-instantsearch-theme-algolia/style.scss' // didn't work, so css was used from cdn in index.html
 
 const useStyles = makeStyles(styles)
+
+const searchClient = algoliasearch(
+  process.env.REACT_APP_ALGOLIA_APP_ID,
+  process.env.REACT_APP_ALGOLIA_API_KEY
+)
 
 function CollectionSearch({ onSuggestionClick, ignoreSuggestions, indexName }) {
   const classes = useStyles()
@@ -36,10 +42,7 @@ function CollectionSearch({ onSuggestionClick, ignoreSuggestions, indexName }) {
     )
     .join(' ')
   return (
-    <InstantSearch
-      appId={process.env.REACT_APP_ALGOLIA_APP_ID}
-      apiKey={process.env.REACT_APP_ALGOLIA_API_KEY}
-      indexName={indexName}>
+    <InstantSearch searchClient={searchClient} indexName={indexName}>
       <SearchBox autoFocus />
       <div className={classes.poweredBy}>
         <PoweredBy />
