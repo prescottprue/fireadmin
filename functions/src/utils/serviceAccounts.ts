@@ -1,6 +1,5 @@
 import * as admin from 'firebase-admin'
-import path from 'path'
-import google from 'googleapis'
+import { auth, JWT, UserRefreshClient } from 'google-auth-library'
 import { uniqueId } from 'lodash'
 import { decrypt } from './encryption'
 import { to } from './async'
@@ -37,39 +36,23 @@ export interface ServiceAccount {
   token_ur: string
 }
 
-interface ClientObj {
-  credentials: { token_type: string, access_token: string }
-}
-
 /**
  * Get Google APIs auth client. Auth comes from serviceAccount.
  * @param serviceAccount - Service account object
  * @returns Resolves with JWT Auth Client (for attaching to request)
  */
-export async function authClientFromServiceAccount(serviceAccount: ServiceAccount): Promise<ClientObj> {
+export async function authClientFromServiceAccount(serviceAccount: ServiceAccount): Promise<JWT | UserRefreshClient> {
   if (!hasAll(serviceAccount, SERVICE_ACCOUNT_PARAMS)) {
     throw new Error('Invalid service account')
   }
-  const jwtClient = new google.auth.JWT(
-    serviceAccount.client_email,
-    null,
-    serviceAccount.private_key,
-    STORAGE_AND_PLATFORM_SCOPES
-  )
-  return new Promise((resolve, reject) => {
-    jwtClient.authorize((err) => {
-      if (!err) {
-        google.options({ auth: jwtClient })
-        resolve(jwtClient)
-      } else {
-        console.error(
-          'Error authorizing with Service Account',
-          err.message || err
-        )
-        reject(err)
-      }
-    })
-  })
+
+  const client = auth.fromJSON(serviceAccount);
+  (client as any).scopes = STORAGE_AND_PLATFORM_SCOPES
+
+  // Get access token for client
+  await client.getAccessToken()
+
+  return client
 }
 
 /**

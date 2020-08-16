@@ -440,8 +440,6 @@ export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promis
     )
   }
 
-  // Make unique app name (prevents issue of multiple apps initialized with same name)
-  const appName = `${environmentId}-${uniqueId()}`
   // Get Service account data from resource (i.e Storage, Firestore, etc)
   const [saErr, serviceAccount] = await to(
     serviceAccountFromFirestorePath(
@@ -458,7 +456,6 @@ export async function shallowRtdbGet(opts, rtdbPath: string | undefined): Promis
   }
 
   const client: any = await authClientFromServiceAccount(serviceAccount)
-
   const apiUrl = `https://${
     databaseName || serviceAccount.project_id
   }.firebaseio.com/${rtdbPath || ''}.json?access_token=${

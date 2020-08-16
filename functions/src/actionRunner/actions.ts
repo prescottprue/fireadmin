@@ -230,7 +230,7 @@ export async function copyBetweenRTDBInstances(
 
     return null
   } catch (err) {
-    console.log('Error copying between RTDB instances', err.message || err)
+    console.error('Error copying between RTDB instances', err.message || err)
     throw err
   }
 }
@@ -271,7 +271,7 @@ export async function copyPathBetweenRTDBInstances(
     // Handle data not existing in source database
     if (!dataFromFirst) {
       const errorMessage =
-        'Path does not exist in Source Real Time Database Instance'
+        `Path does not exist in Source Real Time Database Instance for path ${srcPath}`
       console.error(errorMessage)
       throw new Error(errorMessage)
     }
@@ -282,7 +282,7 @@ export async function copyPathBetweenRTDBInstances(
 
     return null
   } catch (err) {
-    console.log('Error copying between RTDB instances', err.message || err)
+    console.error('Error copying between RTDB instances', err.message || err)
     throw err
   }
 }
@@ -329,17 +329,19 @@ export async function batchCopyBetweenRTDBInstances(
 
   await promiseWaterfall(
     keysChunks.map((keyChunk, i) => {
-      console.log(`Copying key chunk: "${i}" from path: "${srcPath}"`)
-      return Promise.all(
-        keyChunk.map((rtdbKey) =>
-          copyPathBetweenRTDBInstances(
-            app1,
-            app2,
-            `${srcPath}/${rtdbKey}`,
-            `${destPath}/${rtdbKey}`
+      return () => {
+        console.log(`Copying key chunk: "${i}" from path: "${srcPath}"`)
+        return Promise.all(
+          keyChunk.map((rtdbKey) =>
+            copyPathBetweenRTDBInstances(
+              app1,
+              app2,
+              `${srcPath}/${rtdbKey}`,
+              `${destPath}/${rtdbKey}`
+            )
           )
         )
-      )
+      }
     })
   )
 
@@ -365,7 +367,7 @@ export async function copyFromStorageToRTDB(app1: admin.app.App, app2: admin.app
     console.log('Copy from Storage to RTDB was successful')
     return updateRes
   } catch (err) {
-    console.log('Error copying from storage instances', err.message || err)
+    console.error('Error copying from storage instances', err.message || err)
     throw err
   }
 }
@@ -393,7 +395,7 @@ export async function copyFromRTDBToStorage(app1: admin.app.App, app2: admin.app
     await uploadToStorage(app2, dest.path, firstDataVal)
     console.log('copy from RTDB to Storage was successful')
   } catch (err) {
-    console.log('Error copying from RTDB to Storage: ', err.message || err)
+    console.error('Error copying from RTDB to Storage: ', err.message || err)
     throw err
   }
 }

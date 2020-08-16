@@ -19,9 +19,6 @@ updates:
     directory: "/functions"
     schedule: 
       interval: "daily"
-    ignore:
-      # TODO: remove this as part of https://github.com/prescottprue/fireadmin/issues/131
-      - dependency-name: "googleapis"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
