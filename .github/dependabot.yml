@@ -5,12 +5,19 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule: 
-      interval: "daily"
+      interval: "weekly"
+  # - package-ecosystem: "npm"
+  #   directory: "/docs"
+  #   schedule: 
+  #     interval: "weekly"
   - package-ecosystem: "npm"
     directory: "/functions"
     schedule: 
-      interval: "daily"
+      interval: "weekly"
+    ignore:
+      # TODO: remove this as part of https://github.com/prescottprue/fireadmin/issues/131
+      - dependency-name: "googleapis"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
