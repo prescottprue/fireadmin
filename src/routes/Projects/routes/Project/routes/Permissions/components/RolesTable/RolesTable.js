@@ -31,7 +31,7 @@ function RolesTable({ projectId }) {
   const closeNewRole = () => changeRoleOpen(false)
   const orderedRoles = orderBy(
     map(project.roles, (role, key) => ({ ...role, key })),
-    [(role) => size(role?.permissions)],
+    [(role) => Object.keys(role?.permissions || {}).length],
     ['desc']
   )
 

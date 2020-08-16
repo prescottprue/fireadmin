@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { get, findIndex } from 'lodash'
 import useNotifications from 'modules/notification/useNotifications'
 import { useFirestore, useFirestoreDocData } from 'reactfire'
 
@@ -14,8 +13,8 @@ export default function useNewMemberModal({ projectId, onRequestClose, open }) {
     changeSelectedCollaborators(suggestions)
   const clearSuggestions = () => changeSelectedCollaborators([])
   const selectCollaborator = (newCollaborator) => {
-    const currentIndex = findIndex(selectedCollaborators, {
-      objectID: newCollaborator.id || newCollaborator.objectID
+    const currentIndex = selectedCollaborators.findIndex((collab) => {
+      return collab.objectID === newCollaborator.id || newCollaborator.objectID
     })
     const newSelected = [...selectedCollaborators]
 
@@ -47,12 +46,11 @@ export default function useNewMemberModal({ projectId, onRequestClose, open }) {
 
   async function updateCollaborators() {
     // Get existing collaborators and permissions
-    const collaborators = get(project, 'collaborators', {})
-    const permissions = get(project, 'permissions', {})
+    const { collaborators, permissions } = project || {}
     // Add new collaborators from selectCollaborator prop
     selectedCollaborators.forEach((currentCollaborator) => {
       // Only add new collaborators which do not already exist
-      if (!get(project, `collaborators.${currentCollaborator.objectID}`)) {
+      if (!collaborators[currentCollaborator.objectID]) {
         collaborators[currentCollaborator.objectID] = true
         permissions[currentCollaborator.objectID] = {
           role: 'viewer',
