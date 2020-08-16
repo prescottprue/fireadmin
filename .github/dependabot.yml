@@ -6,6 +6,11 @@ updates:
     directory: "/"
     schedule: 
       interval: "daily"
+    ignore:
+      # TODO: remove this as part of https://github.com/prescottprue/fireadmin/issues/132
+      - dependency-name: "react-dnd-html5-backend"
+      - dependency-name: "react-dropzone"
+      - dependency-name: "react-dnd"
   - package-ecosystem: "npm"
     directory: "/docs"
     schedule: 
