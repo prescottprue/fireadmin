@@ -22,7 +22,7 @@ export default (theme) => ({
     fontSize: '1.3rem'
   },
   search: {
-    ...theme.flexRowCenter,
+    // ...theme.flexRowCenter,
     marginTop: theme.spacing(6)
   },
   sectionHeader: {

@@ -15,7 +15,7 @@ function SuggestedItem({ hit, onClick }) {
       data-test="search-result">
       <div className="flex-column">
         <span className="hit-name">
-          <Highlight attributeName="name" hit={hit} />
+          <Highlight attribute="name" hit={hit} />
         </span>
         <div
           className="flex-column"

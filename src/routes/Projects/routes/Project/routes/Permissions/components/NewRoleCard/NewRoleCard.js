@@ -15,8 +15,11 @@ function NewRoleCard({ onSubmit, onRequestClose }) {
   const {
     register,
     handleSubmit,
-    formState: { dirty }
-  } = useForm()
+    formState: { isValid }
+  } = useForm({
+    mode: 'onChange'
+  })
+
   return (
     <Paper className={classes.root} elevation={1}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -25,7 +28,9 @@ function NewRoleCard({ onSubmit, onRequestClose }) {
           name="name"
           label="New Role Name"
           margin="normal"
-          inputRef={register}
+          inputRef={register({
+            required: true
+          })}
           fullWidth
         />
         <div className={classes.buttons}>
@@ -37,7 +42,7 @@ function NewRoleCard({ onSubmit, onRequestClose }) {
             Cancel
           </Button>
           <Button
-            disabled={!dirty}
+            disabled={!isValid}
             color="primary"
             variant="contained"
             aria-label="Run Action"

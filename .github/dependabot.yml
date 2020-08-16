@@ -1,0 +1,28 @@
+# For for information on config options, visit docs:
+# https://docs.github.com/en/github/administering-a-repository/configuration-options-for-dependency-updates
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule: 
+      interval: "daily"
+    ignore:
+      # TODO: remove this as part of https://github.com/prescottprue/fireadmin/issues/132
+      - dependency-name: "react-dnd-html5-backend"
+      - dependency-name: "react-dropzone"
+      - dependency-name: "react-dnd"
+  - package-ecosystem: "npm"
+    directory: "/docs"
+    schedule: 
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/functions"
+    schedule: 
+      interval: "daily"
+    ignore:
+      # TODO: remove this as part of https://github.com/prescottprue/fireadmin/issues/131
+      - dependency-name: "googleapis"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

@@ -1,6 +1,7 @@
 import { createSelector } from '../../utils'
 
 const testProjectId = 'test-action-runner-project'
+const searchBoxSelector = '.ais-SearchBox-input'
 
 describe('Project - Actions Page', () => {
   // Setup before tests including creating a fake project
@@ -40,7 +41,7 @@ describe('Project - Actions Page', () => {
 
     it('locked env is disabled as a source', () => {
       // Search for an action template
-      cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
+      cy.get(searchBoxSelector).type('Copy Firestore Collection')
       // Select the first action template
       cy.get(createSelector('search-result')).first().click()
       // Open source select field
@@ -55,7 +56,7 @@ describe('Project - Actions Page', () => {
 
     it('locked env is disabled as destination', () => {
       // Search for an action template
-      cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
+      cy.get(searchBoxSelector).type('Copy Firestore Collection')
       // Select the first action template
       cy.get(createSelector('search-result')).first().click()
       // Open destination select field
@@ -83,7 +84,7 @@ describe('Project - Actions Page', () => {
 
     it('disables run action button if "Read Only" environment is selected as a destination', () => {
       // Search for an action template
-      cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
+      cy.get(searchBoxSelector).type('Copy Firestore Collection')
       // Select the first action template
       cy.get(createSelector('search-result')).first().click()
       // Open dest select field
@@ -113,7 +114,7 @@ describe('Project - Actions Page', () => {
 
     it('disables run action button if "Write Only" environment is selected as a source', () => {
       // Search for an action template
-      cy.get('.ais-SearchBox__input').type('Copy Firestore Collection')
+      cy.get(searchBoxSelector).type('Copy Firestore Collection')
       // Select the first action template
       cy.get(createSelector('search-result')).first().click()
       // Open destination select field
@@ -162,7 +163,7 @@ describe('Project - Actions Page', () => {
 
     it('requests valid action run provided valid inputs', () => {
       // Search for an action template
-      cy.get('.ais-SearchBox__input')
+      cy.get(searchBoxSelector)
         .scrollIntoView()
         .type('Copy Firestore Collection')
       // Select the first action template
