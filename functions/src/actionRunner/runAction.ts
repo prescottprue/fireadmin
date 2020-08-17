@@ -15,12 +15,46 @@ import {
  * @param params.userId - UID of user to send FCM to
  * @returns Resolves with results of pushing message to RTDB
  */
-function sendFcmMessageToUser(userId: string, message: string): Promise<any> {
-  return admin.database().ref('requests/sendFcm').push({
-    userId,
-    message,
-    createdAt: admin.database.ServerValue.TIMESTAMP
-  })
+async function sendFcmMessageToUser(userId: string, message: string): Promise<any> {
+    // Get user profile
+  const [getProfileErr, userProfileSnap] = await to(
+    admin.firestore().doc(`users/${userId}`).get()
+  )
+
+  // Handle errors getting user profile
+  if (getProfileErr) {
+    console.error('Error getting user profile: ', getProfileErr)
+    throw getProfileErr
+  }
+
+  // Get messaging token from user's profile
+  const token = userProfileSnap?.get('messaging.mostRecentToken')
+
+  // Exit with log if messaging token not found on user object
+  if (!token) {
+    console.debug(`Messaging token not found for uid "${userId}", exiting...`)
+    return null
+  }
+
+  // Send FCM message to client
+  const [sendMessageErr] = await to(
+    admin.messaging().send({
+      token,
+      notification: {
+        title: 'Fireadmin',
+        body: message
+      }
+    })
+  )
+
+  // Handle errors sending FCM message
+  if (sendMessageErr) {
+    console.error(
+      `Error sending Firebase Cloud message: ${sendMessageErr.message || ''}`,
+      sendMessageErr
+    )
+    throw sendMessageErr
+  }
 }
 
 /**

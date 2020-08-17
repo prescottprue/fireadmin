@@ -1,7 +1,6 @@
-import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import fetch from 'node-fetch'
-import { omit, uniqueId } from 'lodash'
+import { omit } from 'lodash'
 import { PROJECTS_COLLECTION } from '../constants/firebasePaths'
 import {
   authClientFromServiceAccount,
@@ -133,8 +132,7 @@ export async function emitProjectEvent(eventData): Promise<any> {
  * @returns Resolves with results of database write promise
  */
 export function updateResponseWithProgress(
-  snap: admin.firestore.DocumentSnapshot,
-  context: functions.EventContext,
+  responseId: string,
   { stepIdx, totalNumSteps }: { stepIdx: number, totalNumSteps: number }
 ): Promise<any> {
   const response = {
@@ -149,7 +147,7 @@ export function updateResponseWithProgress(
   }
   return admin
     .database()
-    .ref(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
+    .ref(`${ACTION_RUNNER_RESPONSES_PATH}/${responseId}`)
     .update(response)
 }
 
@@ -159,7 +157,7 @@ export function updateResponseWithProgress(
  * @param  context - Functions context object
  * @returns Resolves with results of database write promise
  */
-export function updateResponseWithError(snap, context): Promise<any> {
+export function updateResponseWithError(responseId: string): Promise<any> {
   const response = {
     status: 'error',
     complete: true,
@@ -167,7 +165,7 @@ export function updateResponseWithError(snap, context): Promise<any> {
   }
   return admin
     .database()
-    .ref(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
+    .ref(`${ACTION_RUNNER_RESPONSES_PATH}/${responseId}`)
     .update(response)
 }
 
@@ -182,8 +180,7 @@ export function updateResponseWithError(snap, context): Promise<any> {
  * @returns {Promise} Resolves with results of database write promise
  */
 export function updateResponseWithActionError(
-  snap,
-  context,
+  responseId: string,
   { stepIdx, totalNumSteps }
 ): Promise<any> {
   const response = {
@@ -201,7 +198,7 @@ export function updateResponseWithActionError(
   }
   return admin
     .database()
-    .ref(`${ACTION_RUNNER_RESPONSES_PATH}/${context.params.pushId}`)
+    .ref(`${ACTION_RUNNER_RESPONSES_PATH}/${responseId}`)
     .update(response)
 }
 
