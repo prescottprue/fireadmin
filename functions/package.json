@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "algoliasearch": "^4.4.0",
-    "firebase-admin": "^9.1.0",
+    "firebase-admin": "^9.1.1",
     "firebase-functions": "^3.10.0",
     "glob": "^7.1.6",
     "googleapis": "^23.0.0",
