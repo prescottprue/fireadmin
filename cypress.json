@@ -2,7 +2,5 @@
   "projectId": "6my6ku",
   "chromeWebSecurity": false,
   "defaultCommandTimeout": 9000,
-  "env": {
-    "RETRIES": 1
-  }
+  "retries": 1
 }

@@ -13,7 +13,6 @@ const admin = require('firebase-admin')
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
-  require('cypress-plugin-retries/lib/plugin')(on)
   require('cypress-log-to-output').install(on, (type, event) => {
     // return true or false from this plugin to control if the event is logged
     // `type` is either `console` or `browser`
