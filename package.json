@@ -42,7 +42,7 @@
     "algoliasearch": "^4.4.0",
     "classnames": "^2.2.6",
     "date-fns": "^2.15.0",
-    "firebase": "^7.18.0",
+    "firebase": "^7.19.0",
     "lodash": "^4.17.20",
     "prop-types": "^15.7.2",
     "react": "^16.13.0",
