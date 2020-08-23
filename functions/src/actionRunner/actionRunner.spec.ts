@@ -92,7 +92,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
         get: sinon
         .stub()
         .returns(
-          Promise.resolve({ data: () => ({ some: 'value' }), exists: true })
+          Promise.resolve({ data: () => ({ some: 'value' }), exists: true, get: () => 'token' })
         ),
       })
     })
@@ -137,7 +137,7 @@ describe('actionRunner RTDB Cloud Function (RTDB:onCreate)', function () {
     // Stubs for Firestore methods
     docStub = sinon.stub().returns({
       set: sinon.stub().returns(Promise.resolve({})),
-      get: sinon.stub().returns(Promise.resolve({})),
+      get: sinon.stub().returns(Promise.resolve({ get: () => {} })),
       collection: sinon.stub().returns({
         add: sinon.stub().returns(Promise.resolve({})),
         doc: docStub

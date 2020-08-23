@@ -1,9 +1,6 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import { get, map } from 'lodash'
-import { tmpdir } from 'os'
-import { existsSync, rmdirSync, lstatSync, readdirSync } from 'fs'
-import { join as pathJoin } from 'path'
+import { map } from 'lodash'
 import {
   copyFromRTDBToFirestore,
   copyFromFirestoreToRTDB,
@@ -47,17 +44,17 @@ export async function runStepsFromEvent(
   } = eventData
 
   if (!Array.isArray(steps)) {
-    await updateResponseWithError(snap, context)
+    await updateResponseWithError(context.params.pushId)
     throw new Error('Steps array was not provided to action request')
   }
 
   if (!Array.isArray(inputs)) {
-    await updateResponseWithError(snap, context)
+    await updateResponseWithError(context.params.pushId)
     throw new Error('Inputs array was not provided to action request')
   }
 
   if (!Array.isArray(inputValues)) {
-    await updateResponseWithError(snap, context)
+    await updateResponseWithError(context.params.pushId)
     throw new Error('Input values array was not provided to action request')
   }
 
@@ -67,7 +64,9 @@ export async function runStepsFromEvent(
   )
 
   // Convert inputs into their values
-  const convertedInputValues = validateAndConvertInputs(eventData, inputs)
+  const convertedInputValues = eventData.inputValues.map((inputValue, inputIdx) =>
+    validateAndConvertInputValues(inputs[inputIdx], inputValue)
+  )
 
   const totalNumSteps = steps.length
 
@@ -82,7 +81,6 @@ export async function runStepsFromEvent(
           inputs,
           convertedInputValues,
           convertedEnvs,
-          snap,
           context,
           eventData,
           totalNumSteps
@@ -94,7 +92,7 @@ export async function runStepsFromEvent(
   // Handle errors running action
   if (actionErr) {
     // Write error back to RTDB response object
-    await updateResponseWithError(snap, context)
+    await updateResponseWithError(context.params.pushId)
     throw actionErr
   }
 
@@ -117,21 +115,23 @@ export async function runBackupsFromEvent(snap: admin.database.DataSnapshot, con
     template: { backups, inputs }
   } = eventData
   if (!Array.isArray(backups)) {
-    await updateResponseWithError(snap, context)
+    await updateResponseWithError(context.params.pushId)
     throw new Error('Backups array was not provided to action request')
   }
 
   if (!Array.isArray(inputs)) {
-    await updateResponseWithError(snap, context)
+    await updateResponseWithError(context.params.pushId)
     throw new Error('Inputs array was not provided to action request')
   }
 
   if (!Array.isArray(inputValues)) {
-    await updateResponseWithError(snap, context)
+    await updateResponseWithError(context.params.pushId)
     throw new Error('Input values array was not provided to action request')
   }
 
-  const convertedInputValues = validateAndConvertInputs(eventData, inputs)
+  const convertedInputValues = eventData.inputValues.map((inputValue, inputIdx) =>
+    validateAndConvertInputValues(inputs[inputIdx], inputValue)
+  )
 
   const totalNumSteps = backups.length
   console.log(`Running ${totalNumSteps} backup(s)`)
@@ -144,7 +144,6 @@ export async function runBackupsFromEvent(snap: admin.database.DataSnapshot, con
         createStepRunner({
           inputs,
           convertedInputValues,
-          snap,
           context,
           eventData,
           totalNumSteps
@@ -154,7 +153,7 @@ export async function runBackupsFromEvent(snap: admin.database.DataSnapshot, con
   )
 
   if (actionErr) {
-    await updateResponseWithError(snap, context)
+    await updateResponseWithError(context.params.pushId)
     throw actionErr
   }
 
@@ -177,7 +176,7 @@ function validateAndConvertEnvironments(eventData: ActionRunnerEventData, envsMe
   }
   return Promise.all(
     eventData.environments.map((envValue, envIdx) =>
-      validateAndConvertEnvironment(eventData, get(envsMetas, envIdx), envValue)
+      validateAndConvertEnvironment(eventData, envsMetas[envIdx], envValue)
     )
   )
 }
@@ -203,7 +202,7 @@ async function validateAndConvertEnvironment(
   const varsNeededForStorageType = ['fullPath', 'databaseURL']
   const varsNeededForFirstoreType = ['credential', 'databaseURL']
   if (
-    get(inputMeta, 'required') &&
+    inputMeta?.required &&
     !hasAll(inputValue, varsNeededForStorageType) &&
     !hasAll(inputValue, varsNeededForFirstoreType)
   ) {
@@ -213,19 +212,6 @@ async function validateAndConvertEnvironment(
   }
 
   return getAppFromServiceAccount(inputValue, eventData)
-}
-
-/**
- * Validate and convert list of inputs to relevant types (i.e. serviceAccount
- * data replaced with app)
- * @param eventData - Data from event
- * @param inputsMetas - Metadata for inputs
- * @returns List of valid and converted inputs
- */
-function validateAndConvertInputs(eventData: ActionRunnerEventData, inputsMetas: any[]): any[] {
-  return eventData.inputValues.map((inputValue, inputIdx) =>
-    validateAndConvertInputValues(get(inputsMetas, inputIdx), inputValue)
-  )
 }
 
 /**
@@ -257,7 +243,6 @@ interface CreateStepRunnerParams {
   inputs: any
   convertedInputValues: any
   convertedEnvs?: any
-  snap: any
   context: functions.EventContext
   eventData: any
   totalNumSteps: number
@@ -281,7 +266,6 @@ function createStepRunner({
   inputs,
   convertedInputValues,
   convertedEnvs,
-  snap,
   context,
   eventData,
   totalNumSteps
@@ -310,7 +294,7 @@ function createStepRunner({
       // Handle errors running step
       if (err) {
         // Write error back to response object
-        await updateResponseWithActionError(snap, context, {
+        await updateResponseWithActionError(context.params.pushId, {
           totalNumSteps,
           stepIdx
         })
@@ -318,7 +302,7 @@ function createStepRunner({
       }
 
       // Update response with step complete progress
-      await updateResponseWithProgress(snap, context, {
+      await updateResponseWithProgress(context.params.pushId, {
         totalNumSteps,
         stepIdx
       })
@@ -372,8 +356,7 @@ export async function runStep({
   }
 
   // Service accounts come from converted version of what is selected for inputs
-  const app1 = get(convertedEnvs, '0')
-  const app2 = get(convertedEnvs, '1')
+  const [app1, app2] = convertedEnvs
 
   // Require src and dest for all other step types
   if (!src || !dest || !src.resource || !dest.resource) {

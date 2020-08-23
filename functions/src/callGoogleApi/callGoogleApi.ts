@@ -56,7 +56,6 @@ export async function googleApisRequest(
     requestSettings
   )
   try {
-
     const response = await fetch(apiUrl, requestSettingsWithAuth)
     const jsonResponse = await response.json()
     console.log(`Google API Request completed successfully`, jsonResponse)

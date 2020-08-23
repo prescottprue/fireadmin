@@ -52,12 +52,11 @@ export function createIndexFunc({
       console.log(
         `Object with ID: ${objectID} being deleted, deleting from Algolia index: ${indexName} ... `
       )
-      return index.deleteObject(objectID).then(() => {
-        console.log(
-          `Object with ID: ${objectID} successfully deleted from index: ${indexName} on Algolia. Exiting.`
-        )
-        return null
-      })
+      await index.deleteObject(objectID)
+      console.log(
+        `Object with ID: ${objectID} successfully deleted from index: ${indexName} on Algolia. Exiting.`
+      )
+      return null
     }
 
     const data = change.after.data()

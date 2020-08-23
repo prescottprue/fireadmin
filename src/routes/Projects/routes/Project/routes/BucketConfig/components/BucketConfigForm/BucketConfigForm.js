@@ -42,7 +42,7 @@ function BucketConfigForm({ projectId }) {
     watch,
     reset,
     setValue,
-    formState: { isSubmitting, dirty }
+    formState: { isSubmitting, isDirty }
   } = methods
   const environmentId = watch('environment')
   const body = watch('body')
@@ -141,14 +141,14 @@ function BucketConfigForm({ projectId }) {
             color="primary"
             type="submit"
             variant="contained"
-            disabled={!dirty || isSubmitting || (method === 'PUT' && !body)}
+            disabled={!isDirty || isSubmitting || (method === 'PUT' && !body)}
             className={classes.button}>
             Run Bucket Action
           </Button>
           <Button
             color="secondary"
             variant="contained"
-            disabled={!dirty || isSubmitting}
+            disabled={!isDirty || isSubmitting}
             onClick={reset}>
             Cancel
           </Button>

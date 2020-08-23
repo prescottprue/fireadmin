@@ -4,7 +4,7 @@ function waitForResponseWith(ref, pathForValue = 'completed', value) {
       'value',
       (responseSnap) => {
         const response = responseSnap.val()
-        if (response[pathForValue]) {
+        if (response && response[pathForValue]) {
           if (value && response[pathForValue] !== value) {
             return
           }
