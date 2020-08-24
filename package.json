@@ -58,7 +58,7 @@
     "stackdriver-errors-js": "^0.8.0"
   },
   "devDependencies": {
-    "@sentry/cli": "^1.55.1",
+    "@sentry/cli": "^1.55.2",
     "@size-limit/preset-app": "^4.5.6",
     "@size-limit/webpack": "^4.5.6",
     "@typescript-eslint/eslint-plugin": "^3.9.1",
