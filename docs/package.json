@@ -58,7 +58,7 @@
     "gatsby-source-filesystem": "2.3.27",
     "gatsby-transformer-remark": "2.8.28",
     "gatsby-transformer-sharp": "2.5.13",
-    "prettier": "^2.0.5",
+    "prettier": "^2.1.1",
     "rimraf": "^3.0.2",
     "webpack": "^4.44.1"
   },
