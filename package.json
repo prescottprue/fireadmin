@@ -51,7 +51,7 @@
     "react-dom": "^16.13.0",
     "react-dropzone": "^4.2.1",
     "react-google-button": "^0.7.0",
-    "react-hook-form": "^6.4.1",
+    "react-hook-form": "^6.8.3",
     "react-instantsearch": "^6.7.0",
     "react-router-dom": "^5.2.0",
     "reactfire": "^2.0.3",
