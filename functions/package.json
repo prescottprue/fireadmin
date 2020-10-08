@@ -22,7 +22,7 @@
     "google-auth-library": "^6.0.6",
     "lodash": "^4.17.20",
     "mkdirp": "^1.0.4",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
