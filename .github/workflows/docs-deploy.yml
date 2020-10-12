@@ -33,14 +33,14 @@ jobs:
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - name: Cache Dependencies
-        uses: actions/cache@v2.1.1
+        uses: actions/cache@v2.1.2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-docs-yarn-${{ hashFiles('**/yarn.lock') }}
 
       # Removed due to causing failed builds
       # - name: Cache Gatsby Build
-      #   uses: actions/cache@v2.1.1
+      #   uses: actions/cache@v2.1.2
       #   with:
       #     path: docs/.cache
       #     key: ${{ runner.os }}-docs-build
