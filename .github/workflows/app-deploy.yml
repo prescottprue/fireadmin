@@ -149,7 +149,7 @@ jobs:
       - name: Check if version has been updated
         if: github.ref == 'refs/heads/prod'
         id: check
-        uses: EndBug/version-check@v1
+        uses: EndBug/version-check@v2
 
       - name: Create Release In Sentry
         if: github.ref == 'refs/heads/prod' && steps.check.outputs.changed == 'true'
