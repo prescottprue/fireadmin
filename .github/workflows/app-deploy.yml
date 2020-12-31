@@ -93,7 +93,7 @@ jobs:
               sed 's/.*initializeApp(//g' | \
               sed 's/);//g' | \
               jq -r 'to_entries[] | [.key, (.value | tojson)] | join("::")' | \
-              sed 's/:"/:/g; s/^/echo \"::set-env name=REACT_APP_FIREBASE_/g' \
+              sed 's/:"/:/g; s/^/echo \"REACT_APP_FIREBASE_/g' \
           )
 
           echo Begin evaluating project config to export as environment variables:
@@ -137,7 +137,7 @@ jobs:
           packageName=$(cat package.json | jq -r '.name')
           packageVersion=$(cat package.json | jq -r '.version')
           gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias] // .projects.default')
-          echo "::set-env name=PACKAGE_VERSION::$packageVersion"
+          echo "PACKAGE_VERSION=localhost:$packageVersion" >> $GITHUB_ENV
 
           echo Updating DB path \"/versionInfo/current\" value to version \"$packageVersion\"
 
