@@ -92,7 +92,7 @@ jobs:
               tr '\n' ' ' | \
               sed 's/.*initializeApp(//g' | \
               sed 's/);//g' | \
-              jq -r 'to_entries[] | [.key, (.value | tojson)] | join("::")' | \
+              jq -r 'to_entries[] | [.key, (.value | tojson)] | join("=")' | \
               sed 's/:"/:/g; s/^/echo \"REACT_APP_FIREBASE_/g' \
           )
 
