@@ -75,7 +75,7 @@ jobs:
           gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias]  // .projects.default')
 
           # Set other app configs (settings within .firebaserc in the ci.setEnv section)
-          config=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.ci.setEnv[$alias]')
+          config=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.ci.setEnv[$alias] // .ci.setEnv.master')
           echo "REACT_APP_FIREADMIN_ENV=$(echo $config | jq -r '.REACT_APP_FIREADMIN_ENV')" >> $GITHUB_ENV
           echo "REACT_APP_SEGMENT_ID=$(echo $config | jq -r '.REACT_APP_SEGMENT_ID')" >> $GITHUB_ENV
           echo "REACT_APP_SENTRY_DSN=$(echo $config | jq -r '.REACT_APP_SENTRY_DSN')" >> $GITHUB_ENV
