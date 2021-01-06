@@ -35,7 +35,7 @@
     "@types/sinon-chai": "^3.2.5",
     "chai": "^4.2.0",
     "faux-jax": "^5.0.6",
-    "firebase-functions-test": "^0.2.2",
+    "firebase-functions-test": "^0.2.3",
     "mocha": "^8.2.1",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
