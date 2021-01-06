@@ -77,12 +77,19 @@ jobs:
         run: |
           set -o pipefail
 
-          # Set other app configs (settings within .firebaserc in the ci.setEnv section)
-          $(yarn bin)/firebase-ci setEnv
-
+          
           # Find the config associated to the firebase project in .firebaserc
           gitBranch=${GITHUB_REF##*/}
           gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias]')
+
+          # Set other app configs (settings within .firebaserc in the ci.setEnv section)
+          config=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.ci.setEnv[$alias]')
+          echo "REACT_APP_FIREADMIN_ENV=$(echo $config | jq -r '.REACT_APP_FIREADMIN_ENV')" >> $GITHUB_ENV
+          echo "REACT_APP_SEGMENT_ID=$(echo $config | jq -r '.REACT_APP_SEGMENT_ID')" >> $GITHUB_ENV
+          echo "REACT_APP_SENTRY_DSN=$(echo $config | jq -r '.REACT_APP_SENTRY_DSN')" >> $GITHUB_ENV
+          echo "REACT_APP_PUBLIC_VAPID_KEY=$(echo $config | jq -r '.REACT_APP_PUBLIC_VAPID_KEY')" >> $GITHUB_ENV
+          echo "REACT_APP_ALGOLIA_APP_ID=$(echo $config | jq -r '.REACT_APP_ALGOLIA_APP_ID')" >> $GITHUB_ENV
+          echo "REACT_APP_ALGOLIA_API_KEY=$(echo $config | jq -r '.REACT_APP_ALGOLIA_API_KEY')" >> $GITHUB_ENV
 
           echo Exporting Firebase SDK Config for $gcloudProject project...
 

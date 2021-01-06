@@ -74,6 +74,15 @@ jobs:
           # Find the config associated to the firebase project in .firebaserc
           gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias]  // .projects.default')
 
+          # Set other app configs (settings within .firebaserc in the ci.setEnv section)
+          config=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.ci.setEnv[$alias]')
+          echo "REACT_APP_FIREADMIN_ENV=$(echo $config | jq -r '.REACT_APP_FIREADMIN_ENV')" >> $GITHUB_ENV
+          echo "REACT_APP_SEGMENT_ID=$(echo $config | jq -r '.REACT_APP_SEGMENT_ID')" >> $GITHUB_ENV
+          echo "REACT_APP_SENTRY_DSN=$(echo $config | jq -r '.REACT_APP_SENTRY_DSN')" >> $GITHUB_ENV
+          echo "REACT_APP_PUBLIC_VAPID_KEY=$(echo $config | jq -r '.REACT_APP_PUBLIC_VAPID_KEY')" >> $GITHUB_ENV
+          echo "REACT_APP_ALGOLIA_APP_ID=$(echo $config | jq -r '.REACT_APP_ALGOLIA_APP_ID')" >> $GITHUB_ENV
+          echo "REACT_APP_ALGOLIA_API_KEY=$(echo $config | jq -r '.REACT_APP_ALGOLIA_API_KEY')" >> $GITHUB_ENV
+
           echo Exporting Firebase SDK Config for $gcloudProject project...
 
           # Use firebase SDK API to get the app's configuration (databaseURL is removed since it is set to the emulator URL)
@@ -90,9 +99,6 @@ jobs:
           # Set emulator settings
           echo "REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST=localhost:$(cat firebase.json | jq .emulators.database.port)" >> $GITHUB_ENV
           echo "REACT_APP_FIRESTORE_EMULATOR_HOST=localhost:$(cat firebase.json | jq .emulators.firestore.port)" >> $GITHUB_ENV
-
-          # Set other app configs (settings within .firebaserc in the ci.setEnv section)
-          $(yarn bin)/firebase-ci setEnv
 
           echo Begin evaluating project config to export as environment variables:
 
@@ -160,7 +166,6 @@ jobs:
           key: ${{ runner.os }}-firebase-${{ steps.cache-settings.outputs.firebase-tools }}
 
       - name: Set Test Environment Settings
-        id: emulator-settings
         env:
           GITHUB_REF: ${{ github.ref }}
           SKIP_CYPRESS_RECORDING: ${{ secrets.SKIP_CYPRESS_RECORDING }}
