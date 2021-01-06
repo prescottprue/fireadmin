@@ -4914,6 +4914,17 @@ cosmiconfig@^6.0.0:
     path-type "^4.0.0"
     yaml "^1.7.2"
 
+cosmiconfig@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-7.0.0.tgz#ef9b44d773959cae63ddecd122de23853b60f8d3"
+  integrity sha512-pondGvTuVYDk++upghXJabWzL6Kxu6f26ljFw64Swq9v6sQPUL3EUlVDV56diOjpCayKihL6hVe8exIACU4XcA==
+  dependencies:
+    "@types/parse-json" "^4.0.0"
+    import-fresh "^3.2.1"
+    parse-json "^5.0.0"
+    path-type "^4.0.0"
+    yaml "^1.10.0"
+
 crc32-stream@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/crc32-stream/-/crc32-stream-3.0.1.tgz#cae6eeed003b0e44d739d279de5ae63b171b4e85"
@@ -6323,10 +6334,10 @@ eslint-plugin-node@^11.1.0:
     resolve "^1.10.1"
     semver "^6.1.0"
 
-eslint-plugin-prettier@^3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.1.4.tgz#168ab43154e2ea57db992a2cd097c828171f75c2"
-  integrity sha512-jZDa8z76klRqo+TdGDTFJSavwbnWK2ZpqGKNZ+VvweMW516pDUMmQ2koXvxEE4JhzNvTv+radye/bWGBmA6jmg==
+eslint-plugin-prettier@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.3.1.tgz#7079cfa2497078905011e6f82e8dd8453d1371b7"
+  integrity sha512-Rq3jkcFY8RYeQLgk2cCwuc0P7SEFwDravPhsJZOQ5N4YI4DSg50NyqJ/9gdZHzQlHf8MvafSesbNJCcP/FF6pQ==
   dependencies:
     prettier-linter-helpers "^1.0.0"
 
@@ -16236,7 +16247,7 @@ yallist@^4.0.0:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
-yaml@^1.7.2:
+yaml@^1.10.0, yaml@^1.7.2:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.10.0.tgz#3b593add944876077d4d683fee01081bd9fff31e"
   integrity sha512-yr2icI4glYaNG+KWONODapy2/jDdMSDnrONSjblABjD9B4Z5LgiircSt8m8sRZFNi08kG9Sm0uSHtEmP3zaEGg==
