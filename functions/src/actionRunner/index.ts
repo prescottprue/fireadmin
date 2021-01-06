@@ -4,7 +4,7 @@ import runAction from './runAction'
 
 const runtimeOpts: functions.RuntimeOptions = {
   timeoutSeconds: 540,
-  memory: '2GB'
+  memory: '4GB'
 }
 
 /**
