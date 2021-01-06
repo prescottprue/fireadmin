@@ -109,7 +109,7 @@ jobs:
           # Loop through each line of config and evaluate to export env vars
           while IFS= read -r line; do
             echo Evaluating: $line
-            eval $line
+            eval $line >> $GITHUB_ENV
           done <<< "$firebaseConfig"
 
       - name: Verify App
