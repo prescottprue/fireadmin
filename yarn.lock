@@ -7108,16 +7108,16 @@ firebase-admin@^9.2.0:
     "@google-cloud/firestore" "^4.0.0"
     "@google-cloud/storage" "^5.3.0"
 
-firebase-ci@^0.14.0:
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/firebase-ci/-/firebase-ci-0.14.0.tgz#dce5a4733deb33eeaf6de353a8541f4dfc0e3ab3"
-  integrity sha512-EapJbOPKD3AsWrkATDNRFH20mF6cXcsya2YuyJx4BGTPz8Bh8luRkqdU1Ub0V+0Yz11QCw5UUdU9Q2zoNtCz2Q==
+firebase-ci@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/firebase-ci/-/firebase-ci-0.15.0.tgz#2053975fb8206e5512656445814529da652a9289"
+  integrity sha512-4/cEmTt9i3GO96sakuS3Wvp3xAE3bpkF4vKUdFsSe5wLQvXbd0ohfrUPYiE2THdZ6Ntj8LDNGe7vGiO2va98Kg==
   dependencies:
     chalk "^3.0.0"
     command-exists "^1.2.8"
     commander "^4.1.0"
     figures "^3.1.0"
-    lodash "^4.17.15"
+    lodash "^4.17.20"
 
 firebase-tools@8.12.0:
   version "8.12.0"

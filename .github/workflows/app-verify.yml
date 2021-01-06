@@ -74,6 +74,15 @@ jobs:
           # Find the config associated to the firebase project in .firebaserc
           gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias]  // .projects.default')
 
+          # Set other app configs (settings within .firebaserc in the ci.setEnv section)
+          config=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.ci.setEnv[$alias] // .ci.setEnv.master')
+          echo "REACT_APP_FIREADMIN_ENV=$(echo $config | jq -r '.REACT_APP_FIREADMIN_ENV')" >> $GITHUB_ENV
+          echo "REACT_APP_SEGMENT_ID=$(echo $config | jq -r '.REACT_APP_SEGMENT_ID')" >> $GITHUB_ENV
+          echo "REACT_APP_SENTRY_DSN=$(echo $config | jq -r '.REACT_APP_SENTRY_DSN')" >> $GITHUB_ENV
+          echo "REACT_APP_PUBLIC_VAPID_KEY=$(echo $config | jq -r '.REACT_APP_PUBLIC_VAPID_KEY')" >> $GITHUB_ENV
+          echo "REACT_APP_ALGOLIA_APP_ID=$(echo $config | jq -r '.REACT_APP_ALGOLIA_APP_ID')" >> $GITHUB_ENV
+          echo "REACT_APP_ALGOLIA_API_KEY=$(echo $config | jq -r '.REACT_APP_ALGOLIA_API_KEY')" >> $GITHUB_ENV
+
           echo Exporting Firebase SDK Config for $gcloudProject project...
 
           # Use firebase SDK API to get the app's configuration (databaseURL is removed since it is set to the emulator URL)
@@ -82,23 +91,21 @@ jobs:
               tr '\n' ' ' | \
               sed 's/.*initializeApp(//g' | \
               sed 's/);//g' | \
-              jq -r 'del(.databaseURL) | to_entries[] | [.key, (.value | tojson)] | join("::")' | \
-              sed 's/:"/:/g; s/^/echo \"::set-env name=REACT_APP_FIREBASE_/g' \
+              jq -r 'del(.databaseURL) | to_entries[] | [.key, (.value | tojson)] | join("=")' | \
+              sed 's/"//1' | \
+              sed 's/:"/:/g; s/^/echo \"REACT_APP_FIREBASE_/g' \
           )
 
           # Set emulator settings
-          echo "::set-env name=REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.database.port)"
-          echo "::set-env name=REACT_APP_FIRESTORE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.firestore.port)"
-
-          # Set other app configs (settings within .firebaserc in the ci.setEnv section)
-          $(yarn bin)/firebase-ci setEnv
+          echo "REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST=localhost:$(cat firebase.json | jq .emulators.database.port)" >> $GITHUB_ENV
+          echo "REACT_APP_FIRESTORE_EMULATOR_HOST=localhost:$(cat firebase.json | jq .emulators.firestore.port)" >> $GITHUB_ENV
 
           echo Begin evaluating project config to export as environment variables:
 
           # Loop through each line of config and evaluate to export env vars
           while IFS= read -r line; do
             echo Evaluating: $line
-            eval $line
+            eval $line >> $GITHUB_ENV
           done <<< "$firebaseConfig"
 
       - name: Print CI Env Variables
@@ -159,7 +166,6 @@ jobs:
           key: ${{ runner.os }}-firebase-${{ steps.cache-settings.outputs.firebase-tools }}
 
       - name: Set Test Environment Settings
-        id: emulator-settings
         env:
           GITHUB_REF: ${{ github.ref }}
           SKIP_CYPRESS_RECORDING: ${{ secrets.SKIP_CYPRESS_RECORDING }}
@@ -168,14 +174,14 @@ jobs:
           gcloudProject=$(cat .firebaserc | jq -r --arg branch "$gitBranch" '.projects[$branch] // .projects.master')
           
           echo "Exposing settings to environment for branch: $gitBranch and project: $gcloudProject..."
-          echo "::set-env name=GCLOUD_PROJECT::$gcloudProject"
-          echo "::set-env name=FIREBASE_DATABASE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.database.port)"
-          echo "::set-env name=FIRESTORE_EMULATOR_HOST::localhost:$(cat firebase.json | jq .emulators.firestore.port)"
-          echo "::set-env name=CYPRESS_BASE_URL::http://localhost:$(cat package.json | jq .config.port)"
+          echo "GCLOUD_PROJECT=$gcloudProject" >> $GITHUB_ENV
+          echo "FIREBASE_DATABASE_EMULATOR_HOST=localhost:$(cat firebase.json | jq .emulators.database.port)" >> $GITHUB_ENV
+          echo "FIRESTORE_EMULATOR_HOST=localhost:$(cat firebase.json | jq .emulators.firestore.port)" >> $GITHUB_ENV
+          echo "CYPRESS_BASE_URL=http://localhost:$(cat package.json | jq .config.port)" >> $GITHUB_ENV
           
           echo "Generating Service Account File..."
           echo "$(echo $SERVICE_ACCOUNT | jq .)" > $HOME/serviceAccount.json
-          echo "::set-env name=GOOGLE_APPLICATION_CREDENTIALS::$HOME/serviceAccount.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/serviceAccount.json" >> $GITHUB_ENV
 
       - name: Print CI Env Variables
         run: |

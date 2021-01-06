@@ -77,12 +77,19 @@ jobs:
         run: |
           set -o pipefail
 
-          # Set other app configs (settings within .firebaserc in the ci.setEnv section)
-          $(yarn bin)/firebase-ci setEnv
-
+          
           # Find the config associated to the firebase project in .firebaserc
           gitBranch=${GITHUB_REF##*/}
           gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias]')
+
+          # Set other app configs (settings within .firebaserc in the ci.setEnv section)
+          config=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.ci.setEnv[$alias]')
+          echo "REACT_APP_FIREADMIN_ENV=$(echo $config | jq -r '.REACT_APP_FIREADMIN_ENV')" >> $GITHUB_ENV
+          echo "REACT_APP_SEGMENT_ID=$(echo $config | jq -r '.REACT_APP_SEGMENT_ID')" >> $GITHUB_ENV
+          echo "REACT_APP_SENTRY_DSN=$(echo $config | jq -r '.REACT_APP_SENTRY_DSN')" >> $GITHUB_ENV
+          echo "REACT_APP_PUBLIC_VAPID_KEY=$(echo $config | jq -r '.REACT_APP_PUBLIC_VAPID_KEY')" >> $GITHUB_ENV
+          echo "REACT_APP_ALGOLIA_APP_ID=$(echo $config | jq -r '.REACT_APP_ALGOLIA_APP_ID')" >> $GITHUB_ENV
+          echo "REACT_APP_ALGOLIA_API_KEY=$(echo $config | jq -r '.REACT_APP_ALGOLIA_API_KEY')" >> $GITHUB_ENV
 
           echo Exporting Firebase SDK Config for $gcloudProject project...
 
@@ -92,8 +99,9 @@ jobs:
               tr '\n' ' ' | \
               sed 's/.*initializeApp(//g' | \
               sed 's/);//g' | \
-              jq -r 'to_entries[] | [.key, (.value | tojson)] | join("::")' | \
-              sed 's/:"/:/g; s/^/echo \"::set-env name=REACT_APP_FIREBASE_/g' \
+              jq -r 'to_entries[] | [.key, (.value | tojson)] | join("=")' | \
+              sed 's/"//1' | \
+              sed 's/:"/:/g; s/^/echo \"REACT_APP_FIREBASE_/g' \
           )
 
           echo Begin evaluating project config to export as environment variables:
@@ -101,7 +109,7 @@ jobs:
           # Loop through each line of config and evaluate to export env vars
           while IFS= read -r line; do
             echo Evaluating: $line
-            eval $line
+            eval $line >> $GITHUB_ENV
           done <<< "$firebaseConfig"
 
       - name: Verify App
@@ -137,7 +145,7 @@ jobs:
           packageName=$(cat package.json | jq -r '.name')
           packageVersion=$(cat package.json | jq -r '.version')
           gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias] // .projects.default')
-          echo "::set-env name=PACKAGE_VERSION::$packageVersion"
+          echo "PACKAGE_VERSION=localhost:$packageVersion" >> $GITHUB_ENV
 
           echo Updating DB path \"/versionInfo/current\" value to version \"$packageVersion\"
 

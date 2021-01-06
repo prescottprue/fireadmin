@@ -92,7 +92,11 @@ describe('Projects Page', () => {
     })
 
     it('does not display the same project twice (even is creator is also collaborator)', () => {
-      cy.get(createSelector('project-tile-name')).its('length').should('be', 3)
+      // Confirm collab projects are being shown (needed to prevent check before collab projects loaded)
+      cy.get(createIdSelector('collab-project-1')).should('exist')
+      cy.get(createSelector('project-tile-name'))
+        .its('length')
+        .should('equal', 3)
     })
   })
 })
