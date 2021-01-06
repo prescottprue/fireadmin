@@ -3746,6 +3746,15 @@ bl@^4.0.1:
     inherits "^2.0.4"
     readable-stream "^3.4.0"
 
+bl@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/bl/-/bl-4.0.3.tgz#12d6287adc29080e22a705e5764b2a9522cdc489"
+  integrity sha512-fs4G6/Hu4/EE+F75J8DuN/0IpQqNjAdC7aEQv7Qt8MHGUH7Ckv2MwTEEeN9QehD0pfIDkMI1bkHYkKy7xHyKIg==
+  dependencies:
+    buffer "^5.5.0"
+    inherits "^2.0.4"
+    readable-stream "^3.4.0"
+
 blakejs@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/blakejs/-/blakejs-1.1.0.tgz#69df92ef953aa88ca51a32df6ab1c54a155fc7a5"
@@ -4273,10 +4282,10 @@ chokidar@^2.1.8:
   optionalDependencies:
     fsevents "^1.2.7"
 
-chokidar@^3.0.2, chokidar@^3.3.0, chokidar@^3.4.0, chokidar@^3.4.1, chokidar@^3.4.2:
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.4.2.tgz#38dc8e658dec3809741eb3ef7bb0a47fe424232d"
-  integrity sha512-IZHaDeBeI+sZJRX7lGcXsdzgvZqKv6sECqsbErJA4mHWfpRrD8B97kSFN4cQz6nGBGiuFia1MKR4d6c1o8Cv7A==
+chokidar@^3.0.2, chokidar@^3.3.0, chokidar@^3.4.0, chokidar@^3.4.1, chokidar@^3.4.3:
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.4.3.tgz#c1df38231448e45ca4ac588e6c79573ba6a57d5b"
+  integrity sha512-DtM3g7juCXQxFVSNPNByEC2+NImtBuxQQvWlHunpJIS5Ocr0lG306cC7FCi7cEA0fzmybPUIl4txBIobk1gGOQ==
   dependencies:
     anymatch "~3.1.1"
     braces "~3.0.2"
@@ -4284,7 +4293,7 @@ chokidar@^3.0.2, chokidar@^3.3.0, chokidar@^3.4.0, chokidar@^3.4.1, chokidar@^3.
     is-binary-path "~2.1.0"
     is-glob "~4.0.1"
     normalize-path "~3.0.0"
-    readdirp "~3.4.0"
+    readdirp "~3.5.0"
   optionalDependencies:
     fsevents "~2.1.2"
 
@@ -4408,10 +4417,10 @@ cli-spinners@^2.0.0:
   resolved "https://registry.yarnpkg.com/cli-spinners/-/cli-spinners-2.3.0.tgz#0632239a4b5aa4c958610142c34bb7a651fc8df5"
   integrity sha512-Xs2Hf2nzrvJMFKimOR7YR0QwZ8fc0u98kdtwN1eNAZzNQgH3vK2pXzff6GJtKh7S5hoJ87ECiAiZFS2fb5Ii2w==
 
-cli-spinners@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/cli-spinners/-/cli-spinners-2.4.0.tgz#c6256db216b878cfba4720e719cec7cf72685d7f"
-  integrity sha512-sJAofoarcm76ZGpuooaO0eDy8saEy+YoZBLjC4h8srt4jeBnkYeOgqxgsJQTpyt2LjI5PTfLJHSL+41Yu4fEJA==
+cli-spinners@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/cli-spinners/-/cli-spinners-2.5.0.tgz#12763e47251bf951cb75c201dfa58ff1bcb2d047"
+  integrity sha512-PC+AmIuK04E6aeSs/pUccSujsTzBhu4HzC2dL+CfJB/Jcc2qTRbEwZQDfIUpt2Xl8BodYBEq8w4fc0kU2I9DjQ==
 
 cli-table3@~0.6.0:
   version "0.6.0"
@@ -4901,17 +4910,6 @@ cosmiconfig@^6.0.0:
     parse-json "^5.0.0"
     path-type "^4.0.0"
     yaml "^1.7.2"
-
-cosmiconfig@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-7.0.0.tgz#ef9b44d773959cae63ddecd122de23853b60f8d3"
-  integrity sha512-pondGvTuVYDk++upghXJabWzL6Kxu6f26ljFw64Swq9v6sQPUL3EUlVDV56diOjpCayKihL6hVe8exIACU4XcA==
-  dependencies:
-    "@types/parse-json" "^4.0.0"
-    import-fresh "^3.2.1"
-    parse-json "^5.0.0"
-    path-type "^4.0.0"
-    yaml "^1.10.0"
 
 crc32-stream@^3.0.1:
   version "3.0.1"
@@ -9884,6 +9882,11 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
+lilconfig@^2.0.1:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/lilconfig/-/lilconfig-2.0.2.tgz#9f802752254697d22a5c33e88d97b7329008c060"
+  integrity sha512-4zUThttj8TQ4N7Pps92Z79jPf1OMcll4m61pivQSVk5MT78hVhNa2LrKTuNYD0AGLpmpf7zeIKOxSt6hHBfypw==
+
 lines-and-columns@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
@@ -11290,17 +11293,17 @@ ora@^3.4.0:
     strip-ansi "^5.2.0"
     wcwidth "^1.0.1"
 
-ora@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/ora/-/ora-5.0.0.tgz#4f0b34f2994877b49b452a707245ab1e9f6afccb"
-  integrity sha512-s26qdWqke2kjN/wC4dy+IQPBIMWBJlSU/0JZhk30ZDBLelW25rv66yutUWARMigpGPzcXHb+Nac5pNhN/WsARw==
+ora@^5.1.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/ora/-/ora-5.2.0.tgz#de10bfd2d15514384af45f3fa9d9b1aaf344fda1"
+  integrity sha512-+wG2v8TUU8EgzPHun1k/n45pXquQ9fHnbXVetl9rRgO6kjZszGGbraF3XPTIdgeA+s1lbRjSEftAnyT0w8ZMvQ==
   dependencies:
+    bl "^4.0.3"
     chalk "^4.1.0"
     cli-cursor "^3.1.0"
-    cli-spinners "^2.4.0"
+    cli-spinners "^2.5.0"
     is-interactive "^1.0.0"
     log-symbols "^4.0.0"
-    mute-stream "0.0.8"
     strip-ansi "^6.0.0"
     wcwidth "^1.0.1"
 
@@ -13194,10 +13197,10 @@ readdirp@^2.2.1:
     micromatch "^3.1.10"
     readable-stream "^2.0.2"
 
-readdirp@~3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-3.4.0.tgz#9fdccdf9e9155805449221ac645e8303ab5b9ada"
-  integrity sha512-0xe001vZBnJEK+uKcj8qOhyAKPzIT+gStxWr3LCB0DwcXR5NZJ3IaC+yGnHCYzB/S7ov3m3EEbZI2zeNvX+hGQ==
+readdirp@~3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-3.5.0.tgz#9ba74c019b15d365278d2e91bb8c48d7b4d42c9e"
+  integrity sha512-cMhu7c/8rdhkHXWsY+osBhfSy0JikwpHK/5+imo+LpeasTF8ouErHrlYkwT0++njiyuDvc7OFY5T3ukvZ8qmFQ==
   dependencies:
     picomatch "^2.2.1"
 
@@ -13976,18 +13979,18 @@ sisteransi@^1.0.4:
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
   integrity sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
 
-size-limit@^4.5.7:
-  version "4.5.7"
-  resolved "https://registry.yarnpkg.com/size-limit/-/size-limit-4.5.7.tgz#0bfb8b3bddad0c38388bd0bd3d98bbd7d5b7daee"
-  integrity sha512-ANvwaaTvMPGyvsoYnzw7AUUA1Xcj0kC4Pu/Mvvii0RS78TVE7mLL/F0kyVXOw0ytdcq0HoPnT2OaXhwxLlvsyA==
+size-limit@^4.9.1:
+  version "4.9.1"
+  resolved "https://registry.yarnpkg.com/size-limit/-/size-limit-4.9.1.tgz#bd09c4a6aa3d771cbd87fed759fb33a1d9298554"
+  integrity sha512-PTDgznNHwNTxE4Cg9UenOY/tIti36OQxIk967pLK7PkmUNfJiJ2VA0Bfk05Z6usGRc7Fz67+dR3w2T9IHRtlVQ==
   dependencies:
     bytes "^3.1.0"
-    chokidar "^3.4.2"
+    chokidar "^3.4.3"
     ci-job-number "^1.2.2"
     colorette "^1.2.1"
-    cosmiconfig "^7.0.0"
     globby "^11.0.1"
-    ora "^5.0.0"
+    lilconfig "^2.0.1"
+    ora "^5.1.0"
     read-pkg-up "^7.0.1"
 
 slash@^1.0.0:
@@ -16160,7 +16163,7 @@ yallist@^4.0.0:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
-yaml@^1.10.0, yaml@^1.7.2:
+yaml@^1.7.2:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.10.0.tgz#3b593add944876077d4d683fee01081bd9fff31e"
   integrity sha512-yr2icI4glYaNG+KWONODapy2/jDdMSDnrONSjblABjD9B4Z5LgiircSt8m8sRZFNi08kG9Sm0uSHtEmP3zaEGg==
