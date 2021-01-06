@@ -21,9 +21,6 @@ COPY . .
 # Install dependencies (skipping install of Cypress binary)
 RUN CYPRESS_INSTALL_BINARY=0 yarn --pure-lockfile --no-cache
 
-## Create project/env specific config
-RUN yarn build:config
-
 ## Build app bundle and index.html
 RUN yarn build
 
