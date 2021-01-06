@@ -92,7 +92,9 @@ describe('Projects Page', () => {
     })
 
     it('does not display the same project twice (even is creator is also collaborator)', () => {
-      cy.get(createSelector('project-tile-name')).its('length').should('be', 3)
+      cy.get(createSelector('project-tile-name'))
+        .its('length')
+        .should('equal', 3)
     })
   })
 })
