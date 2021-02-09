@@ -19,7 +19,7 @@
     "firebase-admin": "^9.4.2",
     "firebase-functions": "^3.13.0",
     "glob": "^7.1.6",
-    "google-auth-library": "^6.1.1",
+    "google-auth-library": "^7.0.0",
     "lodash": "^4.17.20",
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.1"
