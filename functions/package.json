@@ -15,7 +15,7 @@
     "start": "npm run shell"
   },
   "dependencies": {
-    "algoliasearch": "^4.5.1",
+    "algoliasearch": "^4.8.5",
     "firebase-admin": "^9.4.2",
     "firebase-functions": "^3.13.0",
     "glob": "^7.1.6",
