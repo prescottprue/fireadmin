@@ -88,7 +88,7 @@
     "eslint-plugin-standard": "^5.0.0",
     "firebase-admin": "^9.4.2",
     "firebase-ci": "^0.15.0",
-    "firebase-tools": "9.1.0",
+    "firebase-tools": "9.4.0",
     "husky": "^5.0.9",
     "lint-staged": "^10.5.3",
     "prettier": "^2.2.1",
