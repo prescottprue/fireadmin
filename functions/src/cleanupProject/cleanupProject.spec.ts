@@ -9,7 +9,6 @@ const functionsTest = functionsTestLib()
 describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
   let adminInitStub
   let cleanupProject
-  let refStub // eslint-disable-line no-unused-vars
   let docStub
   let setStub
   const resultOfSet = {}
@@ -36,6 +35,12 @@ describe('cleanupProject Firestore Cloud Function (onDelete)', () => {
     docStub.returns({
       set: setStub,
       once: () => Promise.resolve({})
+    })
+    functionsTest.mockConfig({
+      algolia: {
+        app_id: 'asdf ',
+        api_key: 'asdf ',
+      }
     })
 
     // Load wrapped version of Cloud Function
