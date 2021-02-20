@@ -37,17 +37,17 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.11.2",
-    "@sentry/browser": "^5.25.0",
+    "@sentry/browser": "^6.2.0",
     "algoliasearch": "^4.4.0",
     "classnames": "^2.2.6",
     "date-fns": "^2.17.0",
     "firebase": "^7.24.0",
     "lodash": "^4.17.20",
     "prop-types": "^15.7.2",
-    "react": "^16.14.0",
+    "react": "^17.0.1",
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.5.4",
-    "react-dom": "^16.13.0",
+    "react-dom": "^17.0.1",
     "react-dropzone": "^4.2.1",
     "react-google-button": "^0.7.0",
     "react-hook-form": "^6.9.2",
@@ -57,9 +57,9 @@
     "stackdriver-errors-js": "^0.8.0"
   },
   "devDependencies": {
-    "@sentry/cli": "^1.61.0",
-    "@size-limit/preset-app": "^4.9.1",
-    "@size-limit/webpack": "^4.9.1",
+    "@sentry/cli": "^1.62.0",
+    "@size-limit/preset-app": "^4.9.2",
+    "@size-limit/webpack": "^4.9.2",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.12.0",
     "babel-eslint": "^10.1.0",
@@ -89,13 +89,13 @@
     "firebase-admin": "^9.5.0",
     "firebase-ci": "^0.15.0",
     "firebase-tools": "9.4.0",
-    "husky": "^4.3.8",
+    "husky": "^5.0.9",
     "lint-staged": "^10.5.3",
     "prettier": "^2.2.1",
-    "react-scripts": "3.4.3",
-    "size-limit": "^4.9.1",
+    "react-scripts": "^4.0.2",
+    "size-limit": "^4.9.2",
     "typescript": "^4.0.2",
-    "wait-on": "^5.2.0"
+    "wait-on": "^5.2.1"
   },
   "browserslist": [],
   "repository": {
@@ -110,11 +110,6 @@
   "config": {
     "port": 3000,
     "testUid": "aDLWpwXbcpNAUcWA7pJcJtdw6sC2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "lint-staged": {
     "*.{json,md}": [
