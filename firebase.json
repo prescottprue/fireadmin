@@ -29,7 +29,7 @@
         },
         {
           "source": "/docs/:page*",
-          "destination": "https://fireadmin-docs.firebaseapp.com/:page",
+          "destination": "https://docs.fireadmin.io/:page",
           "type": 301
         }
       ]
