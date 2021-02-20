@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import firebase from 'firebase/app' // imported for auth provider
 import { useAuth, useFirestore } from 'reactfire'
-import GoogleButton from 'react-google-button'
 import { makeStyles } from '@material-ui/core/styles'
+import * as Sentry from '@sentry/browser'
 import Container from '@material-ui/core/Container'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
-import * as Sentry from '@sentry/browser'
+import GoogleButton from 'react-google-button'
+import LoadingSpinner from 'components/LoadingSpinner'
 import { USERS_COLLECTION } from 'constants/firebasePaths'
 import useNotifications from 'modules/notification/useNotifications'
 import { LIST_PATH } from 'constants/paths'
-import LoadingSpinner from 'components/LoadingSpinner'
 import styles from './LoginPage.styles'
 
 const useStyles = makeStyles(styles)
@@ -20,7 +20,7 @@ function LoginPage() {
   const auth = useAuth()
   const firestore = useFirestore()
   const { showError } = useNotifications()
-  const [isLoading, changeLoadingState] = useState(false)
+  const [isLoading, changeLoadingState] = React.useState(false)
 
   async function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider()

@@ -32,6 +32,12 @@ describe('indexActionTemplates RTDB Cloud Function (onWrite)', () => {
     fauxJax.on('request', function respond(request) {
       request.respond(200, {}, '{}')
     })
+    functionsTest.mockConfig({
+      algolia: {
+        app_id: 'asdf ',
+        api_key: 'asdf ',
+      }
+    })
     // Set GCLOUD_PROJECT to env
     process.env.GCLOUD_PROJECT = 'test'
     /* eslint-disable global-require */
