@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2.1.4
         with:
-          node-version: 14
+          node-version: 12
 
       - name: Get cache settings
         id: cache-settings
@@ -149,7 +149,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2.1.4
         with:
-          node-version: 14
+          node-version: 12
 
       - name: Checkout Repo
         uses: actions/checkout@v2

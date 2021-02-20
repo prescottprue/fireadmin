@@ -7,6 +7,12 @@ import { to } from '../utils/async'
 
 const functionsTest = functionsTestLib()
 
+functionsTest.mockConfig({
+  encryption: {
+    password: 'asdf'
+  }
+})
+
 describe('copyServiceAccountToFirestore Firestore Cloud Function (onCreate)', () => {
   let copyServiceAccountToFirestore
   let refStub // eslint-disable-line no-unused-vars

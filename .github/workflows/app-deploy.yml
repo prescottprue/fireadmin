@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2.1.4
         with:
-          node-version: 14
+          node-version: 12
       
       - name: Get Cache Settings
         id: cache-settings
