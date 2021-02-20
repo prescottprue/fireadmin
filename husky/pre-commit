@@ -1,0 +1,2 @@
+npx --no lint-staged
+yarn lint-staged

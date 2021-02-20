@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import functionsTestLib from 'firebase-functions-test'
 import * as admin from 'firebase-admin'
+import algoliasearch from 'algoliasearch'
 import fauxJax from 'faux-jax'
 
 const functionsTest = functionsTestLib()
@@ -31,6 +32,12 @@ describe('indexUser RTDB Cloud Function (onWrite)', () => {
     fauxJax.install()
     fauxJax.on('request', function respond(request) {
       request.respond(200, {}, '{}')
+    })
+    functionsTest.mockConfig({
+      algolia: {
+        app_id: 'asdf ',
+        api_key: 'asdf ',
+      }
     })
     // Set GCLOUD_PROJECT to env
     process.env.GCLOUD_PROJECT = 'test'
