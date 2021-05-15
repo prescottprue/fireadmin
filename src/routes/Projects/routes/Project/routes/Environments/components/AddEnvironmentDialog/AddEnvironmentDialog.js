@@ -22,9 +22,8 @@ const useStyles = makeStyles(styles)
 function AddEnvironmentDialog({ onSubmit, projectId, onRequestClose, open }) {
   const classes = useStyles()
   const [droppedFiles, updateDroppedFiles] = useState([])
-  const [selectedServiceAccountInd, changeSelectedServiceAccount] = useState(
-    null
-  )
+  const [selectedServiceAccountInd, changeSelectedServiceAccount] =
+    useState(null)
 
   const {
     register,

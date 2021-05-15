@@ -1,12 +1,12 @@
 // TODO: Switch back to "extends: '../.eslintrc.js'" once react-app is removed from top level
 module.exports = {
-  extends: ['prettier', 'prettier/react'],
+  extends: ['prettier'],
   root: true,
   parser: 'babel-eslint',
   plugins: ['import', 'babel', 'react', 'react-hooks', 'prettier'],
   settings: {
     react: {
-      version: '16.18'
+      version: '17.0'
     },
     'import/resolver': {
       node: {

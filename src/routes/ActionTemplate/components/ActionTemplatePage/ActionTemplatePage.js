@@ -75,11 +75,9 @@ function useActionTemplatePage({ templateId }) {
 function ActionTemplatePage() {
   const classes = useStyles()
   const { templateId } = useParams()
-  const {
-    templateRef,
-    updateTemplate,
-    deleteTemplate
-  } = useActionTemplatePage({ templateId })
+  const { templateRef, updateTemplate, deleteTemplate } = useActionTemplatePage(
+    { templateId }
+  )
   const template = useFirestoreDocData(templateRef)
   const user = useUser()
   const [deleteDialogOpen, changeDeleteDialogOpen] = useState(false)
