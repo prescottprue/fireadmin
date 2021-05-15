@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2.1.4
         with:
-          node-version: 12
+          node-version: 14
       
       - name: Get Cache Settings
         id: cache-settings
@@ -199,7 +199,7 @@ jobs:
   # ui-tests:
   #   name: UI Test Hosted App
   #   needs: build
-  #   runs-on: ubuntu-16.04
+  #   runs-on: ubuntu-20.04
   #   if: ${{ env.RUN_HOSTED_TESTS }} == true && github.ref == 'refs/heads/stage'
   #   strategy:
   #     fail-fast: false
