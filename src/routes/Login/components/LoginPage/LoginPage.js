@@ -53,12 +53,8 @@ function LoginPage() {
         .get()
       // Save new user account if it doesn't already exist
       if (!userSnap.exists) {
-        const {
-          email,
-          displayName,
-          providerData,
-          lastLoginAt
-        } = authData.user.toJSON()
+        const { email, displayName, providerData, lastLoginAt } =
+          authData.user.toJSON()
         const userObject = { email, displayName, lastLoginAt }
         if (providerData) {
           userObject.providerData = providerData
