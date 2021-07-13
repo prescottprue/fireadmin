@@ -73,6 +73,7 @@ jobs:
 
           # Find the config associated to the firebase project in .firebaserc
           gcloudProject=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.projects[$alias]  // .projects.default')
+          echo "GCLOUD_PROJECT=$gcloudProject" >> $GITHUB_ENV
 
           # Set other app configs (settings within .firebaserc in the ci.setEnv section)
           config=$(cat .firebaserc | jq -r --arg alias "$gitBranch" '.ci.setEnv[$alias] // .ci.setEnv.master')
