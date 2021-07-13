@@ -91,26 +91,21 @@ jobs:
           echo "REACT_APP_ALGOLIA_APP_ID=$(echo $config | jq -r '.REACT_APP_ALGOLIA_APP_ID')" >> $GITHUB_ENV
           echo "REACT_APP_ALGOLIA_API_KEY=$(echo $config | jq -r '.REACT_APP_ALGOLIA_API_KEY')" >> $GITHUB_ENV
 
-          echo Exporting Firebase SDK Config for $gcloudProject project...
+      - name: Generate Firebase SDK config for ${{ env.GCLOUD_PROJECT }}
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          set -o pipefail
 
-          # Use firebase SDK API to get the app's configuration (databaseURL is removed since it is set to the emulator URL above)
-          firebaseConfig=$($(yarn bin)/firebase --project $gcloudProject apps:sdkconfig WEB \
-            $($(yarn bin)/firebase --project $gcloudProject apps:list WEB | grep fireadmin | awk '{ print $4}') | \
-              tr '\n' ' ' | \
-              sed 's/.*initializeApp(//g' | \
-              sed 's/);//g' | \
-              jq -r 'to_entries[] | [.key, (.value | tojson)] | join("=")' | \
-              sed 's/"//1' | \
-              sed 's/:"/:/g; s/^/echo \"REACT_APP_FIREBASE_/g' \
-          )
+          # Throw a clear error if FIREBASE_TOKEN secret is not set
+          if [ -z "$FIREBASE_TOKEN" ];
+            then
+              missingTokenErrMsg="\"FIREBASE_TOKEN\" github secret is required to load project configuration. Visit https://github.com/${{ github.repository }}/settings/secrets to set."
+              echo "::error ::$missingTokenErrMsg"
+              exit 1
+          fi
 
-          echo Begin evaluating project config to export as environment variables:
-
-          # Loop through each line of config and evaluate to export env vars
-          while IFS= read -r line; do
-            echo Evaluating: $line
-            eval $line >> $GITHUB_ENV
-          done <<< "$firebaseConfig"
+          bin/generate-firebase-sdk-config.js --file ./config/default.json
 
       - name: Verify App
         run: |
