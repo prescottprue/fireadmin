@@ -51,7 +51,7 @@
     "gatsby-plugin-sharp": "2.14.1",
     "gatsby-remark-autolink-headers": "^2.11.0",
     "gatsby-remark-copy-linked-files": "2.10.0",
-    "gatsby-remark-images": "3.11.0",
+    "gatsby-remark-images": "3.11.1",
     "gatsby-remark-prismjs": "3.13.0",
     "gatsby-remark-responsive-iframe": "2.11.0",
     "gatsby-remark-smartypants": "2.10.0",
