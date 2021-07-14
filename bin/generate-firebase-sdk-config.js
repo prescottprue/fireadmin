@@ -37,13 +37,10 @@ async function run() {
     console.log(`Successfully written Firebase SDK config to ${argv.file}`)
   }
   if (argv.outputEnv) {
-    console.log(
-      Object.entries(sdkConfig)
-        .map(([key, val]) => {
-          return `REACT_APP_FIREBASE_${key}=${val}`
-        })
-        .join('\n')
-    )
+    const envString = Object.entries(sdkConfig)
+      .map(([key, val]) => `REACT_APP_FIREBASE_${key}=${val}`)
+      .join('\n')
+    console.log(`\n${envString}`)
   } else {
     console.log(content)
   }
