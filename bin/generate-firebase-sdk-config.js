@@ -36,7 +36,17 @@ async function run() {
     await fsp.writeFile(argv.file, content)
     console.log(`Successfully written Firebase SDK config to ${argv.file}`)
   }
-  console.log(content)
+  if (argv.outputEnv) {
+    console.log(
+      Object.entries(sdkConfig)
+        .map(([key, val]) => {
+          return `REACT_APP_FIREBASE_${key}=${val}`
+        })
+        .join('\n')
+    )
+  } else {
+    console.log(content)
+  }
 }
 
 run().catch((err) => {

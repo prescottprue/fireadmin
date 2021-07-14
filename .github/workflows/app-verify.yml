@@ -104,7 +104,9 @@ jobs:
               exit 1
           fi
 
-          bin/generate-firebase-sdk-config.js --file ./config/default.json
+          bin/generate-firebase-sdk-config.js --outputEnv >> .env
+          echo "Set env file, logging"
+          cat .env
 
       - name: Print CI Env Variables
         run: |
