@@ -73,6 +73,12 @@ module.exports = {
         'global-require': 0,
         'import/no-dynamic-require': 0
       }
+    },
+    {
+      files: ['./bin/*'],
+      rules: {
+        'no-console': 0
+      }
     }
   ]
 }
