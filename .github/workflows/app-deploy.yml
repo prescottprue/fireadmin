@@ -65,7 +65,7 @@ jobs:
           yarn --cwd functions test:cov
 
       - name: Upload Functions Test Coverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2.1.0
         with:
           file: functions/coverage/lcov.info
 
