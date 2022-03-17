@@ -508,6 +508,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/cors@^2.8.5":
+  version "2.8.12"
+  resolved "https://registry.yarnpkg.com/@types/cors/-/cors-2.8.12.tgz#6b2c510a7ad7039e98e7b8d3d6598f4359e5c080"
+  integrity sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw==
+
 "@types/express-jwt@0.0.42":
   version "0.0.42"
   resolved "https://registry.yarnpkg.com/@types/express-jwt/-/express-jwt-0.0.42.tgz#4f04e1fadf9d18725950dc041808a4a4adf7f5ae"
@@ -1441,11 +1446,12 @@ firebase-functions-test@^0.2.3:
     "@types/lodash" "^4.14.104"
     lodash "^4.17.5"
 
-firebase-functions@^3.14.0:
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-3.14.0.tgz#41dec078ef0324a28ad66584f2c6a20b30bb8dca"
-  integrity sha512-8f/UNxxbMBoNJkakGRmEoV+3i6LUVEOuiJdsMZR0L9x9NQ3rV0xCpUMPCA01HB+Mcx/NqAJCzE6n4gxg2uzcxg==
+firebase-functions@^3.19.0:
+  version "3.19.0"
+  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-3.19.0.tgz#99c1a32529f0d35dc454c88f8bd552fc18c52726"
+  integrity sha512-FG4jurD8ymQ3hMVRgYU7dPhNoMRONxYFF1NrHrKed6YWnEvlYFDNXwGHqXQq66wyCuhCTbhMa6Dwqyng4z5tZw==
   dependencies:
+    "@types/cors" "^2.8.5"
     "@types/express" "4.17.3"
     cors "^2.8.5"
     express "^4.17.1"
@@ -2179,12 +2185,7 @@ lodash.once@^4.0.0:
   resolved "https://registry.yarnpkg.com/lodash.once/-/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
   integrity sha1-DdOXEhPHxW34gJd9UEyI+0cal6w=
 
-lodash@^4.16.3, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.5:
-  version "4.17.20"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
-  integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
-
-lodash@^4.17.21:
+lodash@^4.16.3, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.21, lodash@^4.17.5:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
