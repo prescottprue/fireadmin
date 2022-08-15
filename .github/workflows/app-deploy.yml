@@ -34,13 +34,13 @@ jobs:
           echo "::set-output name=firebase-tools::$(yarn list -s --depth=0 --pattern firebase-tools | tail -n 1 | sed 's/.*@//g')"
 
       - name: Cache App Dependencies
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.0.7
         with:
           path: ${{ steps.cache-settings.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
 
       - name: Cache Firebase Emulator Binaries
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.0.7
         with:
           path: ~/.cache/firebase/emulators
           key: ${{ runner.os }}-firebase-${{ steps.cache-settings.outputs.firebase-tools }}
