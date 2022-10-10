@@ -17,7 +17,7 @@ jobs:
           access_token: ${{ github.token }}
 
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.1.0
 
       - name: Setup Node
         uses: actions/setup-node@v2.2.0
@@ -150,7 +150,7 @@ jobs:
           node-version: 14
 
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.1.0
 
       - name: Get Cache Settings
         id: cache-settings
